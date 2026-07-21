@@ -1,0 +1,31 @@
+{
+  "name": "@girih/tokens",
+  "version": "0.1.0",
+  "description": "girih token engine: DTCG parsing, brand overlays, alias resolution, tier validation",
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --sourcemap --clean",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@girih/core": "workspace:*",
+    "style-dictionary": "^5.0.0",
+    "tinyglobby": "^0.2.10"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  }
+}

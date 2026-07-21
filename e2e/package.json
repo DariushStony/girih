@@ -1,0 +1,6 @@
+{
+  "name": "girih-e2e",
+  "private": true,
+  "type": "module",
+  "description": "scaffold → generate → build → render smoke tests (grows with each milestone)"
+}

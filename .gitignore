@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.turbo/
+*.log
+.DS_Store
+
+# generated output inside example workspaces
+examples/*/packages/
+examples/*/.ds/
+examples/*/demo/generated/

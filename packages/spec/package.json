@@ -1,0 +1,17 @@
+{
+  "name": "@girih/spec",
+  "version": "0.0.0",
+  "description": "girih component contracts — defineSpec, validation, ComponentIR (M3)",
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ]
+}

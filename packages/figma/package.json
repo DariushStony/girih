@@ -1,0 +1,17 @@
+{
+  "name": "@girih/figma",
+  "version": "0.0.0",
+  "description": "girih Figma target — consumes ComponentIR + token graphs, never React output (phase 2)",
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ]
+}

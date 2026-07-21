@@ -1,0 +1,17 @@
+{
+  "name": "create-girih",
+  "version": "0.0.0",
+  "description": "npx bootstrapper for new girih workspaces (M4)",
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ]
+}

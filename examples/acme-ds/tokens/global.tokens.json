@@ -1,0 +1,60 @@
+{
+  "color": {
+    "$type": "color",
+    "white": { "$value": "#FFFFFF" },
+    "black": { "$value": "#0A0A0A" },
+    "blue": {
+      "500": { "$value": "#3B82F6" },
+      "600": { "$value": "#2563EB" },
+      "700": { "$value": "#1D4ED8" }
+    },
+    "green": {
+      "500": { "$value": "#22C55E" },
+      "600": { "$value": "#16A34A" },
+      "700": { "$value": "#15803D" }
+    },
+    "gray": {
+      "50": { "$value": "#F9FAFB" },
+      "200": { "$value": "#E5E7EB" },
+      "600": { "$value": "#4B5563" },
+      "900": { "$value": "#111827" }
+    },
+    "red": {
+      "600": { "$value": "#DC2626" },
+      "700": { "$value": "#B91C1C" }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "sm": { "$value": "4px" },
+    "md": { "$value": "8px" },
+    "lg": { "$value": "16px" },
+    "pill": { "$value": "999px" }
+  },
+  "space": {
+    "$type": "dimension",
+    "1": { "$value": "4px" },
+    "2": { "$value": "8px" },
+    "3": { "$value": "12px" },
+    "4": { "$value": "16px" },
+    "6": { "$value": "24px" }
+  },
+  "font": {
+    "family": {
+      "$type": "fontFamily",
+      "sans": { "$value": "'Inter', system-ui, sans-serif" }
+    },
+    "size": {
+      "$type": "dimension",
+      "sm": { "$value": "13px" },
+      "md": { "$value": "15px" },
+      "lg": { "$value": "18px" }
+    },
+    "weight": {
+      "$type": "fontWeight",
+      "regular": { "$value": 400 },
+      "medium": { "$value": 500 },
+      "semibold": { "$value": 600 }
+    }
+  }
+}

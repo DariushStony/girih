@@ -1,0 +1,13 @@
+{
+  "name": "acme-ds-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "girih check",
+    "generate": "girih generate css",
+    "generate:check": "girih generate css --check"
+  },
+  "devDependencies": {
+    "@girih/cli": "workspace:*"
+  }
+}
