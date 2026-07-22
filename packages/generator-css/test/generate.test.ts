@@ -19,7 +19,7 @@ describe('generateCss on the acme-ds fixture', () => {
     expect(css).toContain('--ds-button-primary-background: var(--ds-color-primary);');
   });
 
-  it('emits a seller block containing only overridden tokens', async () => {
+  it('emits a seller block with the overrides plus their dependent closure', async () => {
     const build = await buildTokenGraphs(acmeConfig);
     const { files } = await generateCss(build, options);
     const css = files.find((f) => f.path === 'tokens.css')!.contents;
@@ -27,12 +27,21 @@ describe('generateCss on the acme-ds fixture', () => {
     const sellerBlock = css.split('[data-brand="seller"]')[1]!;
     expect(sellerBlock).toContain('--ds-color-primary');
     expect(sellerBlock).toContain('--ds-radius-md');
-    // Not overridden — must NOT be re-emitted in the brand block:
-    expect(sellerBlock).not.toContain('--ds-button-primary-background:');
+    // Dependents must be re-declared (as references) so a NESTED [data-brand] scope
+    // recomputes them — custom properties resolve where they are declared.
+    expect(sellerBlock).toContain('--ds-button-primary-background: var(--ds-color-primary);');
+    expect(sellerBlock).toContain('--ds-radius-control: var(--ds-radius-md);');
+    expect(sellerBlock).toContain('--ds-button-radius: var(--ds-radius-control);');
+    // Unrelated tokens stay out of the block.
     expect(sellerBlock).not.toContain('--ds-color-blue-600');
+    expect(sellerBlock).not.toContain('--ds-color-text:');
 
-    // The default (empty-overlay) brand gets no block of its own beyond :root.
-    expect(css).not.toContain('[data-brand="marketplace"]');
+    // The default brand also gets a scoped re-entry block so nesting a provider
+    // back to it inside a seller scope resets seller's overrides.
+    const marketplaceBlock = css.split('[data-brand="marketplace"]')[1]!.split('[data-brand="seller"]')[0]!;
+    expect(marketplaceBlock).toContain('--ds-color-primary: var(--ds-color-blue-600);');
+    expect(marketplaceBlock).toContain('--ds-radius-md: 8px;');
+    expect(marketplaceBlock).not.toContain('--ds-color-text:');
   });
 
   it('emits a TokenPath union that matches the CSS variable names', async () => {

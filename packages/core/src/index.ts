@@ -9,3 +9,4 @@ export type {
 export { defineConfig, loadConfig, CONFIG_FILENAMES } from './config.js';
 export type { EmittedFile } from './files.js';
 export { emittedFile, writeEmittedFiles, verifyEmittedFiles } from './files.js';
+export { cssVarName } from './naming.js';

@@ -10,6 +10,8 @@ export default defineConfig({
       '@girih/core': r('packages/core/src/index.ts'),
       '@girih/tokens': r('packages/tokens/src/index.ts'),
       '@girih/generator-css': r('packages/generator-css/src/index.ts'),
+      '@girih/generator-react': r('packages/generator-react/src/index.ts'),
+      '@girih/spec': r('packages/spec/src/index.ts'),
     },
   },
   test: {

@@ -1,6 +1,8 @@
 /**
- * Programmatic surface of the CLI. `defineConfig` is re-exported here so user
- * workspaces only ever depend on @girih/cli.
+ * Programmatic surface of the CLI. `defineConfig` and `defineSpec` are
+ * re-exported here so user workspaces only ever depend on @girih/cli.
  */
 export { defineConfig } from '@girih/core';
 export type { GirihConfig } from '@girih/core';
+export { defineSpec } from '@girih/spec';
+export type { ComponentSpecInput, ComponentState } from '@girih/spec';

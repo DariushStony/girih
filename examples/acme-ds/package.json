@@ -5,9 +5,16 @@
   "scripts": {
     "check": "girih check",
     "generate": "girih generate css",
-    "generate:check": "girih generate css --check"
+    "generate:check": "girih generate css --check",
+    "generate:react": "girih generate react",
+    "demo:react": "girih generate react && esbuild demo/react/main.tsx --bundle --outfile=demo/react/bundle.js --jsx=automatic"
   },
   "devDependencies": {
-    "@girih/cli": "workspace:*"
+    "@girih/cli": "workspace:*",
+    "@girih/react-runtime": "workspace:*",
+    "@types/react": "^19.0.0",
+    "esbuild": "^0.25.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   }
 }

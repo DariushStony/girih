@@ -123,6 +123,8 @@ describe('default-brand overrides must not leak into other brands', () => {
     const otherBlock = css.split('[data-brand="other"]')[1];
     expect(otherBlock).toBeDefined();
     expect(otherBlock).toContain('--ds-color-primary: var(--ds-color-blue);');
+    // No dependents reference color.primary here, so the closure adds nothing else.
+    expect(otherBlock).not.toContain('--ds-color-red:');
   });
 });
 

@@ -3,10 +3,13 @@ import { join } from 'node:path';
 import { Command } from 'commander';
 import pc from 'picocolors';
 import { loadConfig, verifyEmittedFiles, writeEmittedFiles } from '@girih/core';
-import type { ResolvedConfig } from '@girih/core';
+import type { EmittedFile, ResolvedConfig } from '@girih/core';
 import { buildTokenGraphs } from '@girih/tokens';
 import type { TokenBuildResult } from '@girih/tokens';
 import { generateCss } from '@girih/generator-css';
+import { generateReact } from '@girih/generator-react';
+import { loadSpecs, specToIR, validateSpecs } from '@girih/spec';
+import type { ComponentIR } from '@girih/spec';
 import { printDiagnostics, printSummaryLine, table } from './output.js';
 
 const program = new Command();
@@ -22,6 +25,20 @@ async function loadWorkspace(): Promise<{ config: ResolvedConfig; build: TokenBu
   const build = await buildTokenGraphs(config);
   build.diagnostics.unshift(...diagnostics);
   return { config, build };
+}
+
+/** Load + cross-validate component specs; diagnostics land on the build. */
+async function loadComponentIRs(config: ResolvedConfig, build: TokenBuildResult): Promise<ComponentIR[]> {
+  const loaded = await loadSpecs(config);
+  build.diagnostics.push(...loaded.diagnostics);
+  const irs = loaded.specs.map(({ spec, file }) => {
+    const { ir, diagnostics } = specToIR(spec);
+    ir.sourceFile = file;
+    build.diagnostics.push(...diagnostics.map((d) => ({ ...d, file: d.file ?? file })));
+    return ir;
+  });
+  build.diagnostics.push(...validateSpecs(irs, build.graphs));
+  return irs;
 }
 
 program
@@ -56,8 +73,13 @@ program
       console.log();
     }
 
+    const irs = await loadComponentIRs(config, build);
+
     const tiers = { global: 0, semantic: 0, component: 0 };
     for (const token of build.base.tokens.values()) tiers[token.tier] += 1;
+    if (irs.length > 0) {
+      console.log(`${pc.bold(String(irs.length))} component contract${irs.length === 1 ? '' : 's'}: ${irs.map((ir) => ir.name).join(', ')}`);
+    }
     console.log(
       `${pc.bold(String(build.base.tokens.size))} tokens ` +
         pc.dim(`(${tiers.global} global, ${tiers.semantic} semantic, ${tiers.component} component)`) +
@@ -82,8 +104,8 @@ program
   .option('--check', 'verify the generated output on disk is up to date instead of writing')
   .description('Generate design system artifacts from the workspace definition.')
   .action(async (target: string, options: { check?: boolean }) => {
-    if (target !== 'css') {
-      console.error(pc.red(`Unknown target '${target}'. Available in this milestone: css (react lands in M3).`));
+    if (target !== 'css' && target !== 'react') {
+      console.error(pc.red(`Unknown target '${target}'. Available targets: css, react.`));
       process.exitCode = 1;
       return;
     }
@@ -99,14 +121,40 @@ program
       return;
     }
 
-    const result = await generateCss(build, {
+    const cssResult = await generateCss(build, {
       prefix: config.tokens.prefix,
       defaultBrand: config.brands.default,
       selector: config.targets.css.selector,
     });
-    build.diagnostics.push(...result.diagnostics);
+    build.diagnostics.push(...cssResult.diagnostics);
 
-    if (result.diagnostics.some((d) => d.severity === 'error')) {
+    let files: EmittedFile[];
+    let outputBase: string;
+    if (target === 'react') {
+      const irs = await loadComponentIRs(config, build);
+      if (build.diagnostics.some((d) => d.severity === 'error')) {
+        printDiagnostics(build.diagnostics);
+        printSummaryLine(build.diagnostics);
+        console.error(pc.red('\nRefusing to generate from invalid component specs.'));
+        process.exitCode = 1;
+        return;
+      }
+      const reactResult = generateReact(irs, {
+        packageName: config.name,
+        prefix: config.tokens.prefix,
+      });
+      build.diagnostics.push(...reactResult.diagnostics);
+      outputBase = config.targets.react.output;
+      files = [
+        ...cssResult.files.map((f) => ({ ...f, path: join('styles', f.path) })),
+        ...reactResult.files,
+      ];
+    } else {
+      outputBase = config.targets.css.output;
+      files = cssResult.files;
+    }
+
+    if (build.diagnostics.some((d) => d.severity === 'error')) {
       printDiagnostics(build.diagnostics);
       printSummaryLine(build.diagnostics);
       console.error(pc.red('\nRefusing to write broken output.'));
@@ -114,20 +162,20 @@ program
       return;
     }
 
-    const outDir = join(config.root, config.targets.css.output);
+    const outDir = join(config.root, outputBase);
     if (options.check) {
-      const stale = await verifyEmittedFiles(outDir, result.files);
-      for (const path of stale) console.log(`${pc.red('stale')}  ${join(config.targets.css.output, path)}`);
+      const stale = await verifyEmittedFiles(outDir, files);
+      for (const path of stale) console.log(`${pc.red('stale')}  ${join(outputBase, path)}`);
       if (stale.length > 0) {
-        console.error(pc.red(`\n${stale.length} file(s) out of date — run \`girih generate css\`.`));
+        console.error(pc.red(`\n${stale.length} file(s) out of date — run \`girih generate ${target}\`.`));
         process.exitCode = 1;
       } else {
         console.log(pc.green('✔ generated output is up to date'));
       }
     } else {
-      await writeEmittedFiles(outDir, result.files);
-      for (const file of result.files) {
-        console.log(`${pc.green('write')}  ${join(config.targets.css.output, file.path)} ${pc.dim(`(${file.contents.length} bytes)`)}`);
+      await writeEmittedFiles(outDir, files);
+      for (const file of files) {
+        console.log(`${pc.green('write')}  ${join(outputBase, file.path)} ${pc.dim(`(${file.contents.length} bytes)`)}`);
       }
     }
 

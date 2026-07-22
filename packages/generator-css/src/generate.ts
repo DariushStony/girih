@@ -3,7 +3,7 @@ import type { DesignTokens } from 'style-dictionary/types';
 import type { Diagnostic, EmittedFile } from '@girih/core';
 import { emittedFile } from '@girih/core';
 import { toNestedDtcg } from '@girih/tokens';
-import type { TokenBuildResult } from '@girih/tokens';
+import type { ResolvedTokenGraph, TokenBuildResult } from '@girih/tokens';
 import { cssVarName } from './naming.js';
 
 export interface GenerateCssOptions {
@@ -60,55 +60,73 @@ export async function generateCss(build: TokenBuildResult, options: GenerateCssO
     a === options.defaultBrand ? -1 : b === options.defaultBrand ? 1 : byCodeUnit(a, b),
   );
 
+  const allOverrides = [...build.overrides.values()].flat();
+
   for (const brand of brands) {
     const isDefault = brand === options.defaultBrand;
-    const blockPaths = new Set(isDefault ? [] : [...(build.overrides.get(brand) ?? []), ...defaultOverrides]);
-    if (!isDefault && blockPaths.size === 0) continue;
+    // A brand block must re-declare not just the overridden tokens but every token
+    // that transitively references them: custom properties are computed where they
+    // are declared, so a var() chain declared only in :root resolves against :root's
+    // values and would ignore a nested [data-brand] scope entirely.
+    // The default brand gets a block too (in addition to :root) covering every
+    // token ANY brand overrides — otherwise nesting a provider back to the default
+    // inside another brand's scope would silently keep the outer brand's values.
+    const roots = isDefault ? allOverrides : [...(build.overrides.get(brand) ?? []), ...defaultOverrides];
+    const blockPaths = dependentsClosure(roots, build.graphs.get(brand)!);
+    const emitScopedBlock = blockPaths.size > 0;
 
     const graph = build.graphs.get(brand)!;
+    const scopedSelector = brandSelector(brand, options.selector);
 
-    try {
-      const sd = new StyleDictionary({
-        tokens: toNestedDtcg({ tokens: graph.tokens }) as DesignTokens,
-        log: { verbosity: 'silent', warnings: 'disabled' },
-        hooks: {
-          transforms: {
-            'name/girih': {
-              type: 'name',
-              transform: (token, platform) => cssVarName(platform?.prefix ?? options.prefix, token.path).slice(2),
+    // The default brand emits :root (all tokens) plus its scoped block; other
+    // brands emit only their scoped block.
+    const blockSpecs: Array<{ selector: string; filtered: boolean }> = isDefault
+      ? [{ selector: ':root', filtered: false }, ...(emitScopedBlock ? [{ selector: scopedSelector, filtered: true }] : [])]
+      : emitScopedBlock
+        ? [{ selector: scopedSelector, filtered: true }]
+        : [];
+
+    for (const blockSpec of blockSpecs) {
+      try {
+        const sd = new StyleDictionary({
+          tokens: toNestedDtcg({ tokens: graph.tokens }) as DesignTokens,
+          log: { verbosity: 'silent', warnings: 'disabled' },
+          hooks: {
+            transforms: {
+              'name/girih': {
+                type: 'name',
+                transform: (token, platform) => cssVarName(platform?.prefix ?? options.prefix, token.path).slice(2),
+              },
             },
           },
-        },
-        platforms: {
-          css: {
-            transforms: CSS_TRANSFORMS,
-            prefix: options.prefix,
-            files: [
-              {
-                destination: 'tokens.css',
-                format: 'css/variables',
-                options: {
-                  selector: isDefault ? ':root' : brandSelector(brand, options.selector),
-                  outputReferences: true,
+          platforms: {
+            css: {
+              transforms: CSS_TRANSFORMS,
+              prefix: options.prefix,
+              files: [
+                {
+                  destination: 'tokens.css',
+                  format: 'css/variables',
+                  options: { selector: blockSpec.selector, outputReferences: true },
+                  ...(blockSpec.filtered ? { filter: (token) => blockPaths.has(token.path.join('.')) } : {}),
                 },
-                ...(isDefault ? {} : { filter: (token) => blockPaths.has(token.path.join('.')) }),
-              },
-            ],
+              ],
+            },
           },
-        },
-      });
-      const formatted = await sd.formatPlatform('css');
-      const output = formatted[0]?.output;
-      if (typeof output === 'string') {
-        diagnostics.push(...detectUnserializableValues(output, brand));
-        blocks.push(output.trimEnd());
+        });
+        const formatted = await sd.formatPlatform('css');
+        const output = formatted[0]?.output;
+        if (typeof output === 'string') {
+          diagnostics.push(...detectUnserializableValues(output, brand));
+          blocks.push(output.trimEnd());
+        }
+      } catch (error) {
+        diagnostics.push({
+          code: 'GIRIH3001',
+          severity: 'error',
+          message: `CSS generation failed for brand '${brand}': ${(error as Error).message}`,
+        });
       }
-    } catch (error) {
-      diagnostics.push({
-        code: 'GIRIH3001',
-        severity: 'error',
-        message: `CSS generation failed for brand '${brand}': ${(error as Error).message}`,
-      });
     }
   }
 
@@ -166,6 +184,32 @@ function detectVarNameCollisions(build: TokenBuildResult, options: GenerateCssOp
     }
   }
   return diagnostics;
+}
+
+/** The given paths plus every token that (transitively) references one of them. */
+function dependentsClosure(roots: string[], graph: ResolvedTokenGraph): Set<string> {
+  const closure = new Set(roots);
+  if (closure.size === 0) return closure;
+
+  const dependents = new Map<string, string[]>();
+  for (const token of graph.tokens.values()) {
+    for (const ref of token.references) {
+      if (!dependents.has(ref)) dependents.set(ref, []);
+      dependents.get(ref)!.push(token.path);
+    }
+  }
+
+  const queue = [...closure];
+  while (queue.length > 0) {
+    const current = queue.pop()!;
+    for (const dependent of dependents.get(current) ?? []) {
+      if (!closure.has(dependent)) {
+        closure.add(dependent);
+        queue.push(dependent);
+      }
+    }
+  }
+  return closure;
 }
 
 /** A value the transform chain could not flatten stringifies as '[object Object]' — fail loudly. */

@@ -16,7 +16,16 @@
     "$type": "dimension",
     "control": { "$value": "{radius.md}", "$description": "Corner radius for interactive controls." }
   },
+  "control": {
+    "$type": "dimension",
+    "padding-inline-sm": { "$value": "{space.3}" },
+    "padding-inline-md": { "$value": "{space.4}" },
+    "padding-inline-lg": { "$value": "{space.6}" }
+  },
   "typography": {
-    "body-family": { "$type": "fontFamily", "$value": "{font.family.sans}" }
+    "body-family": { "$type": "fontFamily", "$value": "{font.family.sans}" },
+    "size-sm": { "$type": "dimension", "$value": "{font.size.sm}" },
+    "size-md": { "$type": "dimension", "$value": "{font.size.md}" },
+    "size-lg": { "$type": "dimension", "$value": "{font.size.lg}" }
   }
 }
