@@ -4,7 +4,7 @@
  */
 export { defineConfig } from '@girih/core';
 export type { GirihConfig } from '@girih/core';
-export { defineSpec } from '@girih/spec';
-export type { ComponentSpecInput, ComponentState } from '@girih/spec';
+export { defineSpec, defineVariant } from '@girih/spec';
+export type { ComponentSpecInput, ComponentState, VariantExtensionInput } from '@girih/spec';
 export { scaffoldWorkspace, workspaceTemplate } from './scaffold.js';
 export type { ScaffoldOptions, ScaffoldResult } from './scaffold.js';

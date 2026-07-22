@@ -56,10 +56,15 @@ export function specToIR(spec: ComponentSpecInput): SpecToIRResult {
     }
   }
 
+  // Behavioral templates own their host element; specs cannot re-point them.
+  const template = spec.template ?? 'element';
+  const TEMPLATE_ELEMENTS: Record<string, string> = { checkbox: 'input', dialog: 'div' };
+
   const ir: ComponentIR = {
     name: spec.name,
     description: spec.description,
-    element: spec.element,
+    template,
+    element: TEMPLATE_ELEMENTS[template] ?? spec.element ?? 'div',
     variants: Object.entries(spec.variants ?? {}).map(([axis, def]) => ({
       axis,
       values: [...def.values],
@@ -72,7 +77,18 @@ export function specToIR(spec: ComponentSpecInput): SpecToIRResult {
       default: def.default ?? false,
     })),
     childrenRequired: spec.slots?.children?.required ?? false,
-    tokens: { base: toRules(spec.tokens?.base, 'base'), variants: variantBlocks },
+    tokens: {
+      base: toRules(spec.tokens?.base, 'base'),
+      baseStates: Object.entries(spec.tokens?.states ?? {}).map(([state, declarations]) => ({
+        state: state as ComponentState,
+        declarations: toRules(declarations as Record<string, unknown>, `states.${state}`),
+      })),
+      variants: variantBlocks,
+      parts: Object.entries(spec.tokens?.parts ?? {}).map(([part, declarations]) => ({
+        part,
+        declarations: toRules(declarations, `parts.${part}`),
+      })),
+    },
     accessibility: {
       role: spec.accessibility?.role,
       focusable: spec.accessibility?.focusable ?? true,
@@ -80,6 +96,10 @@ export function specToIR(spec: ComponentSpecInput): SpecToIRResult {
         state: state as ComponentState,
         attributes: { ...attributes },
       })),
+    },
+    extensibility: {
+      allowExtends: spec.extensibility?.allowExtends ?? false,
+      overridableTokens: [...(spec.extensibility?.overridableTokens ?? [])],
     },
   };
 
@@ -93,9 +113,11 @@ export function irTokenRefs(ir: ComponentIR): Array<{ ref: string; where: string
     for (const rule of rules) refs.push({ ref: rule.ref, where: `${where}.${rule.property}` });
   };
   collect(ir.tokens.base, 'base');
+  for (const state of ir.tokens.baseStates) collect(state.declarations, `states.${state.state}`);
   for (const block of ir.tokens.variants) {
     collect(block.declarations, `${block.axis}.${block.value}`);
     for (const state of block.states) collect(state.declarations, `${block.axis}.${block.value}.${state.state}`);
   }
+  for (const part of ir.tokens.parts) collect(part.declarations, `parts.${part.part}`);
   return refs;
 }

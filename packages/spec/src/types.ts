@@ -1,8 +1,8 @@
 /** A '{token.path}' reference — validated against every brand's resolved graph at build time. */
 export type TokenRef = string;
 
-/** States the M3 template set knows how to implement. The spec cannot express arbitrary behavior. */
-export const SUPPORTED_STATES = ['hover', 'active', 'focus-visible', 'disabled', 'loading'] as const;
+/** States the template set knows how to implement. The spec cannot express arbitrary behavior. */
+export const SUPPORTED_STATES = ['hover', 'active', 'focus-visible', 'disabled', 'loading', 'checked'] as const;
 export type ComponentState = (typeof SUPPORTED_STATES)[number];
 
 export interface VariantAxisInput {
@@ -20,8 +20,14 @@ export interface ComponentSpecInput {
   /** PascalCase component name, e.g. 'Button'. */
   name: string;
   description?: string;
-  /** Host element the template renders, e.g. 'button'. */
-  element: string;
+  /**
+   * Which hand-maintained template implements this contract.
+   * 'element' (default): a styled host element. 'checkbox' and 'dialog' are
+   * behavioral templates; 'dialog' delegates to Base UI.
+   */
+  template?: 'element' | 'checkbox' | 'dialog';
+  /** Host element the 'element' template renders, e.g. 'button'. Fixed by behavioral templates. */
+  element?: string;
   /** Variant axes, e.g. { variant: {...}, size: {...} } — each becomes a typed prop + data attribute. */
   variants?: Record<string, VariantAxisInput>;
   states?: ComponentState[];
@@ -31,14 +37,27 @@ export interface ComponentSpecInput {
   tokens?: {
     /** camelCase CSS property → token reference, applied to the base class. */
     base?: Record<string, TokenRef>;
+    /** Variant-independent state styling, e.g. a checkbox's checked colors. */
+    states?: Partial<Record<ComponentState, Record<string, TokenRef>>>;
     /** axis → variant value → declaration block. */
     variants?: Record<string, Record<string, VariantTokenBlockInput>>;
+    /**
+     * Multi-part templates only (dialog: backdrop/popup/title/description):
+     * part → camelCase CSS property → token reference.
+     */
+    parts?: Record<string, Record<string, TokenRef>>;
   };
   accessibility: {
     role?: string;
     focusable?: boolean;
     /** state → aria attributes the template must set, e.g. { loading: { 'aria-busy': 'true' } }. */
     aria?: Partial<Record<ComponentState, Record<string, string>>>;
+  };
+  extensibility?: {
+    /** May workspace extensions (defineVariant) build on this component? */
+    allowExtends?: boolean;
+    /** camelCase CSS properties an extension may override. */
+    overridableTokens?: string[];
   };
 }
 
@@ -67,6 +86,7 @@ export interface VariantBlockIR {
 export interface ComponentIR {
   name: string;
   description: string | undefined;
+  template: string;
   element: string;
   /** Workspace-relative spec file, stamped by the loader; used in diagnostics. */
   sourceFile?: string;
@@ -76,11 +96,28 @@ export interface ComponentIR {
   childrenRequired: boolean;
   tokens: {
     base: StyleRuleIR[];
+    baseStates: Array<{ state: ComponentState; declarations: StyleRuleIR[] }>;
     variants: VariantBlockIR[];
+    parts: Array<{ part: string; declarations: StyleRuleIR[] }>;
   };
   accessibility: {
     role: string | undefined;
     focusable: boolean;
     aria: Array<{ state: ComponentState; attributes: Record<string, string> }>;
   };
+  extensibility: {
+    allowExtends: boolean;
+    overridableTokens: string[];
+  };
+}
+
+/** A pure-data workspace extension: a named restyling of an existing component. */
+export interface VariantExtensionInput {
+  /** PascalCase name of the new component, e.g. 'PaymentButton'. */
+  name: string;
+  /** The catalog component it builds on. */
+  extends: string;
+  description?: string;
+  /** camelCase CSS property → token reference; keys must be listed in the base spec's overridableTokens. */
+  tokens: Record<string, TokenRef>;
 }

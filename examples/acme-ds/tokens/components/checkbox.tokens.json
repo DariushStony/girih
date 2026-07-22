@@ -1,0 +1,15 @@
+{
+  "checkbox": {
+    "background": { "$type": "color", "$value": "{color.background}" },
+    "background-checked": { "$type": "color", "$value": "{color.primary}" },
+    "glyph": { "$type": "color", "$value": "{color.on-primary}" },
+    "border": { "$type": "color", "$value": "{color.border}" },
+    "border-hover": { "$type": "color", "$value": "{color.primary}" },
+    "radius": { "$type": "dimension", "$value": "{radius.control-sm}" },
+    "size": {
+      "$type": "dimension",
+      "sm": { "$value": "16px" },
+      "md": { "$value": "20px" }
+    }
+  }
+}

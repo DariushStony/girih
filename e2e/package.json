@@ -2,8 +2,13 @@
   "name": "girih-e2e",
   "private": true,
   "type": "module",
-  "description": "scaffold → check → generate → drift smoke tests",
+  "description": "scaffold \u2192 check \u2192 generate \u2192 drift smoke tests",
   "devDependencies": {
-    "@girih/cli": "workspace:*"
+    "@girih/cli": "workspace:*",
+    "@base-ui-components/react": "1.0.0-rc.0",
+    "@girih/react-runtime": "workspace:*",
+    "@types/react": "^19.0.0",
+    "react": "^19.0.0",
+    "typescript": "^5.9.3"
   }
 }

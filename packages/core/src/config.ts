@@ -33,7 +33,7 @@ export interface GirihConfig {
     specs?: string;
     /** Components the generator must skip because they were ejected. */
     ejected?: string[];
-    /** Glob for createVariant extension sources. Default 'extensions/*.tsx'. */
+    /** Glob for defineVariant extension declarations. Default 'extensions/*.ext.ts'. */
     extensions?: string;
   };
 
@@ -139,7 +139,7 @@ export async function loadConfig(cwd: string): Promise<LoadConfigResult> {
     components: {
       specs: raw.components?.specs ?? 'components/*.spec.ts',
       ejected: raw.components?.ejected ?? [],
-      extensions: raw.components?.extensions ?? 'extensions/*.tsx',
+      extensions: raw.components?.extensions ?? 'extensions/*.ext.ts',
     },
     targets: {
       react: { output: raw.targets?.react?.output ?? 'packages/design-system' },

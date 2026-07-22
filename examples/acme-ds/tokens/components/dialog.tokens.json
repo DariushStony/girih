@@ -1,0 +1,18 @@
+{
+  "dialog": {
+    "backdrop": { "$type": "color", "$value": "{color.backdrop}" },
+    "surface": { "$type": "color", "$value": "{color.background}" },
+    "foreground": { "$type": "color", "$value": "{color.text}" },
+    "title-foreground": { "$type": "color", "$value": "{color.text}" },
+    "description-foreground": { "$type": "color", "$value": "{color.text-muted}" },
+    "radius": { "$type": "dimension", "$value": "{radius.surface}" },
+    "padding": { "$type": "dimension", "$value": "{control.padding-inline-lg}" },
+    "gap": { "$type": "dimension", "$value": "{control.padding-inline-sm}" },
+    "size": {
+      "$type": "dimension",
+      "sm": { "max-width": { "$value": "320px" } },
+      "md": { "max-width": { "$value": "480px" } },
+      "lg": { "max-width": { "$value": "640px" } }
+    }
+  }
+}

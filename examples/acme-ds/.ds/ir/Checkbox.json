@@ -1,0 +1,110 @@
+{
+  "name": "Checkbox",
+  "description": "A binary choice with native form semantics.",
+  "template": "checkbox",
+  "element": "input",
+  "variants": [
+    {
+      "axis": "size",
+      "values": [
+        "sm",
+        "md"
+      ],
+      "default": "md"
+    }
+  ],
+  "states": [
+    "hover",
+    "focus-visible",
+    "disabled",
+    "checked"
+  ],
+  "props": [],
+  "childrenRequired": false,
+  "tokens": {
+    "base": [
+      {
+        "property": "background",
+        "ref": "{checkbox.background}"
+      },
+      {
+        "property": "border-color",
+        "ref": "{checkbox.border}"
+      },
+      {
+        "property": "border-radius",
+        "ref": "{checkbox.radius}"
+      }
+    ],
+    "baseStates": [
+      {
+        "state": "hover",
+        "declarations": [
+          {
+            "property": "border-color",
+            "ref": "{checkbox.border-hover}"
+          }
+        ]
+      },
+      {
+        "state": "checked",
+        "declarations": [
+          {
+            "property": "background",
+            "ref": "{checkbox.background-checked}"
+          },
+          {
+            "property": "border-color",
+            "ref": "{checkbox.background-checked}"
+          },
+          {
+            "property": "color",
+            "ref": "{checkbox.glyph}"
+          }
+        ]
+      }
+    ],
+    "variants": [
+      {
+        "axis": "size",
+        "value": "sm",
+        "declarations": [
+          {
+            "property": "width",
+            "ref": "{checkbox.size.sm}"
+          },
+          {
+            "property": "height",
+            "ref": "{checkbox.size.sm}"
+          }
+        ],
+        "states": []
+      },
+      {
+        "axis": "size",
+        "value": "md",
+        "declarations": [
+          {
+            "property": "width",
+            "ref": "{checkbox.size.md}"
+          },
+          {
+            "property": "height",
+            "ref": "{checkbox.size.md}"
+          }
+        ],
+        "states": []
+      }
+    ],
+    "parts": []
+  },
+  "accessibility": {
+    "focusable": true,
+    "aria": []
+  },
+  "extensibility": {
+    "allowExtends": false,
+    "overridableTokens": []
+  },
+  "sourceFile": "components/checkbox.spec.ts"
+}

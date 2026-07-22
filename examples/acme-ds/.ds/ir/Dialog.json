@@ -1,0 +1,138 @@
+{
+  "name": "Dialog",
+  "description": "Modal dialog — focus trap, dismissal, and aria wiring come from the headless layer.",
+  "template": "dialog",
+  "element": "div",
+  "variants": [
+    {
+      "axis": "size",
+      "values": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md"
+    }
+  ],
+  "states": [],
+  "props": [],
+  "childrenRequired": false,
+  "tokens": {
+    "base": [],
+    "baseStates": [],
+    "variants": [
+      {
+        "axis": "size",
+        "value": "sm",
+        "declarations": [
+          {
+            "property": "max-width",
+            "ref": "{dialog.size.sm.max-width}"
+          }
+        ],
+        "states": []
+      },
+      {
+        "axis": "size",
+        "value": "md",
+        "declarations": [
+          {
+            "property": "max-width",
+            "ref": "{dialog.size.md.max-width}"
+          }
+        ],
+        "states": []
+      },
+      {
+        "axis": "size",
+        "value": "lg",
+        "declarations": [
+          {
+            "property": "max-width",
+            "ref": "{dialog.size.lg.max-width}"
+          }
+        ],
+        "states": []
+      }
+    ],
+    "parts": [
+      {
+        "part": "backdrop",
+        "declarations": [
+          {
+            "property": "background",
+            "ref": "{dialog.backdrop}"
+          }
+        ]
+      },
+      {
+        "part": "popup",
+        "declarations": [
+          {
+            "property": "background",
+            "ref": "{dialog.surface}"
+          },
+          {
+            "property": "color",
+            "ref": "{dialog.foreground}"
+          },
+          {
+            "property": "border-radius",
+            "ref": "{dialog.radius}"
+          },
+          {
+            "property": "padding",
+            "ref": "{dialog.padding}"
+          },
+          {
+            "property": "gap",
+            "ref": "{dialog.gap}"
+          },
+          {
+            "property": "font-family",
+            "ref": "{typography.body-family}"
+          }
+        ]
+      },
+      {
+        "part": "title",
+        "declarations": [
+          {
+            "property": "font-size",
+            "ref": "{typography.size-lg}"
+          },
+          {
+            "property": "font-weight",
+            "ref": "{typography.weight-semibold}"
+          },
+          {
+            "property": "color",
+            "ref": "{dialog.title-foreground}"
+          }
+        ]
+      },
+      {
+        "part": "description",
+        "declarations": [
+          {
+            "property": "font-size",
+            "ref": "{typography.size-sm}"
+          },
+          {
+            "property": "color",
+            "ref": "{dialog.description-foreground}"
+          }
+        ]
+      }
+    ]
+  },
+  "accessibility": {
+    "focusable": false,
+    "aria": []
+  },
+  "extensibility": {
+    "allowExtends": false,
+    "overridableTokens": []
+  },
+  "sourceFile": "components/dialog.spec.ts"
+}

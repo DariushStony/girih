@@ -1,0 +1,128 @@
+{
+  "name": "Input",
+  "description": "Single-line text input.",
+  "template": "element",
+  "element": "input",
+  "variants": [
+    {
+      "axis": "size",
+      "values": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md"
+    }
+  ],
+  "states": [
+    "hover",
+    "focus-visible",
+    "disabled"
+  ],
+  "props": [],
+  "childrenRequired": false,
+  "tokens": {
+    "base": [
+      {
+        "property": "background",
+        "ref": "{input.background}"
+      },
+      {
+        "property": "color",
+        "ref": "{input.foreground}"
+      },
+      {
+        "property": "border",
+        "ref": "{input.border}"
+      },
+      {
+        "property": "border-radius",
+        "ref": "{input.radius}"
+      },
+      {
+        "property": "font-family",
+        "ref": "{typography.body-family}"
+      }
+    ],
+    "baseStates": [
+      {
+        "state": "focus-visible",
+        "declarations": [
+          {
+            "property": "border-color",
+            "ref": "{input.border-focus}"
+          }
+        ]
+      }
+    ],
+    "variants": [
+      {
+        "axis": "size",
+        "value": "sm",
+        "declarations": [
+          {
+            "property": "height",
+            "ref": "{input.size.sm.height}"
+          },
+          {
+            "property": "padding-inline",
+            "ref": "{control.padding-inline-sm}"
+          },
+          {
+            "property": "font-size",
+            "ref": "{typography.size-sm}"
+          }
+        ],
+        "states": []
+      },
+      {
+        "axis": "size",
+        "value": "md",
+        "declarations": [
+          {
+            "property": "height",
+            "ref": "{input.size.md.height}"
+          },
+          {
+            "property": "padding-inline",
+            "ref": "{control.padding-inline-md}"
+          },
+          {
+            "property": "font-size",
+            "ref": "{typography.size-md}"
+          }
+        ],
+        "states": []
+      },
+      {
+        "axis": "size",
+        "value": "lg",
+        "declarations": [
+          {
+            "property": "height",
+            "ref": "{input.size.lg.height}"
+          },
+          {
+            "property": "padding-inline",
+            "ref": "{control.padding-inline-lg}"
+          },
+          {
+            "property": "font-size",
+            "ref": "{typography.size-lg}"
+          }
+        ],
+        "states": []
+      }
+    ],
+    "parts": []
+  },
+  "accessibility": {
+    "focusable": true,
+    "aria": []
+  },
+  "extensibility": {
+    "allowExtends": false,
+    "overridableTokens": []
+  },
+  "sourceFile": "components/input.spec.ts"
+}

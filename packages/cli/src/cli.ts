@@ -9,9 +9,10 @@ import type { EmittedFile, ResolvedConfig } from '@girih/core';
 import { buildTokenGraphs } from '@girih/tokens';
 import type { TokenBuildResult } from '@girih/tokens';
 import { generateCss } from '@girih/generator-css';
-import { generateReact } from '@girih/generator-react';
-import { loadSpecs, specToIR, validateSpecs } from '@girih/spec';
-import type { ComponentIR } from '@girih/spec';
+import { generateReact, renderComponentSource, TEMPLATE_REGISTRY } from '@girih/generator-react';
+import { loadExtensions, loadSpecs, specToIR, validateExtensions, validateSpecs } from '@girih/spec';
+import type { ComponentIR, LoadedExtension } from '@girih/spec';
+import { readLock, writeLock } from './lock.js';
 import { detectDrift, planManifestUpdate, readManifest, writeManifest } from './manifest.js';
 import { printDiagnostics, printSummaryLine, table } from './output.js';
 import { scaffoldWorkspace } from './scaffold.js';
@@ -42,8 +43,11 @@ async function loadWorkspace(): Promise<{ config: ResolvedConfig; build: TokenBu
   return { config, build };
 }
 
-/** Load + cross-validate component specs; diagnostics land on the build. */
-async function loadComponentIRs(config: ResolvedConfig, build: TokenBuildResult): Promise<ComponentIR[]> {
+/** Load + cross-validate component specs and extensions; diagnostics land on the build. */
+async function loadComponentIRs(
+  config: ResolvedConfig,
+  build: TokenBuildResult,
+): Promise<{ irs: ComponentIR[]; extensions: LoadedExtension[] }> {
   const loaded = await loadSpecs(config);
   build.diagnostics.push(...loaded.diagnostics);
   const irs = loaded.specs.map(({ spec, file }) => {
@@ -52,8 +56,72 @@ async function loadComponentIRs(config: ResolvedConfig, build: TokenBuildResult)
     build.diagnostics.push(...diagnostics.map((d) => ({ ...d, file: d.file ?? file })));
     return ir;
   });
-  build.diagnostics.push(...validateSpecs(irs, build.graphs));
-  return irs;
+  build.diagnostics.push(...validateSpecs(irs, build.graphs, TEMPLATE_REGISTRY));
+
+  const { extensions, diagnostics } = await loadExtensions(config);
+  build.diagnostics.push(...diagnostics);
+  build.diagnostics.push(...validateExtensions(extensions, irs, build.graphs));
+  return { irs, extensions };
+}
+
+/** Ejected sources from ds.lock, read from components/ejected/, cross-checked against the catalog. */
+async function loadEjectedSources(
+  config: ResolvedConfig,
+  build: TokenBuildResult,
+  irs: ComponentIR[],
+): Promise<Record<string, string>> {
+  const { lock, invalid } = await readLock(config.root);
+  if (invalid) {
+    build.diagnostics.push({
+      code: 'GIRIH1013',
+      severity: 'error',
+      message: 'ds.lock is corrupt or from an incompatible girih version.',
+      file: 'ds.lock',
+      help: 'ds.lock is machine-managed and committed — restore it from git history.',
+    });
+    return {};
+  }
+  const sources: Record<string, string> = {};
+  const byName = new Map(irs.map((ir) => [ir.name, ir]));
+  for (const [name, entry] of Object.entries(lock?.ejected ?? {})) {
+    const ir = byName.get(name);
+    if (!ir) {
+      build.diagnostics.push({
+        code: 'GIRIH1015',
+        severity: 'warning',
+        message: `ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated.`,
+        file: 'ds.lock',
+        help: `Restore components/${name.charAt(0).toLowerCase()}${name.slice(1)}.spec.ts, or remove the entry and components/ejected/${name}.tsx.`,
+      });
+      continue;
+    }
+    const path = `components/ejected/${name}.tsx`;
+    const contents = await readFile(join(config.root, path), 'utf8').catch(() => null);
+    if (contents === null) {
+      build.diagnostics.push({
+        code: 'GIRIH1012',
+        severity: 'error',
+        message: `'${name}' is recorded as ejected in ds.lock, but ${path} is missing.`,
+        file: 'ds.lock',
+        help: `Restore the file, or remove the '${name}' entry from ds.lock to return to generation.`,
+      });
+      continue;
+    }
+    sources[name] = contents;
+
+    // The fork's base is frozen; the spec/template are not. Make divergence visible.
+    const currentRender = emittedFile('x', renderComponentSource(ir, { classPrefix: config.tokens.prefix, runtimePackage: '@girih/react-runtime' }));
+    if (currentRender.hash !== entry.baseHash) {
+      build.diagnostics.push({
+        code: 'GIRIH1014',
+        severity: 'warning',
+        message: `'${name}' was ejected from a different spec/template than the current one — the fork may not honor the contract anymore.`,
+        file: path,
+        help: 'Review the fork against the current spec, or re-eject after removing the ds.lock entry (girih update will automate this in M6).',
+      });
+    }
+  }
+  return sources;
 }
 
 program
@@ -182,12 +250,21 @@ program
       console.log();
     }
 
-    const irs = await loadComponentIRs(config, build);
+    const { irs, extensions } = await loadComponentIRs(config, build);
+    const ejectedSources = await loadEjectedSources(config, build, irs);
 
     const tiers = { global: 0, semantic: 0, component: 0 };
     for (const token of build.base.tokens.values()) tiers[token.tier] += 1;
     if (irs.length > 0) {
-      console.log(`${pc.bold(String(irs.length))} component contract${irs.length === 1 ? '' : 's'}: ${irs.map((ir) => ir.name).join(', ')}`);
+      const describe = (ir: ComponentIR) => (ejectedSources[ir.name] !== undefined ? `${ir.name} ${pc.yellow('(ejected)')}` : ir.name);
+      console.log(`${pc.bold(String(irs.length))} component contract${irs.length === 1 ? '' : 's'}: ${irs.map(describe).join(', ')}`);
+    }
+    if (extensions.length > 0) {
+      console.log(
+        `${pc.bold(String(extensions.length))} extension${extensions.length === 1 ? '' : 's'}: ${extensions
+          .map(({ extension }) => `${extension.name} → ${extension.extends}`)
+          .join(', ')}`,
+      );
     }
     console.log(
       `${pc.bold(String(build.base.tokens.size))} tokens ` +
@@ -260,18 +337,23 @@ program
     let outputBase: string;
     let irFiles: EmittedFile[] = [];
     if (target === 'react') {
-      const irs = await loadComponentIRs(config, build);
+      const { irs, extensions } = await loadComponentIRs(config, build);
+      const ejected = await loadEjectedSources(config, build, irs);
       if (build.diagnostics.some((d) => d.severity === 'error')) {
         printDiagnostics(build.diagnostics);
         printSummaryLine(build.diagnostics);
-        console.error(pc.red('\nRefusing to generate from invalid component specs.'));
+        console.error(pc.red('\nRefusing to generate — fix the errors above.'));
         process.exitCode = 1;
         return;
       }
-      const reactResult = generateReact(irs, {
-        packageName: config.name,
-        prefix: config.tokens.prefix,
-      });
+      const reactResult = generateReact(
+        irs,
+        {
+          packageName: config.name,
+          prefix: config.tokens.prefix,
+        },
+        { extensions, ejected },
+      );
       build.diagnostics.push(...reactResult.diagnostics);
       outputBase = config.targets.react.output;
       files = [
@@ -350,8 +432,85 @@ program
     if (build.diagnostics.some((d) => d.severity === 'error')) process.exitCode = 1;
   });
 
+program
+  .command('eject <component>')
+  .description('Convert one generated component into a tracked, user-owned fork.')
+  .action(async (componentName: string) => {
+    const workspace = await loadWorkspace();
+    if (!workspace) return;
+    const { config, build } = workspace;
+    const { irs, extensions } = await loadComponentIRs(config, build);
+    if (build.diagnostics.some((d) => d.severity === 'error')) {
+      printDiagnostics(build.diagnostics);
+      process.exitCode = 1;
+      return;
+    }
+
+    const ir = irs.find((candidate) => candidate.name === componentName);
+    if (!ir) {
+      const extension = extensions.find((e) => e.extension.name === componentName);
+      if (extension) {
+        console.error(
+          pc.red(`'${componentName}' is an extension (${extension.file}) — extensions are pure data and always regenerated; edit the .ext.ts instead of ejecting.`),
+        );
+      } else {
+        console.error(pc.red(`Unknown component '${componentName}'. Catalog: ${irs.map((i) => i.name).join(', ') || '(empty)'}`));
+      }
+      process.exitCode = 1;
+      return;
+    }
+    const { lock, invalid } = await readLock(config.root);
+    if (invalid) {
+      console.error(pc.red('ds.lock is corrupt — restore it from git history before ejecting.'));
+      process.exitCode = 1;
+      return;
+    }
+    if (lock?.ejected[componentName]) {
+      console.error(pc.red(`'${componentName}' is already ejected (see ds.lock).`));
+      process.exitCode = 1;
+      return;
+    }
+
+    // Snapshot the exact template output as the fork base. The recorded hash +
+    // template version are what make a future `girih update` a 3-way merge.
+    const source = renderComponentSource(ir, { classPrefix: config.tokens.prefix, runtimePackage: '@girih/react-runtime' });
+    const baseFile = emittedFile(`components/ejected/${componentName}.tsx`, source);
+
+    // If the generated file on disk carries hand edits (drift), the fork must
+    // start from THOSE — ejecting is the drift gate's own remedy, and following
+    // it must never lose the user's work. The recorded base stays pristine.
+    const { manifest } = await readManifest(config.root);
+    const generatedPath = join(config.targets.react.output, `src/${componentName}.tsx`);
+    const onDisk = await readFile(join(config.root, generatedPath), 'utf8').catch(() => null);
+    const recorded = manifest?.files[generatedPath.replaceAll('\\', '/')];
+    const drifted = onDisk !== null && recorded !== undefined && emittedFile('x', onDisk).hash !== recorded;
+
+    const ejectedPath = baseFile.path;
+    const file = drifted ? emittedFile(ejectedPath, onDisk!) : baseFile;
+    await writeEmittedFiles(config.root, [file]);
+    if (drifted) {
+      console.log(pc.yellow(`note: ${generatedPath} had hand edits — they were carried into the fork.`));
+    }
+    await writeLock(config.root, {
+      version: 1,
+      ejected: {
+        ...(lock?.ejected ?? {}),
+        [componentName]: {
+          template: ir.template,
+          templateVersion: TEMPLATE_REGISTRY[ir.template]?.version ?? 0,
+          baseHash: baseFile.hash,
+        },
+      },
+    });
+
+    console.log(`${pc.green('create')}  ${ejectedPath}`);
+    console.log(`${pc.green('update')}  ds.lock ${pc.dim(`(base: ${ir.template}@v${TEMPLATE_REGISTRY[ir.template]?.version}, ${baseFile.hash.slice(0, 12)})`)}`);
+    console.log(`\n'${componentName}' is now yours: edit ${pc.cyan(ejectedPath)} freely — commit it and ds.lock.`);
+    console.log(pc.dim('Its spec is still validated and its CSS still generated — only markup/behavior is forked.'));
+    console.log(`Run ${pc.cyan('girih generate react')} to stitch it into the package.`);
+  });
+
 for (const [name, milestone] of [
-  ['eject', 'M5'],
   ['publish', 'M6'],
   ['update', 'M6'],
 ] as const) {

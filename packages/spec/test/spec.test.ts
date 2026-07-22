@@ -138,7 +138,7 @@ describe('specToIR robustness', () => {
     const spec = defineSpec({ name: 'Divider', element: 'div', accessibility: { focusable: false } });
     const { ir, diagnostics } = specToIR(spec);
     expect(diagnostics).toEqual([]);
-    expect(ir.tokens).toEqual({ base: [], variants: [] });
+    expect(ir.tokens).toEqual({ base: [], baseStates: [], variants: [], parts: [] });
   });
 
   it('kebab-cases vendor prefixes with a leading dash', async () => {

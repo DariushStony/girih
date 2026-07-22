@@ -1,19 +1,37 @@
 {
   "version": 1,
   "files": {
-    "packages/design-system/README.md": "3c6e52ae7cbc217b1f8faefb4a683fb1fcbcadb4c0e1d92e15e282ffb028f8be",
-    "packages/design-system/package.json": "d3fae3ab0a031c5cb8ec1f77757e8798e7cbab92ddae7d23d61f39f0c1abfbc9",
-    "packages/design-system/src/Button.tsx": "9945a126ebd291f942f4d0c659bd15bb49659a98b540dccbf0f7ede5c47097be",
-    "packages/design-system/src/index.ts": "58e087241a424ae53f4e931e955a9d56cd182818bbc1410ddac469764d4f33f8",
-    "packages/design-system/styles/components.css": "9b8a709e538d784e29f38aee43805dc1f568c14036df485d2de4ee4c657ef5e9",
-    "packages/design-system/styles/tokens.css": "54505500b996c4fe95a97b6e93fd3dc030a2e8445f26270d30598f8a7e04b53b",
-    "packages/design-system/styles/tokens.d.ts": "d4f5061b4d8af58d92a0db56f981afc80537d481f4aa5d2483368927f19a8d55"
+    "packages/design-system/README.md": "e567207159d4e51917208d706640708a7f031a6e3c030bd7fae5a8e3eb1cecbb",
+    "packages/design-system/package.json": "37fc263a2705bd6ca25980c12ec5303341318e958b23e99f411b9c83e9f6d17f",
+    "packages/design-system/src/Badge.tsx": "f95a8f99cb708937bc9070ca9b079b0a82c43494a379e58e8f037d0f7ea8b290",
+    "packages/design-system/src/Button.tsx": "50e5d1e7a0e9137c3ee0a9afe6cd322e62f739e16b26cfc55ba2e8e077bea324",
+    "packages/design-system/src/Card.tsx": "ee70414c1c7f0327e01158f4cb3c0b8369c8e86b8fe18d9471ef87abff85e9a3",
+    "packages/design-system/src/Checkbox.tsx": "bab87839e7c96835fc9fdc4c7bc36a68500b239eea34b1895faf93ce92284fd2",
+    "packages/design-system/src/Dialog.tsx": "561311ba9fb93a93d69279372f706abf98b95f922b828c401980f96ecaea3c0d",
+    "packages/design-system/src/Input.tsx": "2a80844c4309c7b2f8ef4adeb54d2346b463db4947823df3748ed9b7b9168699",
+    "packages/design-system/src/PaymentButton.tsx": "81ee8f1bb849d91725861c342078d8242c63c66050d29257f361a37371821adb",
+    "packages/design-system/src/index.ts": "7d4379c052b52fe894f0dab87b910c1c4229fcd17c64179fbe0f6a55f877f0b7",
+    "packages/design-system/src/internal/headless.ts": "9a30c951b55b8342defb5aa8873a4053367f98a85306d22cc05d2d59fca26b6d",
+    "packages/design-system/styles/components.css": "b3ca8204f91267f07deb62601445355a23fa3b6c2cc6abb9f2efaaf003f97298",
+    "packages/design-system/styles/tokens.css": "5250f25d2e1539412c04824e74e78f8d5740736f7d032d1cf816e96f5dba8fa3",
+    "packages/design-system/styles/tokens.d.ts": "3d0f0214d82bdbfcc1e862348c204970abc1fa6d2ad5b31d62e6c34e558ad4bd"
   },
   "targets": {
+    "css": [
+      "packages/design-system/styles/tokens.css",
+      "packages/design-system/styles/tokens.d.ts"
+    ],
     "react": [
       "packages/design-system/styles/tokens.css",
       "packages/design-system/styles/tokens.d.ts",
+      "packages/design-system/src/Badge.tsx",
       "packages/design-system/src/Button.tsx",
+      "packages/design-system/src/Card.tsx",
+      "packages/design-system/src/Checkbox.tsx",
+      "packages/design-system/src/Dialog.tsx",
+      "packages/design-system/src/Input.tsx",
+      "packages/design-system/src/PaymentButton.tsx",
+      "packages/design-system/src/internal/headless.ts",
       "packages/design-system/styles/components.css",
       "packages/design-system/src/index.ts",
       "packages/design-system/package.json",

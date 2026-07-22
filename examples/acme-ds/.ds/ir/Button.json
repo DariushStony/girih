@@ -1,6 +1,7 @@
 {
   "name": "Button",
   "description": "Triggers an action. Single-line label.",
+  "template": "element",
   "element": "button",
   "variants": [
     {
@@ -41,6 +42,7 @@
         "ref": "{button.radius}"
       }
     ],
+    "baseStates": [],
     "variants": [
       {
         "axis": "variant",
@@ -168,7 +170,8 @@
         ],
         "states": []
       }
-    ]
+    ],
+    "parts": []
   },
   "accessibility": {
     "focusable": true,
@@ -179,6 +182,14 @@
           "aria-busy": "true"
         }
       }
+    ]
+  },
+  "extensibility": {
+    "allowExtends": true,
+    "overridableTokens": [
+      "background",
+      "color",
+      "borderColor"
     ]
   },
   "sourceFile": "components/button.spec.ts"

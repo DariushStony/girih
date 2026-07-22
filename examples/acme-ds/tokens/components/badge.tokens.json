@@ -1,0 +1,21 @@
+{
+  "badge": {
+    "neutral": {
+      "$type": "color",
+      "background": { "$value": "{color.surface}" },
+      "foreground": { "$value": "{color.text-muted}" }
+    },
+    "primary": {
+      "$type": "color",
+      "background": { "$value": "{color.primary}" },
+      "foreground": { "$value": "{color.on-primary}" }
+    },
+    "danger": {
+      "$type": "color",
+      "background": { "$value": "{color.danger}" },
+      "foreground": { "$value": "{color.on-primary}" }
+    },
+    "radius": { "$type": "dimension", "$value": "{radius.round}" },
+    "padding-inline": { "$type": "dimension", "$value": "{control.padding-inline-sm}" }
+  }
+}

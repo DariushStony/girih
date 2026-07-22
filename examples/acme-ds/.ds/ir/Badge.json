@@ -1,0 +1,102 @@
+{
+  "name": "Badge",
+  "description": "Small status label.",
+  "template": "element",
+  "element": "span",
+  "variants": [
+    {
+      "axis": "tone",
+      "values": [
+        "neutral",
+        "primary",
+        "danger"
+      ],
+      "default": "neutral"
+    }
+  ],
+  "states": [],
+  "props": [],
+  "childrenRequired": true,
+  "tokens": {
+    "base": [
+      {
+        "property": "border-radius",
+        "ref": "{badge.radius}"
+      },
+      {
+        "property": "padding-inline",
+        "ref": "{badge.padding-inline}"
+      },
+      {
+        "property": "font-size",
+        "ref": "{typography.size-sm}"
+      },
+      {
+        "property": "font-weight",
+        "ref": "{typography.weight-medium}"
+      },
+      {
+        "property": "font-family",
+        "ref": "{typography.body-family}"
+      }
+    ],
+    "baseStates": [],
+    "variants": [
+      {
+        "axis": "tone",
+        "value": "neutral",
+        "declarations": [
+          {
+            "property": "background",
+            "ref": "{badge.neutral.background}"
+          },
+          {
+            "property": "color",
+            "ref": "{badge.neutral.foreground}"
+          }
+        ],
+        "states": []
+      },
+      {
+        "axis": "tone",
+        "value": "primary",
+        "declarations": [
+          {
+            "property": "background",
+            "ref": "{badge.primary.background}"
+          },
+          {
+            "property": "color",
+            "ref": "{badge.primary.foreground}"
+          }
+        ],
+        "states": []
+      },
+      {
+        "axis": "tone",
+        "value": "danger",
+        "declarations": [
+          {
+            "property": "background",
+            "ref": "{badge.danger.background}"
+          },
+          {
+            "property": "color",
+            "ref": "{badge.danger.foreground}"
+          }
+        ],
+        "states": []
+      }
+    ],
+    "parts": []
+  },
+  "accessibility": {
+    "focusable": false,
+    "aria": []
+  },
+  "extensibility": {
+    "allowExtends": false,
+    "overridableTokens": []
+  },
+  "sourceFile": "components/badge.spec.ts"
+}

@@ -54,4 +54,9 @@ export default defineSpec({
       loading: { 'aria-busy': 'true' },
     },
   },
+
+  extensibility: {
+    allowExtends: true,
+    overridableTokens: ['background', 'color', 'borderColor'],
+  },
 });

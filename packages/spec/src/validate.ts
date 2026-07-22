@@ -29,13 +29,32 @@ const KNOWN_CSS_PROPERTIES = new Set([
   'top', 'transform', 'transition', 'transition-duration', 'width', 'z-index',
 ]);
 
+/** What a hand-maintained template declares it can implement. */
+export interface TemplateCapabilities {
+  /** Template implementation version — recorded at eject time for future 3-way merges. */
+  version: number;
+  states: readonly string[];
+  /** Named parts the template styles (dialog: backdrop/popup/…). Empty = single element. */
+  parts: readonly string[];
+  /** Set when the template owns its host element (checkbox → input). */
+  fixedElement?: string;
+  /** Variant axes the template wires up; undefined = any axis becomes a prop + data attribute. */
+  variantAxes?: readonly string[];
+}
+
 /**
  * Cross-validate component IRs against every brand's resolved token graph.
  * This is the contract layer: a spec that references a token no brand resolves,
  * declares an unimplementable state, or would generate uncompilable code must
  * fail the build — never silently emit something broken.
+ * When a template registry is given, states and parts are validated against
+ * each template's declared capabilities instead of the global state list.
  */
-export function validateSpecs(irs: ComponentIR[], graphs: Map<string, ResolvedTokenGraph>): Diagnostic[] {
+export function validateSpecs(
+  irs: ComponentIR[],
+  graphs: Map<string, ResolvedTokenGraph>,
+  templates?: Record<string, TemplateCapabilities>,
+): Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
   const seen = new Map<string, string>();
 
@@ -60,7 +79,19 @@ export function validateSpecs(irs: ComponentIR[], graphs: Map<string, ResolvedTo
     }
     seen.set(ir.name, file);
 
-    if (!KNOWN_ELEMENTS.has(ir.element)) {
+    const template = templates?.[ir.template];
+    if (templates && !template) {
+      diagnostics.push({
+        code: 'GIRIH4040',
+        severity: 'error',
+        message: `'${ir.name}' uses template '${ir.template}', which this girih version does not ship.`,
+        file,
+        help: `Available templates: ${Object.keys(templates).join(', ')}.`,
+      });
+      continue;
+    }
+
+    if (!template?.fixedElement && !KNOWN_ELEMENTS.has(ir.element)) {
       diagnostics.push({
         code: 'GIRIH4018',
         severity: 'warning',
@@ -68,6 +99,20 @@ export function validateSpecs(irs: ComponentIR[], graphs: Map<string, ResolvedTo
         file,
         help: `Known elements: ${[...KNOWN_ELEMENTS].join(', ')}.`,
       });
+    }
+
+    const declaredParts = new Set(template?.parts ?? []);
+    for (const part of ir.tokens.parts) {
+      if (!declaredParts.has(part.part)) {
+        diagnostics.push({
+          code: 'GIRIH4041',
+          severity: 'error',
+          message: `'${ir.name}' styles part '${part.part}', which the '${ir.template}' template does not have.`,
+          file,
+          path: `parts.${part.part}`,
+          help: declaredParts.size > 0 ? `Parts of '${ir.template}': ${[...declaredParts].join(', ')}.` : `The '${ir.template}' template has no parts — use tokens.base.`,
+        });
+      }
     }
 
     // Axis and prop names become props, destructured identifiers, and data attributes:
@@ -105,6 +150,21 @@ export function validateSpecs(irs: ComponentIR[], graphs: Map<string, ResolvedTo
     for (const axis of ir.variants) claimName(axis.axis, 'a variant axis');
     for (const prop of ir.props) claimName(prop.name, 'a prop');
 
+    if (template?.variantAxes) {
+      for (const axis of ir.variants) {
+        if (!template.variantAxes.includes(axis.axis)) {
+          diagnostics.push({
+            code: 'GIRIH4042',
+            severity: 'error',
+            message: `'${ir.name}' declares variant axis '${axis.axis}', but the '${ir.template}' template only wires up: ${template.variantAxes.join(', ')}.`,
+            file,
+            path: axis.axis,
+            help: 'A silently-ignored axis would validate and then do nothing — declare only axes the template implements.',
+          });
+        }
+      }
+    }
+
     for (const axis of ir.variants) {
       if (axis.values.length === 0) {
         diagnostics.push({
@@ -138,14 +198,15 @@ export function validateSpecs(irs: ComponentIR[], graphs: Map<string, ResolvedTo
       }
     }
 
+    const implementableStates: readonly string[] = template?.states ?? SUPPORTED_STATES;
     for (const state of ir.states) {
-      if (!SUPPORTED_STATES.includes(state)) {
+      if (!implementableStates.includes(state)) {
         diagnostics.push({
           code: 'GIRIH4008',
           severity: 'error',
-          message: `'${ir.name}' declares state '${state}', which no template implements.`,
+          message: `'${ir.name}' declares state '${state}', which the '${ir.template}' template does not implement.`,
           file,
-          help: `Supported states: ${SUPPORTED_STATES.join(', ')}. States are template capability flags, not arbitrary behavior.`,
+          help: `States of '${ir.template}': ${implementableStates.join(', ') || '(none)'}. States are template capability flags, not arbitrary behavior.`,
         });
       }
     }
@@ -158,6 +219,18 @@ export function validateSpecs(irs: ComponentIR[], graphs: Map<string, ResolvedTo
           message: `'${ir.name}' maps aria attributes to state '${aria.state}', which it does not declare under states.`,
           file,
           path: `accessibility.aria.${aria.state}`,
+        });
+      }
+    }
+
+    for (const state of ir.tokens.baseStates) {
+      if (!ir.states.includes(state.state)) {
+        diagnostics.push({
+          code: 'GIRIH4011',
+          severity: 'error',
+          message: `'${ir.name}' styles state '${state.state}' under tokens.states, but does not declare that state.`,
+          file,
+          path: `states.${state.state}`,
         });
       }
     }

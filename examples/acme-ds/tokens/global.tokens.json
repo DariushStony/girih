@@ -22,7 +22,8 @@
     "red": {
       "600": { "$value": "#DC2626" },
       "700": { "$value": "#B91C1C" }
-    }
+    },
+    "overlay": { "$value": "#0A0A0AB3" }
   },
   "radius": {
     "$type": "dimension",

@@ -36,6 +36,14 @@ export function renderElementComponent(ir: ComponentIR, options: TemplateOptions
     .map((axis) => `export type ${name}${capitalize(axis.axis)} = ${axis.values.map((v) => `'${v}'`).join(' | ')};`)
     .join('\n');
 
+  // Spec-authored prop names must shadow native attributes (input's size?: number
+  // would otherwise clash with a 'size' axis) — omit them from the inherited props.
+  const localNames = [...ir.variants.map((a) => a.axis), ...ir.props.map((p) => p.name)];
+  const inherited =
+    localNames.length > 0
+      ? `Omit<ComponentPropsWithoutRef<'${element}'>, ${localNames.map((n) => `'${n}'`).join(' | ')}>`
+      : `ComponentPropsWithoutRef<'${element}'>`;
+
   const propLines: string[] = [
     ...ir.variants.map((axis) => `  ${axis.axis}?: ${name}${capitalize(axis.axis)};`),
     ...ir.props.map((p) => `  ${p.name}?: boolean;`),
@@ -101,7 +109,7 @@ import { cx } from '${options.runtimePackage}';
 
 ${variantTypes}
 
-export interface ${name}Props extends ComponentPropsWithoutRef<'${element}'> {
+export interface ${name}Props extends ${inherited} {
 ${propLines.join('\n')}
 }
 

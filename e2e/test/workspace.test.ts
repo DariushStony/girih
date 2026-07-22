@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
-import { appendFile, mkdir, readFile, rm } from 'node:fs/promises';
+import { appendFile, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -101,4 +101,101 @@ describe('e2e: scaffold → check → generate → drift', () => {
   it('scaffolds a demo page that renders without a bundler', () => {
     expect(existsSync(join(workspace, 'demo/index.html'))).toBe(true);
   });
+
+  it('ejects Button into a tracked fork and stitches user edits back in', async () => {
+    const eject = girih('eject', 'Button');
+    expect(eject.status).toBe(0);
+    expect(eject.output).toContain('components/ejected/Button.tsx');
+
+    const lock = JSON.parse(await readFile(join(workspace, 'ds.lock'), 'utf8'));
+    expect(lock.ejected.Button.template).toBe('element');
+    expect(lock.ejected.Button.templateVersion).toBeGreaterThan(0);
+    expect(lock.ejected.Button.baseHash).toMatch(/^[0-9a-f]{64}$/);
+
+    // Ejecting twice is an error, not a silent overwrite.
+    expect(girih('eject', 'Button').status).toBe(1);
+
+    // Fork the markup — this file is user-owned now.
+    const ejectedPath = join(workspace, 'components/ejected/Button.tsx');
+    const forked = (await readFile(ejectedPath, 'utf8')).replace("cx('ds-button'", "cx('ds-button forked'");
+    await writeFile(ejectedPath, forked);
+
+    const generate = girih('generate', 'react');
+    expect(generate.status).toBe(0);
+
+    // The fork is stitched into the package verbatim…
+    const stitched = await readFile(join(workspace, 'packages/design-system/src/Button.tsx'), 'utf8');
+    expect(stitched).toContain("cx('ds-button forked'");
+    // …while its CSS is still generated from the spec (token plumbing never forks).
+    const css = await readFile(join(workspace, 'packages/design-system/styles/components.css'), 'utf8');
+    expect(css).toContain('.ds-button[data-variant="primary"]');
+
+    // check reports the ejected state
+    const check = girih('check', '--no-table');
+    expect(check.output).toContain('Button');
+    expect(check.output).toContain('ejected');
+  });
+
+  it('generated output passes tsc --noEmit — types are part of the contract', async () => {
+    await writeFile(
+      join(workspace, 'packages/design-system/tsconfig.json'),
+      JSON.stringify(
+        {
+          compilerOptions: {
+            strict: true,
+            noEmit: true,
+            jsx: 'react-jsx',
+            target: 'ES2022',
+            module: 'ESNext',
+            moduleResolution: 'bundler',
+            lib: ['ES2022', 'DOM'],
+            skipLibCheck: true,
+          },
+          include: ['src'],
+        },
+        null,
+        2,
+      ),
+    );
+    const tscBin = join(repoRoot, 'node_modules/typescript/bin/tsc');
+    const result = spawnSync('node', [tscBin, '-p', join(workspace, 'packages/design-system/tsconfig.json')], {
+      cwd: workspace,
+      encoding: 'utf8',
+    });
+    expect(result.stdout + result.stderr).toBe('');
+    expect(result.status).toBe(0);
+  }, 60_000);
+
+  it('the full acme catalog (checkbox, dialog, extension) also passes tsc --noEmit', async () => {
+    const acme = join(repoRoot, 'examples/acme-ds');
+    const generate = spawnSync('node', [cliPath, 'generate', 'react'], { cwd: acme, encoding: 'utf8' });
+    expect(generate.status).toBe(0);
+
+    const tsconfigPath = join(acme, 'packages/design-system/tsconfig.json');
+    await writeFile(
+      tsconfigPath,
+      JSON.stringify(
+        {
+          compilerOptions: {
+            strict: true,
+            noEmit: true,
+            jsx: 'react-jsx',
+            target: 'ES2022',
+            module: 'ESNext',
+            moduleResolution: 'bundler',
+            lib: ['ES2022', 'DOM'],
+            skipLibCheck: true,
+          },
+          include: ['src'],
+        },
+        null,
+        2,
+      ),
+    );
+    const tscBin = join(repoRoot, 'node_modules/typescript/bin/tsc');
+    const result = spawnSync('node', [tscBin, '-p', tsconfigPath], { cwd: acme, encoding: 'utf8' });
+    await rm(tsconfigPath, { force: true });
+    expect(result.stdout + result.stderr).toBe('');
+    expect(result.status).toBe(0);
+  }, 120_000);
 });

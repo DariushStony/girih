@@ -1,0 +1,11 @@
+{
+  "card": {
+    "background": { "$type": "color", "$value": "{color.background}" },
+    "border": {
+      "$type": "border",
+      "$value": { "width": "1px", "style": "solid", "color": "{color.border}" }
+    },
+    "radius": { "$type": "dimension", "$value": "{radius.surface}" },
+    "padding": { "$type": "dimension", "$value": "{control.padding-inline-lg}" }
+  }
+}

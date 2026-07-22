@@ -1,0 +1,42 @@
+{
+  "name": "Card",
+  "description": "Grouped surface for related content.",
+  "template": "element",
+  "element": "div",
+  "variants": [],
+  "states": [],
+  "props": [],
+  "childrenRequired": true,
+  "tokens": {
+    "base": [
+      {
+        "property": "background",
+        "ref": "{card.background}"
+      },
+      {
+        "property": "border",
+        "ref": "{card.border}"
+      },
+      {
+        "property": "border-radius",
+        "ref": "{card.radius}"
+      },
+      {
+        "property": "padding",
+        "ref": "{card.padding}"
+      }
+    ],
+    "baseStates": [],
+    "variants": [],
+    "parts": []
+  },
+  "accessibility": {
+    "focusable": false,
+    "aria": []
+  },
+  "extensibility": {
+    "allowExtends": false,
+    "overridableTokens": []
+  },
+  "sourceFile": "components/card.spec.ts"
+}

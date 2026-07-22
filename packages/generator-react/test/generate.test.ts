@@ -34,7 +34,7 @@ describe('renderElementComponent', () => {
     const tsx = renderElementComponent(buttonIR(), { classPrefix: 'ds', runtimePackage: '@girih/react-runtime' });
     expect(tsx).toContain("export type ButtonVariant = 'primary' | 'secondary';");
     expect(tsx).toContain("export type ButtonSize = 'sm' | 'md';");
-    expect(tsx).toContain("extends ComponentPropsWithoutRef<'button'>");
+    expect(tsx).toContain("extends Omit<ComponentPropsWithoutRef<'button'>, 'variant' | 'size'>"); // axes shadow native attrs
     expect(tsx).toContain('data-variant={variant}');
     expect(tsx).toContain('data-loading={loading || undefined}');
     expect(tsx).toContain("aria-busy={loading ? 'true' : undefined}");
