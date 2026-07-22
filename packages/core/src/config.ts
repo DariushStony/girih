@@ -103,12 +103,17 @@ export async function loadConfig(cwd: string): Promise<LoadConfigResult> {
     const mod = await jiti.import<{ default?: GirihConfig } | GirihConfig>(configPath);
     raw = (mod as { default?: GirihConfig }).default ?? (mod as GirihConfig);
   } catch (error) {
-    diagnostics.push({
+    const message = (error as Error).message;
+    const diagnostic: Diagnostic = {
       code: 'GIRIH1002',
       severity: 'error',
-      message: `Failed to load ${configPath}: ${(error as Error).message}`,
+      message: `Failed to load ${configPath}: ${message.split('\n')[0]}`,
       file: 'ds.config.ts',
-    });
+    };
+    if (message.includes('@girih/cli')) {
+      diagnostic.help = "ds.config.ts imports '@girih/cli' — install it first: npm install -D @girih/cli";
+    }
+    diagnostics.push(diagnostic);
     return { config: null, diagnostics };
   }
 

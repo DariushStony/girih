@@ -4,10 +4,13 @@ dist/
 *.log
 .DS_Store
 
-# generated output inside example workspaces
+# generated output inside example workspaces (manifest + IR under .ds/ are committed)
 examples/*/packages/
-examples/*/.ds/
+examples/*/.ds/cache/
 examples/*/demo/generated/
 
 # react demo bundles
 examples/*/demo/react/bundle.js*
+
+# e2e scratch workspaces
+e2e/.tmp/

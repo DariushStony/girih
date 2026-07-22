@@ -1,17 +1,19 @@
 {
   "name": "create-girih",
-  "version": "0.0.0",
-  "description": "npx bootstrapper for new girih workspaces (M4)",
+  "version": "0.1.0",
+  "description": "Scaffold a girih design-system workspace: npx create-girih my-ds",
   "type": "module",
   "license": "MIT",
-  "private": true,
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
+  "bin": {
+    "create-girih": "./dist/cli.js"
   },
-  "files": [
-    "dist"
-  ]
+  "scripts": {
+    "build": "tsup src/cli.ts --format esm --sourcemap --clean",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  }
 }

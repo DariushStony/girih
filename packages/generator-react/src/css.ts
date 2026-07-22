@@ -36,6 +36,14 @@ function structuralCss(ir: ComponentIR, base: string): string[] {
   text-decoration: none;
 }`,
   ];
+  if (ir.states.includes('focus-visible')) {
+    // A design-neutral, token-independent focus ring: declaring the state must
+    // mean something even before the spec styles it.
+    blocks.push(`${base}:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}`);
+  }
   if (ir.states.includes('disabled') || ir.states.includes('loading')) {
     blocks.push(`${base}:disabled,
 ${base}[aria-disabled="true"],

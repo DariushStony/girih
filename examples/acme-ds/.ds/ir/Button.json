@@ -1,0 +1,185 @@
+{
+  "name": "Button",
+  "description": "Triggers an action. Single-line label.",
+  "element": "button",
+  "variants": [
+    {
+      "axis": "variant",
+      "values": [
+        "primary",
+        "secondary",
+        "danger"
+      ],
+      "default": "primary"
+    },
+    {
+      "axis": "size",
+      "values": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "default": "md"
+    }
+  ],
+  "states": [
+    "hover",
+    "focus-visible",
+    "disabled",
+    "loading"
+  ],
+  "props": [],
+  "childrenRequired": true,
+  "tokens": {
+    "base": [
+      {
+        "property": "font-family",
+        "ref": "{typography.body-family}"
+      },
+      {
+        "property": "border-radius",
+        "ref": "{button.radius}"
+      }
+    ],
+    "variants": [
+      {
+        "axis": "variant",
+        "value": "primary",
+        "declarations": [
+          {
+            "property": "background",
+            "ref": "{button.primary.background}"
+          },
+          {
+            "property": "color",
+            "ref": "{button.primary.foreground}"
+          }
+        ],
+        "states": [
+          {
+            "state": "hover",
+            "declarations": [
+              {
+                "property": "background",
+                "ref": "{button.primary.background-hover}"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "axis": "variant",
+        "value": "secondary",
+        "declarations": [
+          {
+            "property": "background",
+            "ref": "{button.secondary.background}"
+          },
+          {
+            "property": "color",
+            "ref": "{button.secondary.foreground}"
+          },
+          {
+            "property": "border-color",
+            "ref": "{button.secondary.border}"
+          }
+        ],
+        "states": []
+      },
+      {
+        "axis": "variant",
+        "value": "danger",
+        "declarations": [
+          {
+            "property": "background",
+            "ref": "{button.danger.background}"
+          },
+          {
+            "property": "color",
+            "ref": "{button.danger.foreground}"
+          }
+        ],
+        "states": [
+          {
+            "state": "hover",
+            "declarations": [
+              {
+                "property": "background",
+                "ref": "{button.danger.background-hover}"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "axis": "size",
+        "value": "sm",
+        "declarations": [
+          {
+            "property": "height",
+            "ref": "{button.size.sm.height}"
+          },
+          {
+            "property": "padding-inline",
+            "ref": "{control.padding-inline-sm}"
+          },
+          {
+            "property": "font-size",
+            "ref": "{typography.size-sm}"
+          }
+        ],
+        "states": []
+      },
+      {
+        "axis": "size",
+        "value": "md",
+        "declarations": [
+          {
+            "property": "height",
+            "ref": "{button.size.md.height}"
+          },
+          {
+            "property": "padding-inline",
+            "ref": "{control.padding-inline-md}"
+          },
+          {
+            "property": "font-size",
+            "ref": "{typography.size-md}"
+          }
+        ],
+        "states": []
+      },
+      {
+        "axis": "size",
+        "value": "lg",
+        "declarations": [
+          {
+            "property": "height",
+            "ref": "{button.size.lg.height}"
+          },
+          {
+            "property": "padding-inline",
+            "ref": "{control.padding-inline-lg}"
+          },
+          {
+            "property": "font-size",
+            "ref": "{typography.size-lg}"
+          }
+        ],
+        "states": []
+      }
+    ]
+  },
+  "accessibility": {
+    "focusable": true,
+    "aria": [
+      {
+        "state": "loading",
+        "attributes": {
+          "aria-busy": "true"
+        }
+      }
+    ]
+  },
+  "sourceFile": "components/button.spec.ts"
+}

@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "files": {
+    "packages/design-system/README.md": "3c6e52ae7cbc217b1f8faefb4a683fb1fcbcadb4c0e1d92e15e282ffb028f8be",
+    "packages/design-system/package.json": "d3fae3ab0a031c5cb8ec1f77757e8798e7cbab92ddae7d23d61f39f0c1abfbc9",
+    "packages/design-system/src/Button.tsx": "9945a126ebd291f942f4d0c659bd15bb49659a98b540dccbf0f7ede5c47097be",
+    "packages/design-system/src/index.ts": "58e087241a424ae53f4e931e955a9d56cd182818bbc1410ddac469764d4f33f8",
+    "packages/design-system/styles/components.css": "9b8a709e538d784e29f38aee43805dc1f568c14036df485d2de4ee4c657ef5e9",
+    "packages/design-system/styles/tokens.css": "54505500b996c4fe95a97b6e93fd3dc030a2e8445f26270d30598f8a7e04b53b",
+    "packages/design-system/styles/tokens.d.ts": "d4f5061b4d8af58d92a0db56f981afc80537d481f4aa5d2483368927f19a8d55"
+  },
+  "targets": {
+    "react": [
+      "packages/design-system/styles/tokens.css",
+      "packages/design-system/styles/tokens.d.ts",
+      "packages/design-system/src/Button.tsx",
+      "packages/design-system/styles/components.css",
+      "packages/design-system/src/index.ts",
+      "packages/design-system/package.json",
+      "packages/design-system/README.md"
+    ]
+  }
+}

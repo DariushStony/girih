@@ -15,24 +15,39 @@ tokens/ + brands/ + components/   ──girih generate──▶   @acme/design-s
 
 ## Status
 
-Early. Milestones M1 (token engine) and M2 (multi-brand CSS generation) are functional:
+Milestones M1–M4 are functional:
 
-- DTCG 2025.10-style token files, three tiers: global → semantic → component
-- Brand overlays with the override-only rule (brands are skins, never forks)
-- Alias resolution with full-chain cycle diagnostics, tier-direction validation
-- `girih check` — resolved token table + rich diagnostics
-- `girih generate css` — one stylesheet: `:root` for the default brand plus
-  `[data-brand="x"]` blocks containing only each brand's overrides (cascade does the rest)
-- `girih generate css --check` — CI staleness gate
+- **Tokens (M1/M2)** — DTCG 2025.10-style files in three tiers (global → semantic →
+  component); brand overlays with the override-only rule (brands are skins, never
+  forks); alias resolution with full-chain cycle diagnostics; tier-direction
+  validation; multi-brand CSS with `var()` references preserved so nested
+  `[data-brand]` scopes rebrand correctly.
+- **Contracts (M3)** — `defineSpec()` component contracts in TypeScript, enforced
+  as pure data, cross-validated against every brand's resolved token graph
+  (unknown refs, reserved prop names, unimplementable states are build errors).
+- **React (M3)** — `girih generate react` compiles contracts into a readable,
+  typed React package: variant unions, data-attribute styling hooks, a11y wiring
+  (`aria-busy`, `aria-disabled`, focus ring), structure-only component CSS where
+  every design value is a token `var()`. Runtime: `BrandProvider` / `useBrand`.
+- **Workspace (M4)** — `create-girih` / `girih init` scaffold a working starter
+  (tokens, a Button contract, a no-bundler demo page); `girih brand create` adds
+  overlays; `.ds/manifest.json` drift detection refuses to clobber hand-edited
+  output; canonical ComponentIR lands in `.ds/ir/` for future targets (Figma).
 
 ## Try it
 
 ```bash
 pnpm install && pnpm build
+
+# start from nothing:
+node packages/create-girih/dist/cli.js my-ds --workspace   # (npx create-girih after M6 publish)
+cd my-ds && pnpm exec girih generate react && open demo/index.html
+
+# or explore the richer example:
 cd examples/acme-ds
-pnpm check              # resolved token table + diagnostics
-pnpm generate           # emits packages/design-system/styles/{tokens.css,tokens.d.ts}
-open demo/index.html    # flip the brand toggle
+pnpm check                    # token table + contract validation
+pnpm run demo:react           # generate + bundle the React demo
+open demo/react/index.html    # variant matrix with a live brand toggle
 ```
 
 ## Monorepo
