@@ -8,6 +8,7 @@
  */
 import { CSS, strapworkDataUri } from './theme.mjs';
 import { esc } from './ui.mjs';
+import { girihLogo, LOGO_CSS, LOGO_JS, TESSELLATION_JS, REVEAL_JS } from './ornament.mjs';
 
 export const PAGES = [
   { slug: 'index', n: '00', title: 'Start here', nav: 'Start here', group: 'Orientation',
@@ -32,26 +33,6 @@ export const PAGES = [
 
 const GROUPS = ['Orientation', 'The model', 'Reference'];
 
-/** The girih star mark, computed rather than hand-drawn. */
-function starMark(size = 26) {
-  const pts = [];
-  const points = 10;
-  for (let i = 0; i < points * 2; i++) {
-    const r = i % 2 === 0 ? 11.5 : 5.1;
-    const a = (Math.PI / points) * i - Math.PI / 2;
-    pts.push(`${(12 + r * Math.cos(a)).toFixed(2)},${(12 + r * Math.sin(a)).toFixed(2)}`);
-  }
-  const deca = [];
-  for (let i = 0; i < points; i++) {
-    const a = (Math.PI * 2 / points) * i - Math.PI / 2;
-    deca.push(`${(12 + 11.5 * Math.cos(a)).toFixed(2)},${(12 + 11.5 * Math.sin(a)).toFixed(2)}`);
-  }
-  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <polygon points="${deca.join(' ')}" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.35"></polygon>
-      <polygon points="${pts.join(' ')}" fill="none" stroke="var(--accent)" stroke-width="1.1"></polygon>
-    </svg>`;
-}
-
 function sidebar(current, href) {
   const groups = GROUPS.map((group) => {
     const items = PAGES.filter((p) => p.group === group)
@@ -70,10 +51,9 @@ function sidebar(current, href) {
 
   return `<nav class="sidebar" aria-label="Documentation">
     <a class="brandmark" href="${esc(href('index'))}">
-      ${starMark()}
-      <span>
-        <span class="wordmark">girih</span>
-        <span class="persian"> گره</span>
+      ${girihLogo({ size: 34, animate: true })}
+      <span class="lockup">
+        <span class="wordmark">girih</span><span class="persian" lang="fa">گره</span>
       </span>
     </a>
     <p class="tagline">One warp, many wefts — compile multi-brand design systems from tokens and contracts.</p>
@@ -154,13 +134,15 @@ export function render(page, { mode = 'file', urls = {}, sections = [], body = '
     return urls[slug] ?? urls.index ?? '#';
   };
 
-  const strapLight = strapworkDataUri('%231B3B8F', '0.30');
+  // Safavid cobalt, matching --lajvard.
+  const strapLight = strapworkDataUri('%232E5BC9', '0.34');
   const inner = `
   <button class="themetoggle" type="button" aria-label="Switch colour theme">Dark</button>
   <div class="frame">
     ${sidebar(page.slug, href)}
     <main class="content">
       <header class="pagehead">
+        <canvas aria-hidden="true"></canvas>
         <div class="wrap">
           <div class="eyebrow">${page.n === '00' ? 'Documentation' : `Chapter ${esc(page.n)}`} · ${esc(page.group)}</div>
           <h1>${esc(page.title)}</h1>
@@ -174,8 +156,11 @@ export function render(page, { mode = 'file', urls = {}, sections = [], body = '
       </div>
     </main>
   </div>
-  <style>hr.strap { background-image: ${strapLight}; }</style>
-  <script>${scripts}</script>`;
+  <style>
+    ${LOGO_CSS}
+    hr.strap { background-image: ${strapLight}; }
+  </style>
+  <script>${LOGO_JS}${TESSELLATION_JS}${REVEAL_JS}${scripts}</script>`;
 
   if (mode === 'artifact') {
     // No doctype/html/head/body — the host wraps it. Styles go in a <style> tag.

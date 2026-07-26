@@ -1,6 +1,9 @@
 import { code, eli5, rule, gotcha, aside, table, pkgMap, strap } from '../lib/ui.mjs';
+import { packageGraph } from '../lib/viz.mjs';
 
 export default function page(data) {
+  const pkggraph = packageGraph({ id: 'w-pkggraph' });
+
   const sections = [
     { id: 'direction', title: 'The dependency direction' },
     { id: 'core', title: '@girih/core — the shared kernel' },
@@ -41,6 +44,8 @@ ${pkgMap([
     { name: '@girih/figma', role: 'phase-2 stub', layer: 'surface' },
   ],
 ])}
+
+${pkggraph.html}
 
 ${rule(
   'If a fix seems to need an upward import, it belongs somewhere else',
@@ -393,5 +398,5 @@ ${aside(
 </p>
 </div>`;
 
-  return { sections, body, widgets: [] };
+  return { sections, body, widgets: [pkggraph] };
 }

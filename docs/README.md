@@ -30,9 +30,11 @@ Two flavours of the same content:
 | 07 | [**Every error code**](md/07-error-codes.md) | All 70 GIRIH diagnostics, extracted from source, with what each one is actually telling you. | [interactive](07-error-codes.html) |
 | 08 | [**Check yourself**](md/08-quiz.md) | Ten questions that are hard to answer unless you actually understood the model. | [interactive](08-quiz.html) |
 
-## The four interactive widgets
+## Interactive pieces
 
-These exist only in the HTML version:
+These exist only in the HTML version.
+
+**Widgets**
 
 | Widget | Page | What it does |
 | --- | --- | --- |
@@ -40,6 +42,36 @@ These exist only in the HTML version:
 | Alias-chain walker | [04](04-tokens.html) | Step any token down through the tiers to its raw value, per brand, and see where an override lands. |
 | Pipeline stepper | [03](03-how-it-works.html) | Follow one real token through all six compile stages with the actual output at each step. |
 | Quiz | [08](08-quiz.html) | Ten questions with feedback on every option, right or wrong. |
+
+**Visualizations**
+
+| Visualization | Page | What it shows |
+| --- | --- | --- |
+| Token dependency graph | [04](04-tokens.html) | All 109 real tokens as tier bands with an edge per `{alias}`. Hover or keyboard-focus a node to light its resolution chain and count its dependents. |
+| Cascade resolution | [04](04-tokens.html) | Turn the dependents closure off and watch `--ds-button-radius` resolve to the wrong value — the partial failure girih exists to prevent. |
+| Tile → component mapping | [01](01-the-idea.html) | The five girih tiles assemble, reveal their shared edge treatment, then map onto component contracts and the token contract. |
+| Package dependency graph | [06](06-the-code.html) | The nine packages by layer. Hover one to see what it may import and what would be a forbidden upward import. |
+
+## Design system
+
+The visual identity is Safavid Isfahan tilework: cobalt (`lājvard`) and turquoise (`fīrūzeh`)
+glaze over ivory plaster, saffron for emphasis, madder for alarm, manganese for the dark ground.
+Ornament is girih strapwork and the ten-fold star, all computed from ten-fold symmetry rather than
+hand-authored path data.
+
+- **Type.** Vazirmatn — an Iranian-designed family — carries display headings and all Persian, so
+  one hand spans both scripts. Roboto carries body text, UI and tables. Both are inlined as
+  base64 WOFF2 (~156kb, variable, 400–700) because the published pages run under a CSP that
+  blocks every external host; a linked webfont would fail silently to a fallback.
+- **Colour.** Every categorical colour that encodes data was checked with a validator across all
+  pairs in both themes, not chosen by eye. Ordered dimensions — token tier, package layer — use a
+  single-hue sequential ramp that is monotonic in OKLCH lightness and therefore safe under every
+  form of colour blindness by construction. The lightest ramp step falls under 3:1 against the
+  surface, so marks using it carry a stroke ring.
+- **Motion.** The logo strikes itself with compass and straightedge; a girih tessellation grows
+  behind each page header on canvas; diagrams rise as they enter view; widgets cross-fade rather
+  than snap. All of it honours `prefers-reduced-motion`, and every animated thing has a resting
+  state that is the finished state — so if the animation never runs, nothing is invisible.
 
 ## How these docs are built
 
@@ -51,6 +83,14 @@ pnpm build                                    # required: the extractor imports 
 node docs/scripts/extract-tokens.mjs          # real token graphs  → docs/data/tokens.json
 node docs/scripts/extract-diagnostics.mjs     # all GIRIH codes    → docs/data/diagnostics.json
 node docs/scripts/build-docs.mjs              # → docs/*.html and docs/md/*.md
+node docs/scripts/verify-docs.mjs             # 564 structural checks over the output
+```
+
+`fetch-fonts.mjs` is the only script that needs network, and its output is committed — so the
+build and CI never hit the network. Re-run it only to change the typefaces:
+
+```bash
+node docs/scripts/fetch-fonts.mjs             # → docs/data/fonts.json
 ```
 
 | Path | What it is |
@@ -59,6 +99,9 @@ node docs/scripts/build-docs.mjs              # → docs/*.html and docs/md/*.md
 | `docs/scripts/lib/theme.mjs` | The design system: palette, type, layout, both themes. |
 | `docs/scripts/lib/ui.mjs` | Callouts, code blocks, tables, the four diagram families. |
 | `docs/scripts/lib/widgets.mjs` | The four interactive widgets. |
+| `docs/scripts/lib/viz.mjs` | The four visualizations. |
+| `docs/scripts/lib/ornament.mjs` | Logo, generative tessellation, scroll reveals. |
+| `docs/scripts/lib/fonts.mjs` | Emits @font-face from the inlined font data. |
 | `docs/scripts/lib/shell.mjs` | Page shell, sidebar, TOC, pager, theme toggle. |
 | `docs/scripts/lib/tomarkdown.mjs` | HTML → GitHub Markdown for the mirror. |
 | `docs/data/*.json` | **Generated.** Extracted from source; do not edit. |

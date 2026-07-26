@@ -144,7 +144,7 @@ export function tierStack(tiers, { flowLabel = 'may reference' } = {}) {
       i < tiers.length - 1 ? `<div class="flowdown">${esc(flowLabel)}</div>` : '';
     return block + arrow;
   });
-  return `<div class="tiers bleed">${blocks.join('\n')}</div>`;
+  return `<div class="tiers bleed reveal">${blocks.join('\n')}</div>`;
 }
 
 /* ---------------------------------------------------------------- diagram 2 */
@@ -160,7 +160,7 @@ export function rail(stages) {
     </div>`,
     )
     .join('\n    ');
-  return `<div class="rail bleed">
+  return `<div class="rail bleed reveal">
   <div class="track">
     ${cells}
   </div>
@@ -183,7 +183,7 @@ export function pkgMap(rows) {
       return `<div class="pkgrow">${items}</div>`;
     })
     .join('\n  ');
-  return `<div class="pkgmap bleed">
+  return `<div class="pkgmap bleed reveal">
   ${html}
 </div>`;
 }
@@ -208,7 +208,7 @@ export function chainDiagram(hops, { dimAfter = null } = {}) {
     </div>`;
     })
     .join('\n    ');
-  return `<div class="chain bleed">
+  return `<div class="chain bleed reveal">
     ${rowsHtml}
   </div>`;
 }
@@ -216,7 +216,7 @@ export function chainDiagram(hops, { dimAfter = null } = {}) {
 /* ------------------------------------------------------------------- misc */
 
 export function cards(items) {
-  return `<div class="cards">
+  return `<div class="cards reveal">
   ${items
     .map(
       (c) => `<a class="card" href="${esc(c.href)}">

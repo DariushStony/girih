@@ -1,6 +1,9 @@
 import { code, eli5, rule, gotcha, aside, table, tierStack, strap } from '../lib/ui.mjs';
+import { tileMapping } from '../lib/viz.mjs';
 
 export default function page(data) {
+  const tilemap = tileMapping({ id: 'w-tilemap' });
+
   const sections = [
     { id: 'deep', title: 'Deep background: what a design system is' },
     { id: 'drift', title: 'The problem: drift' },
@@ -166,6 +169,12 @@ ${strap()}
     .join('\n  ')}
 </div>
 
+<p>
+  It is worth walking through, because the analogy is exact rather than decorative:
+</p>
+
+${tilemap.html}
+
 ${rule(
   'The analogy, precisely',
   `<p>
@@ -325,5 +334,5 @@ ${tierStack(
 </p>
 </div>`;
 
-  return { sections, body, widgets: [] };
+  return { sections, body, widgets: [tilemap] };
 }

@@ -128,10 +128,10 @@ const generated = {
 };
 
 /**
- * The generated artifacts live under examples/*/packages/, which is gitignored — so on a
- * fresh clone they do not exist until `girih generate react` has run in the example
- * workspace. Emitting nulls here would silently gut the live brand-switch widget, so fail
- * loudly instead and say exactly what to run.
+ * The generated artifacts live under the example's packages directory, which is
+ * gitignored — so on a fresh clone they do not exist until `girih generate react` has run
+ * in the example workspace. Emitting nulls here would silently gut the live brand-switch
+ * widget, so fail loudly instead and say exactly what to run.
  */
 const missing = Object.entries(generated)
   .filter(([, contents]) => contents === null)

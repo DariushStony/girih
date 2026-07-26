@@ -150,6 +150,23 @@ girih produced; nothing is hardcoded.
 >
 > Step a token down to its raw value, per brand. Open [the interactive version](../04-tokens.html) in a browser to use it.
 
+## The whole graph at once
+
+Individual chains are one thing; the shape of the whole token set is another. Below is every
+token in the example workspace, arranged by tier, with an edge for every
+`{alias}` reference. Hover or keyboard-focus any node to light the chain it resolves
+through and see how many other tokens depend on it.
+
+> **▶ Every token, and what it points at** — interactive
+>
+> 109 real tokens · hover or focus a node to trace its chain. Open [the interactive version](../04-tokens.html) in a browser to use it.
+
+Two things are worth noticing. The bottom band is almost entirely leaves — global tokens hold
+values and reference nothing, so no edge ever leaves them heading further down. And the fan-out
+from a handful of semantic tokens is dramatic: `color.primary` alone reaches every
+component that has a primary anything, which is precisely why it is the token brands override
+most. Hover it and count the lit edges.
+
 ## Brands: the override-only rule
 
 A brand is a folder with one file. The `marketplace` brand is the default and overrides
@@ -255,6 +272,17 @@ properties that is easy to state and easy to forget.
 > That is `dependentsClosure()` in
 > `packages/generator-css/src/generate.ts`, and it is about twenty lines of
 > reverse-graph walk.
+
+## Which declaration wins
+
+That is a lot of words for something you can just try. Turn the closure off and watch the
+resolved value change — and note that colour would still appear to work, because
+`color.primary` is a direct reference while radius needs two hops. Partial failure is
+the whole danger.
+
+> **▶ Which declaration wins?** — interactive
+>
+> Why the dependents closure is not optional. Open [the interactive version](../04-tokens.html) in a browser to use it.
 
 <details>
 <summary><b>The default brand gets a scoped block too — and that is not redundant</b></summary>

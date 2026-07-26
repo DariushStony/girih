@@ -1,9 +1,12 @@
 import { code, eli5, rule, gotcha, danger, aside, table, tierStack, chainDiagram, strap } from '../lib/ui.mjs';
 import { brandToggle, tokenWalker } from '../lib/widgets.mjs';
+import { tokenGraph, cascadeViz } from '../lib/viz.mjs';
 
 export default function page(data) {
   const toggle = brandToggle(data, { id: 'w-branddemo' });
   const walker = tokenWalker(data, { id: 'w-walker' });
+  const graph = tokenGraph(data, { id: 'w-tokengraph' });
+  const cascade = cascadeViz({ id: 'w-cascade' });
 
   const marketplaceChain = data.chains.marketplace['button.radius'];
   const sellerChain = data.chains.seller['button.radius'];
@@ -12,10 +15,12 @@ export default function page(data) {
     { id: 'token', title: 'What a token is, exactly' },
     { id: 'tiers', title: 'Why three tiers' },
     { id: 'aliases', title: 'Alias chains' },
+    { id: 'wholegraph', title: 'The whole graph at once' },
     { id: 'walker', title: 'Trace a chain yourself' },
     { id: 'brands', title: 'Brands: the override-only rule' },
     { id: 'live', title: 'The live brand switch' },
     { id: 'closure', title: 'The dependents closure' },
+    { id: 'cascade', title: 'Which declaration wins' },
     { id: 'validation', title: 'What girih checks' },
     { id: 'authoring', title: 'Authoring rules' },
   ];
@@ -201,6 +206,25 @@ ${gotcha(
 
 ${walker.html}
 
+<h2 id="wholegraph">The whole graph at once</h2>
+
+<p>
+  Individual chains are one thing; the shape of the whole token set is another. Below is every
+  token in the example workspace, arranged by tier, with an edge for every
+  <code>{alias}</code> reference. Hover or keyboard-focus any node to light the chain it resolves
+  through and see how many other tokens depend on it.
+</p>
+
+${graph.html}
+
+<p>
+  Two things are worth noticing. The bottom band is almost entirely leaves — global tokens hold
+  values and reference nothing, so no edge ever leaves them heading further down. And the fan-out
+  from a handful of semantic tokens is dramatic: <code>color.primary</code> alone reaches every
+  component that has a primary anything, which is precisely why it is the token brands override
+  most. Hover it and count the lit edges.
+</p>
+
 <h2 id="brands">Brands: the override-only rule</h2>
 
 <p>
@@ -307,6 +331,17 @@ ${gotcha(
     reverse-graph walk.
   </p>`,
 )}
+
+<h2 id="cascade">Which declaration wins</h2>
+
+<p>
+  That is a lot of words for something you can just try. Turn the closure off and watch the
+  resolved value change — and note that colour would still appear to work, because
+  <code>color.primary</code> is a direct reference while radius needs two hops. Partial failure is
+  the whole danger.
+</p>
+
+${cascade.html}
 
 ${aside(
   'The default brand gets a scoped block too — and that is not redundant',
@@ -415,5 +450,5 @@ ${data.counts.tokens} tokens (${data.counts.tiers.global} global, ${data.counts.
 </p>
 </div>`;
 
-  return { sections, body, widgets: [toggle, walker] };
+  return { sections, body, widgets: [toggle, walker, graph, cascade] };
 }

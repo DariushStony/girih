@@ -8,6 +8,7 @@
  * Exits non-zero if anything fails.
  */
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -153,6 +154,34 @@ for (const file of mdFiles) {
 
   // A mirror page that lost its content is worse than no mirror.
   check(md.length > 1500, label, `suspiciously short (${md.length} bytes) — conversion may have dropped content`);
+}
+
+/* ------------------------------------------------------------- source integrity */
+
+/**
+ * Parse every build script. Two mistakes here are easy to make and produce confusing
+ * failures: a stray backtick inside a template literal (which silently ends it), and a
+ * path containing an asterisk-slash inside a block comment (which ends the comment
+ * early). Both have happened; both are caught by simply asking Node to parse the file.
+ */
+{
+  const scriptDirs = [
+    join(docsDir, 'scripts'),
+    join(docsDir, 'scripts/lib'),
+    join(docsDir, 'scripts/pages'),
+  ];
+  for (const dir of scriptDirs) {
+    if (!existsSync(dir)) continue;
+    for (const name of readdirSync(dir).filter((f) => f.endsWith('.mjs'))) {
+      const full = join(dir, name);
+      const rel = relative(repoRoot, full);
+      checks++;
+      const res = spawnSync(process.execPath, ['--check', full], { encoding: 'utf8' });
+      if (res.status !== 0) {
+        fail(rel, `does not parse — ${(res.stderr || '').split('\n').find((l) => /Error/.test(l)) ?? 'syntax error'}`);
+      }
+    }
+  }
 }
 
 /* ---------------------------------------------------------------- data freshness */

@@ -31,6 +31,10 @@ standalone:
 @girih/react-runtime  (react is a peer dep)  create-girih  (zero workspace deps)  @girih/figma  (phase-2 stub)
 ```
 
+> **▶ The dependency direction** — interactive
+>
+> Hover a package to see what it may — and may not — import. Open [the interactive version](../06-the-code.html) in a browser to use it.
+
 > **🔵 Rule — If a fix seems to need an upward import, it belongs somewhere else**
 >
 > Every time this rule feels inconvenient, the logic wants to move down rather than the dependency

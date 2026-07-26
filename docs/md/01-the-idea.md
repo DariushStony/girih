@@ -123,6 +123,12 @@ Bowtie
 concave
 The awkward corners.
 
+It is worth walking through, because the analogy is exact rather than decorative:
+
+> **▶ One kit of tiles, endless patterns** — interactive
+>
+> Step through the metaphor the project is named after. Open [the interactive version](../01-the-idea.html) in a browser to use it.
+
 > **🔵 Rule — The analogy, precisely**
 >
 > The five tiles are the **component contracts**. The matched edge treatment is the
