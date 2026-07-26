@@ -9,6 +9,18 @@
 import { CSS, strapworkDataUri } from './theme.mjs';
 import { esc } from './ui.mjs';
 import { girihLogo, LOGO_CSS, LOGO_JS, TESSELLATION_JS, REVEAL_JS } from './ornament.mjs';
+import { readFileSync, existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
+/**
+ * Absolute URLs for og:image and og:url, if the site's address is known. Most scrapers
+ * refuse a relative og:image, so this is written by build-icons.mjs --site-url and read
+ * here rather than being guessed.
+ */
+const sitePath = fileURLToPath(new URL('../../data/site.json', import.meta.url));
+const SITE_URL = existsSync(sitePath)
+  ? (JSON.parse(readFileSync(sitePath, 'utf8')).siteUrl ?? '')
+  : '';
 
 export const PAGES = [
   { slug: 'index', n: '00', title: 'Start here', nav: 'Start here', group: 'Orientation',
@@ -171,6 +183,35 @@ ${inner}
 `;
   }
 
+  // Icons, manifest and social tags are FILE-MODE ONLY. An artifact page is hosted on its
+  // own, so relative links to favicon.svg or site.webmanifest would 404 — and the Artifact
+  // host supplies its own favicon anyway.
+  const site = SITE_URL ? SITE_URL.replace(/\/$/, '') : '';
+  const abs = (path) => (site ? `${site}/${path}` : path);
+  const pageUrl = abs(page.slug === 'index' ? 'index.html' : `${page.slug}.html`);
+
+  const headAssets = `
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#131820">
+<meta name="apple-mobile-web-app-title" content="girih">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="girih documentation">
+<meta property="og:title" content="${esc(page.title)} — girih">
+<meta property="og:description" content="${esc(page.blurb)}">
+<meta property="og:image" content="${esc(abs('og-card.png'))}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="girih — design system infrastructure. One warp, many wefts.">
+<meta property="og:url" content="${esc(pageUrl)}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(page.title)} — girih">
+<meta name="twitter:description" content="${esc(page.blurb)}">
+<meta name="twitter:image" content="${esc(abs('og-card.png'))}">`;
+
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -179,6 +220,7 @@ ${inner}
 <title>girih docs — ${esc(page.title)}</title>
 <meta name="description" content="${esc(page.blurb)}">
 <meta name="color-scheme" content="light dark">
+${headAssets}
 <style>
 /* Reset just enough to be predictable across browsers. */
 html { -webkit-text-size-adjust: 100%; }

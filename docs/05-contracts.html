@@ -6,6 +6,27 @@
 <title>girih docs — Contracts and components</title>
 <meta name="description" content="How a contract you write as data becomes a typed, accessible React component you can read.">
 <meta name="color-scheme" content="light dark">
+
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#131820">
+<meta name="apple-mobile-web-app-title" content="girih">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="girih documentation">
+<meta property="og:title" content="Contracts and components — girih">
+<meta property="og:description" content="How a contract you write as data becomes a typed, accessible React component you can read.">
+<meta property="og:image" content="og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="girih — design system infrastructure. One warp, many wefts.">
+<meta property="og:url" content="05-contracts.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Contracts and components — girih">
+<meta name="twitter:description" content="How a contract you write as data becomes a typed, accessible React component you can read.">
+<meta name="twitter:image" content="og-card.png">
 <style>
 /* Reset just enough to be predictable across browsers. */
 html { -webkit-text-size-adjust: 100%; }
@@ -2110,144 +2131,239 @@ Dry run — nothing published, workspace unchanged. Re-run with --yes to publish
     return v || fallback;
   }
 
-  function build(canvas) {
+  /**
+   * Draw the girih tessellation onto a context.
+   *
+   * The construction is the real ten-fold one: decagons on a staggered lattice, each
+   * carrying strapwork that crosses its edges at the same angle, at the same points.
+   * Because every tile treats its edges identically the lines continue across tile
+   * boundaries — which is the whole girih method, and the reason this pattern is the
+   * documentation's ornament rather than a decorative flourish.
+   *
+   * @param intensity  0..1 — how strongly the glaze reads. Two passes at different
+   *                   intensities are what the light-rake interpolates between.
+   */
+  function drawPattern(ctx, w, h, R, colors, intensity) {
+    var stepX = R * 2 * Math.cos(Math.PI / 10);
+    var stepY = R * (1 + Math.cos(Math.PI / 5));
+
+    for (var row = -1; row * stepY < h + stepY; row++) {
+      for (var col = -1; col * stepX < w + stepX; col++) {
+        var cx = col * stepX + (row % 2 === 0 ? 0 : stepX / 2);
+        var cy = row * stepY;
+
+        var pts = [];
+        for (var i = 0; i < 10; i++) {
+          var a = (Math.PI * 2 / 10) * i - Math.PI / 2;
+          pts.push([cx + R * Math.cos(a), cy + R * Math.sin(a)]);
+        }
+        var mids = [];
+        for (var j = 0; j < 10; j++) {
+          var p = pts[j], q = pts[(j + 1) % 10];
+          mids.push([(p[0] + q[0]) / 2, (p[1] + q[1]) / 2]);
+        }
+
+        // The tile's own cut edge — the faintest layer, the construction line.
+        ctx.beginPath();
+        for (var k = 0; k < 10; k++) k ? ctx.lineTo(pts[k][0], pts[k][1]) : ctx.moveTo(pts[k][0], pts[k][1]);
+        ctx.closePath();
+        ctx.strokeStyle = colors.rule;
+        ctx.globalAlpha = 0.16 * intensity;
+        ctx.lineWidth = 0.6;
+        ctx.stroke();
+
+        // Strapwork. Adjacent midpoints would trace a smaller decagon; the girih star
+        // comes from stepping THREE midpoints at a time, which draws a {10/3} decagram.
+        // These are the lines that continue across tile edges unbroken.
+        ctx.beginPath();
+        for (var m = 0, at = 0; m < 10; m++, at = (at + 3) % 10) {
+          var pt = mids[at];
+          m ? ctx.lineTo(pt[0], pt[1]) : ctx.moveTo(pt[0], pt[1]);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = colors.strap;
+        ctx.globalAlpha = 0.5 * intensity;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // The ten-pointed star at the heart of the tile.
+        ctx.beginPath();
+        for (var s = 0; s < 10; s++) {
+          var mid = mids[s];
+          var ix = mid[0] + (cx - mid[0]) * 0.42;
+          var iy = mid[1] + (cy - mid[1]) * 0.42;
+          s ? ctx.lineTo(ix, iy) : ctx.moveTo(ix, iy);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = colors.star;
+        ctx.globalAlpha = 0.44 * intensity;
+        ctx.lineWidth = 0.9;
+        ctx.stroke();
+
+        // At full intensity the star also takes a wash of glaze, so the rake of light
+        // reads as glazed ceramic catching the sun rather than as lines brightening.
+        if (intensity > 0.9) {
+          ctx.fillStyle = colors.star;
+          ctx.globalAlpha = 0.05;
+          ctx.fill();
+        }
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function makeLayer(w, h, dpr) {
+    var c = document.createElement('canvas');
+    c.width = Math.max(1, Math.round(w * dpr));
+    c.height = Math.max(1, Math.round(h * dpr));
+    var cx = c.getContext('2d');
+    if (cx) cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { canvas: c, ctx: cx };
+  }
+
+  function setup(canvas) {
     var ctx = canvas.getContext('2d');
     if (!ctx) return null;
 
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     var w = canvas.clientWidth;
     var h = canvas.clientHeight;
-    if (w === 0 || h === 0) return null;
+    if (!w || !h) return null;
+
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, w, h);
 
-    // Lattice of decagon centres. Ten-fold girih tiles on a staggered grid: the
-    // horizontal step is the decagon width, the vertical step its apothem pair.
-    var R = 46;                          // circumradius of each decagon
+    var R = 46;
     var stepX = R * 2 * Math.cos(Math.PI / 10);
-    var stepY = R * (1 + Math.cos(Math.PI / 5));
-    var tiles = [];
-    for (var row = -1; row * stepY < h + stepY; row++) {
-      for (var col = -1; col * stepX < w + stepX; col++) {
-        var offset = (row % 2 === 0) ? 0 : stepX / 2;
-        tiles.push({ x: col * stepX + offset, y: row * stepY });
-      }
-    }
-    // Reveal order: by distance from the top-left, so the pattern grows out of the
-    // corner the title sits in rather than appearing all at once.
-    tiles.sort(function (a, b) { return (a.x + a.y) - (b.x + b.y); });
+    var colors = {
+      rule: tokenColor('--rule-strong', '#C6BDA4'),
+      strap: tokenColor('--accent', '#2E5BC9'),
+      star: tokenColor('--good', '#00A0A0')
+    };
 
-    function drawTile(t, alpha) {
-      var pts = [];
-      for (var i = 0; i < 10; i++) {
-        var a = (Math.PI * 2 / 10) * i - Math.PI / 2;
-        pts.push([t.x + R * Math.cos(a), t.y + R * Math.sin(a)]);
-      }
+    // Two pre-rendered passes, one stepX wider than the header so the drift can wrap
+    // seamlessly. Per-frame work is then a couple of drawImage calls rather than a few
+    // hundred strokes — which is what makes a permanent animation affordable.
+    var layerW = w + stepX + 2;
+    var dim = makeLayer(layerW, h, dpr);
+    var bright = makeLayer(layerW, h, dpr);
+    var masked = makeLayer(layerW, h, dpr);
+    if (!dim.ctx || !bright.ctx || !masked.ctx) return null;
 
-      ctx.save();
-      ctx.globalAlpha = alpha;
+    drawPattern(dim.ctx, layerW, h, R, colors, 0.55);
+    drawPattern(bright.ctx, layerW, h, R, colors, 1);
 
-      // The decagon outline, faint — this is the construction line.
-      ctx.beginPath();
-      pts.forEach(function (p, i) { i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]); });
-      ctx.closePath();
-      ctx.strokeStyle = ctx.constructionColor;
-      ctx.lineWidth = 0.6;
-      ctx.stroke();
-
-      // Strapwork: from each edge midpoint, strike a line at 36 degrees to the edge.
-      // Adjacent midpoints joined this way produce the interlaced star.
-      ctx.beginPath();
-      for (var j = 0; j < 10; j++) {
-        var p1 = pts[j];
-        var p2 = pts[(j + 1) % 10];
-        var m1 = [(p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2];
-        var p3 = pts[(j + 2) % 10];
-        var m2 = [(p2[0] + p3[0]) / 2, (p2[1] + p3[1]) / 2];
-        ctx.moveTo(m1[0], m1[1]);
-        ctx.lineTo(m2[0], m2[1]);
-      }
-      ctx.closePath();
-      ctx.strokeStyle = ctx.strapColor;
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      // The inner star, joining every third midpoint — the ten-pointed figure.
-      ctx.beginPath();
-      for (var k = 0; k < 10; k++) {
-        var q1 = pts[k];
-        var q2 = pts[(k + 1) % 10];
-        var mid = [(q1[0] + q2[0]) / 2, (q1[1] + q2[1]) / 2];
-        var toC = [t.x - mid[0], t.y - mid[1]];
-        var ix = mid[0] + toC[0] * 0.52;
-        var iy = mid[1] + toC[1] * 0.52;
-        k ? ctx.lineTo(ix, iy) : ctx.moveTo(ix, iy);
-      }
-      ctx.closePath();
-      ctx.strokeStyle = ctx.starColor;
-      ctx.lineWidth = 0.9;
-      ctx.stroke();
-
-      ctx.restore();
-    }
-
-    return { ctx: ctx, tiles: tiles, w: w, h: h, drawTile: drawTile };
+    return { canvas: canvas, ctx: ctx, w: w, h: h, dpr: dpr, stepX: stepX,
+             dim: dim, bright: bright, masked: masked, layerW: layerW };
   }
 
-  function paint(canvas) {
-    var built = build(canvas);
-    if (!built) return;
-    var ctx = built.ctx;
+  /** One composited frame: drifted base, plus a raking band of brighter glaze. */
+  function frame(st, t) {
+    var ctx = st.ctx;
+    // Drift: one lattice period every 70s. Slow enough to be felt rather than watched.
+    var drift = -(t / 70000 * st.stepX) % st.stepX;
+    // The rake sweeps a full width every 14s, and is a soft band, not a hard edge.
+    var sweep = ((t % 14000) / 14000) * (st.w + 900) - 450;
 
-    ctx.constructionColor = tokenColor('--rule-strong', '#C6BDA4');
-    ctx.strapColor = tokenColor('--accent', '#2E5BC9');
-    ctx.starColor = tokenColor('--good', '#00A0A0');
+    ctx.clearRect(0, 0, st.w, st.h);
+    ctx.drawImage(st.dim.canvas, drift, 0, st.layerW, st.h);
 
+    var mctx = st.masked.ctx;
+    mctx.clearRect(0, 0, st.layerW, st.h);
+    mctx.drawImage(st.bright.canvas, 0, 0, st.layerW, st.h);
+    // Keep only the band: a soft-edged gradient used as an alpha mask.
+    mctx.globalCompositeOperation = 'destination-in';
+    var g = mctx.createLinearGradient(sweep - drift - 320, 0, sweep - drift + 320, st.h * 0.6);
+    g.addColorStop(0, 'rgba(0,0,0,0)');
+    g.addColorStop(0.5, 'rgba(0,0,0,1)');
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    mctx.fillStyle = g;
+    mctx.fillRect(0, 0, st.layerW, st.h);
+    mctx.globalCompositeOperation = 'source-over';
+
+    ctx.drawImage(st.masked.canvas, drift, 0, st.layerW, st.h);
+  }
+
+  function animate(canvas) {
+    var st = setup(canvas);
+    if (!st) return null;
+
+    // Static single pass when motion is unwelcome — the pattern is still there.
     if (reduce.matches) {
-      // Static, single pass — no growth animation.
-      built.tiles.forEach(function (t) { built.drawTile(t, 0.5); });
-      return;
+      st.ctx.drawImage(st.dim.canvas, 0, 0, st.layerW, st.h);
+      return { stop: function () {}, restart: function () {} };
     }
 
-    // Grow the pattern: a few tiles per frame, each fading in.
-    var i = 0;
-    var perFrame = Math.max(1, Math.ceil(built.tiles.length / 90));
-    function step() {
-      var end = Math.min(i + perFrame, built.tiles.length);
-      for (; i < end; i++) built.drawTile(built.tiles[i], 0.5);
-      if (i < built.tiles.length) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
+    var raf = 0;
+    var last = 0;
+    var running = false;
+    var t0 = null;
 
-    // Backstop, for the same reason the logo has one: requestAnimationFrame is driven
-    // by the frame clock, which does not advance in every environment (a background
-    // tab, a paused timeline, a static renderer). If growth has not finished by now,
-    // finish it synchronously so the header is never left half-drawn or blank.
-    setTimeout(function () {
-      for (; i < built.tiles.length; i++) built.drawTile(built.tiles[i], 0.5);
-    }, 900);
+    // ~30fps is plenty for a slow ambient pattern and halves the battery cost.
+    function loop(now) {
+      if (!running) return;
+      if (t0 === null) t0 = now;
+      if (now - last >= 32) {
+        last = now;
+        frame(st, now - t0);
+      }
+      raf = requestAnimationFrame(loop);
+    }
+
+    function start() {
+      if (running) return;
+      running = true;
+      raf = requestAnimationFrame(loop);
+    }
+    function stop() {
+      running = false;
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+    }
+
+    // Paint one frame immediately: if rAF never advances — a background tab, a paused
+    // timeline, a static renderer — the banner is still a finished tile rather than blank.
+    frame(st, 0);
+    start();
+
+    // Only animate while the banner is actually on screen.
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { e.isIntersecting ? start() : stop(); });
+      }, { threshold: 0 });
+      io.observe(canvas);
+    }
+    document.addEventListener('visibilitychange', function () {
+      document.hidden ? stop() : start();
+    });
+
+    return { stop: stop, restart: function () { stop(); } };
   }
 
   function init() {
-    var canvases = document.querySelectorAll('.pagehead > canvas');
-    canvases.forEach(function (c) { paint(c); });
+    var instances = [];
+    function build() {
+      instances.forEach(function (i) { i && i.stop(); });
+      instances = [];
+      document.querySelectorAll('.pagehead > canvas').forEach(function (c) {
+        instances.push(animate(c));
+      });
+    }
+    build();
 
-    // Repaint on theme change so the pattern picks up the new token colours, and on
-    // resize so the lattice still covers the header.
-    var repaint = function () { canvases.forEach(function (c) { paint(c); }); };
-    var debounced = null;
+    var debounce = null;
     window.addEventListener('resize', function () {
-      clearTimeout(debounced);
-      debounced = setTimeout(repaint, 180);
+      clearTimeout(debounce);
+      debounce = setTimeout(build, 200);
     });
-    new MutationObserver(repaint).observe(document.documentElement, {
-      attributes: true, attributeFilter: ['data-theme'],
+    // Rebuild on theme change so the glaze picks up the new token colours.
+    new MutationObserver(build).observe(document.documentElement, {
+      attributes: true, attributeFilter: ['data-theme']
     });
     if (window.matchMedia) {
       var scheme = window.matchMedia('(prefers-color-scheme: dark)');
-      if (scheme.addEventListener) scheme.addEventListener('change', repaint);
+      if (scheme.addEventListener) scheme.addEventListener('change', build);
     }
   }
 

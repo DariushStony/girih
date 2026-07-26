@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="docs/brand/logomark.png" alt="" width="86">
+
 # girih
 
 **One warp, many wefts — compile multi-brand design systems from tokens and component contracts.**
@@ -184,6 +186,25 @@ node docs/scripts/build-docs.mjs              # → docs/*.html and docs/md/*.md
 
 Edit `docs/scripts/pages/*.mjs`, never `docs/*.html`. See [docs/README.md](docs/README.md) for the
 full layout.
+
+### Brand assets
+
+The mark, the lockups, the icon set and both social cards are generated from one ten-fold
+construction in [`docs/scripts/lib/icon.mjs`](docs/scripts/lib/icon.mjs) — no hand-authored path
+data anywhere. See [docs/brand/](docs/brand/) for the files and usage rules.
+
+```bash
+node docs/scripts/build-icons.mjs     # favicons, manifest, brand assets, social cards
+```
+
+This step needs Chrome or Chromium to rasterize (set `CHROME_PATH` if it is somewhere unusual),
+which is why it is not part of the CI docs check. Re-run it after changing the geometry, and
+pass `--site-url https://<owner>.github.io/<repo>` once Pages is live so `og:image` becomes an
+absolute URL — most scrapers reject a relative one.
+
+The 1280×640 image at
+[`docs/brand/github-social-preview.png`](docs/brand/github-social-preview.png) is sized for
+Settings → General → Social preview.
 
 ---
 

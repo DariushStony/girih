@@ -156,6 +156,85 @@ for (const file of mdFiles) {
   check(md.length > 1500, label, `suspiciously short (${md.length} bytes) — conversion may have dropped content`);
 }
 
+/* ------------------------------------------------------------------ brand assets */
+
+/**
+ * Every icon, manifest and social image the pages reference must actually exist, and be
+ * the size it claims. A broken favicon link is invisible in review and obvious to a
+ * visitor; a mis-sized og:image is silently rejected by scrapers.
+ */
+{
+  const required = [
+    ['favicon.ico', null],
+    ['favicon.svg', null],
+    ['apple-touch-icon.png', [180, 180]],
+    ['site.webmanifest', null],
+    ['og-card.png', [1200, 630]],
+    ['icons/icon-16.png', [16, 16]],
+    ['icons/icon-32.png', [32, 32]],
+    ['icons/icon-192.png', [192, 192]],
+    ['icons/icon-512.png', [512, 512]],
+    ['icons/maskable-512.png', [512, 512]],
+    ['brand/logomark.svg', null],
+    ['brand/lockup-light.png', null],
+    ['brand/lockup-dark.png', null],
+    ['brand/github-social-preview.png', [1280, 640]],
+    ['brand/README.md', null],
+  ];
+  for (const [rel, dims] of required) {
+    const full = join(docsDir, rel);
+    checks++;
+    if (!existsSync(full)) {
+      fail(`docs/${rel}`, 'missing — run: node docs/scripts/build-icons.mjs');
+      continue;
+    }
+    if (dims) {
+      // PNG IHDR: width and height live at fixed offsets.
+      const buf = readFileSync(full);
+      const w = buf.readUInt32BE(16);
+      const h = buf.readUInt32BE(20);
+      check(w === dims[0] && h === dims[1], `docs/${rel}`, `is ${w}x${h}, expected ${dims[0]}x${dims[1]}`);
+    }
+  }
+
+  // The .ico must be a real container, not a renamed PNG.
+  const ico = readFileSync(join(docsDir, 'favicon.ico'));
+  check(ico.readUInt16LE(0) === 0 && ico.readUInt16LE(2) === 1, 'docs/favicon.ico', 'not a valid ICO header');
+  const icoCount = ico.readUInt16LE(4);
+  check(icoCount >= 2, 'docs/favicon.ico', `only ${icoCount} image(s) — want at least 16 and 32`);
+
+  // The manifest must parse and point at files that exist.
+  const manifest = JSON.parse(readFileSync(join(docsDir, 'site.webmanifest'), 'utf8'));
+  check(Boolean(manifest.name && manifest.short_name), 'docs/site.webmanifest', 'missing name/short_name');
+  check(Boolean(manifest.theme_color && manifest.background_color), 'docs/site.webmanifest', 'missing theme/background colour');
+  check(
+    manifest.icons?.some((i) => i.purpose === 'maskable'),
+    'docs/site.webmanifest',
+    'no maskable icon — Android will letterbox the icon',
+  );
+  for (const icon of manifest.icons ?? []) {
+    checks++;
+    const target = join(docsDir, icon.src.replace(/^\.\//, ''));
+    if (!existsSync(target)) fail('docs/site.webmanifest', `icon src does not exist: ${icon.src}`);
+  }
+
+  // Every page must reference the icon set and carry a social card.
+  for (const file of htmlFiles) {
+    const html = readFileSync(join(docsDir, file), 'utf8');
+    check(/rel="icon"[^>]*favicon\.svg/.test(html), file, 'no SVG favicon link');
+    check(/rel="manifest"/.test(html), file, 'no manifest link');
+    check(/property="og:image"/.test(html), file, 'no og:image');
+    check(/name="theme-color"/.test(html), file, 'no theme-color');
+  }
+  notes.push(
+    `brand assets present; og:image is ${
+      /content="https?:\/\//.test(readFileSync(join(docsDir, 'index.html'), 'utf8').match(/property="og:image" content="([^"]*)"/)?.[0] ?? '')
+        ? 'absolute'
+        : 'RELATIVE — most scrapers need an absolute URL; rebuild with --site-url once Pages is live'
+    }`,
+  );
+}
+
 /* ------------------------------------------------------------- source integrity */
 
 /**

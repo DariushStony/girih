@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 110" width="470" height="110" role="img" aria-label="girih گره">
+  <style>
+    .wm{font-family:'Vazirmatn',Palatino,Georgia,serif;font-weight:600;font-size:58px;fill:#E9E6DC}
+    .fa{font-family:'Vazirmatn',sans-serif;font-weight:500;font-size:34px;fill:#7B8494}
+  </style>
+  <g transform="translate(4, 17)" color="#E9E6DC">
+  <g stroke="currentColor" stroke-opacity="0.3" stroke-width="0.76" fill="none">
+    <circle cx="38" cy="38" r="31.92"/>
+    <line x1="38" y1="38" x2="38.00" y2="6.08"/>
+    <line x1="38" y1="38" x2="56.76" y2="12.18"/>
+    <line x1="38" y1="38" x2="68.36" y2="28.14"/>
+    <line x1="38" y1="38" x2="68.36" y2="47.86"/>
+    <line x1="38" y1="38" x2="56.76" y2="63.82"/>
+    <line x1="38" y1="38" x2="38.00" y2="69.92"/>
+    <line x1="38" y1="38" x2="19.24" y2="63.82"/>
+    <line x1="38" y1="38" x2="7.64" y2="47.86"/>
+    <line x1="38" y1="38" x2="7.64" y2="28.14"/>
+    <line x1="38" y1="38" x2="19.24" y2="12.18"/>
+  </g>
+  <polygon points="38.00,6.08 56.76,12.18 68.36,28.14 68.36,47.86 56.76,63.82 38.00,69.92 19.24,63.82 7.64,47.86 7.64,28.14 19.24,12.18" fill="none" stroke="currentColor" stroke-opacity="0.42" stroke-width="1.05"/>
+  <polygon points="38.00,6.08 44.10,19.24 56.76,12.18 53.96,26.40 68.36,28.14 57.73,38.00 68.36,47.86 53.96,49.60 56.76,63.82 44.10,56.76 38.00,69.92 31.90,56.76 19.24,63.82 22.04,49.60 7.64,47.86 18.27,38.00 7.64,28.14 22.04,26.40 19.24,12.18 31.90,19.24" fill="none" stroke="#6389E4" stroke-width="1.90" stroke-linejoin="round"/>
+</g>
+  <text class="wm" x="96" y="75">girih</text>
+  <!-- "girih" sets ~145px at 58px/600; clear it with room to spare rather than
+       guessing tightly, since SVG offers no text measurement at build time. -->
+  <text class="fa" x="272" y="71" text-anchor="start" direction="rtl">گره</text>
+</svg>
