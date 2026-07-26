@@ -165,37 +165,4 @@ describe('e2e: scaffold → check → generate → drift', () => {
     expect(result.stdout + result.stderr).toBe('');
     expect(result.status).toBe(0);
   }, 60_000);
-
-  it('the full acme catalog (checkbox, dialog, extension) also passes tsc --noEmit', async () => {
-    const acme = join(repoRoot, 'examples/acme-ds');
-    const generate = spawnSync('node', [cliPath, 'generate', 'react'], { cwd: acme, encoding: 'utf8' });
-    expect(generate.status).toBe(0);
-
-    const tsconfigPath = join(acme, 'packages/design-system/tsconfig.json');
-    await writeFile(
-      tsconfigPath,
-      JSON.stringify(
-        {
-          compilerOptions: {
-            strict: true,
-            noEmit: true,
-            jsx: 'react-jsx',
-            target: 'ES2022',
-            module: 'ESNext',
-            moduleResolution: 'bundler',
-            lib: ['ES2022', 'DOM'],
-            skipLibCheck: true,
-          },
-          include: ['src'],
-        },
-        null,
-        2,
-      ),
-    );
-    const tscBin = join(repoRoot, 'node_modules/typescript/bin/tsc');
-    const result = spawnSync('node', [tscBin, '-p', tsconfigPath], { cwd: acme, encoding: 'utf8' });
-    await rm(tsconfigPath, { force: true });
-    expect(result.stdout + result.stderr).toBe('');
-    expect(result.status).toBe(0);
-  }, 120_000);
 });

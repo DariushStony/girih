@@ -28,7 +28,10 @@
     "commander": "^14.0.0",
     "picocolors": "^1.1.1",
     "@girih/spec": "workspace:*",
-    "@girih/generator-react": "workspace:*"
+    "@girih/generator-react": "workspace:*",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.9.3",
+    "tinyglobby": "^0.2.10"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

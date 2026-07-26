@@ -11,6 +11,8 @@ const LOCK_PATH = 'ds.lock';
 export interface DsLock {
   version: 1;
   ejected: Record<string, { template: string; templateVersion: number; baseHash: string }>;
+  /** The last published version + its contract signature, for semver diffing. Absent until first publish. */
+  published?: { version: string; signature: import('./semver.js').PublishSignature };
 }
 
 export interface LockReadResult {
@@ -41,6 +43,7 @@ export async function writeLock(root: string, lock: DsLock): Promise<void> {
   const stable: DsLock = {
     version: 1,
     ejected: Object.fromEntries(Object.entries(lock.ejected).sort(([a], [b]) => (a < b ? -1 : 1))),
+    ...(lock.published ? { published: lock.published } : {}),
   };
   await writeFile(join(root, LOCK_PATH), JSON.stringify(stable, null, 2) + '\n', 'utf8');
 }

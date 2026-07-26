@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { existsSync } from 'node:fs';
-import { readFile, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
 import { Command } from 'commander';
 import pc from 'picocolors';
@@ -12,10 +12,13 @@ import { generateCss } from '@girih/generator-css';
 import { generateReact, renderComponentSource, TEMPLATE_REGISTRY } from '@girih/generator-react';
 import { loadExtensions, loadSpecs, specToIR, validateExtensions, validateSpecs } from '@girih/spec';
 import type { ComponentIR, LoadedExtension } from '@girih/spec';
+import { spawnSync } from 'node:child_process';
+import { buildPackage } from './build.js';
 import { readLock, writeLock } from './lock.js';
 import { detectDrift, planManifestUpdate, readManifest, writeManifest } from './manifest.js';
 import { printDiagnostics, printSummaryLine, table } from './output.js';
 import { scaffoldWorkspace } from './scaffold.js';
+import { applyBump, computeSignature, diffSignatures } from './semver.js';
 
 const program = new Command();
 program.name('girih').description('Compile a multi-brand design system from tokens and component contracts.');
@@ -122,6 +125,39 @@ async function loadEjectedSources(
     }
   }
   return sources;
+}
+
+interface ComposedReact {
+  files: EmittedFile[];
+  irFiles: EmittedFile[];
+  irs: ComponentIR[];
+  extensions: LoadedExtension[];
+  /** Component name → user-owned ejected source that was stitched in. */
+  ejected: Record<string, string>;
+}
+
+/**
+ * The single source of truth for what `girih generate react` writes: CSS under
+ * styles/, the React package, and canonical IR. Shared by generate, build, and
+ * publish so they can never disagree about the output.
+ */
+async function composeReact(config: ResolvedConfig, build: TokenBuildResult, cssFiles: EmittedFile[]): Promise<ComposedReact> {
+  const { irs, extensions } = await loadComponentIRs(config, build);
+  const ejected = await loadEjectedSources(config, build, irs);
+  // The package.json version mirrors the last published version (from ds.lock),
+  // never a stale hand-set value — so generate/build/publish agree byte-for-byte.
+  const { lock } = await readLock(config.root);
+  const version = lock?.published?.version ?? '0.0.0-dev';
+  const reactResult = generateReact(irs, { packageName: config.name, prefix: config.tokens.prefix, version }, { extensions, ejected });
+  build.diagnostics.push(...reactResult.diagnostics);
+  return {
+    files: [...cssFiles.map((f) => ({ ...f, path: join('styles', f.path) })), ...reactResult.files],
+    // Canonical IR — the language-neutral contract form future targets (Figma) consume.
+    irFiles: irs.map((ir) => emittedFile(`${ir.name}.json`, JSON.stringify(ir, null, 2) + '\n')),
+    irs,
+    extensions,
+    ejected,
+  };
 }
 
 program
@@ -337,8 +373,7 @@ program
     let outputBase: string;
     let irFiles: EmittedFile[] = [];
     if (target === 'react') {
-      const { irs, extensions } = await loadComponentIRs(config, build);
-      const ejected = await loadEjectedSources(config, build, irs);
+      const composed = await composeReact(config, build, cssResult.files);
       if (build.diagnostics.some((d) => d.severity === 'error')) {
         printDiagnostics(build.diagnostics);
         printSummaryLine(build.diagnostics);
@@ -346,22 +381,9 @@ program
         process.exitCode = 1;
         return;
       }
-      const reactResult = generateReact(
-        irs,
-        {
-          packageName: config.name,
-          prefix: config.tokens.prefix,
-        },
-        { extensions, ejected },
-      );
-      build.diagnostics.push(...reactResult.diagnostics);
       outputBase = config.targets.react.output;
-      files = [
-        ...cssResult.files.map((f) => ({ ...f, path: join('styles', f.path) })),
-        ...reactResult.files,
-      ];
-      // Canonical IR — the language-neutral contract form future targets (Figma) consume.
-      irFiles = irs.map((ir) => emittedFile(`${ir.name}.json`, JSON.stringify(ir, null, 2) + '\n'));
+      files = composed.files;
+      irFiles = composed.irFiles;
     } else {
       outputBase = config.targets.css.output;
       files = cssResult.files;
@@ -510,17 +532,215 @@ program
     console.log(`Run ${pc.cyan('girih generate react')} to stitch it into the package.`);
   });
 
-for (const [name, milestone] of [
-  ['publish', 'M6'],
-  ['update', 'M6'],
-] as const) {
-  program
-    .command(name)
-    .allowUnknownOption(true)
-    .description(`(planned for ${milestone})`)
-    .action(() => {
-      console.log(pc.yellow(`'girih ${name}' is planned for milestone ${milestone} — not implemented yet.`));
+program
+  .command('build')
+  .description('Compile the generated React package into publishable dist/ (ESM + .d.ts).')
+  .action(async () => {
+    const workspace = await loadWorkspace();
+    if (!workspace) return;
+    const { config, build } = workspace;
+    const cssResult = await generateCss(build, {
+      prefix: config.tokens.prefix,
+      defaultBrand: config.brands.default,
+      selector: config.targets.css.selector,
     });
+    build.diagnostics.push(...cssResult.diagnostics);
+    const composed = await composeReact(config, build, cssResult.files);
+    if (build.diagnostics.some((d) => d.severity === 'error')) {
+      printDiagnostics(build.diagnostics);
+      process.exitCode = 1;
+      return;
+    }
+
+    const outputBase = config.targets.react.output;
+    const outDir = join(config.root, outputBase);
+    const stale = await verifyEmittedFiles(outDir, composed.files);
+    if (stale.length > 0) {
+      console.error(pc.red(`The generated package is out of date — run \`girih generate react\` before building.`));
+      for (const path of stale) console.error(`  ${pc.dim(join(outputBase, path))}`);
+      process.exitCode = 1;
+      return;
+    }
+
+    const result = await buildPackage(outDir);
+    build.diagnostics.push(...result.diagnostics);
+    if (result.diagnostics.some((d) => d.severity === 'error')) {
+      printDiagnostics(build.diagnostics);
+      console.error(pc.red('\nBuild failed.'));
+      process.exitCode = 1;
+      return;
+    }
+    const js = result.files.filter((f) => f.path.endsWith('.js')).length;
+    const dts = result.files.filter((f) => f.path.endsWith('.d.ts')).length;
+    console.log(`${pc.green('build')}  ${join(outputBase, 'dist')} ${pc.dim(`(${js} module${js === 1 ? '' : 's'} + ${dts} declaration${dts === 1 ? '' : 's'})`)}`);
+    printDiagnostics(build.diagnostics.filter((d) => d.severity !== 'info'));
+  });
+
+program
+  .command('publish')
+  .description('Version the design system from its contract diff and publish it to npm.')
+  .option('--yes', 'actually run `npm publish` (default is a dry run)')
+  .option('--tag <dist-tag>', 'npm dist-tag', 'latest')
+  .option('--access <level>', "npm access for scoped packages ('public' or 'restricted')")
+  .action(async (options: { yes?: boolean; tag: string; access?: string }) => {
+    const workspace = await loadWorkspace();
+    if (!workspace) return;
+    const { config, build } = workspace;
+    const cssResult = await generateCss(build, {
+      prefix: config.tokens.prefix,
+      defaultBrand: config.brands.default,
+      selector: config.targets.css.selector,
+    });
+    build.diagnostics.push(...cssResult.diagnostics);
+    const composed = await composeReact(config, build, cssResult.files);
+    if (build.diagnostics.some((d) => d.severity === 'error')) {
+      printDiagnostics(build.diagnostics);
+      process.exitCode = 1;
+      return;
+    }
+
+    const outputBase = config.targets.react.output;
+    const outDir = join(config.root, outputBase);
+    const stale = await verifyEmittedFiles(outDir, composed.files);
+    if (stale.length > 0) {
+      console.error(pc.red('Refusing to publish stale output — run `girih generate react` first.'));
+      process.exitCode = 1;
+      return;
+    }
+
+    // Semver from the contract diff — not from a human guess.
+    const { lock } = await readLock(config.root);
+    const signature = computeSignature({
+      graphs: build.graphs,
+      irs: composed.irs,
+      extensions: composed.extensions,
+      templateVersions: Object.fromEntries(Object.entries(TEMPLATE_REGISTRY).map(([name, caps]) => [name, caps.version])),
+      ejected: composed.ejected,
+      files: composed.files,
+    });
+    const previous = lock?.published;
+    const diff = diffSignatures(previous?.signature ?? null, signature);
+    if (diff.bump === 'none') {
+      console.log(pc.green(`✔ no contract changes since ${previous?.version ?? '(unpublished)'} — nothing to publish.`));
+      return;
+    }
+    const nextVersion = applyBump(previous?.version ?? '0.0.0', diff.bump);
+
+    console.log(`${pc.bold(config.name)}  ${pc.dim(previous?.version ?? '(unpublished)')} → ${pc.bold(nextVersion)}  ${pc.cyan(`[${diff.bump}]`)}`);
+    for (const reason of diff.reasons.slice(0, 12)) console.log(`  ${pc.dim(reason)}`);
+    if (diff.reasons.length > 12) console.log(pc.dim(`  …and ${diff.reasons.length - 12} more`));
+
+    const built = await buildPackage(outDir);
+    build.diagnostics.push(...built.diagnostics);
+    if (built.diagnostics.some((d) => d.severity === 'error')) {
+      printDiagnostics(build.diagnostics);
+      console.error(pc.red('\nBuild failed — not publishing.'));
+      process.exitCode = 1;
+      return;
+    }
+
+    // Stage the exact publishable tree in .ds/publish so the tracked workspace
+    // never goes dirty (no manifest drift) — only staged package.json carries the
+    // computed version. npm publishes the staging directory.
+    const staging = join(config.root, '.ds/publish');
+    await rm(staging, { recursive: true, force: true });
+    await mkdir(staging, { recursive: true });
+    for (const dir of ['dist', 'styles']) await cp(join(outDir, dir), join(staging, dir), { recursive: true });
+    const readmePath = join(outDir, 'README.md');
+    if (existsSync(readmePath)) await cp(readmePath, join(staging, 'README.md'));
+    await writeFile(join(staging, 'package.json'), bumpPackageVersion(await readFile(join(outDir, 'package.json'), 'utf8'), nextVersion), 'utf8');
+
+    // A scoped package's FIRST publish is private-by-default and fails without
+    // --access public — and `--dry-run` never surfaces that, so make it explicit.
+    const access = options.access ?? config.publish.access;
+    const scoped = config.name.startsWith('@');
+    if (scoped && !previous && access !== 'public') {
+      console.error(
+        pc.red(`\n'${config.name}' is scoped and has never been published — npm defaults it to restricted, which needs a paid plan.`),
+      );
+      console.error(pc.dim("Pass --access public (or set publish.access: 'public' in ds.config.ts) for an open-source design system."));
+      process.exitCode = 1;
+      return;
+    }
+
+    const npmArgs = [
+      'publish',
+      staging,
+      '--tag',
+      options.tag,
+      ...(scoped ? ['--access', access] : []),
+      ...(options.yes ? [] : ['--dry-run']),
+    ];
+    console.log(pc.dim(`\n$ npm ${npmArgs.slice(0, 1).concat('.ds/publish', npmArgs.slice(2)).join(' ')}`));
+    const npm = spawnSync('npm', npmArgs, { cwd: config.root, stdio: 'inherit', shell: process.platform === 'win32' });
+    await rm(staging, { recursive: true, force: true });
+    if (npm.status !== 0) {
+      console.error(pc.red(`\nnpm publish failed (exit ${npm.status}).`));
+      process.exitCode = npm.status ?? 1;
+      return;
+    }
+
+    if (options.yes) {
+      // Record the new baseline only when the publish actually happened. The next
+      // `girih generate react` stamps this version into the tracked package.json.
+      await writeLock(config.root, { version: 1, ejected: lock?.ejected ?? {}, published: { version: nextVersion, signature } });
+      console.log(`${pc.green('published')} ${config.name}@${nextVersion} · ${pc.green('update')} ds.lock baseline`);
+      console.log(pc.dim('Run `girih generate react` to sync the workspace package.json to the new version.'));
+    } else {
+      console.log(pc.yellow(`\nDry run — nothing published, workspace unchanged. Re-run with --yes to publish ${nextVersion}.`));
+    }
+  });
+
+program
+  .command('update')
+  .description('Report ejected forks that have drifted from the current templates.')
+  .action(async () => {
+    const workspace = await loadWorkspace();
+    if (!workspace) return;
+    const { config, build } = workspace;
+    const { lock, invalid } = await readLock(config.root);
+    if (invalid) {
+      console.error(pc.red('ds.lock is corrupt — restore it from git history.'));
+      process.exitCode = 1;
+      return;
+    }
+    const ejected = Object.entries(lock?.ejected ?? {});
+    if (ejected.length === 0) {
+      console.log(pc.green('No ejected components — everything tracks the current templates.'));
+      return;
+    }
+    // Surfacing drift on both axes — template version AND the spec the fork was
+    // taken from. The 3-way merge itself is post-MVP; this is the honest report.
+    const { irs } = await loadComponentIRs(config, build);
+    const byName = new Map(irs.map((ir) => [ir.name, ir]));
+    let stale = 0;
+    for (const [name, entry] of ejected) {
+      const current = TEMPLATE_REGISTRY[entry.template]?.version ?? entry.templateVersion;
+      const ir = byName.get(name);
+      const rebased = ir
+        ? emittedFile('x', renderComponentSource(ir, { classPrefix: config.tokens.prefix, runtimePackage: '@girih/react-runtime' })).hash
+        : null;
+      const reasons: string[] = [];
+      if (current > entry.templateVersion) reasons.push(`template ${entry.template} v${entry.templateVersion}→v${current}`);
+      if (rebased !== null && rebased !== entry.baseHash) reasons.push('spec changed since eject');
+      if (!ir) reasons.push('no matching spec');
+
+      if (reasons.length > 0) {
+        stale += 1;
+        console.log(`${pc.yellow('outdated')}  ${name} ${pc.dim(`(${reasons.join('; ')})`)}`);
+      } else {
+        console.log(`${pc.green('current')}   ${name} ${pc.dim(`(${entry.template}@v${entry.templateVersion})`)}`);
+      }
+    }
+    if (stale > 0) {
+      console.log(
+        pc.dim(`\n${stale} fork(s) no longer match their recorded base. Review them against the current template/spec, or remove the ds.lock entry and re-eject. (Automated 3-way merge is planned.)`),
+      );
+    }
+  });
+
+function bumpPackageVersion(source: string, version: string): string {
+  return source.replace(/("version":\s*")[^"]*(")/, `$1${version}$2`);
 }
 
 function formatValue(value: unknown): string {

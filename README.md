@@ -33,6 +33,16 @@ Milestones M1–M4 are functional:
   (tokens, a Button contract, a no-bundler demo page); `girih brand create` adds
   overlays; `.ds/manifest.json` drift detection refuses to clobber hand-edited
   output; canonical ComponentIR lands in `.ds/ir/` for future targets (Figma).
+- **Catalog & extensibility (M5)** — 6 components incl. a Checkbox (styled native
+  input) and a **Dialog on Base UI** behind a swappable adapter; `defineVariant`
+  extensions constrained by `overridableTokens`; `girih eject` — a tracked fork
+  recorded in a committed `ds.lock`, stitched back in while its CSS stays generated.
+- **Packaging (M6)** — `girih build` compiles the package to publishable `dist/`
+  (per-file ESM + `.d.ts`, works under every consumer `moduleResolution`);
+  `girih publish` derives the semver bump from the **contract diff** (token value
+  = patch, new variant = minor, removed anything = major) and publishes (dry-run
+  by default). Proven end-to-end: an npm-packed tarball installs into a fresh
+  consumer and server-renders every component.
 
 ## Try it
 
