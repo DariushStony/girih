@@ -1,0 +1,1544 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>girih docs — How it works</title>
+<meta name="description" content="The whole compile pipeline, one stage at a time, with real data moving through it.">
+<meta name="color-scheme" content="light dark">
+<style>
+/* Reset just enough to be predictable across browsers. */
+html { -webkit-text-size-adjust: 100%; }
+img, svg { max-width: 100%; }
+
+/* ============================================================================
+   Tokens — light is the default; dark is redefined below at token level only.
+   ============================================================================ */
+:root {
+  /* Glazes */
+  --lapis:        #1B3B8F;
+  --lapis-bright: #2C56C4;
+  --turquoise:    #0E8F8F;
+  --turquoise-br: #14A8A8;
+  --ochre:        #BE7B1F;
+  --madder:       #A8321E;
+
+  /* Grounds and ink — neutrals biased a touch toward the lapis, not pure grey */
+  --plaster:      #F6F5F1;
+  --plaster-2:    #EFEEE8;
+  --plaster-3:    #E4E3DB;
+  --manganese:    #14181F;
+  --ink:          #1E232B;
+  --ink-2:        #4A5260;
+  --ink-3:        #6E7789;
+
+  /* Semantic surface roles */
+  --bg:           var(--plaster);
+  --bg-raised:    #FFFFFF;
+  --bg-sunken:    var(--plaster-2);
+  --bg-code:      #FBFAF7;
+  --rule:         #DAD8CE;
+  --rule-strong:  #C3C0B4;
+  --text:         var(--ink);
+  --text-muted:   var(--ink-2);
+  --text-faint:   var(--ink-3);
+  --accent:       var(--lapis);
+  --accent-soft:  #E5EAF7;
+  --good:         var(--turquoise);
+  --good-soft:    #DCF0EF;
+  --warn:         var(--ochre);
+  --warn-soft:    #F8EEDA;
+  --bad:          var(--madder);
+  --bad-soft:     #F8E4E0;
+
+  /* Type */
+  --display: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', 'URW Palladio L', Georgia, serif;
+  --body:    Charter, 'Bitstream Charter', 'Source Serif 4', 'Source Serif Pro', Cambria, Georgia, serif;
+  --util:    ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --mono:    ui-monospace, 'SF Mono', SFMono-Regular, 'Cascadia Code', 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  /* Scale — 1.25 from 17px, held to throughout */
+  --t-xs:   0.75rem;
+  --t-sm:   0.8125rem;
+  --t-base: 1.0625rem;
+  --t-lg:   1.1875rem;
+  --t-xl:   1.45rem;
+  --t-2xl:  1.85rem;
+  --t-3xl:  2.35rem;
+  --t-4xl:  2.95rem;
+
+  --measure: 66ch;
+  --sidebar: 16.5rem;
+  --radius:  3px;
+  --radius-lg: 6px;
+
+  --shadow-1: 0 1px 2px rgba(20, 24, 31, 0.06), 0 1px 6px rgba(20, 24, 31, 0.04);
+  --shadow-2: 0 2px 6px rgba(20, 24, 31, 0.08), 0 8px 24px rgba(20, 24, 31, 0.07);
+
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:          var(--manganese);
+    --bg-raised:   #1B212B;
+    --bg-sunken:   #101419;
+    --bg-code:     #171D26;
+    --rule:        #2A323F;
+    --rule-strong: #3C4655;
+    --text:        #E7E9ED;
+    --text-muted:  #A8B0BE;
+    --text-faint:  #7C8697;
+    --accent:      #7FA0EC;
+    --accent-soft: #1C2740;
+    --good:        #3FC7C1;
+    --good-soft:   #10312F;
+    --warn:        #E0A445;
+    --warn-soft:   #33260F;
+    --bad:         #E4705C;
+    --bad-soft:    #351812;
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 6px rgba(0, 0, 0, 0.3);
+    --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* The viewer's explicit toggle must beat the OS preference in BOTH directions. */
+:root[data-theme='dark'] {
+  --bg:          var(--manganese);
+  --bg-raised:   #1B212B;
+  --bg-sunken:   #101419;
+  --bg-code:     #171D26;
+  --rule:        #2A323F;
+  --rule-strong: #3C4655;
+  --text:        #E7E9ED;
+  --text-muted:  #A8B0BE;
+  --text-faint:  #7C8697;
+  --accent:      #7FA0EC;
+  --accent-soft: #1C2740;
+  --good:        #3FC7C1;
+  --good-soft:   #10312F;
+  --warn:        #E0A445;
+  --warn-soft:   #33260F;
+  --bad:         #E4705C;
+  --bad-soft:    #351812;
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 6px rgba(0, 0, 0, 0.3);
+  --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+:root[data-theme='light'] {
+  --bg:          var(--plaster);
+  --bg-raised:   #FFFFFF;
+  --bg-sunken:   var(--plaster-2);
+  --bg-code:     #FBFAF7;
+  --rule:        #DAD8CE;
+  --rule-strong: #C3C0B4;
+  --text:        var(--ink);
+  --text-muted:  var(--ink-2);
+  --text-faint:  var(--ink-3);
+  --accent:      var(--lapis);
+  --accent-soft: #E5EAF7;
+  --good:        var(--turquoise);
+  --good-soft:   #DCF0EF;
+  --warn:        var(--ochre);
+  --warn-soft:   #F8EEDA;
+  --bad:         var(--madder);
+  --bad-soft:    #F8E4E0;
+  --shadow-1: 0 1px 2px rgba(20, 24, 31, 0.06), 0 1px 6px rgba(20, 24, 31, 0.04);
+  --shadow-2: 0 2px 6px rgba(20, 24, 31, 0.08), 0 8px 24px rgba(20, 24, 31, 0.07);
+}
+
+/* ============================================================================
+   Base
+   ============================================================================ */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: var(--t-base);
+  line-height: 1.68;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-wrap: break-word;
+}
+
+::selection { background: var(--accent-soft); color: var(--text); }
+
+:where(a) { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+:where(a):hover { text-decoration-thickness: 2px; }
+
+:where(a, button, summary, input, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ============================================================================
+   Frame: sidebar + content
+   ============================================================================ */
+.frame {
+  display: grid;
+  grid-template-columns: var(--sidebar) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.sidebar {
+  border-inline-end: 1px solid var(--rule);
+  background: var(--bg-sunken);
+  padding: 1.75rem 1.25rem 3rem;
+  position: sticky;
+  top: 0;
+  align-self: start;
+  /* height, not max-height: a content-sized sticky column leaves the rail
+     un-backgrounded below it on long pages. */
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.brandmark {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.25rem;
+  text-decoration: none;
+  color: var(--text);
+}
+.brandmark svg { flex: none; }
+.brandmark .wordmark {
+  font-family: var(--display);
+  font-size: var(--t-xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.brandmark .persian {
+  font-size: var(--t-sm);
+  color: var(--text-faint);
+  font-family: var(--body);
+}
+.sidebar .tagline {
+  margin: 0 0 1.5rem;
+  font-size: var(--t-sm);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.navgroup { margin-bottom: 1.35rem; }
+.navgroup > .label {
+  font-family: var(--util);
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 0.5rem;
+}
+.navgroup ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; }
+.navgroup a {
+  display: flex;
+  gap: 0.55rem;
+  align-items: baseline;
+  padding: 0.32rem 0.5rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: var(--t-sm);
+  font-family: var(--util);
+  line-height: 1.4;
+}
+.navgroup a:hover { background: var(--bg-raised); color: var(--text); }
+.navgroup a[aria-current='page'] {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+.navgroup a .n {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+  font-size: var(--t-xs);
+  flex: none;
+  min-width: 1.1em;
+}
+.navgroup a[aria-current='page'] .n { color: var(--accent); }
+
+.content { min-width: 0; padding: 0 0 6rem; }
+.wrap { max-width: calc(var(--measure) + 14rem); margin: 0 auto; padding: 0 2rem; }
+.prose { max-width: var(--measure); }
+
+/* Wide things break out of the measure but never out of the page. */
+.bleed { max-width: calc(var(--measure) + 11rem); }
+
+/* ============================================================================
+   Page header — construction lines at pentagonal angles, faint
+   ============================================================================ */
+.pagehead {
+  border-block-end: 1px solid var(--rule);
+  background:
+    repeating-linear-gradient(72deg,  transparent 0 38px, color-mix(in oklab, var(--accent) 12%, transparent) 38px 39px),
+    repeating-linear-gradient(-72deg, transparent 0 38px, color-mix(in oklab, var(--accent) 12%, transparent) 38px 39px),
+    repeating-linear-gradient(36deg,  transparent 0 66px, color-mix(in oklab, var(--good) 9%, transparent) 66px 67px),
+    var(--bg-sunken);
+  padding: 3.25rem 0 2.5rem;
+  margin-bottom: 2.5rem;
+}
+.pagehead .eyebrow {
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.pagehead h1 {
+  font-family: var(--display);
+  font-size: var(--t-4xl);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.75rem;
+  text-wrap: balance;
+  font-weight: 600;
+}
+.pagehead .standfirst {
+  margin: 0;
+  font-size: var(--t-lg);
+  color: var(--text-muted);
+  max-width: 54ch;
+  line-height: 1.55;
+}
+
+/* ============================================================================
+   Typography in flow
+   ============================================================================ */
+h2, h3, h4 { font-family: var(--display); text-wrap: balance; letter-spacing: -0.01em; }
+h2 {
+  font-size: var(--t-2xl);
+  line-height: 1.2;
+  margin: 3.25rem 0 0.9rem;
+  padding-block-start: 1.5rem;
+  border-block-start: 1px solid var(--rule);
+  font-weight: 600;
+}
+h2:first-child { margin-top: 0; border-block-start: 0; padding-block-start: 0; }
+h3 { font-size: var(--t-xl); line-height: 1.28; margin: 2.25rem 0 0.6rem; font-weight: 600; }
+h4 {
+  font-family: var(--util);
+  font-size: var(--t-sm);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 1.75rem 0 0.5rem;
+}
+p { margin: 0 0 1.15rem; }
+.lede { font-size: var(--t-lg); color: var(--text-muted); line-height: 1.6; }
+
+ul, ol { margin: 0 0 1.15rem; padding-inline-start: 1.35rem; }
+li { margin-bottom: 0.4rem; }
+li > ul, li > ol { margin-top: 0.4rem; margin-bottom: 0.5rem; }
+
+strong { font-weight: 650; }
+em { font-style: italic; }
+
+code {
+  font-family: var(--mono);
+  font-size: 0.875em;
+  background: var(--bg-sunken);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 0.08em 0.32em;
+  overflow-wrap: break-word;
+}
+a code { color: inherit; }
+
+hr.strap {
+  border: 0;
+  height: 48px;
+  margin: 3rem 0;
+  background-repeat: repeat-x;
+  background-position: center;
+  opacity: 0.5;
+}
+
+/* ============================================================================
+   Code blocks — always white-space:pre, always scrollable on their own
+   ============================================================================ */
+figure.code {
+  margin: 1.5rem 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--bg-code);
+  overflow: hidden;
+  box-shadow: var(--shadow-1);
+}
+figure.code > figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0.85rem;
+  border-block-end: 1px solid var(--rule);
+  background: var(--bg-sunken);
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  color: var(--text-muted);
+}
+figure.code > figcaption .path {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  color: var(--text-muted);
+}
+figure.code > figcaption .badge {
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.625rem;
+  padding: 0.12rem 0.4rem;
+  border-radius: 999px;
+  flex: none;
+}
+.badge.authored { background: var(--accent-soft); color: var(--accent); }
+.badge.generated { background: var(--good-soft); color: var(--good); }
+.badge.shell     { background: var(--bg-raised); color: var(--text-muted); border: 1px solid var(--rule); }
+
+figure.code pre {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  overflow-x: auto;
+  white-space: pre;
+  font-family: var(--mono);
+  font-size: var(--t-sm);
+  line-height: 1.62;
+  tab-size: 2;
+}
+figure.code pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+  white-space: pre;
+}
+
+/* Minimal, honest highlighting: comments, strings, token refs, keywords. */
+.tk-c { color: var(--text-faint); font-style: italic; }
+.tk-s { color: var(--good); }
+.tk-k { color: var(--accent); font-weight: 600; }
+.tk-r { color: var(--warn); font-weight: 600; }
+.tk-n { color: var(--text); }
+.tk-del { color: var(--bad); }
+.tk-add { color: var(--good); }
+
+/* ============================================================================
+   Callouts
+   ============================================================================ */
+.callout {
+  margin: 1.5rem 0;
+  padding: 0.95rem 1.1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--rule);
+  border-inline-start: 3px solid var(--accent);
+  background: var(--bg-raised);
+  font-size: calc(var(--t-base) * 0.97);
+}
+.callout > .title {
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.35rem;
+}
+.callout > :last-child { margin-bottom: 0; }
+.callout.eli5      { border-inline-start-color: var(--good); background: var(--good-soft); }
+.callout.eli5 > .title { color: var(--good); }
+.callout.rule      { border-inline-start-color: var(--lapis); }
+.callout.gotcha    { border-inline-start-color: var(--warn); background: var(--warn-soft); }
+.callout.gotcha > .title { color: var(--warn); }
+.callout.danger    { border-inline-start-color: var(--bad); background: var(--bad-soft); }
+.callout.danger > .title { color: var(--bad); }
+.callout.skip      { border-inline-start-color: var(--rule-strong); background: var(--bg-sunken); color: var(--text-muted); }
+.callout.skip > .title { color: var(--text-faint); }
+
+details.aside {
+  margin: 1.5rem 0;
+  border: 1px dashed var(--rule-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-sunken);
+  padding: 0 1.1rem;
+}
+details.aside > summary {
+  cursor: pointer;
+  padding: 0.8rem 0;
+  font-family: var(--util);
+  font-size: var(--t-sm);
+  font-weight: 650;
+  color: var(--text-muted);
+  list-style-position: outside;
+}
+details.aside[open] > summary { border-block-end: 1px solid var(--rule); margin-block-end: 0.9rem; }
+details.aside > :last-child { margin-bottom: 0.9rem; }
+
+/* ============================================================================
+   Tables
+   ============================================================================ */
+.tablewrap { overflow-x: auto; margin: 1.5rem 0; border: 1px solid var(--rule); border-radius: var(--radius-lg); }
+table { border-collapse: collapse; width: 100%; font-size: var(--t-sm); font-family: var(--util); }
+th, td { text-align: start; padding: 0.5rem 0.75rem; border-block-end: 1px solid var(--rule); vertical-align: top; }
+thead th {
+  background: var(--bg-sunken);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+tbody tr:last-child td { border-block-end: 0; }
+tbody tr:hover { background: var(--bg-sunken); }
+td code { font-size: 0.8125rem; }
+.num { font-variant-numeric: tabular-nums; text-align: end; }
+
+/* ============================================================================
+   Diagram family 1 — tier stack
+   ============================================================================ */
+.tiers { display: flex; flex-direction: column; gap: 0; margin: 1.75rem 0; }
+.tier {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--rule);
+  background: var(--bg-raised);
+}
+.tier:first-child { border-start-start-radius: var(--radius-lg); border-start-end-radius: var(--radius-lg); }
+.tier:last-child { border-end-start-radius: var(--radius-lg); border-end-end-radius: var(--radius-lg); }
+.tier + .tier { border-block-start: 0; }
+.tier > .name { font-family: var(--util); font-size: var(--t-sm); font-weight: 700; }
+.tier > .name .sub { display: block; font-weight: 400; color: var(--text-faint); font-size: var(--t-xs); letter-spacing: 0; text-transform: none; }
+.tier[data-tier='global']    { border-inline-start: 3px solid var(--ink-3); }
+.tier[data-tier='semantic']  { border-inline-start: 3px solid var(--good); }
+.tier[data-tier='component'] { border-inline-start: 3px solid var(--accent); }
+.tier[data-tier='global'] > .name    { color: var(--text-muted); }
+.tier[data-tier='semantic'] > .name  { color: var(--good); }
+.tier[data-tier='component'] > .name { color: var(--accent); }
+.chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.chip {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule);
+  background: var(--bg-sunken);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.chip.hot { border-color: var(--warn); background: var(--warn-soft); color: var(--warn); font-weight: 650; }
+.chip.lit { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 650; }
+.flowdown {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.15rem 1rem 0.15rem 9.6rem;
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  color: var(--text-faint);
+}
+.flowdown::before { content: '↓'; color: var(--accent); font-size: var(--t-lg); line-height: 1; }
+
+/* ============================================================================
+   Diagram family 2 — pipeline rail
+   ============================================================================ */
+.rail { margin: 1.75rem 0; overflow-x: auto; }
+.rail > .track { display: flex; align-items: stretch; gap: 0; min-width: min-content; }
+.stage {
+  flex: 1 1 0;
+  min-width: 8.5rem;
+  border: 1px solid var(--rule);
+  background: var(--bg-raised);
+  padding: 0.7rem 0.8rem;
+  position: relative;
+}
+.stage + .stage { border-inline-start: 0; }
+.stage:first-child { border-start-start-radius: var(--radius-lg); border-end-start-radius: var(--radius-lg); }
+.stage:last-child { border-start-end-radius: var(--radius-lg); border-end-end-radius: var(--radius-lg); }
+.stage > .n {
+  font-family: var(--util);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+.stage > .t { font-family: var(--util); font-size: var(--t-sm); font-weight: 650; margin: 0.15rem 0 0.3rem; }
+.stage > .d { font-size: var(--t-xs); color: var(--text-muted); line-height: 1.45; font-family: var(--util); }
+.stage[data-on='true'] { background: var(--accent-soft); border-color: var(--accent); z-index: 1; }
+.stage[data-on='true'] > .t { color: var(--accent); }
+.stage[data-owner]::after {
+  content: attr(data-owner);
+  position: absolute;
+  inset-block-end: 0.35rem;
+  inset-inline-end: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.5625rem;
+  color: var(--text-faint);
+}
+
+/* ============================================================================
+   Diagram family 3 — package graph
+   ============================================================================ */
+.pkgmap { display: flex; flex-direction: column; gap: 0.6rem; margin: 1.75rem 0; }
+.pkgrow { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+.pkg {
+  font-family: var(--mono);
+  font-size: var(--t-sm);
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule-strong);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-1);
+  white-space: nowrap;
+}
+.pkg .role { display: block; font-family: var(--util); font-size: 0.625rem; color: var(--text-faint); }
+.pkg[data-layer='kernel']    { border-color: var(--ink-3); }
+.pkg[data-layer='pipeline']  { border-color: var(--good); }
+.pkg[data-layer='generator'] { border-color: var(--accent); }
+.pkg[data-layer='surface']   { border-color: var(--warn); }
+.dep { color: var(--text-faint); font-family: var(--util); font-size: var(--t-sm); flex: none; }
+
+/* ============================================================================
+   Diagram family 4 — var() chain
+   ============================================================================ */
+.chain { display: flex; flex-direction: column; gap: 0; margin: 1.5rem 0; }
+.hop {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr) auto;
+  gap: 0.85rem;
+  align-items: center;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--rule);
+  background: var(--bg-raised);
+  font-family: var(--mono);
+  font-size: var(--t-sm);
+}
+.hop + .hop { border-block-start: 0; }
+.hop:first-child { border-start-start-radius: var(--radius-lg); border-start-end-radius: var(--radius-lg); }
+.hop:last-child { border-end-start-radius: var(--radius-lg); border-end-end-radius: var(--radius-lg); }
+.hop > .tierbadge {
+  font-family: var(--util);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.1rem 0.35rem;
+  border-radius: 999px;
+  text-align: center;
+}
+.hop[data-tier='global'] > .tierbadge    { background: var(--bg-sunken); color: var(--text-muted); border: 1px solid var(--rule-strong); }
+.hop[data-tier='semantic'] > .tierbadge  { background: var(--good-soft); color: var(--good); }
+.hop[data-tier='component'] > .tierbadge { background: var(--accent-soft); color: var(--accent); }
+.hop > .val { text-align: end; color: var(--text-muted); white-space: nowrap; }
+.hop[data-override='true'] { background: var(--warn-soft); border-color: var(--warn); }
+.hop[data-override='true'] > .val { color: var(--warn); font-weight: 650; }
+.hop.dim { opacity: 0.35; }
+.hop .swatch {
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  border-radius: 2px;
+  border: 1px solid var(--rule-strong);
+  margin-inline-end: 0.35rem;
+  vertical-align: -0.05em;
+}
+
+/* ============================================================================
+   Widgets
+   ============================================================================ */
+.widget {
+  margin: 2rem 0;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-2);
+  overflow: hidden;
+}
+.widget > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.7rem 1rem;
+  border-block-end: 1px solid var(--rule);
+  background: var(--bg-sunken);
+}
+.widget > header .wt {
+  font-family: var(--util);
+  font-size: var(--t-sm);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+.widget > header .wh { font-family: var(--util); font-size: var(--t-xs); color: var(--text-muted); }
+.widget > .body { padding: 1rem; }
+.widget > .body > :first-child { margin-top: 0; }
+.widget > .body > :last-child { margin-bottom: 0; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+button.btn, .seg > button {
+  font-family: var(--util);
+  font-size: var(--t-sm);
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule-strong);
+  background: var(--bg-raised);
+  color: var(--text);
+  cursor: pointer;
+}
+button.btn:hover, .seg > button:hover { border-color: var(--accent); color: var(--accent); }
+button.btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+button.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+:root[data-theme='dark'] button.btn.primary { color: var(--manganese); }
+@media (prefers-color-scheme: dark) { button.btn.primary { color: var(--manganese); } }
+:root[data-theme='light'] button.btn.primary { color: #fff; }
+
+.seg { display: inline-flex; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--rule-strong); }
+.seg > button { border: 0; border-radius: 0; }
+.seg > button + button { border-inline-start: 1px solid var(--rule-strong); }
+.seg > button[aria-pressed='true'] { background: var(--accent); color: #fff; }
+:root[data-theme='dark'] .seg > button[aria-pressed='true'] { color: var(--manganese); }
+@media (prefers-color-scheme: dark) { .seg > button[aria-pressed='true'] { color: var(--manganese); } }
+:root[data-theme='light'] .seg > button[aria-pressed='true'] { color: #fff; }
+
+select.sel {
+  font-family: var(--mono);
+  font-size: var(--t-sm);
+  padding: 0.38rem 0.5rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule-strong);
+  background: var(--bg-raised);
+  color: var(--text);
+}
+
+/* Quiz */
+.quiz { display: flex; flex-direction: column; gap: 1.5rem; }
+.q { border: 1px solid var(--rule); border-radius: var(--radius-lg); background: var(--bg-raised); overflow: hidden; }
+.q > .stem { padding: 0.9rem 1rem; border-block-end: 1px solid var(--rule); background: var(--bg-sunken); }
+.q > .stem .qn {
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  text-transform: uppercase;
+}
+.q > .stem p { margin: 0.3rem 0 0; }
+.q > .stem pre {
+  margin: 0.6rem 0 0;
+  white-space: pre;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  background: var(--bg-code);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.7rem;
+  line-height: 1.6;
+}
+.opts { list-style: none; margin: 0; padding: 0.6rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.opts button {
+  width: 100%;
+  text-align: start;
+  font-family: var(--body);
+  font-size: calc(var(--t-base) * 0.95);
+  line-height: 1.5;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule);
+  background: var(--bg-raised);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  gap: 0.6rem;
+}
+.opts button .k {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  color: var(--text-faint);
+  flex: none;
+  padding-top: 0.15em;
+}
+.opts button:hover:not([disabled]) { border-color: var(--accent); background: var(--accent-soft); }
+.opts button[disabled] { cursor: default; }
+.opts button[data-state='right'] { border-color: var(--good); background: var(--good-soft); }
+.opts button[data-state='right'] .k { color: var(--good); }
+.opts button[data-state='wrong'] { border-color: var(--bad); background: var(--bad-soft); }
+.opts button[data-state='wrong'] .k { color: var(--bad); }
+.verdict {
+  margin: 0 0.6rem 0.6rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: var(--radius);
+  font-size: calc(var(--t-base) * 0.95);
+  display: none;
+}
+.verdict[data-show='true'] { display: block; }
+.verdict[data-ok='true'] { background: var(--good-soft); border: 1px solid var(--good); }
+.verdict[data-ok='false'] { background: var(--bad-soft); border: 1px solid var(--bad); }
+.verdict .vt { font-family: var(--util); font-weight: 700; font-size: var(--t-sm); }
+.verdict[data-ok='true'] .vt { color: var(--good); }
+.verdict[data-ok='false'] .vt { color: var(--bad); }
+.verdict p { margin: 0.3rem 0 0; }
+.score {
+  font-family: var(--util);
+  font-size: var(--t-sm);
+  color: var(--text-muted);
+  padding: 0.75rem 1rem;
+  border: 1px dashed var(--rule-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-sunken);
+}
+.score b { color: var(--text); font-variant-numeric: tabular-nums; }
+
+/* Live demo surface — hosts the real generated CSS */
+.demosurface {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  background: var(--bg-sunken);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.demorow { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+.demolabel {
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  min-width: 5.5rem;
+}
+
+/* Error-code reference */
+.codelist { display: flex; flex-direction: column; gap: 0.5rem; }
+.codecard {
+  border: 1px solid var(--rule);
+  border-inline-start: 3px solid var(--rule-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-raised);
+  padding: 0.75rem 0.9rem;
+}
+.codecard[data-sev='error'] { border-inline-start-color: var(--bad); }
+.codecard[data-sev='warning'] { border-inline-start-color: var(--warn); }
+.codecard > .top { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; }
+.codecard .cid { font-family: var(--mono); font-size: var(--t-sm); font-weight: 700; }
+.codecard[data-sev='error'] .cid { color: var(--bad); }
+.codecard[data-sev='warning'] .cid { color: var(--warn); }
+.codecard .sev {
+  font-family: var(--util);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.1rem 0.35rem;
+  border-radius: 999px;
+}
+.codecard[data-sev='error'] .sev { background: var(--bad-soft); color: var(--bad); }
+.codecard[data-sev='warning'] .sev { background: var(--warn-soft); color: var(--warn); }
+.codecard .src { font-family: var(--mono); font-size: var(--t-xs); color: var(--text-faint); margin-inline-start: auto; }
+.codecard .msg {
+  font-family: var(--mono);
+  font-size: var(--t-sm);
+  margin: 0.4rem 0 0;
+  white-space: pre-wrap;
+  line-height: 1.55;
+}
+.codecard .help {
+  margin: 0.4rem 0 0;
+  font-size: calc(var(--t-base) * 0.93);
+  color: var(--text-muted);
+  padding-inline-start: 0.7rem;
+  border-inline-start: 2px solid var(--rule);
+}
+.ph { color: var(--ochre); background: var(--warn-soft); border-radius: 2px; padding: 0 0.15em; font-style: normal; }
+:root[data-theme='dark'] .ph { color: var(--warn); }
+.filterbar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 1.25rem 0;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--bg-sunken);
+  position: sticky;
+  top: 0.5rem;
+  z-index: 5;
+}
+.filterbar input {
+  flex: 1 1 12rem;
+  font-family: var(--util);
+  font-size: var(--t-sm);
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule-strong);
+  background: var(--bg-raised);
+  color: var(--text);
+}
+.hidden { display: none !important; }
+
+/* ============================================================================
+   Cards / next steps
+   ============================================================================ */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 0.85rem; margin: 1.75rem 0; }
+.card {
+  display: block;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--bg-raised);
+  text-decoration: none;
+  color: var(--text);
+  box-shadow: var(--shadow-1);
+}
+.card:hover { border-color: var(--accent); box-shadow: var(--shadow-2); }
+.card .n {
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.card .h { font-family: var(--display); font-size: var(--t-lg); font-weight: 600; margin: 0.2rem 0 0.3rem; }
+.card .d { font-size: var(--t-sm); color: var(--text-muted); line-height: 1.5; font-family: var(--util); }
+
+/* On-page table of contents */
+.toc {
+  margin: 0 0 2.5rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--bg-sunken);
+}
+.toc > .label {
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 0.45rem;
+}
+.toc ol { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: 1.5rem; }
+.toc li { margin: 0 0 0.25rem; break-inside: avoid; }
+.toc a { font-family: var(--util); font-size: var(--t-sm); text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+
+/* Prev / next */
+.pager { display: flex; gap: 0.85rem; margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+.pager a {
+  flex: 1 1 0;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  background: var(--bg-raised);
+}
+.pager a:hover { border-color: var(--accent); }
+.pager a .dir { font-family: var(--util); font-size: var(--t-xs); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); }
+.pager a .t { display: block; font-family: var(--display); font-size: var(--t-lg); margin-top: 0.15rem; color: var(--text); }
+.pager a.next { text-align: end; }
+
+/* Theme toggle */
+.themetoggle {
+  position: fixed;
+  inset-block-start: 0.85rem;
+  inset-inline-end: 0.85rem;
+  z-index: 20;
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 650;
+  padding: 0.4rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--rule-strong);
+  background: var(--bg-raised);
+  color: var(--text-muted);
+  cursor: pointer;
+  box-shadow: var(--shadow-1);
+}
+.themetoggle:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ============================================================================
+   Responsive
+   ============================================================================ */
+@media (max-width: 60rem) {
+  .frame { grid-template-columns: 1fr; }
+  .sidebar {
+    position: static;
+    /* height:auto is required — the desktop rule pins it to 100vh, which on a phone
+       would push the entire article below the fold. */
+    height: auto;
+    max-height: none;
+    overflow-y: visible;
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--rule);
+    padding-bottom: 1.25rem;
+  }
+  .navgroup ol { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: 2px; }
+  .wrap { padding: 0 1.15rem; }
+  .pagehead { padding: 2.25rem 0 1.75rem; margin-bottom: 1.75rem; }
+  .pagehead h1 { font-size: var(--t-3xl); }
+  .toc ol { columns: 1; }
+  .tier { grid-template-columns: 1fr; gap: 0.5rem; }
+  .flowdown { padding-inline-start: 1rem; }
+  .hop { grid-template-columns: 5rem minmax(0, 1fr); }
+  .hop > .val { grid-column: 1 / -1; text-align: start; }
+  .pager { flex-direction: column; }
+  .pager a.next { text-align: start; }
+  .themetoggle { inset-block-start: auto; inset-block-end: 0.85rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+@media print {
+  .sidebar, .themetoggle, .pager, .filterbar { display: none; }
+  .frame { grid-template-columns: 1fr; }
+  body { background: #fff; color: #000; }
+}
+
+</style>
+<script>
+(function () {
+  var root = document.documentElement;
+  var key = 'girih-docs-theme';
+  var saved = null;
+  try { saved = localStorage.getItem(key); } catch (e) {}
+  if (saved === 'dark' || saved === 'light') root.setAttribute('data-theme', saved);
+
+  function label() {
+    var explicit = root.getAttribute('data-theme');
+    var dark = explicit ? explicit === 'dark'
+      : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return dark ? 'Light' : 'Dark';
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    var btn = document.querySelector('.themetoggle');
+    if (!btn) return;
+    btn.textContent = label();
+    btn.addEventListener('click', function () {
+      var explicit = root.getAttribute('data-theme');
+      var dark = explicit ? explicit === 'dark'
+        : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var nextTheme = dark ? 'light' : 'dark';
+      root.setAttribute('data-theme', nextTheme);
+      try { localStorage.setItem(key, nextTheme); } catch (e) {}
+      btn.textContent = label();
+    });
+  });
+})();
+</script>
+</head>
+<body>
+
+  <button class="themetoggle" type="button" aria-label="Switch colour theme">Dark</button>
+  <div class="frame">
+    <nav class="sidebar" aria-label="Documentation">
+    <a class="brandmark" href="index.html">
+      <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <polygon points="12.00,0.50 18.76,2.70 22.94,8.45 22.94,15.55 18.76,21.30 12.00,23.50 5.24,21.30 1.06,15.55 1.06,8.45 5.24,2.70" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.35"></polygon>
+      <polygon points="12.00,0.50 13.58,7.15 18.76,2.70 16.13,9.00 22.94,8.45 17.10,12.00 22.94,15.55 16.13,15.00 18.76,21.30 13.58,16.85 12.00,23.50 10.42,16.85 5.24,21.30 7.87,15.00 1.06,15.55 6.90,12.00 1.06,8.45 7.87,9.00 5.24,2.70 10.42,7.15" fill="none" stroke="var(--accent)" stroke-width="1.1"></polygon>
+    </svg>
+      <span>
+        <span class="wordmark">girih</span>
+        <span class="persian"> گره</span>
+      </span>
+    </a>
+    <p class="tagline">One warp, many wefts — compile multi-brand design systems from tokens and contracts.</p>
+    <div class="navgroup">
+      <div class="label">Orientation</div>
+      <ol>
+        <li><a href="index.html"><span class="n">00</span><span>Start here</span></a></li>
+        <li><a href="01-the-idea.html"><span class="n">01</span><span>The idea</span></a></li>
+        <li><a href="02-installation.html"><span class="n">02</span><span>Installation</span></a></li>
+      </ol>
+    </div>
+    <div class="navgroup">
+      <div class="label">The model</div>
+      <ol>
+        <li><a href="03-how-it-works.html" aria-current="page"><span class="n">03</span><span>How it works</span></a></li>
+        <li><a href="04-tokens.html"><span class="n">04</span><span>Tokens &amp; brands</span></a></li>
+        <li><a href="05-contracts.html"><span class="n">05</span><span>Contracts</span></a></li>
+      </ol>
+    </div>
+    <div class="navgroup">
+      <div class="label">Reference</div>
+      <ol>
+        <li><a href="06-the-code.html"><span class="n">06</span><span>The code</span></a></li>
+        <li><a href="07-error-codes.html"><span class="n">07</span><span>Error codes</span></a></li>
+        <li><a href="08-quiz.html"><span class="n">08</span><span>Quiz</span></a></li>
+      </ol>
+    </div>
+  </nav>
+    <main class="content">
+      <header class="pagehead">
+        <div class="wrap">
+          <div class="eyebrow">Chapter 03 · The model</div>
+          <h1>How it works</h1>
+          <p class="standfirst">The whole compile pipeline, one stage at a time, with real data moving through it.</p>
+        </div>
+      </header>
+      <div class="wrap">
+        <div class="toc">
+    <div class="label">On this page</div>
+    <ol>
+      <li><a href="#overview">The whole thing at once</a></li>
+      <li><a href="#stepper">Walk it stage by stage</a></li>
+      <li><a href="#twopaths">Two compile targets, one token build</a></li>
+      <li><a href="#diagnostics">How girih reports problems</a></li>
+      <li><a href="#gates">The four gates</a></li>
+      <li><a href="#provenance">Provenance: who wrote which file</a></li>
+    </ol>
+  </div>
+        
+<div class="prose">
+<p class="lede">
+  When you run <code>girih generate react</code>, six things happen in a fixed order. None of them
+  is complicated on its own. The interesting part is the order, and the invariant each stage
+  establishes for the next.
+</p>
+
+<h2 id="overview">The whole thing at once</h2>
+
+<div class="rail bleed">
+  <div class="track">
+    <div class="stage" data-on="false" data-owner="tokens">
+      <div class="n">01</div>
+      <div class="t">Read</div>
+      <div class="d">glob, parse, infer tier</div>
+    </div>
+    <div class="stage" data-on="false" data-owner="tokens">
+      <div class="n">02</div>
+      <div class="t">Merge</div>
+      <div class="d">flatten to one path map</div>
+    </div>
+    <div class="stage" data-on="false" data-owner="tokens">
+      <div class="n">03</div>
+      <div class="t">Overlay</div>
+      <div class="d">apply brand overrides</div>
+    </div>
+    <div class="stage" data-on="false" data-owner="tokens">
+      <div class="n">04</div>
+      <div class="t">Resolve</div>
+      <div class="d">follow aliases, find cycles</div>
+    </div>
+    <div class="stage" data-on="false" data-owner="tokens">
+      <div class="n">05</div>
+      <div class="t">Validate</div>
+      <div class="d">tier direction, brand parity</div>
+    </div>
+    <div class="stage" data-on="false" data-owner="generators">
+      <div class="n">06</div>
+      <div class="t">Emit</div>
+      <div class="d">CSS, React, IR</div>
+    </div>
+  </div>
+</div>
+
+<p>
+  Read that rail as a pipeline where each stage may only assume what earlier stages guaranteed.
+  <em>Resolve</em> can follow an alias chain because <em>Merge</em> put every token in one
+  addressable map. <em>Emit</em> can write a brand-scoped block because <em>Overlay</em> recorded
+  which paths each brand touched. Getting the order wrong would not merely be inefficient — several
+  of these stages are impossible earlier than they appear.
+</p>
+
+<div class="callout eli5">
+  <div class="title">In plain words</div>
+  
+  <p>
+    It is a kitchen line. Someone reads the tickets, someone stacks the ingredients where they can be
+    found, someone swaps in substitutions for the customer with allergies, someone actually cooks,
+    someone checks the plate, and someone carries it out. Each station trusts the one before it. If
+    the substitutions happened after cooking, you would be scraping cheese off a finished dish.
+  </p>
+
+</div>
+
+<h2 id="stepper">Walk it stage by stage</h2>
+
+<p>
+  Below is the same pipeline, following one real token: <code>radius.md</code>, which lives in the
+  global tier and which the <code>seller</code> brand overrides from <code>8px</code> to
+  <code>2px</code>. It is the most instructive token in the example workspace, because a global
+  override has to travel through two levels of alias to reach a button — so it exercises the entire
+  three-tier design in one hop.
+</p>
+
+<div class="widget" id="w-stepper">
+  <header>
+    <span class="wt">The pipeline, one stage at a time</span>
+    <span class="wh">Following <code>radius.md</code> — a global token the seller brand overrides</span>
+  </header>
+  <div class="body">
+    <div class="rail" style="margin-top:0">
+      <div class="track">
+      <div class="stage" data-on="true" data-owner="buildTokenGraphs" data-step="0">
+      <div class="n">01</div>
+      <div class="t">Read</div>
+      <div class="d">glob + sort + JSON.parse, tier inferred from the filename</div>
+    </div>
+      <div class="stage" data-on="false" data-owner="mergeTokenFiles" data-step="1">
+      <div class="n">02</div>
+      <div class="t">Merge</div>
+      <div class="d">nested DTCG flattened into one path-keyed map</div>
+    </div>
+      <div class="stage" data-on="false" data-owner="applyBrandOverlay" data-step="2">
+      <div class="n">03</div>
+      <div class="t">Overlay</div>
+      <div class="d">brand overrides applied — existing paths only</div>
+    </div>
+      <div class="stage" data-on="false" data-owner="resolveTokenSet" data-step="3">
+      <div class="n">04</div>
+      <div class="t">Resolve</div>
+      <div class="d">alias chains followed, cycles detected, poison propagated</div>
+    </div>
+      <div class="stage" data-on="false" data-owner="validateTierDirection" data-step="4">
+      <div class="n">05</div>
+      <div class="t">Validate</div>
+      <div class="d">references must flow downward; brands must match</div>
+    </div>
+      <div class="stage" data-on="false" data-owner="generateCss" data-step="5">
+      <div class="n">06</div>
+      <div class="t">Emit</div>
+      <div class="d">:root plus one scoped block per brand — var() preserved</div>
+    </div>
+      </div>
+    </div>
+    <div class="controls" style="margin:0.9rem 0">
+      <button class="btn" type="button" data-s-prev>← Back</button>
+      <button class="btn primary" type="button" data-s-next>Next stage →</button>
+      <span style="font-family:var(--util);font-size:var(--t-xs);color:var(--text-faint)" data-s-count></span>
+    </div>
+    <h4 style="margin-top:1.25rem" data-s-title></h4>
+    <p data-s-note style="font-size:calc(var(--t-base) * 0.96)"></p>
+    <figure class="code" style="margin-bottom:0">
+      <figcaption><span class="path" data-s-owner></span><span class="badge generated">In flight</span></figcaption>
+      <pre><code data-s-data></code></pre>
+    </figure>
+  </div>
+</div>
+
+<p>
+  Two details in that walkthrough deserve to be pulled out, because they are the difference between
+  girih working and girih looking like it works.
+</p>
+
+<div class="callout gotcha">
+  <div class="title">Poison propagation: one typo, one error</div>
+  <p>
+    At the <em>Resolve</em> stage, a token pointing at something that does not exist is unresolvable
+    — obviously. But so is everything that references it, transitively. A naive implementation
+    reports all of them, so a single typo in <code>color.primary</code> produces forty errors and
+    buries the cause.
+  </p>
+  <p>
+    girih computes the poisoned set, marks every affected token as unresolved so nothing downstream
+    emits a bogus value, and reports a diagnostic <em>only for the root cause</em>. You fix one
+    thing and forty errors disappear. The same reasoning drives
+    <code>dedupeAcrossBrands()</code>: a problem in the base token set is identical for every brand,
+    so it is reported once rather than once per brand.
+  </p>
+</div>
+
+<div class="callout rule">
+  <div class="title">The dependents closure — the single most important function in the emitter</div>
+  <p>
+    At <em>Emit</em>, a brand block cannot contain only the tokens that brand overrode. CSS custom
+    properties are computed <em>where they are declared</em>, so
+    <code>--ds-button-radius: var(--ds-radius-control)</code> declared in <code>:root</code> resolves
+    against <code>:root</code> and would ignore a nested brand scope entirely.
+  </p>
+  <p>
+    So the emitter walks the reference graph backwards from each overridden path and re-declares
+    every token that can reach it. In the example, the <code>seller</code> brand overrides three
+    tokens and its CSS block contains twelve declarations. The nine extra ones are the closure, and
+    without them a nested <code>BrandProvider</code> would silently render the wrong radius.
+  </p>
+</div>
+
+<h2 id="twopaths">Two compile targets, one token build</h2>
+
+<p>
+  <code>girih generate</code> takes a target: <code>css</code> or <code>react</code>. Both run the
+  identical token pipeline; the React path adds contract loading on top.
+</p>
+
+<div class="pkgmap bleed">
+  <div class="pkgrow"><span class="pkg" data-layer="kernel">tokens/ + brands/<span class="role">you write</span></span><span class="dep">→</span><span class="pkg" data-layer="pipeline">buildTokenGraphs()<span class="role">@girih/tokens</span></span><span class="dep">→</span><span class="pkg" data-layer="generator">generateCss()<span class="role">@girih/generator-css</span></span><span class="dep">→</span><span class="pkg" data-layer="surface">tokens.css + tokens.d.ts<span class="role">emitted</span></span></div>
+  <div class="pkgrow"><span class="pkg" data-layer="kernel">components/*.spec.ts<span class="role">you write</span></span><span class="dep">→</span><span class="pkg" data-layer="pipeline">loadSpecs() → specToIR()<span class="role">@girih/spec</span></span><span class="dep">→</span><span class="pkg" data-layer="generator">generateReact()<span class="role">@girih/generator-react</span></span><span class="dep">→</span><span class="pkg" data-layer="surface">src/*.tsx + components.css<span class="role">emitted</span></span></div>
+</div>
+
+<p>
+  The contract path depends on the token path, not the other way round: <code>validateSpecs()</code>
+  needs the resolved token graphs to check that every <code>{token.ref}</code> in a contract exists
+  — and exists <em>in every brand</em>. That ordering is why a broken token set stops the build
+  before contracts are even read. There is no point validating a contract against a graph you know
+  is wrong.
+</p>
+
+<figure class="code" data-lang="ts">
+  <figcaption>
+      <span class="path">packages/cli/src/cli.ts</span>
+      <span class="badge authored">You write this</span>
+    </figcaption>
+  <pre><code><span class="tk-c">// packages/cli/src/cli.ts — the one function generate, build and publish all route through</span>
+<span class="tk-k">async</span> <span class="tk-k">function</span> composeReact(config, build, cssFiles) {
+  <span class="tk-k">const</span> { irs, extensions } = <span class="tk-k">await</span> loadComponentIRs(config, build);
+  <span class="tk-k">const</span> ejected = <span class="tk-k">await</span> loadEjectedSources(config, build, irs);
+  <span class="tk-k">const</span> { lock } = <span class="tk-k">await</span> readLock(config.root);
+  <span class="tk-k">const</span> version = lock?.published?.version ?? <span class="tk-s">'0.0.0-dev'</span>;
+  <span class="tk-k">const</span> reactResult = generateReact(irs, { packageName: config.name, ... }, { extensions, ejected });
+  <span class="tk-k">return</span> { files: [...cssFiles, ...reactResult.files], irFiles: ..., irs, extensions, ejected };
+}</code></pre>
+</figure>
+
+<div class="callout rule">
+  <div class="title">Why one function and not three</div>
+  <p>
+    <code>generate</code>, <code>build</code> and <code>publish</code> must never disagree about what
+    the package contains. If <code>publish</code> computed the file set slightly differently from
+    <code>generate</code>, you could publish something nobody reviewed. Routing all three through
+    <code>composeReact()</code> makes that class of bug unrepresentable. When you extend the output,
+    extend this function — not the three call sites.
+  </p>
+</div>
+
+<hr class="strap">
+
+<h2 id="diagnostics">How girih reports problems</h2>
+
+<p>
+  girih almost never throws. Problems are values: a <code>Diagnostic</code> with a stable code, a
+  severity, the file and token path it concerns, and — for anything actionable — a one-line
+  <code>help</code>.
+</p>
+
+<figure class="code" data-lang="ts">
+  <figcaption>
+      <span class="path">packages/core/src/diagnostics.ts</span>
+      <span class="badge authored">You write this</span>
+    </figcaption>
+  <pre><code><span class="tk-k">export</span> <span class="tk-k">interface</span> Diagnostic {
+  <span class="tk-c">/** Stable machine-readable code, e.g. 'GIRIH2003'. */</span>
+  code: string;
+  severity: <span class="tk-s">'error'</span> | <span class="tk-s">'warning'</span> | <span class="tk-s">'info'</span>;
+  message: string;
+  <span class="tk-c">/** Workspace-relative file the problem originates from, when known. */</span>
+  file?: string;
+  <span class="tk-c">/** Token or component path, e.g. 'button.primary.background'. */</span>
+  path?: string;
+  <span class="tk-c">/** One-line suggestion for fixing the problem. */</span>
+  help?: string;
+}</code></pre>
+</figure>
+
+<p>
+  Diagnostics accumulate through the whole run rather than aborting at the first problem, so one
+  <code>girih check</code> tells you everything that is wrong instead of making you play
+  whack-a-mole. The codes are partitioned by owning package:
+</p>
+
+<div class="tablewrap">
+  <table>
+    <thead><tr><th>Range</th><th>Owner</th><th>Covers</th><th>Count</th></tr></thead>
+    <tbody>
+      <tr><td><code>GIRIH1xxx</code></td><td><code>core + cli</code></td><td>Workspace, config, manifest, ds.lock</td><td class="num"><span class="num">14</span></td></tr>
+      <tr><td><code>GIRIH2xxx</code></td><td><code>tokens</code></td><td>Parse, overlay, alias resolution, tier validation</td><td class="num"><span class="num">20</span></td></tr>
+      <tr><td><code>GIRIH3xxx</code></td><td><code>generator-css</code></td><td>CSS emission</td><td class="num"><span class="num">3</span></td></tr>
+      <tr><td><code>GIRIH4xxx</code></td><td><code>spec</code></td><td>Component contracts and extensions</td><td class="num"><span class="num">31</span></td></tr>
+      <tr><td><code>GIRIH5xxx</code></td><td><code>generator-react</code></td><td>React emission</td><td class="num"><span class="num">1</span></td></tr>
+      <tr><td><code>GIRIH6xxx</code></td><td><code>cli</code></td><td>Build and publish</td><td class="num"><span class="num">1</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p>
+  Some diagnostics do real work beyond reporting. <code>GIRIH2030</code> — an unknown token
+  reference — runs a small similarity search over the token set and suggests the paths you probably
+  meant:
+</p>
+
+<figure class="code" data-lang="none">
+  <figcaption>
+      <span class="path"></span>
+      <span class="badge shell">Terminal</span>
+    </figcaption>
+  <pre><code>error GIRIH2030: 'button.primary.background' references '{color.primaryy}', which does not exist.
+  help: Did you mean '{color.primary}' or '{color.primary-hover}'?</code></pre>
+</figure>
+
+<p>
+  And <code>GIRIH2031</code> reports the <em>entire</em> cycle rather than just announcing that one
+  exists, which is the difference between a five-second fix and a twenty-minute hunt through a
+  three-tier alias graph:
+</p>
+
+<figure class="code" data-lang="none">
+  <figcaption>
+      <span class="path"></span>
+      <span class="badge shell">Terminal</span>
+    </figcaption>
+  <pre><code>error GIRIH2031: Circular token reference: 'radius.control' → 'button.radius' → 'radius.control'.
+  help: Break the cycle by pointing one of these tokens at a raw value.</code></pre>
+</figure>
+
+<h2 id="gates">The four gates</h2>
+
+<p>
+  girih refuses to proceed in four situations. Each refusal protects a different thing, and knowing
+  which gate you hit tells you what to do.
+</p>
+
+<div class="tablewrap">
+  <table>
+    <thead><tr><th>Gate</th><th>Refuses when</th><th>Protects</th><th>Override</th></tr></thead>
+    <tbody>
+      <tr><td><b>Broken token set</b></td><td>Any token diagnostic is an error</td><td>You from emitting CSS built on unresolved values</td><td>None — fix the tokens</td></tr>
+      <tr><td><b>Invalid contract</b></td><td>A spec references a token some brand lacks, or declares an unimplementable state</td><td>A component that cannot satisfy its contract under every brand</td><td>None — fix the contract</td></tr>
+      <tr><td><b>Drift</b></td><td><code>.ds/manifest.json</code> hash ≠ the file on disk</td><td>Someone's hand edits from being silently destroyed</td><td><code>--force</code>, or better: <code>girih eject</code></td></tr>
+      <tr><td><b>Stale output</b></td><td>On-disk output ≠ what the generator would produce now</td><td>Publishing something that does not match its source</td><td>None — run <code>generate</code></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<details class="aside">
+  <summary>How drift detection actually works — it is simpler than it sounds</summary>
+  
+  <p>
+    Every file girih emits goes through <code>emittedFile(path, contents)</code>, which computes a
+    SHA-256 of the contents alongside the path. After a successful write, the manifest stores
+    <code>path → hash</code> for everything written.
+  </p>
+  <p>
+    On the next run, girih hashes what is on disk and compares. Three outcomes: the hash matches
+    (fine, overwrite it); the file is absent (fine, write it); the hash differs (a human edited it —
+    stop). That is the whole mechanism. No timestamps, no file watchers, no daemon.
+  </p>
+  <p>
+    The <code>--check</code> variant uses the same primitive from the other direction:
+    <code>verifyEmittedFiles()</code> compares the on-disk contents to freshly generated contents
+    and lists the differences without writing anything. That is what makes it safe to run in CI.
+  </p>
+
+</details>
+
+<h2 id="provenance">Provenance: who wrote which file</h2>
+
+<p>
+  In a girih workspace the single most useful question about any file is: did a human write this, or
+  did girih? Here is the complete answer.
+</p>
+
+<div class="tablewrap">
+  <table>
+    <thead><tr><th>Path</th><th>Author</th><th>In git?</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>ds.config.ts</code></td><td>You</td><td>Yes</td><td><code>girih brand create</code> also edits it, carefully</td></tr>
+      <tr><td><code>tokens/**</code></td><td>You</td><td>Yes</td><td>Three tiers, tier inferred from filename</td></tr>
+      <tr><td><code>brands/*/tokens.json</code></td><td>You</td><td>Yes</td><td>Overrides only — new paths are an error</td></tr>
+      <tr><td><code>components/*.spec.ts</code></td><td>You</td><td>Yes</td><td>The contracts</td></tr>
+      <tr><td><code>extensions/*.ext.ts</code></td><td>You</td><td>Yes</td><td>Constrained by <code>overridableTokens</code></td></tr>
+      <tr><td><code>components/ejected/*.tsx</code></td><td>You (after eject)</td><td>Yes</td><td>A tracked fork; CSS still generated</td></tr>
+      <tr><td><code>.ds/ir/*.json</code></td><td>girih</td><td><b>Yes</b></td><td>Canonical contract — review it in PRs</td></tr>
+      <tr><td><code>.ds/manifest.json</code></td><td>girih</td><td><b>Yes</b></td><td>The drift baseline; committing it is the point</td></tr>
+      <tr><td><code>ds.lock</code></td><td>girih</td><td><b>Yes</b></td><td>Ejections + last published version and signature</td></tr>
+      <tr><td><code>packages/design-system/**</code></td><td>girih</td><td>No</td><td>Pure artifact; gitignored in this repo</td></tr>
+      <tr><td><code>.ds/cache/</code>, <code>.ds/publish/</code></td><td>girih</td><td>No</td><td>Scratch space</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="callout gotcha">
+  <div class="title">The counter-intuitive one</div>
+  <p>
+    <code>.ds/ir/</code> and <code>.ds/manifest.json</code> are generated <em>and</em> committed,
+    which looks like a contradiction. It is not. The IR is the reviewable form of your contract — a
+    diff of <code>.ds/ir/Button.json</code> in a pull request shows exactly what changed about the
+    Button's public surface, which the <code>.spec.ts</code> diff shows less directly. And the
+    manifest has to be committed or drift detection cannot survive a fresh clone.
+  </p>
+  <p>
+    The rule is not "generated files are not committed". It is "generated files are not
+    <em>edited</em>". Those are different claims.
+  </p>
+</div>
+
+<p>
+  You now know the shape of the pipeline. <a href="04-tokens.html">Chapter 04</a> goes deep on the
+  first five stages, and it is where the multi-brand story actually gets told.
+</p>
+</div>
+        <div class="pager"><a class="prev" href="02-installation.html"><span class="dir">← Previous</span><span class="t">Installation</span></a><a class="next" href="04-tokens.html"><span class="dir">Next →</span><span class="t">Tokens and brands</span></a></div>
+      </div>
+    </main>
+  </div>
+  <style>hr.strap { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%231B3B8F' stroke-opacity='0.30' stroke-width='1'%3E%3Cpath d='M24.00,2.00L26.97,14.87L36.93,6.20L31.77,18.36L44.92,17.20L33.60,24.00L44.92,30.80L31.77,29.64L36.93,41.80L26.97,33.13L24.00,46.00L21.03,33.13L11.07,41.80L16.23,29.64L3.08,30.80L14.40,24.00L3.08,17.20L16.23,18.36L11.07,6.20L21.03,14.87Z'/%3E%3Cpath d='M24.00,2.00L36.93,6.20L44.92,17.20L44.92,30.80L36.93,41.80L24.00,46.00L11.07,41.80L3.08,30.80L3.08,17.20L11.07,6.20Z'/%3E%3Cpath d='M0,24 L48,24' stroke-opacity='0.15'/%3E%3C/g%3E%3C/svg%3E"); }</style>
+  <script>
+(function () {
+  var STAGES = [{"title":"Read","owner":"buildTokenGraphs","note":"Files are globbed then sorted so the build is deterministic. \u003ccode\u003einferTier()\u003c/code\u003e reads the tier off the path: anything under \u003ccode\u003etokens/components/\u003c/code\u003e is component tier, \u003ccode\u003eglobal*.tokens.json\u003c/code\u003e is global, \u003ccode\u003esemantic*\u003c/code\u003e is semantic. A file it cannot classify gets a \u003ccode\u003eGIRIH2004\u003c/code\u003e warning and is treated as semantic.","data":"tokens/global.tokens.json  →  tier: global\n{\n  \"radius\": {\n    \"$type\": \"dimension\",\n    \"md\": { \"$value\": \"8px\" }\n  }\n}"},{"title":"Merge","owner":"mergeTokenFiles","note":"Nested JSON becomes a flat map keyed by dotted path. This is the shape everything downstream speaks. \u003ccode\u003e$type\u003c/code\u003e inherits from the nearest ancestor that declares it, which is why \u003ccode\u003eradius.md\u003c/code\u003e knows it is a dimension without saying so itself.","data":"base token set  (109 tokens)\nradius.md        tier=global     value=\"8px\"\nradius.control   tier=semantic   value=\"{radius.md}\"\nbutton.radius    tier=component  value=\"{radius.control}\""},{"title":"Overlay","owner":"applyBrandOverlay","note":"The brand overlay may only replace values at paths that already exist. Introducing a new path here is an error, not a merge — that is the \u003cb\u003eoverride-only rule\u003c/b\u003e, and it is what keeps every brand structurally identical. The overlay also records which paths it touched; that list drives the scoped CSS block later.","data":"brands/seller/tokens.json  →  overlay\nradius.md   \"8px\"  ⟶  \"2px\"        ← overridden\n\noverriddenPaths = [\"color.primary\", \"color.primary-hover\", \"radius.md\"]"},{"title":"Resolve","owner":"resolveTokenSet","note":"Each \u003ccode\u003e{alias}\u003c/code\u003e is followed to a raw value. Unknown references get \u003ccode\u003eGIRIH2030\u003c/code\u003e with a \"did you mean\" suggestion; circular ones get \u003ccode\u003eGIRIH2031\u003c/code\u003e naming the \u003cem\u003ewhole\u003c/em\u003e cycle. Anything that can reach a broken token is marked unresolvable too, but only the root cause is reported — so one typo produces one error, not forty.","data":"resolved graph  (brand: seller)\nbutton.radius    →  radius.control  →  radius.md  =  \"2px\"\nbutton.primary.background  →  color.primary  →  color.green.600  =  \"#16A34A\""},{"title":"Validate","owner":"validateTierDirection + validateBrandParity","note":"Two checks. Tier direction: a reference may only point at its own tier or a lower one, so component→semantic→global is legal and the reverse is not. Brand parity: every brand must end up with the same set of token paths — if one brand is missing a token another has, the component contract could not be satisfiable everywhere.","data":"button.radius (component) → radius.control (semantic)   ✓ downward\nradius.control (semantic) → radius.md (global)           ✓ downward\n\nbrand parity: marketplace 109 paths · seller 109 paths    ✓ identical"},{"title":"Emit","owner":"generateCss","note":"The critical move: aliases stay as live \u003ccode\u003evar()\u003c/code\u003e references instead of being flattened to literals. And a brand block re-declares not only the overridden token but \u003cb\u003eevery token that transitively references it\u003c/b\u003e — the dependents closure. Custom properties are computed where they are declared, so a chain declared only in \u003ccode\u003e:root\u003c/code\u003e would resolve against \u003ccode\u003e:root\u003c/code\u003e and ignore the nested brand scope entirely.","data":"[data-brand=\"seller\"] {\n  --ds-radius-md: 2px;                              /* the override */\n  --ds-radius-control: var(--ds-radius-md);         /* dependent  */\n  --ds-button-radius: var(--ds-radius-control);     /* dependent  */\n  --ds-input-radius: var(--ds-radius-control);      /* dependent  */\n}"}];
+  var root = document.getElementById("w-stepper");
+  if (!root) return;
+
+  var at = 0;
+  var titleEl = root.querySelector('[data-s-title]');
+  var noteEl  = root.querySelector('[data-s-note]');
+  var dataEl  = root.querySelector('[data-s-data]');
+  var ownerEl = root.querySelector('[data-s-owner]');
+  var countEl = root.querySelector('[data-s-count]');
+  var prevBtn = root.querySelector('[data-s-prev]');
+  var nextBtn = root.querySelector('[data-s-next]');
+
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function draw() {
+    var s = STAGES[at];
+    titleEl.textContent = (at + 1) + '. ' + s.title;
+    noteEl.innerHTML = s.note;
+    dataEl.innerHTML = esc(s.data)
+      .replace(/(←[^\n]*)/g, '<span class="tk-r">$1</span>')
+      .replace(/(\/\*[^*]*\*\/)/g, '<span class="tk-c">$1</span>')
+      .replace(/(✓[^\n]*)/g, '<span class="tk-add">$1</span>')
+      .replace(/(&quot;[^&]*&quot;)/g, '<span class="tk-s">$1</span>');
+    ownerEl.textContent = s.owner + '()';
+    countEl.textContent = 'Stage ' + (at + 1) + ' of ' + STAGES.length;
+    prevBtn.disabled = at === 0;
+    nextBtn.disabled = at === STAGES.length - 1;
+    root.querySelectorAll('[data-step]').forEach(function (cell) {
+      cell.setAttribute('data-on', String(Number(cell.getAttribute('data-step')) === at));
+    });
+  }
+
+  prevBtn.addEventListener('click', function () { if (at > 0) { at--; draw(); } });
+  nextBtn.addEventListener('click', function () { if (at < STAGES.length - 1) { at++; draw(); } });
+  root.querySelectorAll('[data-step]').forEach(function (cell) {
+    cell.style.cursor = 'pointer';
+    cell.addEventListener('click', function () { at = Number(cell.getAttribute('data-step')); draw(); });
+  });
+
+  draw();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [],
+    "deny": ["Bash(rm -rf /)", "Read(./.env.*)"]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CMD=$(jq -r '.tool_input.command // \"\"' 2>/dev/null || true); case \"$CMD\" in *grep*|*rg\\ *|*ripgrep*|*find\\ *|*fd\\ *|*ack\\ *|*ag\\ *)   [ -f graphify-out/graph.json ] &&   echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"additionalContext\":\"graphify: knowledge graph at graphify-out/. For focused questions, run `graphify query \\\"<question>\\\"` (scoped subgraph, usually much smaller than GRAPH_REPORT.md) instead of grepping raw files. Read GRAPH_REPORT.md only for broad architecture context.\"}}'   || true ;; esac"
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Glob",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "FILE=$(jq -r '(.tool_input.file_path // .tool_input.pattern // .tool_input.path) // \"\"' 2>/dev/null || true); case \"$FILE\" in *graphify-out/*) true ;; *.py|*.js|*.ts|*.tsx|*.jsx|*.go|*.rs|*.java|*.rb|*.c|*.h|*.cpp|*.hpp|*.cc|*.cs|*.kt|*.swift|*.php|*.scala|*.lua|*.sh|*.md|*.rst|*.txt|*.mdx)   [ -f graphify-out/graph.json ] && echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"additionalContext\":\"graphify: knowledge graph at graphify-out/. For codebase questions, run `graphify query \\\"<question>\\\"` (scoped subgraph, usually much smaller than reading files one by one), `graphify explain \\\"<concept>\\\"`, or `graphify path \\\"<A>\\\" \\\"<B>\\\"`, instead of reading source files to answer. Read raw files to modify or debug specific code, or when the graph lacks the detail.\"}}' || true ;; esac || true"
+          }
+        ]
+      }
+    ]
+  }
+}

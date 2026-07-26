@@ -1,0 +1,87 @@
+# Publish the documentation in docs/ to GitHub Pages.
+#
+# One-time setup: Settings → Pages → Build and deployment → Source: "GitHub Actions".
+# After that this runs on every push to main that touches the docs.
+#
+# The docs are generated artifacts committed to the repo, so this workflow only uploads
+# them — it does not rebuild. The `verify` job re-runs the generators and fails if the
+# committed output is stale, which keeps docs/ honest without making the deploy depend on
+# a successful build.
+name: docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never run two deploys at once; cancel a queued one rather than an in-flight one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: verify committed docs are current
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # The token extractor imports the built packages, so this is required.
+      - run: pnpm build
+
+      # extract-tokens reads the example's emitted CSS, which is gitignored — so the
+      # example workspace has to be generated before the docs can be extracted.
+      - name: generate the example design system
+        working-directory: examples/acme-ds
+        run: pnpm exec girih generate react
+
+      - name: regenerate extracted data and pages
+        run: |
+          node docs/scripts/extract-diagnostics.mjs
+          node docs/scripts/extract-tokens.mjs
+          node docs/scripts/build-docs.mjs
+
+      - name: fail if the committed docs differ from a fresh build
+        run: |
+          if ! git diff --quiet -- docs/; then
+            echo "::error::docs/ is stale. Run the three doc scripts and commit the result."
+            git diff --stat -- docs/
+            exit 1
+          fi
+          echo "docs/ is up to date."
+
+  deploy:
+    name: deploy to Pages
+    runs-on: ubuntu-latest
+    needs: verify
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,2001 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>girih docs — Every error code</title>
+<meta name="description" content="All 70 GIRIH diagnostics, extracted from source, with what each one is actually telling you.">
+<meta name="color-scheme" content="light dark">
+<style>
+/* Reset just enough to be predictable across browsers. */
+html { -webkit-text-size-adjust: 100%; }
+img, svg { max-width: 100%; }
+
+/* ============================================================================
+   Tokens — light is the default; dark is redefined below at token level only.
+   ============================================================================ */
+:root {
+  /* Glazes */
+  --lapis:        #1B3B8F;
+  --lapis-bright: #2C56C4;
+  --turquoise:    #0E8F8F;
+  --turquoise-br: #14A8A8;
+  --ochre:        #BE7B1F;
+  --madder:       #A8321E;
+
+  /* Grounds and ink — neutrals biased a touch toward the lapis, not pure grey */
+  --plaster:      #F6F5F1;
+  --plaster-2:    #EFEEE8;
+  --plaster-3:    #E4E3DB;
+  --manganese:    #14181F;
+  --ink:          #1E232B;
+  --ink-2:        #4A5260;
+  --ink-3:        #6E7789;
+
+  /* Semantic surface roles */
+  --bg:           var(--plaster);
+  --bg-raised:    #FFFFFF;
+  --bg-sunken:    var(--plaster-2);
+  --bg-code:      #FBFAF7;
+  --rule:         #DAD8CE;
+  --rule-strong:  #C3C0B4;
+  --text:         var(--ink);
+  --text-muted:   var(--ink-2);
+  --text-faint:   var(--ink-3);
+  --accent:       var(--lapis);
+  --accent-soft:  #E5EAF7;
+  --good:         var(--turquoise);
+  --good-soft:    #DCF0EF;
+  --warn:         var(--ochre);
+  --warn-soft:    #F8EEDA;
+  --bad:          var(--madder);
+  --bad-soft:     #F8E4E0;
+
+  /* Type */
+  --display: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', 'URW Palladio L', Georgia, serif;
+  --body:    Charter, 'Bitstream Charter', 'Source Serif 4', 'Source Serif Pro', Cambria, Georgia, serif;
+  --util:    ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --mono:    ui-monospace, 'SF Mono', SFMono-Regular, 'Cascadia Code', 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  /* Scale — 1.25 from 17px, held to throughout */
+  --t-xs:   0.75rem;
+  --t-sm:   0.8125rem;
+  --t-base: 1.0625rem;
+  --t-lg:   1.1875rem;
+  --t-xl:   1.45rem;
+  --t-2xl:  1.85rem;
+  --t-3xl:  2.35rem;
+  --t-4xl:  2.95rem;
+
+  --measure: 66ch;
+  --sidebar: 16.5rem;
+  --radius:  3px;
+  --radius-lg: 6px;
+
+  --shadow-1: 0 1px 2px rgba(20, 24, 31, 0.06), 0 1px 6px rgba(20, 24, 31, 0.04);
+  --shadow-2: 0 2px 6px rgba(20, 24, 31, 0.08), 0 8px 24px rgba(20, 24, 31, 0.07);
+
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:          var(--manganese);
+    --bg-raised:   #1B212B;
+    --bg-sunken:   #101419;
+    --bg-code:     #171D26;
+    --rule:        #2A323F;
+    --rule-strong: #3C4655;
+    --text:        #E7E9ED;
+    --text-muted:  #A8B0BE;
+    --text-faint:  #7C8697;
+    --accent:      #7FA0EC;
+    --accent-soft: #1C2740;
+    --good:        #3FC7C1;
+    --good-soft:   #10312F;
+    --warn:        #E0A445;
+    --warn-soft:   #33260F;
+    --bad:         #E4705C;
+    --bad-soft:    #351812;
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 6px rgba(0, 0, 0, 0.3);
+    --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* The viewer's explicit toggle must beat the OS preference in BOTH directions. */
+:root[data-theme='dark'] {
+  --bg:          var(--manganese);
+  --bg-raised:   #1B212B;
+  --bg-sunken:   #101419;
+  --bg-code:     #171D26;
+  --rule:        #2A323F;
+  --rule-strong: #3C4655;
+  --text:        #E7E9ED;
+  --text-muted:  #A8B0BE;
+  --text-faint:  #7C8697;
+  --accent:      #7FA0EC;
+  --accent-soft: #1C2740;
+  --good:        #3FC7C1;
+  --good-soft:   #10312F;
+  --warn:        #E0A445;
+  --warn-soft:   #33260F;
+  --bad:         #E4705C;
+  --bad-soft:    #351812;
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 6px rgba(0, 0, 0, 0.3);
+  --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+:root[data-theme='light'] {
+  --bg:          var(--plaster);
+  --bg-raised:   #FFFFFF;
+  --bg-sunken:   var(--plaster-2);
+  --bg-code:     #FBFAF7;
+  --rule:        #DAD8CE;
+  --rule-strong: #C3C0B4;
+  --text:        var(--ink);
+  --text-muted:  var(--ink-2);
+  --text-faint:  var(--ink-3);
+  --accent:      var(--lapis);
+  --accent-soft: #E5EAF7;
+  --good:        var(--turquoise);
+  --good-soft:   #DCF0EF;
+  --warn:        var(--ochre);
+  --warn-soft:   #F8EEDA;
+  --bad:         var(--madder);
+  --bad-soft:    #F8E4E0;
+  --shadow-1: 0 1px 2px rgba(20, 24, 31, 0.06), 0 1px 6px rgba(20, 24, 31, 0.04);
+  --shadow-2: 0 2px 6px rgba(20, 24, 31, 0.08), 0 8px 24px rgba(20, 24, 31, 0.07);
+}
+
+/* ============================================================================
+   Base
+   ============================================================================ */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: var(--t-base);
+  line-height: 1.68;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-wrap: break-word;
+}
+
+::selection { background: var(--accent-soft); color: var(--text); }
+
+:where(a) { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+:where(a):hover { text-decoration-thickness: 2px; }
+
+:where(a, button, summary, input, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ============================================================================
+   Frame: sidebar + content
+   ============================================================================ */
+.frame {
+  display: grid;
+  grid-template-columns: var(--sidebar) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.sidebar {
+  border-inline-end: 1px solid var(--rule);
+  background: var(--bg-sunken);
+  padding: 1.75rem 1.25rem 3rem;
+  position: sticky;
+  top: 0;
+  align-self: start;
+  /* height, not max-height: a content-sized sticky column leaves the rail
+     un-backgrounded below it on long pages. */
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.brandmark {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.25rem;
+  text-decoration: none;
+  color: var(--text);
+}
+.brandmark svg { flex: none; }
+.brandmark .wordmark {
+  font-family: var(--display);
+  font-size: var(--t-xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.brandmark .persian {
+  font-size: var(--t-sm);
+  color: var(--text-faint);
+  font-family: var(--body);
+}
+.sidebar .tagline {
+  margin: 0 0 1.5rem;
+  font-size: var(--t-sm);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.navgroup { margin-bottom: 1.35rem; }
+.navgroup > .label {
+  font-family: var(--util);
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 0.5rem;
+}
+.navgroup ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; }
+.navgroup a {
+  display: flex;
+  gap: 0.55rem;
+  align-items: baseline;
+  padding: 0.32rem 0.5rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: var(--t-sm);
+  font-family: var(--util);
+  line-height: 1.4;
+}
+.navgroup a:hover { background: var(--bg-raised); color: var(--text); }
+.navgroup a[aria-current='page'] {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+.navgroup a .n {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+  font-size: var(--t-xs);
+  flex: none;
+  min-width: 1.1em;
+}
+.navgroup a[aria-current='page'] .n { color: var(--accent); }
+
+.content { min-width: 0; padding: 0 0 6rem; }
+.wrap { max-width: calc(var(--measure) + 14rem); margin: 0 auto; padding: 0 2rem; }
+.prose { max-width: var(--measure); }
+
+/* Wide things break out of the measure but never out of the page. */
+.bleed { max-width: calc(var(--measure) + 11rem); }
+
+/* ============================================================================
+   Page header — construction lines at pentagonal angles, faint
+   ============================================================================ */
+.pagehead {
+  border-block-end: 1px solid var(--rule);
+  background:
+    repeating-linear-gradient(72deg,  transparent 0 38px, color-mix(in oklab, var(--accent) 12%, transparent) 38px 39px),
+    repeating-linear-gradient(-72deg, transparent 0 38px, color-mix(in oklab, var(--accent) 12%, transparent) 38px 39px),
+    repeating-linear-gradient(36deg,  transparent 0 66px, color-mix(in oklab, var(--good) 9%, transparent) 66px 67px),
+    var(--bg-sunken);
+  padding: 3.25rem 0 2.5rem;
+  margin-bottom: 2.5rem;
+}
+.pagehead .eyebrow {
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.pagehead h1 {
+  font-family: var(--display);
+  font-size: var(--t-4xl);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.75rem;
+  text-wrap: balance;
+  font-weight: 600;
+}
+.pagehead .standfirst {
+  margin: 0;
+  font-size: var(--t-lg);
+  color: var(--text-muted);
+  max-width: 54ch;
+  line-height: 1.55;
+}
+
+/* ============================================================================
+   Typography in flow
+   ============================================================================ */
+h2, h3, h4 { font-family: var(--display); text-wrap: balance; letter-spacing: -0.01em; }
+h2 {
+  font-size: var(--t-2xl);
+  line-height: 1.2;
+  margin: 3.25rem 0 0.9rem;
+  padding-block-start: 1.5rem;
+  border-block-start: 1px solid var(--rule);
+  font-weight: 600;
+}
+h2:first-child { margin-top: 0; border-block-start: 0; padding-block-start: 0; }
+h3 { font-size: var(--t-xl); line-height: 1.28; margin: 2.25rem 0 0.6rem; font-weight: 600; }
+h4 {
+  font-family: var(--util);
+  font-size: var(--t-sm);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 1.75rem 0 0.5rem;
+}
+p { margin: 0 0 1.15rem; }
+.lede { font-size: var(--t-lg); color: var(--text-muted); line-height: 1.6; }
+
+ul, ol { margin: 0 0 1.15rem; padding-inline-start: 1.35rem; }
+li { margin-bottom: 0.4rem; }
+li > ul, li > ol { margin-top: 0.4rem; margin-bottom: 0.5rem; }
+
+strong { font-weight: 650; }
+em { font-style: italic; }
+
+code {
+  font-family: var(--mono);
+  font-size: 0.875em;
+  background: var(--bg-sunken);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 0.08em 0.32em;
+  overflow-wrap: break-word;
+}
+a code { color: inherit; }
+
+hr.strap {
+  border: 0;
+  height: 48px;
+  margin: 3rem 0;
+  background-repeat: repeat-x;
+  background-position: center;
+  opacity: 0.5;
+}
+
+/* ============================================================================
+   Code blocks — always white-space:pre, always scrollable on their own
+   ============================================================================ */
+figure.code {
+  margin: 1.5rem 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--bg-code);
+  overflow: hidden;
+  box-shadow: var(--shadow-1);
+}
+figure.code > figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0.85rem;
+  border-block-end: 1px solid var(--rule);
+  background: var(--bg-sunken);
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  color: var(--text-muted);
+}
+figure.code > figcaption .path {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  color: var(--text-muted);
+}
+figure.code > figcaption .badge {
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.625rem;
+  padding: 0.12rem 0.4rem;
+  border-radius: 999px;
+  flex: none;
+}
+.badge.authored { background: var(--accent-soft); color: var(--accent); }
+.badge.generated { background: var(--good-soft); color: var(--good); }
+.badge.shell     { background: var(--bg-raised); color: var(--text-muted); border: 1px solid var(--rule); }
+
+figure.code pre {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  overflow-x: auto;
+  white-space: pre;
+  font-family: var(--mono);
+  font-size: var(--t-sm);
+  line-height: 1.62;
+  tab-size: 2;
+}
+figure.code pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+  white-space: pre;
+}
+
+/* Minimal, honest highlighting: comments, strings, token refs, keywords. */
+.tk-c { color: var(--text-faint); font-style: italic; }
+.tk-s { color: var(--good); }
+.tk-k { color: var(--accent); font-weight: 600; }
+.tk-r { color: var(--warn); font-weight: 600; }
+.tk-n { color: var(--text); }
+.tk-del { color: var(--bad); }
+.tk-add { color: var(--good); }
+
+/* ============================================================================
+   Callouts
+   ============================================================================ */
+.callout {
+  margin: 1.5rem 0;
+  padding: 0.95rem 1.1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--rule);
+  border-inline-start: 3px solid var(--accent);
+  background: var(--bg-raised);
+  font-size: calc(var(--t-base) * 0.97);
+}
+.callout > .title {
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.35rem;
+}
+.callout > :last-child { margin-bottom: 0; }
+.callout.eli5      { border-inline-start-color: var(--good); background: var(--good-soft); }
+.callout.eli5 > .title { color: var(--good); }
+.callout.rule      { border-inline-start-color: var(--lapis); }
+.callout.gotcha    { border-inline-start-color: var(--warn); background: var(--warn-soft); }
+.callout.gotcha > .title { color: var(--warn); }
+.callout.danger    { border-inline-start-color: var(--bad); background: var(--bad-soft); }
+.callout.danger > .title { color: var(--bad); }
+.callout.skip      { border-inline-start-color: var(--rule-strong); background: var(--bg-sunken); color: var(--text-muted); }
+.callout.skip > .title { color: var(--text-faint); }
+
+details.aside {
+  margin: 1.5rem 0;
+  border: 1px dashed var(--rule-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-sunken);
+  padding: 0 1.1rem;
+}
+details.aside > summary {
+  cursor: pointer;
+  padding: 0.8rem 0;
+  font-family: var(--util);
+  font-size: var(--t-sm);
+  font-weight: 650;
+  color: var(--text-muted);
+  list-style-position: outside;
+}
+details.aside[open] > summary { border-block-end: 1px solid var(--rule); margin-block-end: 0.9rem; }
+details.aside > :last-child { margin-bottom: 0.9rem; }
+
+/* ============================================================================
+   Tables
+   ============================================================================ */
+.tablewrap { overflow-x: auto; margin: 1.5rem 0; border: 1px solid var(--rule); border-radius: var(--radius-lg); }
+table { border-collapse: collapse; width: 100%; font-size: var(--t-sm); font-family: var(--util); }
+th, td { text-align: start; padding: 0.5rem 0.75rem; border-block-end: 1px solid var(--rule); vertical-align: top; }
+thead th {
+  background: var(--bg-sunken);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+tbody tr:last-child td { border-block-end: 0; }
+tbody tr:hover { background: var(--bg-sunken); }
+td code { font-size: 0.8125rem; }
+.num { font-variant-numeric: tabular-nums; text-align: end; }
+
+/* ============================================================================
+   Diagram family 1 — tier stack
+   ============================================================================ */
+.tiers { display: flex; flex-direction: column; gap: 0; margin: 1.75rem 0; }
+.tier {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--rule);
+  background: var(--bg-raised);
+}
+.tier:first-child { border-start-start-radius: var(--radius-lg); border-start-end-radius: var(--radius-lg); }
+.tier:last-child { border-end-start-radius: var(--radius-lg); border-end-end-radius: var(--radius-lg); }
+.tier + .tier { border-block-start: 0; }
+.tier > .name { font-family: var(--util); font-size: var(--t-sm); font-weight: 700; }
+.tier > .name .sub { display: block; font-weight: 400; color: var(--text-faint); font-size: var(--t-xs); letter-spacing: 0; text-transform: none; }
+.tier[data-tier='global']    { border-inline-start: 3px solid var(--ink-3); }
+.tier[data-tier='semantic']  { border-inline-start: 3px solid var(--good); }
+.tier[data-tier='component'] { border-inline-start: 3px solid var(--accent); }
+.tier[data-tier='global'] > .name    { color: var(--text-muted); }
+.tier[data-tier='semantic'] > .name  { color: var(--good); }
+.tier[data-tier='component'] > .name { color: var(--accent); }
+.chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.chip {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule);
+  background: var(--bg-sunken);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.chip.hot { border-color: var(--warn); background: var(--warn-soft); color: var(--warn); font-weight: 650; }
+.chip.lit { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 650; }
+.flowdown {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.15rem 1rem 0.15rem 9.6rem;
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  color: var(--text-faint);
+}
+.flowdown::before { content: '↓'; color: var(--accent); font-size: var(--t-lg); line-height: 1; }
+
+/* ============================================================================
+   Diagram family 2 — pipeline rail
+   ============================================================================ */
+.rail { margin: 1.75rem 0; overflow-x: auto; }
+.rail > .track { display: flex; align-items: stretch; gap: 0; min-width: min-content; }
+.stage {
+  flex: 1 1 0;
+  min-width: 8.5rem;
+  border: 1px solid var(--rule);
+  background: var(--bg-raised);
+  padding: 0.7rem 0.8rem;
+  position: relative;
+}
+.stage + .stage { border-inline-start: 0; }
+.stage:first-child { border-start-start-radius: var(--radius-lg); border-end-start-radius: var(--radius-lg); }
+.stage:last-child { border-start-end-radius: var(--radius-lg); border-end-end-radius: var(--radius-lg); }
+.stage > .n {
+  font-family: var(--util);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+.stage > .t { font-family: var(--util); font-size: var(--t-sm); font-weight: 650; margin: 0.15rem 0 0.3rem; }
+.stage > .d { font-size: var(--t-xs); color: var(--text-muted); line-height: 1.45; font-family: var(--util); }
+.stage[data-on='true'] { background: var(--accent-soft); border-color: var(--accent); z-index: 1; }
+.stage[data-on='true'] > .t { color: var(--accent); }
+.stage[data-owner]::after {
+  content: attr(data-owner);
+  position: absolute;
+  inset-block-end: 0.35rem;
+  inset-inline-end: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.5625rem;
+  color: var(--text-faint);
+}
+
+/* ============================================================================
+   Diagram family 3 — package graph
+   ============================================================================ */
+.pkgmap { display: flex; flex-direction: column; gap: 0.6rem; margin: 1.75rem 0; }
+.pkgrow { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+.pkg {
+  font-family: var(--mono);
+  font-size: var(--t-sm);
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule-strong);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-1);
+  white-space: nowrap;
+}
+.pkg .role { display: block; font-family: var(--util); font-size: 0.625rem; color: var(--text-faint); }
+.pkg[data-layer='kernel']    { border-color: var(--ink-3); }
+.pkg[data-layer='pipeline']  { border-color: var(--good); }
+.pkg[data-layer='generator'] { border-color: var(--accent); }
+.pkg[data-layer='surface']   { border-color: var(--warn); }
+.dep { color: var(--text-faint); font-family: var(--util); font-size: var(--t-sm); flex: none; }
+
+/* ============================================================================
+   Diagram family 4 — var() chain
+   ============================================================================ */
+.chain { display: flex; flex-direction: column; gap: 0; margin: 1.5rem 0; }
+.hop {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr) auto;
+  gap: 0.85rem;
+  align-items: center;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--rule);
+  background: var(--bg-raised);
+  font-family: var(--mono);
+  font-size: var(--t-sm);
+}
+.hop + .hop { border-block-start: 0; }
+.hop:first-child { border-start-start-radius: var(--radius-lg); border-start-end-radius: var(--radius-lg); }
+.hop:last-child { border-end-start-radius: var(--radius-lg); border-end-end-radius: var(--radius-lg); }
+.hop > .tierbadge {
+  font-family: var(--util);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.1rem 0.35rem;
+  border-radius: 999px;
+  text-align: center;
+}
+.hop[data-tier='global'] > .tierbadge    { background: var(--bg-sunken); color: var(--text-muted); border: 1px solid var(--rule-strong); }
+.hop[data-tier='semantic'] > .tierbadge  { background: var(--good-soft); color: var(--good); }
+.hop[data-tier='component'] > .tierbadge { background: var(--accent-soft); color: var(--accent); }
+.hop > .val { text-align: end; color: var(--text-muted); white-space: nowrap; }
+.hop[data-override='true'] { background: var(--warn-soft); border-color: var(--warn); }
+.hop[data-override='true'] > .val { color: var(--warn); font-weight: 650; }
+.hop.dim { opacity: 0.35; }
+.hop .swatch {
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  border-radius: 2px;
+  border: 1px solid var(--rule-strong);
+  margin-inline-end: 0.35rem;
+  vertical-align: -0.05em;
+}
+
+/* ============================================================================
+   Widgets
+   ============================================================================ */
+.widget {
+  margin: 2rem 0;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-2);
+  overflow: hidden;
+}
+.widget > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.7rem 1rem;
+  border-block-end: 1px solid var(--rule);
+  background: var(--bg-sunken);
+}
+.widget > header .wt {
+  font-family: var(--util);
+  font-size: var(--t-sm);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+.widget > header .wh { font-family: var(--util); font-size: var(--t-xs); color: var(--text-muted); }
+.widget > .body { padding: 1rem; }
+.widget > .body > :first-child { margin-top: 0; }
+.widget > .body > :last-child { margin-bottom: 0; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+button.btn, .seg > button {
+  font-family: var(--util);
+  font-size: var(--t-sm);
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule-strong);
+  background: var(--bg-raised);
+  color: var(--text);
+  cursor: pointer;
+}
+button.btn:hover, .seg > button:hover { border-color: var(--accent); color: var(--accent); }
+button.btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+button.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+:root[data-theme='dark'] button.btn.primary { color: var(--manganese); }
+@media (prefers-color-scheme: dark) { button.btn.primary { color: var(--manganese); } }
+:root[data-theme='light'] button.btn.primary { color: #fff; }
+
+.seg { display: inline-flex; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--rule-strong); }
+.seg > button { border: 0; border-radius: 0; }
+.seg > button + button { border-inline-start: 1px solid var(--rule-strong); }
+.seg > button[aria-pressed='true'] { background: var(--accent); color: #fff; }
+:root[data-theme='dark'] .seg > button[aria-pressed='true'] { color: var(--manganese); }
+@media (prefers-color-scheme: dark) { .seg > button[aria-pressed='true'] { color: var(--manganese); } }
+:root[data-theme='light'] .seg > button[aria-pressed='true'] { color: #fff; }
+
+select.sel {
+  font-family: var(--mono);
+  font-size: var(--t-sm);
+  padding: 0.38rem 0.5rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule-strong);
+  background: var(--bg-raised);
+  color: var(--text);
+}
+
+/* Quiz */
+.quiz { display: flex; flex-direction: column; gap: 1.5rem; }
+.q { border: 1px solid var(--rule); border-radius: var(--radius-lg); background: var(--bg-raised); overflow: hidden; }
+.q > .stem { padding: 0.9rem 1rem; border-block-end: 1px solid var(--rule); background: var(--bg-sunken); }
+.q > .stem .qn {
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  text-transform: uppercase;
+}
+.q > .stem p { margin: 0.3rem 0 0; }
+.q > .stem pre {
+  margin: 0.6rem 0 0;
+  white-space: pre;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  background: var(--bg-code);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.7rem;
+  line-height: 1.6;
+}
+.opts { list-style: none; margin: 0; padding: 0.6rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.opts button {
+  width: 100%;
+  text-align: start;
+  font-family: var(--body);
+  font-size: calc(var(--t-base) * 0.95);
+  line-height: 1.5;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule);
+  background: var(--bg-raised);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  gap: 0.6rem;
+}
+.opts button .k {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  color: var(--text-faint);
+  flex: none;
+  padding-top: 0.15em;
+}
+.opts button:hover:not([disabled]) { border-color: var(--accent); background: var(--accent-soft); }
+.opts button[disabled] { cursor: default; }
+.opts button[data-state='right'] { border-color: var(--good); background: var(--good-soft); }
+.opts button[data-state='right'] .k { color: var(--good); }
+.opts button[data-state='wrong'] { border-color: var(--bad); background: var(--bad-soft); }
+.opts button[data-state='wrong'] .k { color: var(--bad); }
+.verdict {
+  margin: 0 0.6rem 0.6rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: var(--radius);
+  font-size: calc(var(--t-base) * 0.95);
+  display: none;
+}
+.verdict[data-show='true'] { display: block; }
+.verdict[data-ok='true'] { background: var(--good-soft); border: 1px solid var(--good); }
+.verdict[data-ok='false'] { background: var(--bad-soft); border: 1px solid var(--bad); }
+.verdict .vt { font-family: var(--util); font-weight: 700; font-size: var(--t-sm); }
+.verdict[data-ok='true'] .vt { color: var(--good); }
+.verdict[data-ok='false'] .vt { color: var(--bad); }
+.verdict p { margin: 0.3rem 0 0; }
+.score {
+  font-family: var(--util);
+  font-size: var(--t-sm);
+  color: var(--text-muted);
+  padding: 0.75rem 1rem;
+  border: 1px dashed var(--rule-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-sunken);
+}
+.score b { color: var(--text); font-variant-numeric: tabular-nums; }
+
+/* Live demo surface — hosts the real generated CSS */
+.demosurface {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  background: var(--bg-sunken);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.demorow { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+.demolabel {
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  min-width: 5.5rem;
+}
+
+/* Error-code reference */
+.codelist { display: flex; flex-direction: column; gap: 0.5rem; }
+.codecard {
+  border: 1px solid var(--rule);
+  border-inline-start: 3px solid var(--rule-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-raised);
+  padding: 0.75rem 0.9rem;
+}
+.codecard[data-sev='error'] { border-inline-start-color: var(--bad); }
+.codecard[data-sev='warning'] { border-inline-start-color: var(--warn); }
+.codecard > .top { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; }
+.codecard .cid { font-family: var(--mono); font-size: var(--t-sm); font-weight: 700; }
+.codecard[data-sev='error'] .cid { color: var(--bad); }
+.codecard[data-sev='warning'] .cid { color: var(--warn); }
+.codecard .sev {
+  font-family: var(--util);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.1rem 0.35rem;
+  border-radius: 999px;
+}
+.codecard[data-sev='error'] .sev { background: var(--bad-soft); color: var(--bad); }
+.codecard[data-sev='warning'] .sev { background: var(--warn-soft); color: var(--warn); }
+.codecard .src { font-family: var(--mono); font-size: var(--t-xs); color: var(--text-faint); margin-inline-start: auto; }
+.codecard .msg {
+  font-family: var(--mono);
+  font-size: var(--t-sm);
+  margin: 0.4rem 0 0;
+  white-space: pre-wrap;
+  line-height: 1.55;
+}
+.codecard .help {
+  margin: 0.4rem 0 0;
+  font-size: calc(var(--t-base) * 0.93);
+  color: var(--text-muted);
+  padding-inline-start: 0.7rem;
+  border-inline-start: 2px solid var(--rule);
+}
+.ph { color: var(--ochre); background: var(--warn-soft); border-radius: 2px; padding: 0 0.15em; font-style: normal; }
+:root[data-theme='dark'] .ph { color: var(--warn); }
+.filterbar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 1.25rem 0;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--bg-sunken);
+  position: sticky;
+  top: 0.5rem;
+  z-index: 5;
+}
+.filterbar input {
+  flex: 1 1 12rem;
+  font-family: var(--util);
+  font-size: var(--t-sm);
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule-strong);
+  background: var(--bg-raised);
+  color: var(--text);
+}
+.hidden { display: none !important; }
+
+/* ============================================================================
+   Cards / next steps
+   ============================================================================ */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 0.85rem; margin: 1.75rem 0; }
+.card {
+  display: block;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--bg-raised);
+  text-decoration: none;
+  color: var(--text);
+  box-shadow: var(--shadow-1);
+}
+.card:hover { border-color: var(--accent); box-shadow: var(--shadow-2); }
+.card .n {
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.card .h { font-family: var(--display); font-size: var(--t-lg); font-weight: 600; margin: 0.2rem 0 0.3rem; }
+.card .d { font-size: var(--t-sm); color: var(--text-muted); line-height: 1.5; font-family: var(--util); }
+
+/* On-page table of contents */
+.toc {
+  margin: 0 0 2.5rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--bg-sunken);
+}
+.toc > .label {
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 0.45rem;
+}
+.toc ol { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: 1.5rem; }
+.toc li { margin: 0 0 0.25rem; break-inside: avoid; }
+.toc a { font-family: var(--util); font-size: var(--t-sm); text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+
+/* Prev / next */
+.pager { display: flex; gap: 0.85rem; margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+.pager a {
+  flex: 1 1 0;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  background: var(--bg-raised);
+}
+.pager a:hover { border-color: var(--accent); }
+.pager a .dir { font-family: var(--util); font-size: var(--t-xs); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); }
+.pager a .t { display: block; font-family: var(--display); font-size: var(--t-lg); margin-top: 0.15rem; color: var(--text); }
+.pager a.next { text-align: end; }
+
+/* Theme toggle */
+.themetoggle {
+  position: fixed;
+  inset-block-start: 0.85rem;
+  inset-inline-end: 0.85rem;
+  z-index: 20;
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 650;
+  padding: 0.4rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--rule-strong);
+  background: var(--bg-raised);
+  color: var(--text-muted);
+  cursor: pointer;
+  box-shadow: var(--shadow-1);
+}
+.themetoggle:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ============================================================================
+   Responsive
+   ============================================================================ */
+@media (max-width: 60rem) {
+  .frame { grid-template-columns: 1fr; }
+  .sidebar {
+    position: static;
+    /* height:auto is required — the desktop rule pins it to 100vh, which on a phone
+       would push the entire article below the fold. */
+    height: auto;
+    max-height: none;
+    overflow-y: visible;
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--rule);
+    padding-bottom: 1.25rem;
+  }
+  .navgroup ol { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: 2px; }
+  .wrap { padding: 0 1.15rem; }
+  .pagehead { padding: 2.25rem 0 1.75rem; margin-bottom: 1.75rem; }
+  .pagehead h1 { font-size: var(--t-3xl); }
+  .toc ol { columns: 1; }
+  .tier { grid-template-columns: 1fr; gap: 0.5rem; }
+  .flowdown { padding-inline-start: 1rem; }
+  .hop { grid-template-columns: 5rem minmax(0, 1fr); }
+  .hop > .val { grid-column: 1 / -1; text-align: start; }
+  .pager { flex-direction: column; }
+  .pager a.next { text-align: start; }
+  .themetoggle { inset-block-start: auto; inset-block-end: 0.85rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+@media print {
+  .sidebar, .themetoggle, .pager, .filterbar { display: none; }
+  .frame { grid-template-columns: 1fr; }
+  body { background: #fff; color: #000; }
+}
+
+</style>
+<script>
+(function () {
+  var root = document.documentElement;
+  var key = 'girih-docs-theme';
+  var saved = null;
+  try { saved = localStorage.getItem(key); } catch (e) {}
+  if (saved === 'dark' || saved === 'light') root.setAttribute('data-theme', saved);
+
+  function label() {
+    var explicit = root.getAttribute('data-theme');
+    var dark = explicit ? explicit === 'dark'
+      : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return dark ? 'Light' : 'Dark';
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    var btn = document.querySelector('.themetoggle');
+    if (!btn) return;
+    btn.textContent = label();
+    btn.addEventListener('click', function () {
+      var explicit = root.getAttribute('data-theme');
+      var dark = explicit ? explicit === 'dark'
+        : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var nextTheme = dark ? 'light' : 'dark';
+      root.setAttribute('data-theme', nextTheme);
+      try { localStorage.setItem(key, nextTheme); } catch (e) {}
+      btn.textContent = label();
+    });
+  });
+})();
+</script>
+</head>
+<body>
+
+  <button class="themetoggle" type="button" aria-label="Switch colour theme">Dark</button>
+  <div class="frame">
+    <nav class="sidebar" aria-label="Documentation">
+    <a class="brandmark" href="index.html">
+      <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <polygon points="12.00,0.50 18.76,2.70 22.94,8.45 22.94,15.55 18.76,21.30 12.00,23.50 5.24,21.30 1.06,15.55 1.06,8.45 5.24,2.70" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.35"></polygon>
+      <polygon points="12.00,0.50 13.58,7.15 18.76,2.70 16.13,9.00 22.94,8.45 17.10,12.00 22.94,15.55 16.13,15.00 18.76,21.30 13.58,16.85 12.00,23.50 10.42,16.85 5.24,21.30 7.87,15.00 1.06,15.55 6.90,12.00 1.06,8.45 7.87,9.00 5.24,2.70 10.42,7.15" fill="none" stroke="var(--accent)" stroke-width="1.1"></polygon>
+    </svg>
+      <span>
+        <span class="wordmark">girih</span>
+        <span class="persian"> گره</span>
+      </span>
+    </a>
+    <p class="tagline">One warp, many wefts — compile multi-brand design systems from tokens and contracts.</p>
+    <div class="navgroup">
+      <div class="label">Orientation</div>
+      <ol>
+        <li><a href="index.html"><span class="n">00</span><span>Start here</span></a></li>
+        <li><a href="01-the-idea.html"><span class="n">01</span><span>The idea</span></a></li>
+        <li><a href="02-installation.html"><span class="n">02</span><span>Installation</span></a></li>
+      </ol>
+    </div>
+    <div class="navgroup">
+      <div class="label">The model</div>
+      <ol>
+        <li><a href="03-how-it-works.html"><span class="n">03</span><span>How it works</span></a></li>
+        <li><a href="04-tokens.html"><span class="n">04</span><span>Tokens &amp; brands</span></a></li>
+        <li><a href="05-contracts.html"><span class="n">05</span><span>Contracts</span></a></li>
+      </ol>
+    </div>
+    <div class="navgroup">
+      <div class="label">Reference</div>
+      <ol>
+        <li><a href="06-the-code.html"><span class="n">06</span><span>The code</span></a></li>
+        <li><a href="07-error-codes.html" aria-current="page"><span class="n">07</span><span>Error codes</span></a></li>
+        <li><a href="08-quiz.html"><span class="n">08</span><span>Quiz</span></a></li>
+      </ol>
+    </div>
+  </nav>
+    <main class="content">
+      <header class="pagehead">
+        <div class="wrap">
+          <div class="eyebrow">Chapter 07 · Reference</div>
+          <h1>Every error code</h1>
+          <p class="standfirst">All 70 GIRIH diagnostics, extracted from source, with what each one is actually telling you.</p>
+        </div>
+      </header>
+      <div class="wrap">
+        <div class="toc">
+    <div class="label">On this page</div>
+    <ol>
+      <li><a href="#anatomy">Anatomy of a diagnostic</a></li>
+      <li><a href="#families">The six families</a></li>
+      <li><a href="#reference">The full reference</a></li>
+      <li><a href="#gaps">An honest note on coverage</a></li>
+    </ol>
+  </div>
+        
+<div class="prose">
+<p class="lede">
+  All 70 diagnostics girih can emit — 57 errors and
+  13 warnings — extracted straight from
+  <code>packages/*/src</code> by a script. The messages below are the real strings, not paraphrases.
+</p>
+
+<div class="callout rule">
+  <div class="title">This page is generated</div>
+  <p>
+    <code>docs/scripts/extract-diagnostics.mjs</code> parses every
+    <code>{ code: 'GIRIH…', severity, message, help }</code> object literal out of the TypeScript
+    sources and writes <code>docs/data/diagnostics.json</code>, which this page renders. Re-run it
+    after changing any diagnostic; <code>--check</code> exits non-zero if the JSON is stale, so it can
+    guard a commit.
+  </p>
+  <p>
+    A hand-written reference would go quietly wrong the first time somebody improved a
+    <code>help</code> string. This one cannot.
+  </p>
+</div>
+
+<h2 id="anatomy">Anatomy of a diagnostic</h2>
+
+<p>
+  girih almost never throws. Problems are values with a stable shape, which is what makes them
+  greppable, testable, and machine-readable:
+</p>
+
+<figure class="code" data-lang="none">
+  <figcaption>
+      <span class="path"></span>
+      <span class="badge shell">Terminal</span>
+    </figcaption>
+  <pre><code>error GIRIH2030: 'button.primary.background' references '{color.primaryy}', which does not exist.
+      │         │      └─ message, with the offending path interpolated
+      │         └─ stable code — safe to grep for, safe to assert in a test
+      └─ severity: error | warning | info
+  help: Did you mean '{color.primary}' or '{color.primary-hover}'?
+      └─ one line, actionable, and computed from your actual token set</code></pre>
+</figure>
+
+<div class="callout eli5">
+  <div class="title">In plain words</div>
+  
+  <p>
+    Each code is a permanent name for one specific problem. The number never changes and is never
+    reused, so you can search this page, search the codebase, or search your CI logs and get the same
+    answer. Passages marked <i class="ph">${like this}</i> below are placeholders — at runtime girih
+    fills in your file name, token path, or component name.
+  </p>
+
+</div>
+
+<div class="filterbar">
+  <input type="search" id="codefilter" placeholder="Filter — try 'cycle', 'brand', 'GIRIH40', 'drift'" aria-label="Filter diagnostics">
+  <span class="seg" role="group" aria-label="Severity">
+    <button type="button" data-sev-filter="all" aria-pressed="true">All</button>
+    <button type="button" data-sev-filter="error" aria-pressed="false">Errors</button>
+    <button type="button" data-sev-filter="warning" aria-pressed="false">Warnings</button>
+  </span>
+  <span id="codecount" style="font-family:var(--util);font-size:var(--t-xs);color:var(--text-muted);font-variant-numeric:tabular-nums"></span>
+</div>
+
+<h2 id="families">The six families</h2>
+
+<p>
+  Codes are partitioned by the package that raises them. The range tells you where to look in the
+  source before you have read a word of the message.
+</p>
+
+<div class="tablewrap">
+  <table>
+    <thead><tr><th>Range</th><th>Owner</th><th>Covers</th><th>Codes</th></tr></thead>
+    <tbody>
+      <tr><td><a href="#family-1"><code>GIRIH1xxx</code></a></td><td><code>core + cli</code></td><td>Workspace, config, manifest, ds.lock</td><td class="num"><span class="num">14</span></td></tr>
+      <tr><td><a href="#family-2"><code>GIRIH2xxx</code></a></td><td><code>tokens</code></td><td>Parse, overlay, alias resolution, tier validation</td><td class="num"><span class="num">20</span></td></tr>
+      <tr><td><a href="#family-3"><code>GIRIH3xxx</code></a></td><td><code>generator-css</code></td><td>CSS emission</td><td class="num"><span class="num">3</span></td></tr>
+      <tr><td><a href="#family-4"><code>GIRIH4xxx</code></a></td><td><code>spec</code></td><td>Component contracts and extensions</td><td class="num"><span class="num">31</span></td></tr>
+      <tr><td><a href="#family-5"><code>GIRIH5xxx</code></a></td><td><code>generator-react</code></td><td>React emission</td><td class="num"><span class="num">1</span></td></tr>
+      <tr><td><a href="#family-6"><code>GIRIH6xxx</code></a></td><td><code>cli</code></td><td>Build and publish</td><td class="num"><span class="num">1</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="callout gotcha">
+  <div class="title">Stay in your range, and never reuse a retired number</div>
+  <p>
+    If you add a diagnostic, it belongs in the range of the package raising it. Reusing a retired
+    number is worse than skipping one: somebody's CI filter, runbook, or test is still matching on the
+    old meaning. Gaps in the numbering are free; collisions are not.
+  </p>
+</div>
+
+<hr class="strap">
+
+<h2 id="reference">The full reference</h2>
+
+<section data-family="1">
+  <h3 id="family-1"><code>GIRIH1xxx</code> — Workspace and bookkeeping</h3>
+  <p style="font-family:var(--util);font-size:var(--t-sm);color:var(--text-muted)">
+    Owned by <code>core + cli</code> · 14 codes
+  </p>
+  <p>Something about the shape of your workspace, rather than the design system itself: the config
+      file is missing or malformed, a brand points at a file that is not there, the manifest or
+      <code>ds.lock</code> is corrupt, or a generated file was edited by hand. These are the codes you
+      hit on day one and then rarely again — with one exception,
+      <code>GIRIH1010</code>, which is the drift gate and will visit you regularly.</p>
+  <div class="codelist">
+      <div class="codecard" data-sev="error" data-code="GIRIH1001" data-search="girih1001 no ds.config.ts found in ${root} run `girih init` to scaffold a workspace, or cd into an existing one. core">
+        <div class="top">
+          <span class="cid">GIRIH1001</span>
+          <span class="sev">error</span>
+          <span class="src">packages/core/src/config.ts:92</span>
+        </div>
+        <p class="msg">No ds.config.ts found in <i class="ph">${root}</i></p>
+        <p class="help">Run `girih init` to scaffold a workspace, or cd into an existing one.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH1002" data-search="girih1002 failed to load ${configpath}: ${message.split('\n')[0]}  core">
+        <div class="top">
+          <span class="cid">GIRIH1002</span>
+          <span class="sev">error</span>
+          <span class="src">packages/core/src/config.ts:108</span>
+        </div>
+        <p class="msg">Failed to load <i class="ph">${configPath}</i>: <i class="ph">${message.split('\n')[0]}</i></p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH1003" data-search="girih1003 config is missing 'name' (the published package name, e.g. '@acme/design-system').  core">
+        <div class="top">
+          <span class="cid">GIRIH1003</span>
+          <span class="sev">error</span>
+          <span class="src">packages/core/src/config.ts:185</span>
+        </div>
+        <p class="msg">Config is missing 'name' (the published package name, e.g. '@acme/design-system').</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH1004" data-search="girih1004 brand '${brand.name}' points at a missing token file: ${brand.tokensfile} create the overlay file (an empty {} is valid) or fix brands.definitions.${brand.name}.tokens. core">
+        <div class="top">
+          <span class="cid">GIRIH1004</span>
+          <span class="sev">error</span>
+          <span class="src">packages/core/src/config.ts:160</span>
+        </div>
+        <p class="msg">Brand '<i class="ph">${brand.name}</i>' points at a missing token file: <i class="ph">${brand.tokensFile}</i></p>
+        <p class="help">Create the overlay file (an empty {} is valid) or fix brands.definitions.<i class="ph">${brand.name}</i>.tokens.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH1005" data-search="girih1005 config must define at least one brand under brands.definitions.  core">
+        <div class="top">
+          <span class="cid">GIRIH1005</span>
+          <span class="sev">error</span>
+          <span class="src">packages/core/src/config.ts:194</span>
+        </div>
+        <p class="msg">Config must define at least one brand under brands.definitions.</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH1006" data-search="girih1006 brands.default ('${raw.brands?.default}') is not a key of brands.definitions. known brands: ${object.keys(definitions).join(', ')} core">
+        <div class="top">
+          <span class="cid">GIRIH1006</span>
+          <span class="sev">error</span>
+          <span class="src">packages/core/src/config.ts:201</span>
+        </div>
+        <p class="msg">brands.default ('<i class="ph">${raw.brands?.default}</i>') is not a key of brands.definitions.</p>
+        <p class="help">Known brands: <i class="ph">${Object.keys(definitions).join(', ')}</i></p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH1007" data-search="girih1007 ds.config.ts must default-export a config object (use defineconfig).  core">
+        <div class="top">
+          <span class="cid">GIRIH1007</span>
+          <span class="sev">error</span>
+          <span class="src">packages/core/src/config.ts:176</span>
+        </div>
+        <p class="msg">ds.config.ts must default-export a config object (use defineConfig).</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH1008" data-search="girih1008 unknown brand '${options.brand}'. known brands: ${[...build.graphs.keys()].join(', ')}. cli">
+        <div class="top">
+          <span class="cid">GIRIH1008</span>
+          <span class="sev">error</span>
+          <span class="src">packages/cli/src/cli.ts:271</span>
+        </div>
+        <p class="msg">Unknown brand '<i class="ph">${options.brand}</i>'.</p>
+        <p class="help">Known brands: <i class="ph">${[...build.graphs.keys()].join(', ')}</i>.</p>
+      </div>
+      <div class="codecard" data-sev="warning" data-code="GIRIH1010" data-search="girih1010 generated file ${path} was edited by hand since the last \`girih generate\`. undo the edit or eject the component (m5); the next generate will refuse to overwrite it. cli">
+        <div class="top">
+          <span class="cid">GIRIH1010</span>
+          <span class="sev">warning</span>
+          <span class="src">packages/cli/src/cli.ts:329</span>
+        </div>
+        <p class="msg">Generated file <i class="ph">${path}</i> was edited by hand since the last \`girih generate\`.</p>
+        <p class="help">Undo the edit or eject the component (M5); the next generate will refuse to overwrite it.</p>
+      </div>
+      <div class="codecard" data-sev="warning" data-code="GIRIH1011" data-search="girih1011 .ds/manifest.json is corrupt or from an incompatible girih version — drift detection is disabled. delete .ds/manifest.json and regenerate. cli">
+        <div class="top">
+          <span class="cid">GIRIH1011</span>
+          <span class="sev">warning</span>
+          <span class="src">packages/cli/src/cli.ts:321</span>
+        </div>
+        <p class="msg">.ds/manifest.json is corrupt or from an incompatible girih version — drift detection is disabled.</p>
+        <p class="help">Delete .ds/manifest.json and regenerate.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH1012" data-search="girih1012 '${name}' is recorded as ejected in ds.lock, but ${path} is missing. restore the file, or remove the '${name}' entry from ds.lock to return to generation. cli">
+        <div class="top">
+          <span class="cid">GIRIH1012</span>
+          <span class="sev">error</span>
+          <span class="src">packages/cli/src/cli.ts:105</span>
+        </div>
+        <p class="msg">'<i class="ph">${name}</i>' is recorded as ejected in ds.lock, but <i class="ph">${path}</i> is missing.</p>
+        <p class="help">Restore the file, or remove the '<i class="ph">${name}</i>' entry from ds.lock to return to generation.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH1013" data-search="girih1013 ds.lock is corrupt or from an incompatible girih version. ds.lock is machine-managed and committed — restore it from git history. cli">
+        <div class="top">
+          <span class="cid">GIRIH1013</span>
+          <span class="sev">error</span>
+          <span class="src">packages/cli/src/cli.ts:79</span>
+        </div>
+        <p class="msg">ds.lock is corrupt or from an incompatible girih version.</p>
+        <p class="help">ds.lock is machine-managed and committed — restore it from git history.</p>
+      </div>
+      <div class="codecard" data-sev="warning" data-code="GIRIH1014" data-search="girih1014 '${name}' was ejected from a different spec/template than the current one — the fork may not honor the contract anymore. review the fork against the current spec, or re-eject after removing the ds.lock entry (girih update will automate this in m6). cli">
+        <div class="top">
+          <span class="cid">GIRIH1014</span>
+          <span class="sev">warning</span>
+          <span class="src">packages/cli/src/cli.ts:119</span>
+        </div>
+        <p class="msg">'<i class="ph">${name}</i>' was ejected from a different spec/template than the current one — the fork may not honor the contract anymore.</p>
+        <p class="help">Review the fork against the current spec, or re-eject after removing the ds.lock entry (girih update will automate this in M6).</p>
+      </div>
+      <div class="codecard" data-sev="warning" data-code="GIRIH1015" data-search="girih1015 ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated. restore components/${name.charat(0).tolowercase()}${name.slice(1)}.spec.ts, or remove the entry and components/ejected/${name}.tsx. cli">
+        <div class="top">
+          <span class="cid">GIRIH1015</span>
+          <span class="sev">warning</span>
+          <span class="src">packages/cli/src/cli.ts:93</span>
+        </div>
+        <p class="msg">ds.lock records '<i class="ph">${name}</i>' as ejected, but no spec with that name exists — the fork is not generated.</p>
+        <p class="help">Restore components/<i class="ph">${name.charAt(0).toLowerCase()}</i><i class="ph">${name.slice(1)}</i>.spec.ts, or remove the entry and components/ejected/<i class="ph">${name}</i>.tsx.</p>
+      </div>
+  </div>
+</section>
+
+<section data-family="2">
+  <h3 id="family-2"><code>GIRIH2xxx</code> — Tokens</h3>
+  <p style="font-family:var(--util);font-size:var(--t-sm);color:var(--text-muted)">
+    Owned by <code>tokens</code> · 20 codes
+  </p>
+  <p>Your design language does not hold together. A reference points at nothing, two tokens
+      reference each other in a loop, a reference points upward through the tiers, a brand tried to add
+      a token instead of overriding one, or two brands ended up with different token sets. Most of the
+      time the message names the exact path, and <code>GIRIH2030</code> also guesses what you meant.</p>
+  <div class="codelist">
+      <div class="codecard" data-sev="error" data-code="GIRIH2001" data-search="girih2001 token file must be a json object at the top level.  tokens">
+        <div class="top">
+          <span class="cid">GIRIH2001</span>
+          <span class="sev">error</span>
+          <span class="src">packages/tokens/src/parse.ts:26</span>
+        </div>
+        <p class="msg">Token file must be a JSON object at the top level.</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH2002" data-search="girih2002 token or group name '${key}' contains a character forbidden by dtcg ('.', '{', '}').  tokens">
+        <div class="top">
+          <span class="cid">GIRIH2002</span>
+          <span class="sev">error</span>
+          <span class="src">packages/tokens/src/parse.ts:79</span>
+        </div>
+        <p class="msg">Token or group name '<i class="ph">${key}</i>' contains a character forbidden by DTCG ('.', '{', '}').</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH2003" data-search="girih2003 '${[...segments, key].join('.')}' is a bare ${typeof child}; tokens must be objects with a $value. write it as { &quot;$value&quot;: ${json.stringify(child)} }. tokens">
+        <div class="top">
+          <span class="cid">GIRIH2003</span>
+          <span class="sev">error</span>
+          <span class="src">packages/tokens/src/parse.ts:99</span>
+        </div>
+        <p class="msg">'<i class="ph">${[...segments, key].join('.')}</i>' is a bare <i class="ph">${typeof child}</i>; tokens must be objects with a $value.</p>
+        <p class="help">Write it as { &quot;$value&quot;: <i class="ph">${JSON.stringify(child)}</i> }.</p>
+      </div>
+      <div class="codecard" data-sev="warning" data-code="GIRIH2004" data-search="girih2004 cannot infer the tier of '${file}' from its name — assuming 'semantic'. name token files global*.tokens.json / semantic*.tokens.json, or put component tokens under tokens/components/. tokens">
+        <div class="top">
+          <span class="cid">GIRIH2004</span>
+          <span class="sev">warning</span>
+          <span class="src">packages/tokens/src/engine.ts:67</span>
+        </div>
+        <p class="msg">Cannot infer the tier of '<i class="ph">${file}</i>' from its name — assuming 'semantic'.</p>
+        <p class="help">Name token files global*.tokens.json / semantic*.tokens.json, or put component tokens under tokens/components/.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH2005" data-search="girih2005 cannot read token file: ${(error as error).message}  tokens">
+        <div class="top">
+          <span class="cid">GIRIH2005</span>
+          <span class="sev">error</span>
+          <span class="src">packages/tokens/src/engine.ts:39</span>
+        </div>
+        <p class="msg">Cannot read token file: <i class="ph">${(error as Error).message}</i></p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH2006" data-search="girih2006 no token files matched ${config.tokens.source.join(', ')} under ${config.root}. create tokens/global.tokens.json to get started. tokens">
+        <div class="top">
+          <span class="cid">GIRIH2006</span>
+          <span class="sev">error</span>
+          <span class="src">packages/tokens/src/engine.ts:55</span>
+        </div>
+        <p class="msg">No token files matched <i class="ph">${config.tokens.source.join(', ')}</i> under <i class="ph">${config.root}</i>.</p>
+        <p class="help">Create tokens/global.tokens.json to get started.</p>
+      </div>
+      <div class="codecard" data-sev="warning" data-code="GIRIH2007" data-search="girih2007 token or group name '${key}' contains characters that do not translate cleanly to css variable names. stick to lowercase letters, digits, &quot;-&quot; and &quot;_&quot; so generated names stay predictable. tokens">
+        <div class="top">
+          <span class="cid">GIRIH2007</span>
+          <span class="sev">warning</span>
+          <span class="src">packages/tokens/src/parse.ts:89</span>
+        </div>
+        <p class="msg">Token or group name '<i class="ph">${key}</i>' contains characters that do not translate cleanly to CSS variable names.</p>
+        <p class="help">Stick to lowercase letters, digits, &quot;-&quot; and &quot;_&quot; so generated names stay predictable.</p>
+      </div>
+      <div class="codecard" data-sev="warning" data-code="GIRIH2008" data-search="girih2008 unknown '$'-prefixed property '${key}' is ignored (the '$' prefix is reserved by dtcg). known properties: ${[...known_dollar_props].join(', ')}. rename the key if it was meant to be a group. tokens">
+        <div class="top">
+          <span class="cid">GIRIH2008</span>
+          <span class="sev">warning</span>
+          <span class="src">packages/tokens/src/parse.ts:67</span>
+        </div>
+        <p class="msg">Unknown '$'-prefixed property '<i class="ph">${key}</i>' is ignored (the '$' prefix is reserved by DTCG).</p>
+        <p class="help">Known properties: <i class="ph">${[...KNOWN_DOLLAR_PROPS].join(', ')}</i>. Rename the key if it was meant to be a group.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH2009" data-search="girih2009 '${path}' is a token (it has a $value) but also contains '${key}' — tokens cannot nest groups or other tokens. move '${key}' out to a sibling group, e.g. '${path}-${key}'. tokens">
+        <div class="top">
+          <span class="cid">GIRIH2009</span>
+          <span class="sev">error</span>
+          <span class="src">packages/tokens/src/parse.ts:42</span>
+        </div>
+        <p class="msg">'<i class="ph">${path}</i>' is a token (it has a $value) but also contains '<i class="ph">${key}</i>' — tokens cannot nest groups or other tokens.</p>
+        <p class="help">Move '<i class="ph">${key}</i>' out to a sibling group, e.g. '<i class="ph">${path}</i>-<i class="ph">${key}</i>'.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH2010" data-search="girih2010 token '${token.path}' is defined in both ${existing.file} and ${token.file}. every token path must have exactly one definition; brand overlays are the only sanctioned override. tokens">
+        <div class="top">
+          <span class="cid">GIRIH2010</span>
+          <span class="sev">error</span>
+          <span class="src">packages/tokens/src/merge.ts:27</span>
+        </div>
+        <p class="msg">Token '<i class="ph">${token.path}</i>' is defined in both <i class="ph">${existing.file}</i> and <i class="ph">${token.file}</i>.</p>
+        <p class="help">Every token path must have exactly one definition; brand overlays are the only sanctioned override.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH2011" data-search="girih2011 token '${token.path}' is nested under '${shadowedancestor}', which is itself a token (defined in ${tokens.get(shadowedancestor)!.file}). a path must be either a token or a group, never both — rename one of them. tokens">
+        <div class="top">
+          <span class="cid">GIRIH2011</span>
+          <span class="sev">error</span>
+          <span class="src">packages/tokens/src/merge.ts:44 (+1 more)</span>
+        </div>
+        <p class="msg">Token '<i class="ph">${token.path}</i>' is nested under '<i class="ph">${shadowedAncestor}</i>', which is itself a token (defined in <i class="ph">${tokens.get(shadowedAncestor)!.file}</i>).</p>
+        <p class="help">A path must be either a token or a group, never both — rename one of them.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH2020" data-search="girih2020 brand overlay introduces '${token.path}', which does not exist in the base token set. overlays may only override existing tokens. define the token in tokens/ first, then override its value here. tokens">
+        <div class="top">
+          <span class="cid">GIRIH2020</span>
+          <span class="sev">error</span>
+          <span class="src">packages/tokens/src/merge.ts:97</span>
+        </div>
+        <p class="msg">Brand overlay introduces '<i class="ph">${token.path}</i>', which does not exist in the base token set.</p>
+        <p class="help">Overlays may only override existing tokens. Define the token in tokens/ first, then override its value here.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH2021" data-search="girih2021 brand overlay changes the $type of '${token.path}' from '${basetoken.type}' to '${token.type}'. a brand may change a token value, never its type — types are part of the shared contract. tokens">
+        <div class="top">
+          <span class="cid">GIRIH2021</span>
+          <span class="sev">error</span>
+          <span class="src">packages/tokens/src/merge.ts:108</span>
+        </div>
+        <p class="msg">Brand overlay changes the $type of '<i class="ph">${token.path}</i>' from '<i class="ph">${baseToken.type}</i>' to '<i class="ph">${token.type}</i>'.</p>
+        <p class="help">A brand may change a token value, never its type — types are part of the shared contract.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH2030" data-search="girih2030 '${token.path}' references '{${ref}}', which does not exist.  tokens">
+        <div class="top">
+          <span class="cid">GIRIH2030</span>
+          <span class="sev">error</span>
+          <span class="src">packages/tokens/src/resolve.ts:45</span>
+        </div>
+        <p class="msg">'<i class="ph">${token.path}</i>' references '{<i class="ph">${ref}</i>}', which does not exist.</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH2031" data-search="girih2031 circular token reference: ${cycle.map((p) =&gt; `'${p}'`).join(' → ')}. break the cycle by pointing one of these tokens at a raw value. tokens">
+        <div class="top">
+          <span class="cid">GIRIH2031</span>
+          <span class="sev">error</span>
+          <span class="src">packages/tokens/src/resolve.ts:79</span>
+        </div>
+        <p class="msg">Circular token reference: <i class="ph">${cycle.map((p) =&gt; `'${p}</i>'`).join(' → ')}.</p>
+        <p class="help">Break the cycle by pointing one of these tokens at a raw value.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH2032" data-search="girih2032 failed to resolve '${token.path}': ${(error as error).message}  tokens">
+        <div class="top">
+          <span class="cid">GIRIH2032</span>
+          <span class="sev">error</span>
+          <span class="src">packages/tokens/src/resolve.ts:145</span>
+        </div>
+        <p class="msg">Failed to resolve '<i class="ph">${token.path}</i>': <i class="ph">${(error as Error).message}</i></p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH2040" data-search="girih2040 ${token.tier} token '${token.path}' references ${target.tier} token '{${ref}}' — references must flow component → semantic → global, never upward.  tokens">
+        <div class="top">
+          <span class="cid">GIRIH2040</span>
+          <span class="sev">error</span>
+          <span class="src">packages/tokens/src/validate.ts:19</span>
+        </div>
+        <p class="msg"><i class="ph">${token.tier}</i> token '<i class="ph">${token.path}</i>' references <i class="ph">${target.tier}</i> token '{<i class="ph">${ref}</i>}' — references must flow component → semantic → global, never upward.</p>
+        
+      </div>
+      <div class="codecard" data-sev="warning" data-code="GIRIH2041" data-search="girih2041 component token '${token.path}' references global token '{${ref}}' directly, skipping the semantic tier. introduce a semantic alias for '{${ref}}' so brands can re-theme it without touching component tokens. tokens">
+        <div class="top">
+          <span class="cid">GIRIH2041</span>
+          <span class="sev">warning</span>
+          <span class="src">packages/tokens/src/validate.ts:27</span>
+        </div>
+        <p class="msg">component token '<i class="ph">${token.path}</i>' references global token '{<i class="ph">${ref}</i>}' directly, skipping the semantic tier.</p>
+        <p class="help">Introduce a semantic alias for '{<i class="ph">${ref}</i>}' so brands can re-theme it without touching component tokens.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH2042" data-search="girih2042 '${token.path}' ($type '${token.type}') aliases '{${ref}}' which has $type '${target.type}'.  tokens">
+        <div class="top">
+          <span class="cid">GIRIH2042</span>
+          <span class="sev">error</span>
+          <span class="src">packages/tokens/src/validate.ts:39</span>
+        </div>
+        <p class="msg">'<i class="ph">${token.path}</i>' ($type '<i class="ph">${token.type}</i>') aliases '{<i class="ph">${ref}</i>}' which has $type '<i class="ph">${target.type}</i>'.</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH2050" data-search="girih2050 brand '${brand}' does not resolve the same token set as '${brands[0]}':   tokens">
+        <div class="top">
+          <span class="cid">GIRIH2050</span>
+          <span class="sev">error</span>
+          <span class="src">packages/tokens/src/validate.ts:69</span>
+        </div>
+        <p class="msg">Brand '<i class="ph">${brand}</i>' does not resolve the same token set as '<i class="ph">${brands[0]}</i>': </p>
+        
+      </div>
+  </div>
+</section>
+
+<section data-family="3">
+  <h3 id="family-3"><code>GIRIH3xxx</code> — CSS emission</h3>
+  <p style="font-family:var(--util);font-size:var(--t-sm);color:var(--text-muted)">
+    Owned by <code>generator-css</code> · 3 codes
+  </p>
+  <p>Only three codes, and all three are about the output being untrustworthy rather than
+      malformed: generation failed outright, a composite value could not be flattened into a CSS
+      string, or two different token paths collapse to the same CSS variable name. The last one would
+      be a silent last-one-wins if girih did not stop for it.</p>
+  <div class="codelist">
+      <div class="codecard" data-sev="error" data-code="GIRIH3001" data-search="girih3001 css generation failed for brand '${brand}': ${(error as error).message}  generator-css">
+        <div class="top">
+          <span class="cid">GIRIH3001</span>
+          <span class="sev">error</span>
+          <span class="src">packages/generator-css/src/generate.ts:125</span>
+        </div>
+        <p class="msg">CSS generation failed for brand '<i class="ph">${brand}</i>': <i class="ph">${(error as Error).message}</i></p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH3002" data-search="girih3002 '${variable}' (brand '${brand}') has a composite value no css transform could flatten. give the token a supported $type (shadow, typography, border, transition, cubicbezier, fontfamily) or split it into scalar tokens. generator-css">
+        <div class="top">
+          <span class="cid">GIRIH3002</span>
+          <span class="sev">error</span>
+          <span class="src">packages/generator-css/src/generate.ts:222</span>
+        </div>
+        <p class="msg">'<i class="ph">${variable}</i>' (brand '<i class="ph">${brand}</i>') has a composite value no CSS transform could flatten.</p>
+        <p class="help">Give the token a supported $type (shadow, typography, border, transition, cubicBezier, fontFamily) or split it into scalar tokens.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH3003" data-search="girih3003 tokens ${paths.map((p) =&gt; `'${p}'`).join(' and ')} both map to the css variable '${varname}'. rename one of them — css variable names are case-insensitive here and join segments with &quot;-&quot;. generator-css">
+        <div class="top">
+          <span class="cid">GIRIH3003</span>
+          <span class="sev">error</span>
+          <span class="src">packages/generator-css/src/generate.ts:178</span>
+        </div>
+        <p class="msg">Tokens <i class="ph">${paths.map((p) =&gt; `'${p}</i>'`).join(' and ')} both map to the CSS variable '<i class="ph">${varName}</i>'.</p>
+        <p class="help">Rename one of them — CSS variable names are case-insensitive here and join segments with &quot;-&quot;.</p>
+      </div>
+  </div>
+</section>
+
+<section data-family="4">
+  <h3 id="family-4"><code>GIRIH4xxx</code> — Component contracts</h3>
+  <p style="font-family:var(--util);font-size:var(--t-sm);color:var(--text-muted)">
+    Owned by <code>spec</code> · 31 codes
+  </p>
+  <p>The largest family, because a contract has the largest surface a user can get wrong: names,
+      variants and their defaults, states the template cannot express, prop collisions, token
+      references that do not resolve for every brand, and extensions reaching past
+      <code>overridableTokens</code>. If you are writing contracts, this is your range.</p>
+  <div class="codelist">
+      <div class="codecard" data-sev="error" data-code="GIRIH4001" data-search="girih4001 component name '${ir.name}' must be pascalcase (it becomes an exported react identifier).  spec">
+        <div class="top">
+          <span class="cid">GIRIH4001</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/validate.ts:66</span>
+        </div>
+        <p class="msg">Component name '<i class="ph">${ir.name}</i>' must be PascalCase (it becomes an exported React identifier).</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4002" data-search="girih4002 extension '${extension.name}' references '{${path}}', which ${
+            missing.length === graphs.size ? 'no brand resolves' : `brand(s) ${missing.join(', ')} do not resolve`
+          }.  spec">
+        <div class="top">
+          <span class="cid">GIRIH4002</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/extensions.ts:163 (+1 more)</span>
+        </div>
+        <p class="msg">Extension '<i class="ph">${extension.name}</i>' references '{<i class="ph">${path}</i>}', which <i class="ph">${
+            missing.length === graphs.size ? 'no brand resolves' : `brand(s) ${missing.join(', ')}</i> do not resolve`
+          }.</p>
+        
+      </div>
+      <div class="codecard" data-sev="warning" data-code="GIRIH4003" data-search="girih4003 extension '${extension.name}' references global token '{${path}}' — extensions should consume semantic or component tokens.  spec">
+        <div class="top">
+          <span class="cid">GIRIH4003</span>
+          <span class="sev">warning</span>
+          <span class="src">packages/spec/src/extensions.ts:180 (+1 more)</span>
+        </div>
+        <p class="msg">Extension '<i class="ph">${extension.name}</i>' references global token '{<i class="ph">${path}</i>}' — extensions should consume semantic or component tokens.</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4005" data-search="girih4005 component '${ir.name}' is defined more than once (${seen.get(ir.name)} and ${file}).  spec">
+        <div class="top">
+          <span class="cid">GIRIH4005</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/validate.ts:74</span>
+        </div>
+        <p class="msg">Component '<i class="ph">${ir.name}</i>' is defined more than once (<i class="ph">${seen.get(ir.name)}</i> and <i class="ph">${file}</i>).</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4006" data-search="girih4006 variant axis '${axis.axis}' of '${ir.name}' has no values.  spec">
+        <div class="top">
+          <span class="cid">GIRIH4006</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/validate.ts:171</span>
+        </div>
+        <p class="msg">Variant axis '<i class="ph">${axis.axis}</i>' of '<i class="ph">${ir.name}</i>' has no values.</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4007" data-search="girih4007 variant axis '${axis.axis}' of '${ir.name}' defaults to '${axis.default}', which is not one of [${axis.values.join(', ')}].  spec">
+        <div class="top">
+          <span class="cid">GIRIH4007</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/validate.ts:192</span>
+        </div>
+        <p class="msg">Variant axis '<i class="ph">${axis.axis}</i>' of '<i class="ph">${ir.name}</i>' defaults to '<i class="ph">${axis.default}</i>', which is not one of [<i class="ph">${axis.values.join(', ')}</i>].</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4008" data-search="girih4008 '${ir.name}' declares state '${state}', which the '${ir.template}' template does not implement. states of '${ir.template}': ${implementablestates.join(', ') || '(none)'}. states are template capability flags, not arbitrary behavior. spec">
+        <div class="top">
+          <span class="cid">GIRIH4008</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/validate.ts:205</span>
+        </div>
+        <p class="msg">'<i class="ph">${ir.name}</i>' declares state '<i class="ph">${state}</i>', which the '<i class="ph">${ir.template}</i>' template does not implement.</p>
+        <p class="help">States of '<i class="ph">${ir.template}</i>': <i class="ph">${implementableStates.join(', ') || '(none)'}</i>. States are template capability flags, not arbitrary behavior.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4009" data-search="girih4009 '${ir.name}' styles variant axis '${block.axis}', which is not declared under variants.  spec">
+        <div class="top">
+          <span class="cid">GIRIH4009</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/validate.ts:242</span>
+        </div>
+        <p class="msg">'<i class="ph">${ir.name}</i>' styles variant axis '<i class="ph">${block.axis}</i>', which is not declared under variants.</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4010" data-search="girih4010 '${ir.name}' styles '${block.axis}.${block.value}', but '${block.value}' is not a declared value of that axis.  spec">
+        <div class="top">
+          <span class="cid">GIRIH4010</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/validate.ts:252</span>
+        </div>
+        <p class="msg">'<i class="ph">${ir.name}</i>' styles '<i class="ph">${block.axis}</i>.<i class="ph">${block.value}</i>', but '<i class="ph">${block.value}</i>' is not a declared value of that axis.</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4011" data-search="girih4011 '${ir.name}' styles state '${state.state}' under tokens.states, but does not declare that state.  spec">
+        <div class="top">
+          <span class="cid">GIRIH4011</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/validate.ts:229 (+1 more)</span>
+        </div>
+        <p class="msg">'<i class="ph">${ir.name}</i>' styles state '<i class="ph">${state.state}</i>' under tokens.states, but does not declare that state.</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4012" data-search="girih4012 extension '${extension.name}' has a malformed token reference '${ref}' at ${property} — expected '{token.path}'.  spec">
+        <div class="top">
+          <span class="cid">GIRIH4012</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/extensions.ts:151 (+1 more)</span>
+        </div>
+        <p class="msg">Extension '<i class="ph">${extension.name}</i>' has a malformed token reference '<i class="ph">${ref}</i>' at <i class="ph">${property}</i> — expected '{token.path}'.</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4013" data-search="girih4013 '${ir.name}' ${what} '${name}' is not a valid camelcase identifier — it becomes a react prop.  spec">
+        <div class="top">
+          <span class="cid">GIRIH4013</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/validate.ts:125 (+3 more)</span>
+        </div>
+        <p class="msg">'<i class="ph">${ir.name}</i>' <i class="ph">${what}</i> '<i class="ph">${name}</i>' is not a valid camelCase identifier — it becomes a React prop.</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4014" data-search="girih4014 '${spec.name}' has a non-string declaration for '${property}' at ${where} — every styled value must be a '{token.path}' reference.  spec">
+        <div class="top">
+          <span class="cid">GIRIH4014</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/ir.ts:34</span>
+        </div>
+        <p class="msg">'<i class="ph">${spec.name}</i>' has a non-string declaration for '<i class="ph">${property}</i>' at <i class="ph">${where}</i> — every styled value must be a '{token.path}' reference.</p>
+        
+      </div>
+      <div class="codecard" data-sev="warning" data-code="GIRIH4015" data-search="girih4015 '${ir.name}' styles unknown css property '${property}' at ${where} — it will be emitted verbatim.  spec">
+        <div class="top">
+          <span class="cid">GIRIH4015</span>
+          <span class="sev">warning</span>
+          <span class="src">packages/spec/src/validate.ts:277</span>
+        </div>
+        <p class="msg">'<i class="ph">${ir.name}</i>' styles unknown CSS property '<i class="ph">${property}</i>' at <i class="ph">${where}</i> — it will be emitted verbatim.</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4016" data-search="girih4016 '${ir.name}' maps aria attributes to state '${aria.state}', which it does not declare under states.  spec">
+        <div class="top">
+          <span class="cid">GIRIH4016</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/validate.ts:217</span>
+        </div>
+        <p class="msg">'<i class="ph">${ir.name}</i>' maps aria attributes to state '<i class="ph">${aria.state}</i>', which it does not declare under states.</p>
+        
+      </div>
+      <div class="codecard" data-sev="warning" data-code="GIRIH4018" data-search="girih4018 '${ir.name}' renders '&lt;${ir.element}&gt;', which is not a known host element. known elements: ${[...known_elements].join(', ')}. spec">
+        <div class="top">
+          <span class="cid">GIRIH4018</span>
+          <span class="sev">warning</span>
+          <span class="src">packages/spec/src/validate.ts:96</span>
+        </div>
+        <p class="msg">'<i class="ph">${ir.name}</i>' renders '&lt;<i class="ph">${ir.element}</i>&gt;', which is not a known host element.</p>
+        <p class="help">Known elements: <i class="ph">${[...KNOWN_ELEMENTS].join(', ')}</i>.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4020" data-search="girih4020 failed to load spec: ${(error as error).message}  spec">
+        <div class="top">
+          <span class="cid">GIRIH4020</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/load.ts:38</span>
+        </div>
+        <p class="msg">Failed to load spec: <i class="ph">${(error as Error).message}</i></p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4021" data-search="girih4021 ${file} does not default-export a component spec. export the result of definespec({...}) from '@girih/cli'. spec">
+        <div class="top">
+          <span class="cid">GIRIH4021</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/load.ts:48</span>
+        </div>
+        <p class="msg"><i class="ph">${file}</i> does not default-export a component spec.</p>
+        <p class="help">Export the result of defineSpec({...}) from '@girih/cli'.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4022" data-search="girih4022 ${file} contains a non-serializable value at '${impure}' — specs must be pure data. remove functions, dates, class instances, and symbols; a spec is a contract, not a program. spec">
+        <div class="top">
+          <span class="cid">GIRIH4022</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/load.ts:60</span>
+        </div>
+        <p class="msg"><i class="ph">${file}</i> contains a non-serializable value at '<i class="ph">${impure}</i>' — specs must be pure data.</p>
+        <p class="help">Remove functions, dates, class instances, and symbols; a spec is a contract, not a program.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4030" data-search="girih4030 ${file} does not default-export a variant extension. export the result of definevariant({ name, extends, tokens }) from '@girih/cli'. spec">
+        <div class="top">
+          <span class="cid">GIRIH4030</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/extensions.ts:47</span>
+        </div>
+        <p class="msg"><i class="ph">${file}</i> does not default-export a variant extension.</p>
+        <p class="help">Export the result of defineVariant({ name, extends, tokens }) from '@girih/cli'.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4031" data-search="girih4031 failed to load extension: ${(error as error).message}  spec">
+        <div class="top">
+          <span class="cid">GIRIH4031</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/extensions.ts:58</span>
+        </div>
+        <p class="msg">Failed to load extension: <i class="ph">${(error as Error).message}</i></p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4032" data-search="girih4032 extension name '${extension.name}' must be pascalcase (it becomes an exported react identifier).  spec">
+        <div class="top">
+          <span class="cid">GIRIH4032</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/extensions.ts:86</span>
+        </div>
+        <p class="msg">Extension name '<i class="ph">${extension.name}</i>' must be PascalCase (it becomes an exported React identifier).</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4033" data-search="girih4033 extension '${extension.name}' collides with an existing component or extension.  spec">
+        <div class="top">
+          <span class="cid">GIRIH4033</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/extensions.ts:95</span>
+        </div>
+        <p class="msg">Extension '<i class="ph">${extension.name}</i>' collides with an existing component or extension.</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4034" data-search="girih4034 extension '${extension.name}' extends '${extension.extends}', which is not in the component catalog. known components: ${[...byname.keys()].join(', ') || '(none)'}. spec">
+        <div class="top">
+          <span class="cid">GIRIH4034</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/extensions.ts:107</span>
+        </div>
+        <p class="msg">Extension '<i class="ph">${extension.name}</i>' extends '<i class="ph">${extension.extends}</i>', which is not in the component catalog.</p>
+        <p class="help">Known components: <i class="ph">${[...byName.keys()].join(', ') || '(none)'}</i>.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4035" data-search="girih4035 '${extension.extends}' does not allow extensions (extensibility.allowextends is false).  spec">
+        <div class="top">
+          <span class="cid">GIRIH4035</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/extensions.ts:117</span>
+        </div>
+        <p class="msg">'<i class="ph">${extension.extends}</i>' does not allow extensions (extensibility.allowExtends is false).</p>
+        
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4036" data-search="girih4036 extension '${extension.name}' overrides '${property}', which '${extension.extends}' does not list under extensibility.overridabletokens. overridable: ${base.extensibility.overridabletokens.join(', ') || '(none)'}. spec">
+        <div class="top">
+          <span class="cid">GIRIH4036</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/extensions.ts:139</span>
+        </div>
+        <p class="msg">Extension '<i class="ph">${extension.name}</i>' overrides '<i class="ph">${property}</i>', which '<i class="ph">${extension.extends}</i>' does not list under extensibility.overridableTokens.</p>
+        <p class="help">Overridable: <i class="ph">${base.extensibility.overridableTokens.join(', ') || '(none)'}</i>.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4037" data-search="girih4037 '${extension.extends}' is a compound (dialog) component — extensions can only build on single-element components.  spec">
+        <div class="top">
+          <span class="cid">GIRIH4037</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/extensions.ts:126</span>
+        </div>
+        <p class="msg">'<i class="ph">${extension.extends}</i>' is a compound (dialog) component — extensions can only build on single-element components.</p>
+        
+      </div>
+      <div class="codecard" data-sev="warning" data-code="GIRIH4038" data-search="girih4038 extension '${extension.name}' reaches into '{${path}}', another component's token namespace. use semantic tokens or '${componentnamespace(extension.extends)}.*' tokens so the extension survives refactors of unrelated components. spec">
+        <div class="top">
+          <span class="cid">GIRIH4038</span>
+          <span class="sev">warning</span>
+          <span class="src">packages/spec/src/extensions.ts:188</span>
+        </div>
+        <p class="msg">Extension '<i class="ph">${extension.name}</i>' reaches into '{<i class="ph">${path}</i>}', another component's token namespace.</p>
+        <p class="help">Use semantic tokens or '<i class="ph">${componentNamespace(extension.extends)}</i>.*' tokens so the extension survives refactors of unrelated components.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4040" data-search="girih4040 '${ir.name}' uses template '${ir.template}', which this girih version does not ship. available templates: ${object.keys(templates).join(', ')}. spec">
+        <div class="top">
+          <span class="cid">GIRIH4040</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/validate.ts:85</span>
+        </div>
+        <p class="msg">'<i class="ph">${ir.name}</i>' uses template '<i class="ph">${ir.template}</i>', which this girih version does not ship.</p>
+        <p class="help">Available templates: <i class="ph">${Object.keys(templates).join(', ')}</i>.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4041" data-search="girih4041 '${ir.name}' styles part '${part.part}', which the '${ir.template}' template does not have. declaredparts.size &gt; 0 ? `parts of '${ir.template}': ${[...declaredparts].join(', ')}.` : `the '${ir.template}' template has no parts — use tokens.base.` spec">
+        <div class="top">
+          <span class="cid">GIRIH4041</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/validate.ts:108</span>
+        </div>
+        <p class="msg">'<i class="ph">${ir.name}</i>' styles part '<i class="ph">${part.part}</i>', which the '<i class="ph">${ir.template}</i>' template does not have.</p>
+        <p class="help">declaredParts.size &gt; 0 ? `Parts of '<i class="ph">${ir.template}</i>': <i class="ph">${[...declaredParts].join(', ')}</i>.` : `The '<i class="ph">${ir.template}</i>' template has no parts — use tokens.base.`</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4042" data-search="girih4042 '${ir.name}' declares variant axis '${axis.axis}', but the '${ir.template}' template only wires up: ${template.variantaxes.join(', ')}. a silently-ignored axis would validate and then do nothing — declare only axes the template implements. spec">
+        <div class="top">
+          <span class="cid">GIRIH4042</span>
+          <span class="sev">error</span>
+          <span class="src">packages/spec/src/validate.ts:157</span>
+        </div>
+        <p class="msg">'<i class="ph">${ir.name}</i>' declares variant axis '<i class="ph">${axis.axis}</i>', but the '<i class="ph">${ir.template}</i>' template only wires up: <i class="ph">${template.variantAxes.join(', ')}</i>.</p>
+        <p class="help">A silently-ignored axis would validate and then do nothing — declare only axes the template implements.</p>
+      </div>
+  </div>
+</section>
+
+<section data-family="5">
+  <h3 id="family-5"><code>GIRIH5xxx</code> — React emission</h3>
+  <p style="font-family:var(--util);font-size:var(--t-sm);color:var(--text-muted)">
+    Owned by <code>generator-react</code> · 1 code
+  </p>
+  <p>One code. It fires when a contract maps ARIA attributes to a state that the chosen template
+      only expresses in CSS — so the attributes would not actually be wired up. A warning rather than an
+      error, because the component still works; it is just less accessible than the contract claims.</p>
+  <div class="codelist">
+      <div class="codecard" data-sev="warning" data-code="GIRIH5001" data-search="girih5001 '${ir.name}' maps aria attributes to state '${aria.state}', which the '${ir.template}' template only expresses in css — the attributes are not wired.  generator-react">
+        <div class="top">
+          <span class="cid">GIRIH5001</span>
+          <span class="sev">warning</span>
+          <span class="src">packages/generator-react/src/generate.ts:101</span>
+        </div>
+        <p class="msg">'<i class="ph">${ir.name}</i>' maps aria attributes to state '<i class="ph">${aria.state}</i>', which the '<i class="ph">${ir.template}</i>' template only expresses in CSS — the attributes are not wired.</p>
+        
+      </div>
+  </div>
+</section>
+
+<section data-family="6">
+  <h3 id="family-6"><code>GIRIH6xxx</code> — Build and publish</h3>
+  <p style="font-family:var(--util);font-size:var(--t-sm);color:var(--text-muted)">
+    Owned by <code>cli</code> · 1 code
+  </p>
+  <p>One code, guarding the packaging step: there are no TypeScript sources to compile, which
+      means <code>girih generate react</code> has not run yet.</p>
+  <div class="codelist">
+      <div class="codecard" data-sev="error" data-code="GIRIH6001" data-search="girih6001 no typescript sources in ${srcdir} — run \`girih generate react\` first.  cli">
+        <div class="top">
+          <span class="cid">GIRIH6001</span>
+          <span class="sev">error</span>
+          <span class="src">packages/cli/src/build.ts:42</span>
+        </div>
+        <p class="msg">No TypeScript sources in <i class="ph">${srcDir}</i> — run \`girih generate react\` first.</p>
+        
+      </div>
+  </div>
+</section>
+
+<p id="noresults" class="hidden" style="font-family:var(--util);color:var(--text-muted);padding:1.5rem;text-align:center;border:1px dashed var(--rule-strong);border-radius:var(--radius-lg)">
+  No diagnostics match that filter.
+</p>
+
+<h2 id="gaps">An honest note on coverage</h2>
+
+<p>
+  35 of the 70 diagnostics have no
+  <code>help</code> line. The project's own convention is that anything actionable should carry a
+  one-line suggestion, so that number is a real gap rather than a deliberate choice — most of the
+  missing ones are in the <code>GIRIH4xxx</code> contract family, where the message is often
+  self-explanatory but a pointer to the right field would still save time.
+</p>
+
+<p>
+  It is recorded here rather than smoothed over, because a reference that quietly implies full
+  coverage is worse than one that names its gaps. If you are adding a diagnostic, add the
+  <code>help</code>.
+</p>
+
+<figure class="code" data-lang="none">
+  <figcaption>
+      <span class="path"></span>
+      <span class="badge shell">Terminal</span>
+    </figcaption>
+  <pre><code># regenerate after changing any diagnostic
+node docs/scripts/extract-diagnostics.mjs
+
+# fail if the committed JSON is stale — suitable for a pre-commit hook or CI
+node docs/scripts/extract-diagnostics.mjs --check</code></pre>
+</figure>
+</div>
+        <div class="pager"><a class="prev" href="06-the-code.html"><span class="dir">← Previous</span><span class="t">The code</span></a><a class="next" href="08-quiz.html"><span class="dir">Next →</span><span class="t">Check yourself</span></a></div>
+      </div>
+    </main>
+  </div>
+  <style>hr.strap { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%231B3B8F' stroke-opacity='0.30' stroke-width='1'%3E%3Cpath d='M24.00,2.00L26.97,14.87L36.93,6.20L31.77,18.36L44.92,17.20L33.60,24.00L44.92,30.80L31.77,29.64L36.93,41.80L26.97,33.13L24.00,46.00L21.03,33.13L11.07,41.80L16.23,29.64L3.08,30.80L14.40,24.00L3.08,17.20L16.23,18.36L11.07,6.20L21.03,14.87Z'/%3E%3Cpath d='M24.00,2.00L36.93,6.20L44.92,17.20L44.92,30.80L36.93,41.80L24.00,46.00L11.07,41.80L3.08,30.80L3.08,17.20L11.07,6.20Z'/%3E%3Cpath d='M0,24 L48,24' stroke-opacity='0.15'/%3E%3C/g%3E%3C/svg%3E"); }</style>
+  <script>
+(function () {
+  var input = document.getElementById('codefilter');
+  var count = document.getElementById('codecount');
+  var none  = document.getElementById('noresults');
+  if (!input) return;
+
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.codecard'));
+  var sections = Array.prototype.slice.call(document.querySelectorAll('section[data-family]'));
+  var sevFilter = 'all';
+
+  function apply() {
+    var q = input.value.trim().toLowerCase();
+    var shown = 0;
+    cards.forEach(function (card) {
+      var matchesText = !q || card.getAttribute('data-search').indexOf(q) !== -1;
+      var matchesSev = sevFilter === 'all' || card.getAttribute('data-sev') === sevFilter;
+      var show = matchesText && matchesSev;
+      card.classList.toggle('hidden', !show);
+      if (show) shown++;
+    });
+    // Hide a family heading entirely when nothing in it matches.
+    sections.forEach(function (section) {
+      var any = section.querySelectorAll('.codecard:not(.hidden)').length > 0;
+      section.classList.toggle('hidden', !any);
+    });
+    count.textContent = shown + ' of ' + cards.length + ' shown';
+    none.classList.toggle('hidden', shown !== 0);
+  }
+
+  input.addEventListener('input', apply);
+  document.querySelectorAll('[data-sev-filter]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      sevFilter = btn.getAttribute('data-sev-filter');
+      document.querySelectorAll('[data-sev-filter]').forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
+      apply();
+    });
+  });
+
+  apply();
+})();
+</script>
+</body>
+</html>

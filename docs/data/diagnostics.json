@@ -1,0 +1,1183 @@
+{
+  "generatedBy": "docs/scripts/extract-diagnostics.mjs",
+  "note": "Do not edit by hand. Re-run the script after changing any diagnostic in packages/*/src.",
+  "total": 70,
+  "bySeverity": {
+    "error": 57,
+    "warning": 13
+  },
+  "families": {
+    "1": {
+      "range": "GIRIH1xxx",
+      "owner": "core + cli",
+      "topic": "Workspace, config, manifest, ds.lock",
+      "codes": [
+        "GIRIH1001",
+        "GIRIH1002",
+        "GIRIH1003",
+        "GIRIH1004",
+        "GIRIH1005",
+        "GIRIH1006",
+        "GIRIH1007",
+        "GIRIH1008",
+        "GIRIH1010",
+        "GIRIH1011",
+        "GIRIH1012",
+        "GIRIH1013",
+        "GIRIH1014",
+        "GIRIH1015"
+      ]
+    },
+    "2": {
+      "range": "GIRIH2xxx",
+      "owner": "tokens",
+      "topic": "Parse, overlay, alias resolution, tier validation",
+      "codes": [
+        "GIRIH2001",
+        "GIRIH2002",
+        "GIRIH2003",
+        "GIRIH2004",
+        "GIRIH2005",
+        "GIRIH2006",
+        "GIRIH2007",
+        "GIRIH2008",
+        "GIRIH2009",
+        "GIRIH2010",
+        "GIRIH2011",
+        "GIRIH2020",
+        "GIRIH2021",
+        "GIRIH2030",
+        "GIRIH2031",
+        "GIRIH2032",
+        "GIRIH2040",
+        "GIRIH2041",
+        "GIRIH2042",
+        "GIRIH2050"
+      ]
+    },
+    "3": {
+      "range": "GIRIH3xxx",
+      "owner": "generator-css",
+      "topic": "CSS emission",
+      "codes": [
+        "GIRIH3001",
+        "GIRIH3002",
+        "GIRIH3003"
+      ]
+    },
+    "4": {
+      "range": "GIRIH4xxx",
+      "owner": "spec",
+      "topic": "Component contracts and extensions",
+      "codes": [
+        "GIRIH4001",
+        "GIRIH4002",
+        "GIRIH4003",
+        "GIRIH4005",
+        "GIRIH4006",
+        "GIRIH4007",
+        "GIRIH4008",
+        "GIRIH4009",
+        "GIRIH4010",
+        "GIRIH4011",
+        "GIRIH4012",
+        "GIRIH4013",
+        "GIRIH4014",
+        "GIRIH4015",
+        "GIRIH4016",
+        "GIRIH4018",
+        "GIRIH4020",
+        "GIRIH4021",
+        "GIRIH4022",
+        "GIRIH4030",
+        "GIRIH4031",
+        "GIRIH4032",
+        "GIRIH4033",
+        "GIRIH4034",
+        "GIRIH4035",
+        "GIRIH4036",
+        "GIRIH4037",
+        "GIRIH4038",
+        "GIRIH4040",
+        "GIRIH4041",
+        "GIRIH4042"
+      ]
+    },
+    "5": {
+      "range": "GIRIH5xxx",
+      "owner": "generator-react",
+      "topic": "React emission",
+      "codes": [
+        "GIRIH5001"
+      ]
+    },
+    "6": {
+      "range": "GIRIH6xxx",
+      "owner": "cli",
+      "topic": "Build and publish",
+      "codes": [
+        "GIRIH6001"
+      ]
+    }
+  },
+  "codes": [
+    {
+      "code": "GIRIH1001",
+      "severity": "error",
+      "message": "No ds.config.ts found in ${root}",
+      "messageDynamic": true,
+      "help": "Run `girih init` to scaffold a workspace, or cd into an existing one.",
+      "helpDynamic": false,
+      "package": "core",
+      "file": "packages/core/src/config.ts",
+      "line": 92,
+      "sites": 1,
+      "allSites": [
+        "packages/core/src/config.ts:92"
+      ]
+    },
+    {
+      "code": "GIRIH1002",
+      "severity": "error",
+      "message": "Failed to load ${configPath}: ${message.split('\\n')[0]}",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "core",
+      "file": "packages/core/src/config.ts",
+      "line": 108,
+      "sites": 1,
+      "allSites": [
+        "packages/core/src/config.ts:108"
+      ]
+    },
+    {
+      "code": "GIRIH1003",
+      "severity": "error",
+      "message": "Config is missing 'name' (the published package name, e.g. '@acme/design-system').",
+      "messageDynamic": false,
+      "help": null,
+      "helpDynamic": false,
+      "package": "core",
+      "file": "packages/core/src/config.ts",
+      "line": 185,
+      "sites": 1,
+      "allSites": [
+        "packages/core/src/config.ts:185"
+      ]
+    },
+    {
+      "code": "GIRIH1004",
+      "severity": "error",
+      "message": "Brand '${brand.name}' points at a missing token file: ${brand.tokensFile}",
+      "messageDynamic": true,
+      "help": "Create the overlay file (an empty {} is valid) or fix brands.definitions.${brand.name}.tokens.",
+      "helpDynamic": true,
+      "package": "core",
+      "file": "packages/core/src/config.ts",
+      "line": 160,
+      "sites": 1,
+      "allSites": [
+        "packages/core/src/config.ts:160"
+      ]
+    },
+    {
+      "code": "GIRIH1005",
+      "severity": "error",
+      "message": "Config must define at least one brand under brands.definitions.",
+      "messageDynamic": false,
+      "help": null,
+      "helpDynamic": false,
+      "package": "core",
+      "file": "packages/core/src/config.ts",
+      "line": 194,
+      "sites": 1,
+      "allSites": [
+        "packages/core/src/config.ts:194"
+      ]
+    },
+    {
+      "code": "GIRIH1006",
+      "severity": "error",
+      "message": "brands.default ('${raw.brands?.default}') is not a key of brands.definitions.",
+      "messageDynamic": true,
+      "help": "Known brands: ${Object.keys(definitions).join(', ')}",
+      "helpDynamic": true,
+      "package": "core",
+      "file": "packages/core/src/config.ts",
+      "line": 201,
+      "sites": 1,
+      "allSites": [
+        "packages/core/src/config.ts:201"
+      ]
+    },
+    {
+      "code": "GIRIH1007",
+      "severity": "error",
+      "message": "ds.config.ts must default-export a config object (use defineConfig).",
+      "messageDynamic": false,
+      "help": null,
+      "helpDynamic": false,
+      "package": "core",
+      "file": "packages/core/src/config.ts",
+      "line": 176,
+      "sites": 1,
+      "allSites": [
+        "packages/core/src/config.ts:176"
+      ]
+    },
+    {
+      "code": "GIRIH1008",
+      "severity": "error",
+      "message": "Unknown brand '${options.brand}'.",
+      "messageDynamic": true,
+      "help": "Known brands: ${[...build.graphs.keys()].join(', ')}.",
+      "helpDynamic": true,
+      "package": "cli",
+      "file": "packages/cli/src/cli.ts",
+      "line": 271,
+      "sites": 1,
+      "allSites": [
+        "packages/cli/src/cli.ts:271"
+      ]
+    },
+    {
+      "code": "GIRIH1010",
+      "severity": "warning",
+      "message": "Generated file ${path} was edited by hand since the last \\`girih generate\\`.",
+      "messageDynamic": true,
+      "help": "Undo the edit or eject the component (M5); the next generate will refuse to overwrite it.",
+      "helpDynamic": false,
+      "package": "cli",
+      "file": "packages/cli/src/cli.ts",
+      "line": 329,
+      "sites": 1,
+      "allSites": [
+        "packages/cli/src/cli.ts:329"
+      ]
+    },
+    {
+      "code": "GIRIH1011",
+      "severity": "warning",
+      "message": ".ds/manifest.json is corrupt or from an incompatible girih version — drift detection is disabled.",
+      "messageDynamic": false,
+      "help": "Delete .ds/manifest.json and regenerate.",
+      "helpDynamic": false,
+      "package": "cli",
+      "file": "packages/cli/src/cli.ts",
+      "line": 321,
+      "sites": 1,
+      "allSites": [
+        "packages/cli/src/cli.ts:321"
+      ]
+    },
+    {
+      "code": "GIRIH1012",
+      "severity": "error",
+      "message": "'${name}' is recorded as ejected in ds.lock, but ${path} is missing.",
+      "messageDynamic": true,
+      "help": "Restore the file, or remove the '${name}' entry from ds.lock to return to generation.",
+      "helpDynamic": true,
+      "package": "cli",
+      "file": "packages/cli/src/cli.ts",
+      "line": 105,
+      "sites": 1,
+      "allSites": [
+        "packages/cli/src/cli.ts:105"
+      ]
+    },
+    {
+      "code": "GIRIH1013",
+      "severity": "error",
+      "message": "ds.lock is corrupt or from an incompatible girih version.",
+      "messageDynamic": false,
+      "help": "ds.lock is machine-managed and committed — restore it from git history.",
+      "helpDynamic": false,
+      "package": "cli",
+      "file": "packages/cli/src/cli.ts",
+      "line": 79,
+      "sites": 1,
+      "allSites": [
+        "packages/cli/src/cli.ts:79"
+      ]
+    },
+    {
+      "code": "GIRIH1014",
+      "severity": "warning",
+      "message": "'${name}' was ejected from a different spec/template than the current one — the fork may not honor the contract anymore.",
+      "messageDynamic": true,
+      "help": "Review the fork against the current spec, or re-eject after removing the ds.lock entry (girih update will automate this in M6).",
+      "helpDynamic": false,
+      "package": "cli",
+      "file": "packages/cli/src/cli.ts",
+      "line": 119,
+      "sites": 1,
+      "allSites": [
+        "packages/cli/src/cli.ts:119"
+      ]
+    },
+    {
+      "code": "GIRIH1015",
+      "severity": "warning",
+      "message": "ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated.",
+      "messageDynamic": true,
+      "help": "Restore components/${name.charAt(0).toLowerCase()}${name.slice(1)}.spec.ts, or remove the entry and components/ejected/${name}.tsx.",
+      "helpDynamic": true,
+      "package": "cli",
+      "file": "packages/cli/src/cli.ts",
+      "line": 93,
+      "sites": 1,
+      "allSites": [
+        "packages/cli/src/cli.ts:93"
+      ]
+    },
+    {
+      "code": "GIRIH2001",
+      "severity": "error",
+      "message": "Token file must be a JSON object at the top level.",
+      "messageDynamic": false,
+      "help": null,
+      "helpDynamic": false,
+      "package": "tokens",
+      "file": "packages/tokens/src/parse.ts",
+      "line": 26,
+      "sites": 1,
+      "allSites": [
+        "packages/tokens/src/parse.ts:26"
+      ]
+    },
+    {
+      "code": "GIRIH2002",
+      "severity": "error",
+      "message": "Token or group name '${key}' contains a character forbidden by DTCG ('.', '{', '}').",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "tokens",
+      "file": "packages/tokens/src/parse.ts",
+      "line": 79,
+      "sites": 1,
+      "allSites": [
+        "packages/tokens/src/parse.ts:79"
+      ]
+    },
+    {
+      "code": "GIRIH2003",
+      "severity": "error",
+      "message": "'${[...segments, key].join('.')}' is a bare ${typeof child}; tokens must be objects with a $value.",
+      "messageDynamic": true,
+      "help": "Write it as { \"$value\": ${JSON.stringify(child)} }.",
+      "helpDynamic": true,
+      "package": "tokens",
+      "file": "packages/tokens/src/parse.ts",
+      "line": 99,
+      "sites": 1,
+      "allSites": [
+        "packages/tokens/src/parse.ts:99"
+      ]
+    },
+    {
+      "code": "GIRIH2004",
+      "severity": "warning",
+      "message": "Cannot infer the tier of '${file}' from its name — assuming 'semantic'.",
+      "messageDynamic": true,
+      "help": "Name token files global*.tokens.json / semantic*.tokens.json, or put component tokens under tokens/components/.",
+      "helpDynamic": false,
+      "package": "tokens",
+      "file": "packages/tokens/src/engine.ts",
+      "line": 67,
+      "sites": 1,
+      "allSites": [
+        "packages/tokens/src/engine.ts:67"
+      ]
+    },
+    {
+      "code": "GIRIH2005",
+      "severity": "error",
+      "message": "Cannot read token file: ${(error as Error).message}",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "tokens",
+      "file": "packages/tokens/src/engine.ts",
+      "line": 39,
+      "sites": 1,
+      "allSites": [
+        "packages/tokens/src/engine.ts:39"
+      ]
+    },
+    {
+      "code": "GIRIH2006",
+      "severity": "error",
+      "message": "No token files matched ${config.tokens.source.join(', ')} under ${config.root}.",
+      "messageDynamic": true,
+      "help": "Create tokens/global.tokens.json to get started.",
+      "helpDynamic": false,
+      "package": "tokens",
+      "file": "packages/tokens/src/engine.ts",
+      "line": 55,
+      "sites": 1,
+      "allSites": [
+        "packages/tokens/src/engine.ts:55"
+      ]
+    },
+    {
+      "code": "GIRIH2007",
+      "severity": "warning",
+      "message": "Token or group name '${key}' contains characters that do not translate cleanly to CSS variable names.",
+      "messageDynamic": true,
+      "help": "Stick to lowercase letters, digits, \"-\" and \"_\" so generated names stay predictable.",
+      "helpDynamic": false,
+      "package": "tokens",
+      "file": "packages/tokens/src/parse.ts",
+      "line": 89,
+      "sites": 1,
+      "allSites": [
+        "packages/tokens/src/parse.ts:89"
+      ]
+    },
+    {
+      "code": "GIRIH2008",
+      "severity": "warning",
+      "message": "Unknown '$'-prefixed property '${key}' is ignored (the '$' prefix is reserved by DTCG).",
+      "messageDynamic": true,
+      "help": "Known properties: ${[...KNOWN_DOLLAR_PROPS].join(', ')}. Rename the key if it was meant to be a group.",
+      "helpDynamic": true,
+      "package": "tokens",
+      "file": "packages/tokens/src/parse.ts",
+      "line": 67,
+      "sites": 1,
+      "allSites": [
+        "packages/tokens/src/parse.ts:67"
+      ]
+    },
+    {
+      "code": "GIRIH2009",
+      "severity": "error",
+      "message": "'${path}' is a token (it has a $value) but also contains '${key}' — tokens cannot nest groups or other tokens.",
+      "messageDynamic": true,
+      "help": "Move '${key}' out to a sibling group, e.g. '${path}-${key}'.",
+      "helpDynamic": true,
+      "package": "tokens",
+      "file": "packages/tokens/src/parse.ts",
+      "line": 42,
+      "sites": 1,
+      "allSites": [
+        "packages/tokens/src/parse.ts:42"
+      ]
+    },
+    {
+      "code": "GIRIH2010",
+      "severity": "error",
+      "message": "Token '${token.path}' is defined in both ${existing.file} and ${token.file}.",
+      "messageDynamic": true,
+      "help": "Every token path must have exactly one definition; brand overlays are the only sanctioned override.",
+      "helpDynamic": false,
+      "package": "tokens",
+      "file": "packages/tokens/src/merge.ts",
+      "line": 27,
+      "sites": 1,
+      "allSites": [
+        "packages/tokens/src/merge.ts:27"
+      ]
+    },
+    {
+      "code": "GIRIH2011",
+      "severity": "error",
+      "message": "Token '${token.path}' is nested under '${shadowedAncestor}', which is itself a token (defined in ${tokens.get(shadowedAncestor)!.file}).",
+      "messageDynamic": true,
+      "help": "A path must be either a token or a group, never both — rename one of them.",
+      "helpDynamic": false,
+      "package": "tokens",
+      "file": "packages/tokens/src/merge.ts",
+      "line": 44,
+      "sites": 2,
+      "allSites": [
+        "packages/tokens/src/merge.ts:44",
+        "packages/tokens/src/merge.ts:55"
+      ]
+    },
+    {
+      "code": "GIRIH2020",
+      "severity": "error",
+      "message": "Brand overlay introduces '${token.path}', which does not exist in the base token set.",
+      "messageDynamic": true,
+      "help": "Overlays may only override existing tokens. Define the token in tokens/ first, then override its value here.",
+      "helpDynamic": false,
+      "package": "tokens",
+      "file": "packages/tokens/src/merge.ts",
+      "line": 97,
+      "sites": 1,
+      "allSites": [
+        "packages/tokens/src/merge.ts:97"
+      ]
+    },
+    {
+      "code": "GIRIH2021",
+      "severity": "error",
+      "message": "Brand overlay changes the $type of '${token.path}' from '${baseToken.type}' to '${token.type}'.",
+      "messageDynamic": true,
+      "help": "A brand may change a token value, never its type — types are part of the shared contract.",
+      "helpDynamic": false,
+      "package": "tokens",
+      "file": "packages/tokens/src/merge.ts",
+      "line": 108,
+      "sites": 1,
+      "allSites": [
+        "packages/tokens/src/merge.ts:108"
+      ]
+    },
+    {
+      "code": "GIRIH2030",
+      "severity": "error",
+      "message": "'${token.path}' references '{${ref}}', which does not exist.",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "tokens",
+      "file": "packages/tokens/src/resolve.ts",
+      "line": 45,
+      "sites": 1,
+      "allSites": [
+        "packages/tokens/src/resolve.ts:45"
+      ]
+    },
+    {
+      "code": "GIRIH2031",
+      "severity": "error",
+      "message": "Circular token reference: ${cycle.map((p) => `'${p}'`).join(' → ')}.",
+      "messageDynamic": true,
+      "help": "Break the cycle by pointing one of these tokens at a raw value.",
+      "helpDynamic": false,
+      "package": "tokens",
+      "file": "packages/tokens/src/resolve.ts",
+      "line": 79,
+      "sites": 1,
+      "allSites": [
+        "packages/tokens/src/resolve.ts:79"
+      ]
+    },
+    {
+      "code": "GIRIH2032",
+      "severity": "error",
+      "message": "Failed to resolve '${token.path}': ${(error as Error).message}",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "tokens",
+      "file": "packages/tokens/src/resolve.ts",
+      "line": 145,
+      "sites": 1,
+      "allSites": [
+        "packages/tokens/src/resolve.ts:145"
+      ]
+    },
+    {
+      "code": "GIRIH2040",
+      "severity": "error",
+      "message": "${token.tier} token '${token.path}' references ${target.tier} token '{${ref}}' — references must flow component → semantic → global, never upward.",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "tokens",
+      "file": "packages/tokens/src/validate.ts",
+      "line": 19,
+      "sites": 1,
+      "allSites": [
+        "packages/tokens/src/validate.ts:19"
+      ]
+    },
+    {
+      "code": "GIRIH2041",
+      "severity": "warning",
+      "message": "component token '${token.path}' references global token '{${ref}}' directly, skipping the semantic tier.",
+      "messageDynamic": true,
+      "help": "Introduce a semantic alias for '{${ref}}' so brands can re-theme it without touching component tokens.",
+      "helpDynamic": true,
+      "package": "tokens",
+      "file": "packages/tokens/src/validate.ts",
+      "line": 27,
+      "sites": 1,
+      "allSites": [
+        "packages/tokens/src/validate.ts:27"
+      ]
+    },
+    {
+      "code": "GIRIH2042",
+      "severity": "error",
+      "message": "'${token.path}' ($type '${token.type}') aliases '{${ref}}' which has $type '${target.type}'.",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "tokens",
+      "file": "packages/tokens/src/validate.ts",
+      "line": 39,
+      "sites": 1,
+      "allSites": [
+        "packages/tokens/src/validate.ts:39"
+      ]
+    },
+    {
+      "code": "GIRIH2050",
+      "severity": "error",
+      "message": "Brand '${brand}' does not resolve the same token set as '${brands[0]}': ",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "tokens",
+      "file": "packages/tokens/src/validate.ts",
+      "line": 69,
+      "sites": 1,
+      "allSites": [
+        "packages/tokens/src/validate.ts:69"
+      ]
+    },
+    {
+      "code": "GIRIH3001",
+      "severity": "error",
+      "message": "CSS generation failed for brand '${brand}': ${(error as Error).message}",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "generator-css",
+      "file": "packages/generator-css/src/generate.ts",
+      "line": 125,
+      "sites": 1,
+      "allSites": [
+        "packages/generator-css/src/generate.ts:125"
+      ]
+    },
+    {
+      "code": "GIRIH3002",
+      "severity": "error",
+      "message": "'${variable}' (brand '${brand}') has a composite value no CSS transform could flatten.",
+      "messageDynamic": true,
+      "help": "Give the token a supported $type (shadow, typography, border, transition, cubicBezier, fontFamily) or split it into scalar tokens.",
+      "helpDynamic": false,
+      "package": "generator-css",
+      "file": "packages/generator-css/src/generate.ts",
+      "line": 222,
+      "sites": 1,
+      "allSites": [
+        "packages/generator-css/src/generate.ts:222"
+      ]
+    },
+    {
+      "code": "GIRIH3003",
+      "severity": "error",
+      "message": "Tokens ${paths.map((p) => `'${p}'`).join(' and ')} both map to the CSS variable '${varName}'.",
+      "messageDynamic": true,
+      "help": "Rename one of them — CSS variable names are case-insensitive here and join segments with \"-\".",
+      "helpDynamic": false,
+      "package": "generator-css",
+      "file": "packages/generator-css/src/generate.ts",
+      "line": 178,
+      "sites": 1,
+      "allSites": [
+        "packages/generator-css/src/generate.ts:178"
+      ]
+    },
+    {
+      "code": "GIRIH4001",
+      "severity": "error",
+      "message": "Component name '${ir.name}' must be PascalCase (it becomes an exported React identifier).",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/validate.ts",
+      "line": 66,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/validate.ts:66"
+      ]
+    },
+    {
+      "code": "GIRIH4002",
+      "severity": "error",
+      "message": "Extension '${extension.name}' references '{${path}}', which ${\n            missing.length === graphs.size ? 'no brand resolves' : `brand(s) ${missing.join(', ')} do not resolve`\n          }.",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/extensions.ts",
+      "line": 163,
+      "sites": 2,
+      "allSites": [
+        "packages/spec/src/extensions.ts:163",
+        "packages/spec/src/validate.ts:300"
+      ]
+    },
+    {
+      "code": "GIRIH4003",
+      "severity": "warning",
+      "message": "Extension '${extension.name}' references global token '{${path}}' — extensions should consume semantic or component tokens.",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/extensions.ts",
+      "line": 180,
+      "sites": 2,
+      "allSites": [
+        "packages/spec/src/extensions.ts:180",
+        "packages/spec/src/validate.ts:313"
+      ]
+    },
+    {
+      "code": "GIRIH4005",
+      "severity": "error",
+      "message": "Component '${ir.name}' is defined more than once (${seen.get(ir.name)} and ${file}).",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/validate.ts",
+      "line": 74,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/validate.ts:74"
+      ]
+    },
+    {
+      "code": "GIRIH4006",
+      "severity": "error",
+      "message": "Variant axis '${axis.axis}' of '${ir.name}' has no values.",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/validate.ts",
+      "line": 171,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/validate.ts:171"
+      ]
+    },
+    {
+      "code": "GIRIH4007",
+      "severity": "error",
+      "message": "Variant axis '${axis.axis}' of '${ir.name}' defaults to '${axis.default}', which is not one of [${axis.values.join(', ')}].",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/validate.ts",
+      "line": 192,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/validate.ts:192"
+      ]
+    },
+    {
+      "code": "GIRIH4008",
+      "severity": "error",
+      "message": "'${ir.name}' declares state '${state}', which the '${ir.template}' template does not implement.",
+      "messageDynamic": true,
+      "help": "States of '${ir.template}': ${implementableStates.join(', ') || '(none)'}. States are template capability flags, not arbitrary behavior.",
+      "helpDynamic": true,
+      "package": "spec",
+      "file": "packages/spec/src/validate.ts",
+      "line": 205,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/validate.ts:205"
+      ]
+    },
+    {
+      "code": "GIRIH4009",
+      "severity": "error",
+      "message": "'${ir.name}' styles variant axis '${block.axis}', which is not declared under variants.",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/validate.ts",
+      "line": 242,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/validate.ts:242"
+      ]
+    },
+    {
+      "code": "GIRIH4010",
+      "severity": "error",
+      "message": "'${ir.name}' styles '${block.axis}.${block.value}', but '${block.value}' is not a declared value of that axis.",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/validate.ts",
+      "line": 252,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/validate.ts:252"
+      ]
+    },
+    {
+      "code": "GIRIH4011",
+      "severity": "error",
+      "message": "'${ir.name}' styles state '${state.state}' under tokens.states, but does not declare that state.",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/validate.ts",
+      "line": 229,
+      "sites": 2,
+      "allSites": [
+        "packages/spec/src/validate.ts:229",
+        "packages/spec/src/validate.ts:262"
+      ]
+    },
+    {
+      "code": "GIRIH4012",
+      "severity": "error",
+      "message": "Extension '${extension.name}' has a malformed token reference '${ref}' at ${property} — expected '{token.path}'.",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/extensions.ts",
+      "line": 151,
+      "sites": 2,
+      "allSites": [
+        "packages/spec/src/extensions.ts:151",
+        "packages/spec/src/validate.ts:288"
+      ]
+    },
+    {
+      "code": "GIRIH4013",
+      "severity": "error",
+      "message": "'${ir.name}' ${what} '${name}' is not a valid camelCase identifier — it becomes a React prop.",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/validate.ts",
+      "line": 125,
+      "sites": 4,
+      "allSites": [
+        "packages/spec/src/validate.ts:125",
+        "packages/spec/src/validate.ts:133",
+        "packages/spec/src/validate.ts:141",
+        "packages/spec/src/validate.ts:182"
+      ]
+    },
+    {
+      "code": "GIRIH4014",
+      "severity": "error",
+      "message": "'${spec.name}' has a non-string declaration for '${property}' at ${where} — every styled value must be a '{token.path}' reference.",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/ir.ts",
+      "line": 34,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/ir.ts:34"
+      ]
+    },
+    {
+      "code": "GIRIH4015",
+      "severity": "warning",
+      "message": "'${ir.name}' styles unknown CSS property '${property}' at ${where} — it will be emitted verbatim.",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/validate.ts",
+      "line": 277,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/validate.ts:277"
+      ]
+    },
+    {
+      "code": "GIRIH4016",
+      "severity": "error",
+      "message": "'${ir.name}' maps aria attributes to state '${aria.state}', which it does not declare under states.",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/validate.ts",
+      "line": 217,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/validate.ts:217"
+      ]
+    },
+    {
+      "code": "GIRIH4018",
+      "severity": "warning",
+      "message": "'${ir.name}' renders '<${ir.element}>', which is not a known host element.",
+      "messageDynamic": true,
+      "help": "Known elements: ${[...KNOWN_ELEMENTS].join(', ')}.",
+      "helpDynamic": true,
+      "package": "spec",
+      "file": "packages/spec/src/validate.ts",
+      "line": 96,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/validate.ts:96"
+      ]
+    },
+    {
+      "code": "GIRIH4020",
+      "severity": "error",
+      "message": "Failed to load spec: ${(error as Error).message}",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/load.ts",
+      "line": 38,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/load.ts:38"
+      ]
+    },
+    {
+      "code": "GIRIH4021",
+      "severity": "error",
+      "message": "${file} does not default-export a component spec.",
+      "messageDynamic": true,
+      "help": "Export the result of defineSpec({...}) from '@girih/cli'.",
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/load.ts",
+      "line": 48,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/load.ts:48"
+      ]
+    },
+    {
+      "code": "GIRIH4022",
+      "severity": "error",
+      "message": "${file} contains a non-serializable value at '${impure}' — specs must be pure data.",
+      "messageDynamic": true,
+      "help": "Remove functions, dates, class instances, and symbols; a spec is a contract, not a program.",
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/load.ts",
+      "line": 60,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/load.ts:60"
+      ]
+    },
+    {
+      "code": "GIRIH4030",
+      "severity": "error",
+      "message": "${file} does not default-export a variant extension.",
+      "messageDynamic": true,
+      "help": "Export the result of defineVariant({ name, extends, tokens }) from '@girih/cli'.",
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/extensions.ts",
+      "line": 47,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/extensions.ts:47"
+      ]
+    },
+    {
+      "code": "GIRIH4031",
+      "severity": "error",
+      "message": "Failed to load extension: ${(error as Error).message}",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/extensions.ts",
+      "line": 58,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/extensions.ts:58"
+      ]
+    },
+    {
+      "code": "GIRIH4032",
+      "severity": "error",
+      "message": "Extension name '${extension.name}' must be PascalCase (it becomes an exported React identifier).",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/extensions.ts",
+      "line": 86,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/extensions.ts:86"
+      ]
+    },
+    {
+      "code": "GIRIH4033",
+      "severity": "error",
+      "message": "Extension '${extension.name}' collides with an existing component or extension.",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/extensions.ts",
+      "line": 95,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/extensions.ts:95"
+      ]
+    },
+    {
+      "code": "GIRIH4034",
+      "severity": "error",
+      "message": "Extension '${extension.name}' extends '${extension.extends}', which is not in the component catalog.",
+      "messageDynamic": true,
+      "help": "Known components: ${[...byName.keys()].join(', ') || '(none)'}.",
+      "helpDynamic": true,
+      "package": "spec",
+      "file": "packages/spec/src/extensions.ts",
+      "line": 107,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/extensions.ts:107"
+      ]
+    },
+    {
+      "code": "GIRIH4035",
+      "severity": "error",
+      "message": "'${extension.extends}' does not allow extensions (extensibility.allowExtends is false).",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/extensions.ts",
+      "line": 117,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/extensions.ts:117"
+      ]
+    },
+    {
+      "code": "GIRIH4036",
+      "severity": "error",
+      "message": "Extension '${extension.name}' overrides '${property}', which '${extension.extends}' does not list under extensibility.overridableTokens.",
+      "messageDynamic": true,
+      "help": "Overridable: ${base.extensibility.overridableTokens.join(', ') || '(none)'}.",
+      "helpDynamic": true,
+      "package": "spec",
+      "file": "packages/spec/src/extensions.ts",
+      "line": 139,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/extensions.ts:139"
+      ]
+    },
+    {
+      "code": "GIRIH4037",
+      "severity": "error",
+      "message": "'${extension.extends}' is a compound (dialog) component — extensions can only build on single-element components.",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/extensions.ts",
+      "line": 126,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/extensions.ts:126"
+      ]
+    },
+    {
+      "code": "GIRIH4038",
+      "severity": "warning",
+      "message": "Extension '${extension.name}' reaches into '{${path}}', another component's token namespace.",
+      "messageDynamic": true,
+      "help": "Use semantic tokens or '${componentNamespace(extension.extends)}.*' tokens so the extension survives refactors of unrelated components.",
+      "helpDynamic": true,
+      "package": "spec",
+      "file": "packages/spec/src/extensions.ts",
+      "line": 188,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/extensions.ts:188"
+      ]
+    },
+    {
+      "code": "GIRIH4040",
+      "severity": "error",
+      "message": "'${ir.name}' uses template '${ir.template}', which this girih version does not ship.",
+      "messageDynamic": true,
+      "help": "Available templates: ${Object.keys(templates).join(', ')}.",
+      "helpDynamic": true,
+      "package": "spec",
+      "file": "packages/spec/src/validate.ts",
+      "line": 85,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/validate.ts:85"
+      ]
+    },
+    {
+      "code": "GIRIH4041",
+      "severity": "error",
+      "message": "'${ir.name}' styles part '${part.part}', which the '${ir.template}' template does not have.",
+      "messageDynamic": true,
+      "help": "declaredParts.size > 0 ? `Parts of '${ir.template}': ${[...declaredParts].join(', ')}.` : `The '${ir.template}' template has no parts — use tokens.base.`",
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/validate.ts",
+      "line": 108,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/validate.ts:108"
+      ]
+    },
+    {
+      "code": "GIRIH4042",
+      "severity": "error",
+      "message": "'${ir.name}' declares variant axis '${axis.axis}', but the '${ir.template}' template only wires up: ${template.variantAxes.join(', ')}.",
+      "messageDynamic": true,
+      "help": "A silently-ignored axis would validate and then do nothing — declare only axes the template implements.",
+      "helpDynamic": false,
+      "package": "spec",
+      "file": "packages/spec/src/validate.ts",
+      "line": 157,
+      "sites": 1,
+      "allSites": [
+        "packages/spec/src/validate.ts:157"
+      ]
+    },
+    {
+      "code": "GIRIH5001",
+      "severity": "warning",
+      "message": "'${ir.name}' maps aria attributes to state '${aria.state}', which the '${ir.template}' template only expresses in CSS — the attributes are not wired.",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "generator-react",
+      "file": "packages/generator-react/src/generate.ts",
+      "line": 101,
+      "sites": 1,
+      "allSites": [
+        "packages/generator-react/src/generate.ts:101"
+      ]
+    },
+    {
+      "code": "GIRIH6001",
+      "severity": "error",
+      "message": "No TypeScript sources in ${srcDir} — run \\`girih generate react\\` first.",
+      "messageDynamic": true,
+      "help": null,
+      "helpDynamic": false,
+      "package": "cli",
+      "file": "packages/cli/src/build.ts",
+      "line": 42,
+      "sites": 1,
+      "allSites": [
+        "packages/cli/src/build.ts:42"
+      ]
+    }
+  ]
+}

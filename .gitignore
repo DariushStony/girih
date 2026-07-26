@@ -15,3 +15,5 @@ examples/*/demo/react/bundle.js*
 
 # e2e scratch workspaces
 e2e/.tmp/
+
+graphify-out/

@@ -1,0 +1,2184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>girih docs — Tokens and brands</title>
+<meta name="description" content="Three tiers, alias chains, and the override-only rule that lets one stylesheet serve every brand.">
+<meta name="color-scheme" content="light dark">
+<style>
+/* Reset just enough to be predictable across browsers. */
+html { -webkit-text-size-adjust: 100%; }
+img, svg { max-width: 100%; }
+
+/* ============================================================================
+   Tokens — light is the default; dark is redefined below at token level only.
+   ============================================================================ */
+:root {
+  /* Glazes */
+  --lapis:        #1B3B8F;
+  --lapis-bright: #2C56C4;
+  --turquoise:    #0E8F8F;
+  --turquoise-br: #14A8A8;
+  --ochre:        #BE7B1F;
+  --madder:       #A8321E;
+
+  /* Grounds and ink — neutrals biased a touch toward the lapis, not pure grey */
+  --plaster:      #F6F5F1;
+  --plaster-2:    #EFEEE8;
+  --plaster-3:    #E4E3DB;
+  --manganese:    #14181F;
+  --ink:          #1E232B;
+  --ink-2:        #4A5260;
+  --ink-3:        #6E7789;
+
+  /* Semantic surface roles */
+  --bg:           var(--plaster);
+  --bg-raised:    #FFFFFF;
+  --bg-sunken:    var(--plaster-2);
+  --bg-code:      #FBFAF7;
+  --rule:         #DAD8CE;
+  --rule-strong:  #C3C0B4;
+  --text:         var(--ink);
+  --text-muted:   var(--ink-2);
+  --text-faint:   var(--ink-3);
+  --accent:       var(--lapis);
+  --accent-soft:  #E5EAF7;
+  --good:         var(--turquoise);
+  --good-soft:    #DCF0EF;
+  --warn:         var(--ochre);
+  --warn-soft:    #F8EEDA;
+  --bad:          var(--madder);
+  --bad-soft:     #F8E4E0;
+
+  /* Type */
+  --display: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', 'URW Palladio L', Georgia, serif;
+  --body:    Charter, 'Bitstream Charter', 'Source Serif 4', 'Source Serif Pro', Cambria, Georgia, serif;
+  --util:    ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --mono:    ui-monospace, 'SF Mono', SFMono-Regular, 'Cascadia Code', 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  /* Scale — 1.25 from 17px, held to throughout */
+  --t-xs:   0.75rem;
+  --t-sm:   0.8125rem;
+  --t-base: 1.0625rem;
+  --t-lg:   1.1875rem;
+  --t-xl:   1.45rem;
+  --t-2xl:  1.85rem;
+  --t-3xl:  2.35rem;
+  --t-4xl:  2.95rem;
+
+  --measure: 66ch;
+  --sidebar: 16.5rem;
+  --radius:  3px;
+  --radius-lg: 6px;
+
+  --shadow-1: 0 1px 2px rgba(20, 24, 31, 0.06), 0 1px 6px rgba(20, 24, 31, 0.04);
+  --shadow-2: 0 2px 6px rgba(20, 24, 31, 0.08), 0 8px 24px rgba(20, 24, 31, 0.07);
+
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:          var(--manganese);
+    --bg-raised:   #1B212B;
+    --bg-sunken:   #101419;
+    --bg-code:     #171D26;
+    --rule:        #2A323F;
+    --rule-strong: #3C4655;
+    --text:        #E7E9ED;
+    --text-muted:  #A8B0BE;
+    --text-faint:  #7C8697;
+    --accent:      #7FA0EC;
+    --accent-soft: #1C2740;
+    --good:        #3FC7C1;
+    --good-soft:   #10312F;
+    --warn:        #E0A445;
+    --warn-soft:   #33260F;
+    --bad:         #E4705C;
+    --bad-soft:    #351812;
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 6px rgba(0, 0, 0, 0.3);
+    --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* The viewer's explicit toggle must beat the OS preference in BOTH directions. */
+:root[data-theme='dark'] {
+  --bg:          var(--manganese);
+  --bg-raised:   #1B212B;
+  --bg-sunken:   #101419;
+  --bg-code:     #171D26;
+  --rule:        #2A323F;
+  --rule-strong: #3C4655;
+  --text:        #E7E9ED;
+  --text-muted:  #A8B0BE;
+  --text-faint:  #7C8697;
+  --accent:      #7FA0EC;
+  --accent-soft: #1C2740;
+  --good:        #3FC7C1;
+  --good-soft:   #10312F;
+  --warn:        #E0A445;
+  --warn-soft:   #33260F;
+  --bad:         #E4705C;
+  --bad-soft:    #351812;
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 6px rgba(0, 0, 0, 0.3);
+  --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+:root[data-theme='light'] {
+  --bg:          var(--plaster);
+  --bg-raised:   #FFFFFF;
+  --bg-sunken:   var(--plaster-2);
+  --bg-code:     #FBFAF7;
+  --rule:        #DAD8CE;
+  --rule-strong: #C3C0B4;
+  --text:        var(--ink);
+  --text-muted:  var(--ink-2);
+  --text-faint:  var(--ink-3);
+  --accent:      var(--lapis);
+  --accent-soft: #E5EAF7;
+  --good:        var(--turquoise);
+  --good-soft:   #DCF0EF;
+  --warn:        var(--ochre);
+  --warn-soft:   #F8EEDA;
+  --bad:         var(--madder);
+  --bad-soft:    #F8E4E0;
+  --shadow-1: 0 1px 2px rgba(20, 24, 31, 0.06), 0 1px 6px rgba(20, 24, 31, 0.04);
+  --shadow-2: 0 2px 6px rgba(20, 24, 31, 0.08), 0 8px 24px rgba(20, 24, 31, 0.07);
+}
+
+/* ============================================================================
+   Base
+   ============================================================================ */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: var(--t-base);
+  line-height: 1.68;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-wrap: break-word;
+}
+
+::selection { background: var(--accent-soft); color: var(--text); }
+
+:where(a) { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+:where(a):hover { text-decoration-thickness: 2px; }
+
+:where(a, button, summary, input, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ============================================================================
+   Frame: sidebar + content
+   ============================================================================ */
+.frame {
+  display: grid;
+  grid-template-columns: var(--sidebar) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.sidebar {
+  border-inline-end: 1px solid var(--rule);
+  background: var(--bg-sunken);
+  padding: 1.75rem 1.25rem 3rem;
+  position: sticky;
+  top: 0;
+  align-self: start;
+  /* height, not max-height: a content-sized sticky column leaves the rail
+     un-backgrounded below it on long pages. */
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.brandmark {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.25rem;
+  text-decoration: none;
+  color: var(--text);
+}
+.brandmark svg { flex: none; }
+.brandmark .wordmark {
+  font-family: var(--display);
+  font-size: var(--t-xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.brandmark .persian {
+  font-size: var(--t-sm);
+  color: var(--text-faint);
+  font-family: var(--body);
+}
+.sidebar .tagline {
+  margin: 0 0 1.5rem;
+  font-size: var(--t-sm);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.navgroup { margin-bottom: 1.35rem; }
+.navgroup > .label {
+  font-family: var(--util);
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 0.5rem;
+}
+.navgroup ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; }
+.navgroup a {
+  display: flex;
+  gap: 0.55rem;
+  align-items: baseline;
+  padding: 0.32rem 0.5rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: var(--t-sm);
+  font-family: var(--util);
+  line-height: 1.4;
+}
+.navgroup a:hover { background: var(--bg-raised); color: var(--text); }
+.navgroup a[aria-current='page'] {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+.navgroup a .n {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+  font-size: var(--t-xs);
+  flex: none;
+  min-width: 1.1em;
+}
+.navgroup a[aria-current='page'] .n { color: var(--accent); }
+
+.content { min-width: 0; padding: 0 0 6rem; }
+.wrap { max-width: calc(var(--measure) + 14rem); margin: 0 auto; padding: 0 2rem; }
+.prose { max-width: var(--measure); }
+
+/* Wide things break out of the measure but never out of the page. */
+.bleed { max-width: calc(var(--measure) + 11rem); }
+
+/* ============================================================================
+   Page header — construction lines at pentagonal angles, faint
+   ============================================================================ */
+.pagehead {
+  border-block-end: 1px solid var(--rule);
+  background:
+    repeating-linear-gradient(72deg,  transparent 0 38px, color-mix(in oklab, var(--accent) 12%, transparent) 38px 39px),
+    repeating-linear-gradient(-72deg, transparent 0 38px, color-mix(in oklab, var(--accent) 12%, transparent) 38px 39px),
+    repeating-linear-gradient(36deg,  transparent 0 66px, color-mix(in oklab, var(--good) 9%, transparent) 66px 67px),
+    var(--bg-sunken);
+  padding: 3.25rem 0 2.5rem;
+  margin-bottom: 2.5rem;
+}
+.pagehead .eyebrow {
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.pagehead h1 {
+  font-family: var(--display);
+  font-size: var(--t-4xl);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.75rem;
+  text-wrap: balance;
+  font-weight: 600;
+}
+.pagehead .standfirst {
+  margin: 0;
+  font-size: var(--t-lg);
+  color: var(--text-muted);
+  max-width: 54ch;
+  line-height: 1.55;
+}
+
+/* ============================================================================
+   Typography in flow
+   ============================================================================ */
+h2, h3, h4 { font-family: var(--display); text-wrap: balance; letter-spacing: -0.01em; }
+h2 {
+  font-size: var(--t-2xl);
+  line-height: 1.2;
+  margin: 3.25rem 0 0.9rem;
+  padding-block-start: 1.5rem;
+  border-block-start: 1px solid var(--rule);
+  font-weight: 600;
+}
+h2:first-child { margin-top: 0; border-block-start: 0; padding-block-start: 0; }
+h3 { font-size: var(--t-xl); line-height: 1.28; margin: 2.25rem 0 0.6rem; font-weight: 600; }
+h4 {
+  font-family: var(--util);
+  font-size: var(--t-sm);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 1.75rem 0 0.5rem;
+}
+p { margin: 0 0 1.15rem; }
+.lede { font-size: var(--t-lg); color: var(--text-muted); line-height: 1.6; }
+
+ul, ol { margin: 0 0 1.15rem; padding-inline-start: 1.35rem; }
+li { margin-bottom: 0.4rem; }
+li > ul, li > ol { margin-top: 0.4rem; margin-bottom: 0.5rem; }
+
+strong { font-weight: 650; }
+em { font-style: italic; }
+
+code {
+  font-family: var(--mono);
+  font-size: 0.875em;
+  background: var(--bg-sunken);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 0.08em 0.32em;
+  overflow-wrap: break-word;
+}
+a code { color: inherit; }
+
+hr.strap {
+  border: 0;
+  height: 48px;
+  margin: 3rem 0;
+  background-repeat: repeat-x;
+  background-position: center;
+  opacity: 0.5;
+}
+
+/* ============================================================================
+   Code blocks — always white-space:pre, always scrollable on their own
+   ============================================================================ */
+figure.code {
+  margin: 1.5rem 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--bg-code);
+  overflow: hidden;
+  box-shadow: var(--shadow-1);
+}
+figure.code > figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0.85rem;
+  border-block-end: 1px solid var(--rule);
+  background: var(--bg-sunken);
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  color: var(--text-muted);
+}
+figure.code > figcaption .path {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  color: var(--text-muted);
+}
+figure.code > figcaption .badge {
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.625rem;
+  padding: 0.12rem 0.4rem;
+  border-radius: 999px;
+  flex: none;
+}
+.badge.authored { background: var(--accent-soft); color: var(--accent); }
+.badge.generated { background: var(--good-soft); color: var(--good); }
+.badge.shell     { background: var(--bg-raised); color: var(--text-muted); border: 1px solid var(--rule); }
+
+figure.code pre {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  overflow-x: auto;
+  white-space: pre;
+  font-family: var(--mono);
+  font-size: var(--t-sm);
+  line-height: 1.62;
+  tab-size: 2;
+}
+figure.code pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+  white-space: pre;
+}
+
+/* Minimal, honest highlighting: comments, strings, token refs, keywords. */
+.tk-c { color: var(--text-faint); font-style: italic; }
+.tk-s { color: var(--good); }
+.tk-k { color: var(--accent); font-weight: 600; }
+.tk-r { color: var(--warn); font-weight: 600; }
+.tk-n { color: var(--text); }
+.tk-del { color: var(--bad); }
+.tk-add { color: var(--good); }
+
+/* ============================================================================
+   Callouts
+   ============================================================================ */
+.callout {
+  margin: 1.5rem 0;
+  padding: 0.95rem 1.1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--rule);
+  border-inline-start: 3px solid var(--accent);
+  background: var(--bg-raised);
+  font-size: calc(var(--t-base) * 0.97);
+}
+.callout > .title {
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.35rem;
+}
+.callout > :last-child { margin-bottom: 0; }
+.callout.eli5      { border-inline-start-color: var(--good); background: var(--good-soft); }
+.callout.eli5 > .title { color: var(--good); }
+.callout.rule      { border-inline-start-color: var(--lapis); }
+.callout.gotcha    { border-inline-start-color: var(--warn); background: var(--warn-soft); }
+.callout.gotcha > .title { color: var(--warn); }
+.callout.danger    { border-inline-start-color: var(--bad); background: var(--bad-soft); }
+.callout.danger > .title { color: var(--bad); }
+.callout.skip      { border-inline-start-color: var(--rule-strong); background: var(--bg-sunken); color: var(--text-muted); }
+.callout.skip > .title { color: var(--text-faint); }
+
+details.aside {
+  margin: 1.5rem 0;
+  border: 1px dashed var(--rule-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-sunken);
+  padding: 0 1.1rem;
+}
+details.aside > summary {
+  cursor: pointer;
+  padding: 0.8rem 0;
+  font-family: var(--util);
+  font-size: var(--t-sm);
+  font-weight: 650;
+  color: var(--text-muted);
+  list-style-position: outside;
+}
+details.aside[open] > summary { border-block-end: 1px solid var(--rule); margin-block-end: 0.9rem; }
+details.aside > :last-child { margin-bottom: 0.9rem; }
+
+/* ============================================================================
+   Tables
+   ============================================================================ */
+.tablewrap { overflow-x: auto; margin: 1.5rem 0; border: 1px solid var(--rule); border-radius: var(--radius-lg); }
+table { border-collapse: collapse; width: 100%; font-size: var(--t-sm); font-family: var(--util); }
+th, td { text-align: start; padding: 0.5rem 0.75rem; border-block-end: 1px solid var(--rule); vertical-align: top; }
+thead th {
+  background: var(--bg-sunken);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+tbody tr:last-child td { border-block-end: 0; }
+tbody tr:hover { background: var(--bg-sunken); }
+td code { font-size: 0.8125rem; }
+.num { font-variant-numeric: tabular-nums; text-align: end; }
+
+/* ============================================================================
+   Diagram family 1 — tier stack
+   ============================================================================ */
+.tiers { display: flex; flex-direction: column; gap: 0; margin: 1.75rem 0; }
+.tier {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--rule);
+  background: var(--bg-raised);
+}
+.tier:first-child { border-start-start-radius: var(--radius-lg); border-start-end-radius: var(--radius-lg); }
+.tier:last-child { border-end-start-radius: var(--radius-lg); border-end-end-radius: var(--radius-lg); }
+.tier + .tier { border-block-start: 0; }
+.tier > .name { font-family: var(--util); font-size: var(--t-sm); font-weight: 700; }
+.tier > .name .sub { display: block; font-weight: 400; color: var(--text-faint); font-size: var(--t-xs); letter-spacing: 0; text-transform: none; }
+.tier[data-tier='global']    { border-inline-start: 3px solid var(--ink-3); }
+.tier[data-tier='semantic']  { border-inline-start: 3px solid var(--good); }
+.tier[data-tier='component'] { border-inline-start: 3px solid var(--accent); }
+.tier[data-tier='global'] > .name    { color: var(--text-muted); }
+.tier[data-tier='semantic'] > .name  { color: var(--good); }
+.tier[data-tier='component'] > .name { color: var(--accent); }
+.chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.chip {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule);
+  background: var(--bg-sunken);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.chip.hot { border-color: var(--warn); background: var(--warn-soft); color: var(--warn); font-weight: 650; }
+.chip.lit { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 650; }
+.flowdown {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.15rem 1rem 0.15rem 9.6rem;
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  color: var(--text-faint);
+}
+.flowdown::before { content: '↓'; color: var(--accent); font-size: var(--t-lg); line-height: 1; }
+
+/* ============================================================================
+   Diagram family 2 — pipeline rail
+   ============================================================================ */
+.rail { margin: 1.75rem 0; overflow-x: auto; }
+.rail > .track { display: flex; align-items: stretch; gap: 0; min-width: min-content; }
+.stage {
+  flex: 1 1 0;
+  min-width: 8.5rem;
+  border: 1px solid var(--rule);
+  background: var(--bg-raised);
+  padding: 0.7rem 0.8rem;
+  position: relative;
+}
+.stage + .stage { border-inline-start: 0; }
+.stage:first-child { border-start-start-radius: var(--radius-lg); border-end-start-radius: var(--radius-lg); }
+.stage:last-child { border-start-end-radius: var(--radius-lg); border-end-end-radius: var(--radius-lg); }
+.stage > .n {
+  font-family: var(--util);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+.stage > .t { font-family: var(--util); font-size: var(--t-sm); font-weight: 650; margin: 0.15rem 0 0.3rem; }
+.stage > .d { font-size: var(--t-xs); color: var(--text-muted); line-height: 1.45; font-family: var(--util); }
+.stage[data-on='true'] { background: var(--accent-soft); border-color: var(--accent); z-index: 1; }
+.stage[data-on='true'] > .t { color: var(--accent); }
+.stage[data-owner]::after {
+  content: attr(data-owner);
+  position: absolute;
+  inset-block-end: 0.35rem;
+  inset-inline-end: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.5625rem;
+  color: var(--text-faint);
+}
+
+/* ============================================================================
+   Diagram family 3 — package graph
+   ============================================================================ */
+.pkgmap { display: flex; flex-direction: column; gap: 0.6rem; margin: 1.75rem 0; }
+.pkgrow { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+.pkg {
+  font-family: var(--mono);
+  font-size: var(--t-sm);
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule-strong);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-1);
+  white-space: nowrap;
+}
+.pkg .role { display: block; font-family: var(--util); font-size: 0.625rem; color: var(--text-faint); }
+.pkg[data-layer='kernel']    { border-color: var(--ink-3); }
+.pkg[data-layer='pipeline']  { border-color: var(--good); }
+.pkg[data-layer='generator'] { border-color: var(--accent); }
+.pkg[data-layer='surface']   { border-color: var(--warn); }
+.dep { color: var(--text-faint); font-family: var(--util); font-size: var(--t-sm); flex: none; }
+
+/* ============================================================================
+   Diagram family 4 — var() chain
+   ============================================================================ */
+.chain { display: flex; flex-direction: column; gap: 0; margin: 1.5rem 0; }
+.hop {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr) auto;
+  gap: 0.85rem;
+  align-items: center;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--rule);
+  background: var(--bg-raised);
+  font-family: var(--mono);
+  font-size: var(--t-sm);
+}
+.hop + .hop { border-block-start: 0; }
+.hop:first-child { border-start-start-radius: var(--radius-lg); border-start-end-radius: var(--radius-lg); }
+.hop:last-child { border-end-start-radius: var(--radius-lg); border-end-end-radius: var(--radius-lg); }
+.hop > .tierbadge {
+  font-family: var(--util);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.1rem 0.35rem;
+  border-radius: 999px;
+  text-align: center;
+}
+.hop[data-tier='global'] > .tierbadge    { background: var(--bg-sunken); color: var(--text-muted); border: 1px solid var(--rule-strong); }
+.hop[data-tier='semantic'] > .tierbadge  { background: var(--good-soft); color: var(--good); }
+.hop[data-tier='component'] > .tierbadge { background: var(--accent-soft); color: var(--accent); }
+.hop > .val { text-align: end; color: var(--text-muted); white-space: nowrap; }
+.hop[data-override='true'] { background: var(--warn-soft); border-color: var(--warn); }
+.hop[data-override='true'] > .val { color: var(--warn); font-weight: 650; }
+.hop.dim { opacity: 0.35; }
+.hop .swatch {
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  border-radius: 2px;
+  border: 1px solid var(--rule-strong);
+  margin-inline-end: 0.35rem;
+  vertical-align: -0.05em;
+}
+
+/* ============================================================================
+   Widgets
+   ============================================================================ */
+.widget {
+  margin: 2rem 0;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-2);
+  overflow: hidden;
+}
+.widget > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.7rem 1rem;
+  border-block-end: 1px solid var(--rule);
+  background: var(--bg-sunken);
+}
+.widget > header .wt {
+  font-family: var(--util);
+  font-size: var(--t-sm);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+.widget > header .wh { font-family: var(--util); font-size: var(--t-xs); color: var(--text-muted); }
+.widget > .body { padding: 1rem; }
+.widget > .body > :first-child { margin-top: 0; }
+.widget > .body > :last-child { margin-bottom: 0; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+button.btn, .seg > button {
+  font-family: var(--util);
+  font-size: var(--t-sm);
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule-strong);
+  background: var(--bg-raised);
+  color: var(--text);
+  cursor: pointer;
+}
+button.btn:hover, .seg > button:hover { border-color: var(--accent); color: var(--accent); }
+button.btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+button.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+:root[data-theme='dark'] button.btn.primary { color: var(--manganese); }
+@media (prefers-color-scheme: dark) { button.btn.primary { color: var(--manganese); } }
+:root[data-theme='light'] button.btn.primary { color: #fff; }
+
+.seg { display: inline-flex; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--rule-strong); }
+.seg > button { border: 0; border-radius: 0; }
+.seg > button + button { border-inline-start: 1px solid var(--rule-strong); }
+.seg > button[aria-pressed='true'] { background: var(--accent); color: #fff; }
+:root[data-theme='dark'] .seg > button[aria-pressed='true'] { color: var(--manganese); }
+@media (prefers-color-scheme: dark) { .seg > button[aria-pressed='true'] { color: var(--manganese); } }
+:root[data-theme='light'] .seg > button[aria-pressed='true'] { color: #fff; }
+
+select.sel {
+  font-family: var(--mono);
+  font-size: var(--t-sm);
+  padding: 0.38rem 0.5rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule-strong);
+  background: var(--bg-raised);
+  color: var(--text);
+}
+
+/* Quiz */
+.quiz { display: flex; flex-direction: column; gap: 1.5rem; }
+.q { border: 1px solid var(--rule); border-radius: var(--radius-lg); background: var(--bg-raised); overflow: hidden; }
+.q > .stem { padding: 0.9rem 1rem; border-block-end: 1px solid var(--rule); background: var(--bg-sunken); }
+.q > .stem .qn {
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  text-transform: uppercase;
+}
+.q > .stem p { margin: 0.3rem 0 0; }
+.q > .stem pre {
+  margin: 0.6rem 0 0;
+  white-space: pre;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  background: var(--bg-code);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.7rem;
+  line-height: 1.6;
+}
+.opts { list-style: none; margin: 0; padding: 0.6rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.opts button {
+  width: 100%;
+  text-align: start;
+  font-family: var(--body);
+  font-size: calc(var(--t-base) * 0.95);
+  line-height: 1.5;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule);
+  background: var(--bg-raised);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  gap: 0.6rem;
+}
+.opts button .k {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  color: var(--text-faint);
+  flex: none;
+  padding-top: 0.15em;
+}
+.opts button:hover:not([disabled]) { border-color: var(--accent); background: var(--accent-soft); }
+.opts button[disabled] { cursor: default; }
+.opts button[data-state='right'] { border-color: var(--good); background: var(--good-soft); }
+.opts button[data-state='right'] .k { color: var(--good); }
+.opts button[data-state='wrong'] { border-color: var(--bad); background: var(--bad-soft); }
+.opts button[data-state='wrong'] .k { color: var(--bad); }
+.verdict {
+  margin: 0 0.6rem 0.6rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: var(--radius);
+  font-size: calc(var(--t-base) * 0.95);
+  display: none;
+}
+.verdict[data-show='true'] { display: block; }
+.verdict[data-ok='true'] { background: var(--good-soft); border: 1px solid var(--good); }
+.verdict[data-ok='false'] { background: var(--bad-soft); border: 1px solid var(--bad); }
+.verdict .vt { font-family: var(--util); font-weight: 700; font-size: var(--t-sm); }
+.verdict[data-ok='true'] .vt { color: var(--good); }
+.verdict[data-ok='false'] .vt { color: var(--bad); }
+.verdict p { margin: 0.3rem 0 0; }
+.score {
+  font-family: var(--util);
+  font-size: var(--t-sm);
+  color: var(--text-muted);
+  padding: 0.75rem 1rem;
+  border: 1px dashed var(--rule-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-sunken);
+}
+.score b { color: var(--text); font-variant-numeric: tabular-nums; }
+
+/* Live demo surface — hosts the real generated CSS */
+.demosurface {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  background: var(--bg-sunken);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.demorow { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+.demolabel {
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  min-width: 5.5rem;
+}
+
+/* Error-code reference */
+.codelist { display: flex; flex-direction: column; gap: 0.5rem; }
+.codecard {
+  border: 1px solid var(--rule);
+  border-inline-start: 3px solid var(--rule-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-raised);
+  padding: 0.75rem 0.9rem;
+}
+.codecard[data-sev='error'] { border-inline-start-color: var(--bad); }
+.codecard[data-sev='warning'] { border-inline-start-color: var(--warn); }
+.codecard > .top { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; }
+.codecard .cid { font-family: var(--mono); font-size: var(--t-sm); font-weight: 700; }
+.codecard[data-sev='error'] .cid { color: var(--bad); }
+.codecard[data-sev='warning'] .cid { color: var(--warn); }
+.codecard .sev {
+  font-family: var(--util);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.1rem 0.35rem;
+  border-radius: 999px;
+}
+.codecard[data-sev='error'] .sev { background: var(--bad-soft); color: var(--bad); }
+.codecard[data-sev='warning'] .sev { background: var(--warn-soft); color: var(--warn); }
+.codecard .src { font-family: var(--mono); font-size: var(--t-xs); color: var(--text-faint); margin-inline-start: auto; }
+.codecard .msg {
+  font-family: var(--mono);
+  font-size: var(--t-sm);
+  margin: 0.4rem 0 0;
+  white-space: pre-wrap;
+  line-height: 1.55;
+}
+.codecard .help {
+  margin: 0.4rem 0 0;
+  font-size: calc(var(--t-base) * 0.93);
+  color: var(--text-muted);
+  padding-inline-start: 0.7rem;
+  border-inline-start: 2px solid var(--rule);
+}
+.ph { color: var(--ochre); background: var(--warn-soft); border-radius: 2px; padding: 0 0.15em; font-style: normal; }
+:root[data-theme='dark'] .ph { color: var(--warn); }
+.filterbar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 1.25rem 0;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--bg-sunken);
+  position: sticky;
+  top: 0.5rem;
+  z-index: 5;
+}
+.filterbar input {
+  flex: 1 1 12rem;
+  font-family: var(--util);
+  font-size: var(--t-sm);
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule-strong);
+  background: var(--bg-raised);
+  color: var(--text);
+}
+.hidden { display: none !important; }
+
+/* ============================================================================
+   Cards / next steps
+   ============================================================================ */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 0.85rem; margin: 1.75rem 0; }
+.card {
+  display: block;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--bg-raised);
+  text-decoration: none;
+  color: var(--text);
+  box-shadow: var(--shadow-1);
+}
+.card:hover { border-color: var(--accent); box-shadow: var(--shadow-2); }
+.card .n {
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.card .h { font-family: var(--display); font-size: var(--t-lg); font-weight: 600; margin: 0.2rem 0 0.3rem; }
+.card .d { font-size: var(--t-sm); color: var(--text-muted); line-height: 1.5; font-family: var(--util); }
+
+/* On-page table of contents */
+.toc {
+  margin: 0 0 2.5rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--bg-sunken);
+}
+.toc > .label {
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 0.45rem;
+}
+.toc ol { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: 1.5rem; }
+.toc li { margin: 0 0 0.25rem; break-inside: avoid; }
+.toc a { font-family: var(--util); font-size: var(--t-sm); text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+
+/* Prev / next */
+.pager { display: flex; gap: 0.85rem; margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+.pager a {
+  flex: 1 1 0;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  background: var(--bg-raised);
+}
+.pager a:hover { border-color: var(--accent); }
+.pager a .dir { font-family: var(--util); font-size: var(--t-xs); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); }
+.pager a .t { display: block; font-family: var(--display); font-size: var(--t-lg); margin-top: 0.15rem; color: var(--text); }
+.pager a.next { text-align: end; }
+
+/* Theme toggle */
+.themetoggle {
+  position: fixed;
+  inset-block-start: 0.85rem;
+  inset-inline-end: 0.85rem;
+  z-index: 20;
+  font-family: var(--util);
+  font-size: var(--t-xs);
+  font-weight: 650;
+  padding: 0.4rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--rule-strong);
+  background: var(--bg-raised);
+  color: var(--text-muted);
+  cursor: pointer;
+  box-shadow: var(--shadow-1);
+}
+.themetoggle:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ============================================================================
+   Responsive
+   ============================================================================ */
+@media (max-width: 60rem) {
+  .frame { grid-template-columns: 1fr; }
+  .sidebar {
+    position: static;
+    /* height:auto is required — the desktop rule pins it to 100vh, which on a phone
+       would push the entire article below the fold. */
+    height: auto;
+    max-height: none;
+    overflow-y: visible;
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--rule);
+    padding-bottom: 1.25rem;
+  }
+  .navgroup ol { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: 2px; }
+  .wrap { padding: 0 1.15rem; }
+  .pagehead { padding: 2.25rem 0 1.75rem; margin-bottom: 1.75rem; }
+  .pagehead h1 { font-size: var(--t-3xl); }
+  .toc ol { columns: 1; }
+  .tier { grid-template-columns: 1fr; gap: 0.5rem; }
+  .flowdown { padding-inline-start: 1rem; }
+  .hop { grid-template-columns: 5rem minmax(0, 1fr); }
+  .hop > .val { grid-column: 1 / -1; text-align: start; }
+  .pager { flex-direction: column; }
+  .pager a.next { text-align: start; }
+  .themetoggle { inset-block-start: auto; inset-block-end: 0.85rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+@media print {
+  .sidebar, .themetoggle, .pager, .filterbar { display: none; }
+  .frame { grid-template-columns: 1fr; }
+  body { background: #fff; color: #000; }
+}
+
+</style>
+<script>
+(function () {
+  var root = document.documentElement;
+  var key = 'girih-docs-theme';
+  var saved = null;
+  try { saved = localStorage.getItem(key); } catch (e) {}
+  if (saved === 'dark' || saved === 'light') root.setAttribute('data-theme', saved);
+
+  function label() {
+    var explicit = root.getAttribute('data-theme');
+    var dark = explicit ? explicit === 'dark'
+      : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return dark ? 'Light' : 'Dark';
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    var btn = document.querySelector('.themetoggle');
+    if (!btn) return;
+    btn.textContent = label();
+    btn.addEventListener('click', function () {
+      var explicit = root.getAttribute('data-theme');
+      var dark = explicit ? explicit === 'dark'
+        : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var nextTheme = dark ? 'light' : 'dark';
+      root.setAttribute('data-theme', nextTheme);
+      try { localStorage.setItem(key, nextTheme); } catch (e) {}
+      btn.textContent = label();
+    });
+  });
+})();
+</script>
+</head>
+<body>
+
+  <button class="themetoggle" type="button" aria-label="Switch colour theme">Dark</button>
+  <div class="frame">
+    <nav class="sidebar" aria-label="Documentation">
+    <a class="brandmark" href="index.html">
+      <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <polygon points="12.00,0.50 18.76,2.70 22.94,8.45 22.94,15.55 18.76,21.30 12.00,23.50 5.24,21.30 1.06,15.55 1.06,8.45 5.24,2.70" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.35"></polygon>
+      <polygon points="12.00,0.50 13.58,7.15 18.76,2.70 16.13,9.00 22.94,8.45 17.10,12.00 22.94,15.55 16.13,15.00 18.76,21.30 13.58,16.85 12.00,23.50 10.42,16.85 5.24,21.30 7.87,15.00 1.06,15.55 6.90,12.00 1.06,8.45 7.87,9.00 5.24,2.70 10.42,7.15" fill="none" stroke="var(--accent)" stroke-width="1.1"></polygon>
+    </svg>
+      <span>
+        <span class="wordmark">girih</span>
+        <span class="persian"> گره</span>
+      </span>
+    </a>
+    <p class="tagline">One warp, many wefts — compile multi-brand design systems from tokens and contracts.</p>
+    <div class="navgroup">
+      <div class="label">Orientation</div>
+      <ol>
+        <li><a href="index.html"><span class="n">00</span><span>Start here</span></a></li>
+        <li><a href="01-the-idea.html"><span class="n">01</span><span>The idea</span></a></li>
+        <li><a href="02-installation.html"><span class="n">02</span><span>Installation</span></a></li>
+      </ol>
+    </div>
+    <div class="navgroup">
+      <div class="label">The model</div>
+      <ol>
+        <li><a href="03-how-it-works.html"><span class="n">03</span><span>How it works</span></a></li>
+        <li><a href="04-tokens.html" aria-current="page"><span class="n">04</span><span>Tokens &amp; brands</span></a></li>
+        <li><a href="05-contracts.html"><span class="n">05</span><span>Contracts</span></a></li>
+      </ol>
+    </div>
+    <div class="navgroup">
+      <div class="label">Reference</div>
+      <ol>
+        <li><a href="06-the-code.html"><span class="n">06</span><span>The code</span></a></li>
+        <li><a href="07-error-codes.html"><span class="n">07</span><span>Error codes</span></a></li>
+        <li><a href="08-quiz.html"><span class="n">08</span><span>Quiz</span></a></li>
+      </ol>
+    </div>
+  </nav>
+    <main class="content">
+      <header class="pagehead">
+        <div class="wrap">
+          <div class="eyebrow">Chapter 04 · The model</div>
+          <h1>Tokens and brands</h1>
+          <p class="standfirst">Three tiers, alias chains, and the override-only rule that lets one stylesheet serve every brand.</p>
+        </div>
+      </header>
+      <div class="wrap">
+        <div class="toc">
+    <div class="label">On this page</div>
+    <ol>
+      <li><a href="#token">What a token is, exactly</a></li>
+      <li><a href="#tiers">Why three tiers</a></li>
+      <li><a href="#aliases">Alias chains</a></li>
+      <li><a href="#walker">Trace a chain yourself</a></li>
+      <li><a href="#brands">Brands: the override-only rule</a></li>
+      <li><a href="#live">The live brand switch</a></li>
+      <li><a href="#closure">The dependents closure</a></li>
+      <li><a href="#validation">What girih checks</a></li>
+      <li><a href="#authoring">Authoring rules</a></li>
+    </ol>
+  </div>
+        <style>
+
+/* ==== BEGIN verbatim girih output: examples/acme-ds/.../styles/tokens.css ==== */
+/* Generated by girih — do not edit. Source of truth: tokens/ and brands/. */
+
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --ds-button-size-sm-height: 32px;
+  --ds-button-size-md-height: 40px;
+  --ds-button-size-lg-height: 48px;
+  --ds-checkbox-size-sm: 16px;
+  --ds-checkbox-size-md: 20px;
+  --ds-dialog-size-sm-max-width: 320px;
+  --ds-dialog-size-md-max-width: 480px;
+  --ds-dialog-size-lg-max-width: 640px;
+  --ds-input-size-sm-height: 32px;
+  --ds-input-size-md-height: 40px;
+  --ds-input-size-lg-height: 48px;
+  --ds-color-white: #ffffff;
+  --ds-color-black: #0a0a0a;
+  --ds-color-blue-500: #3b82f6;
+  --ds-color-blue-600: #2563eb;
+  --ds-color-blue-700: #1d4ed8;
+  --ds-color-green-500: #22c55e;
+  --ds-color-green-600: #16a34a;
+  --ds-color-green-700: #15803d;
+  --ds-color-gray-50: #f9fafb;
+  --ds-color-gray-200: #e5e7eb;
+  --ds-color-gray-600: #4b5563;
+  --ds-color-gray-900: #111827;
+  --ds-color-red-600: #dc2626;
+  --ds-color-red-700: #b91c1c;
+  --ds-color-overlay: rgba(10, 10, 10, 0.7);
+  --ds-radius-sm: 4px;
+  --ds-radius-md: 8px;
+  --ds-radius-lg: 16px;
+  --ds-radius-pill: 999px;
+  --ds-space-1: 4px;
+  --ds-space-2: 8px;
+  --ds-space-3: 12px;
+  --ds-space-4: 16px;
+  --ds-space-6: 24px;
+  --ds-font-family-sans: 'Inter', system-ui, sans-serif;
+  --ds-font-size-sm: 13px;
+  --ds-font-size-md: 15px;
+  --ds-font-size-lg: 18px;
+  --ds-font-weight-regular: 400;
+  --ds-font-weight-medium: 500;
+  --ds-font-weight-semibold: 600;
+  --ds-color-primary: var(--ds-color-blue-600); /** Main brand color — the token brands most often override. */
+  --ds-color-primary-hover: var(--ds-color-blue-700);
+  --ds-color-on-primary: var(--ds-color-white);
+  --ds-color-text: var(--ds-color-gray-900);
+  --ds-color-text-muted: var(--ds-color-gray-600);
+  --ds-color-background: var(--ds-color-white);
+  --ds-color-surface: var(--ds-color-gray-50);
+  --ds-color-border: var(--ds-color-gray-200);
+  --ds-color-danger: var(--ds-color-red-600);
+  --ds-color-danger-hover: var(--ds-color-red-700);
+  --ds-color-backdrop: var(--ds-color-overlay);
+  --ds-color-surface-hover: var(--ds-color-gray-200);
+  --ds-radius-control: var(--ds-radius-md); /** Corner radius for interactive controls. */
+  --ds-radius-control-sm: var(--ds-radius-sm);
+  --ds-radius-surface: var(--ds-radius-lg);
+  --ds-radius-round: var(--ds-radius-pill);
+  --ds-control-padding-inline-sm: var(--ds-space-3);
+  --ds-control-padding-inline-md: var(--ds-space-4);
+  --ds-control-padding-inline-lg: var(--ds-space-6);
+  --ds-typography-body-family: var(--ds-font-family-sans);
+  --ds-typography-size-sm: var(--ds-font-size-sm);
+  --ds-typography-size-md: var(--ds-font-size-md);
+  --ds-typography-size-lg: var(--ds-font-size-lg);
+  --ds-typography-weight-medium: var(--ds-font-weight-medium);
+  --ds-typography-weight-semibold: var(--ds-font-weight-semibold);
+  --ds-badge-neutral-background: var(--ds-color-surface);
+  --ds-badge-neutral-foreground: var(--ds-color-text-muted);
+  --ds-badge-primary-background: var(--ds-color-primary);
+  --ds-badge-primary-foreground: var(--ds-color-on-primary);
+  --ds-badge-danger-background: var(--ds-color-danger);
+  --ds-badge-danger-foreground: var(--ds-color-on-primary);
+  --ds-badge-radius: var(--ds-radius-round);
+  --ds-badge-padding-inline: var(--ds-control-padding-inline-sm);
+  --ds-button-primary-background: var(--ds-color-primary);
+  --ds-button-primary-background-hover: var(--ds-color-primary-hover);
+  --ds-button-primary-foreground: var(--ds-color-on-primary);
+  --ds-button-secondary-background: var(--ds-color-surface);
+  --ds-button-secondary-foreground: var(--ds-color-text);
+  --ds-button-secondary-border: var(--ds-color-border);
+  --ds-button-danger-background: var(--ds-color-danger);
+  --ds-button-danger-background-hover: var(--ds-color-danger-hover);
+  --ds-button-danger-foreground: var(--ds-color-on-primary);
+  --ds-button-radius: var(--ds-radius-control);
+  --ds-card-background: var(--ds-color-background);
+  --ds-card-border: 1px solid var(--ds-color-border);
+  --ds-card-radius: var(--ds-radius-surface);
+  --ds-card-padding: var(--ds-control-padding-inline-lg);
+  --ds-checkbox-background: var(--ds-color-background);
+  --ds-checkbox-background-checked: var(--ds-color-primary);
+  --ds-checkbox-glyph: var(--ds-color-on-primary);
+  --ds-checkbox-border: var(--ds-color-border);
+  --ds-checkbox-border-hover: var(--ds-color-primary);
+  --ds-checkbox-radius: var(--ds-radius-control-sm);
+  --ds-dialog-backdrop: var(--ds-color-backdrop);
+  --ds-dialog-surface: var(--ds-color-background);
+  --ds-dialog-foreground: var(--ds-color-text);
+  --ds-dialog-title-foreground: var(--ds-color-text);
+  --ds-dialog-description-foreground: var(--ds-color-text-muted);
+  --ds-dialog-radius: var(--ds-radius-surface);
+  --ds-dialog-padding: var(--ds-control-padding-inline-lg);
+  --ds-dialog-gap: var(--ds-control-padding-inline-sm);
+  --ds-input-background: var(--ds-color-background);
+  --ds-input-foreground: var(--ds-color-text);
+  --ds-input-placeholder: var(--ds-color-text-muted);
+  --ds-input-border: 1px solid var(--ds-color-border);
+  --ds-input-border-focus: var(--ds-color-primary);
+  --ds-input-radius: var(--ds-radius-control);
+}
+
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+[data-brand="marketplace"] {
+  --ds-radius-md: 8px;
+  --ds-color-primary: var(--ds-color-blue-600); /** Main brand color — the token brands most often override. */
+  --ds-color-primary-hover: var(--ds-color-blue-700);
+  --ds-radius-control: var(--ds-radius-md); /** Corner radius for interactive controls. */
+  --ds-badge-primary-background: var(--ds-color-primary);
+  --ds-button-primary-background: var(--ds-color-primary);
+  --ds-button-primary-background-hover: var(--ds-color-primary-hover);
+  --ds-button-radius: var(--ds-radius-control);
+  --ds-checkbox-background-checked: var(--ds-color-primary);
+  --ds-checkbox-border-hover: var(--ds-color-primary);
+  --ds-input-border-focus: var(--ds-color-primary);
+  --ds-input-radius: var(--ds-radius-control);
+}
+
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+[data-brand="seller"] {
+  --ds-radius-md: 2px;
+  --ds-color-primary: var(--ds-color-green-600); /** Main brand color — the token brands most often override. */
+  --ds-color-primary-hover: var(--ds-color-green-700);
+  --ds-radius-control: var(--ds-radius-md); /** Corner radius for interactive controls. */
+  --ds-badge-primary-background: var(--ds-color-primary);
+  --ds-button-primary-background: var(--ds-color-primary);
+  --ds-button-primary-background-hover: var(--ds-color-primary-hover);
+  --ds-button-radius: var(--ds-radius-control);
+  --ds-checkbox-background-checked: var(--ds-color-primary);
+  --ds-checkbox-border-hover: var(--ds-color-primary);
+  --ds-input-border-focus: var(--ds-color-primary);
+  --ds-input-radius: var(--ds-radius-control);
+}
+
+/* ==== END tokens.css ==== */
+/* ==== BEGIN verbatim girih output: examples/acme-ds/.../styles/components.css ==== */
+/* Generated by girih — do not edit. Structure only; every value is a token var(). */
+
+.ds-badge {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ds-badge {
+  border-radius: var(--ds-badge-radius);
+  padding-inline: var(--ds-badge-padding-inline);
+  font-size: var(--ds-typography-size-sm);
+  font-weight: var(--ds-typography-weight-medium);
+  font-family: var(--ds-typography-body-family);
+}
+
+.ds-badge[data-tone="neutral"] {
+  background: var(--ds-badge-neutral-background);
+  color: var(--ds-badge-neutral-foreground);
+}
+
+.ds-badge[data-tone="primary"] {
+  background: var(--ds-badge-primary-background);
+  color: var(--ds-badge-primary-foreground);
+}
+
+.ds-badge[data-tone="danger"] {
+  background: var(--ds-badge-danger-background);
+  color: var(--ds-badge-danger-foreground);
+}
+
+.ds-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.ds-button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.ds-button:disabled,
+.ds-button[aria-disabled="true"],
+.ds-button[data-loading="true"] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.ds-button {
+  font-family: var(--ds-typography-body-family);
+  border-radius: var(--ds-button-radius);
+}
+
+.ds-button[data-variant="primary"] {
+  background: var(--ds-button-primary-background);
+  color: var(--ds-button-primary-foreground);
+}
+
+.ds-button[data-variant="primary"]:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--ds-button-primary-background-hover);
+}
+
+.ds-button[data-variant="secondary"] {
+  background: var(--ds-button-secondary-background);
+  color: var(--ds-button-secondary-foreground);
+  border-color: var(--ds-button-secondary-border);
+}
+
+.ds-button[data-variant="danger"] {
+  background: var(--ds-button-danger-background);
+  color: var(--ds-button-danger-foreground);
+}
+
+.ds-button[data-variant="danger"]:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--ds-button-danger-background-hover);
+}
+
+.ds-button[data-size="sm"] {
+  height: var(--ds-button-size-sm-height);
+  padding-inline: var(--ds-control-padding-inline-sm);
+  font-size: var(--ds-typography-size-sm);
+}
+
+.ds-button[data-size="md"] {
+  height: var(--ds-button-size-md-height);
+  padding-inline: var(--ds-control-padding-inline-md);
+  font-size: var(--ds-typography-size-md);
+}
+
+.ds-button[data-size="lg"] {
+  height: var(--ds-button-size-lg-height);
+  padding-inline: var(--ds-control-padding-inline-lg);
+  font-size: var(--ds-typography-size-lg);
+}
+
+.ds-card {
+  background: var(--ds-card-background);
+  border: var(--ds-card-border);
+  border-radius: var(--ds-card-radius);
+  padding: var(--ds-card-padding);
+}
+
+.ds-checkbox {
+  appearance: none;
+  display: inline-grid;
+  place-content: center;
+  margin: 0;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.ds-checkbox::after {
+  content: '';
+  width: 0.55em;
+  height: 0.3em;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg) translate(5%, -15%);
+  opacity: 0;
+}
+
+.ds-checkbox:checked::after {
+  opacity: 1;
+}
+
+.ds-checkbox:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.ds-checkbox:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.ds-checkbox {
+  background: var(--ds-checkbox-background);
+  border-color: var(--ds-checkbox-border);
+  border-radius: var(--ds-checkbox-radius);
+}
+
+.ds-checkbox:hover:not(:disabled):not([aria-disabled="true"]) {
+  border-color: var(--ds-checkbox-border-hover);
+}
+
+.ds-checkbox:checked {
+  background: var(--ds-checkbox-background-checked);
+  border-color: var(--ds-checkbox-background-checked);
+  color: var(--ds-checkbox-glyph);
+}
+
+.ds-checkbox[data-size="sm"] {
+  width: var(--ds-checkbox-size-sm);
+  height: var(--ds-checkbox-size-sm);
+}
+
+.ds-checkbox[data-size="md"] {
+  width: var(--ds-checkbox-size-md);
+  height: var(--ds-checkbox-size-md);
+}
+
+.ds-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+.ds-dialog-popup {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  height: fit-content;
+  width: calc(100% - 2 * var(--ds-dialog-gutter, 16px));
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  outline: none;
+}
+
+.ds-dialog-title {
+  margin: 0;
+}
+
+.ds-dialog-description {
+  margin: 0;
+}
+
+.ds-dialog-backdrop {
+  background: var(--ds-dialog-backdrop);
+}
+
+.ds-dialog-popup {
+  background: var(--ds-dialog-surface);
+  color: var(--ds-dialog-foreground);
+  border-radius: var(--ds-dialog-radius);
+  padding: var(--ds-dialog-padding);
+  gap: var(--ds-dialog-gap);
+  font-family: var(--ds-typography-body-family);
+}
+
+.ds-dialog-title {
+  font-size: var(--ds-typography-size-lg);
+  font-weight: var(--ds-typography-weight-semibold);
+  color: var(--ds-dialog-title-foreground);
+}
+
+.ds-dialog-description {
+  font-size: var(--ds-typography-size-sm);
+  color: var(--ds-dialog-description-foreground);
+}
+
+.ds-dialog-popup[data-size="sm"] {
+  max-width: var(--ds-dialog-size-sm-max-width);
+}
+
+.ds-dialog-popup[data-size="md"] {
+  max-width: var(--ds-dialog-size-md-max-width);
+}
+
+.ds-dialog-popup[data-size="lg"] {
+  max-width: var(--ds-dialog-size-lg-max-width);
+}
+
+.ds-input {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid transparent;
+  font: inherit;
+  cursor: text;
+}
+
+.ds-input:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.ds-input:disabled,
+.ds-input[aria-disabled="true"],
+.ds-input[data-loading="true"] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.ds-input {
+  background: var(--ds-input-background);
+  color: var(--ds-input-foreground);
+  border: var(--ds-input-border);
+  border-radius: var(--ds-input-radius);
+  font-family: var(--ds-typography-body-family);
+}
+
+.ds-input:focus-visible {
+  border-color: var(--ds-input-border-focus);
+}
+
+.ds-input[data-size="sm"] {
+  height: var(--ds-input-size-sm-height);
+  padding-inline: var(--ds-control-padding-inline-sm);
+  font-size: var(--ds-typography-size-sm);
+}
+
+.ds-input[data-size="md"] {
+  height: var(--ds-input-size-md-height);
+  padding-inline: var(--ds-control-padding-inline-md);
+  font-size: var(--ds-typography-size-md);
+}
+
+.ds-input[data-size="lg"] {
+  height: var(--ds-input-size-lg-height);
+  padding-inline: var(--ds-control-padding-inline-lg);
+  font-size: var(--ds-typography-size-lg);
+}
+
+.ds-button.ds-x-payment-button.ds-x-payment-button,
+.ds-button.ds-x-payment-button.ds-x-payment-button:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--ds-color-text);
+  color: var(--ds-color-background);
+}
+
+/* ==== END components.css ==== */
+/* The demo surface only constrains layout; every design value above is a token. */
+.dsdemo .ds-button, .dsdemo .ds-input { font-family: var(--ds-typography-body-family); }
+.dsdemo .ds-card { max-width: 28rem; }
+
+</style>
+
+<div class="prose">
+<p class="lede">
+  This is the chapter that matters. If you understand the three tiers, alias chains, and the
+  override-only rule, everything else in girih is a detail. All the values on this page are real —
+  extracted by running girih's own engine over <code>examples/acme-ds</code>.
+</p>
+
+<h2 id="token">What a token is, exactly</h2>
+
+<p>
+  A token is a named design decision written in DTCG JSON. Two keys carry the weight:
+  <code>$value</code> and <code>$type</code>.
+</p>
+
+<figure class="code" data-lang="json">
+  <figcaption>
+      <span class="path">tokens/global.tokens.json (excerpt)</span>
+      <span class="badge authored">You write this</span>
+    </figcaption>
+  <pre><code>{
+  <span class="tk-s">&quot;radius&quot;</span>: {
+    <span class="tk-s">&quot;$type&quot;</span>: <span class="tk-s">&quot;dimension&quot;</span>,
+    <span class="tk-s">&quot;sm&quot;</span>:   { <span class="tk-s">&quot;$value&quot;</span>: <span class="tk-s">&quot;4px&quot;</span> },
+    <span class="tk-s">&quot;md&quot;</span>:   { <span class="tk-s">&quot;$value&quot;</span>: <span class="tk-s">&quot;8px&quot;</span> },
+    <span class="tk-s">&quot;lg&quot;</span>:   { <span class="tk-s">&quot;$value&quot;</span>: <span class="tk-s">&quot;16px&quot;</span> },
+    <span class="tk-s">&quot;pill&quot;</span>: { <span class="tk-s">&quot;$value&quot;</span>: <span class="tk-s">&quot;999px&quot;</span> }
+  }
+}</code></pre>
+</figure>
+
+<p>
+  Note that <code>$type</code> is declared once on the group and inherited by every member.
+  <code>radius.md</code> is a dimension without saying so itself. girih flattens this into a map
+  keyed by dotted path, and that flat map is what every later stage speaks:
+</p>
+
+<figure class="code" data-lang="none">
+  <figcaption>
+      <span class="path">after mergeTokenFiles()</span>
+      <span class="badge generated">girih writes this</span>
+    </figcaption>
+  <pre><code>radius.sm    tier=global  type=dimension  value=&quot;4px&quot;
+radius.md    tier=global  type=dimension  value=&quot;8px&quot;
+radius.lg    tier=global  type=dimension  value=&quot;16px&quot;
+radius.pill  tier=global  type=dimension  value=&quot;999px&quot;</code></pre>
+</figure>
+
+<div class="callout eli5">
+  <div class="title">In plain words</div>
+  
+  <p>
+    A token is a variable for a design decision. <code>radius.md</code> means "our medium corner
+    radius" — and the point of the name is that the <em>meaning</em> stays put while the
+    <em>number</em> is free to change. Anything that wants a medium corner asks for the name, so one
+    edit moves everything.
+  </p>
+
+</div>
+
+<h2 id="tiers">Why three tiers</h2>
+
+<p>
+  girih requires tokens to live in one of three tiers. The tier is inferred from the filename —
+  <code>global*.tokens.json</code>, <code>semantic*.tokens.json</code>, and anything under
+  <code>tokens/components/</code> — and a file girih cannot classify gets a
+  <code>GIRIH2004</code> warning and is treated as semantic.
+</p>
+
+<div class="tiers bleed"><div class="tier" data-tier="component">
+      <div class="name">Component<span class="sub">53 tokens in the example</span></div>
+      <div class="chips"><span class="chip">button.radius</span><span class="chip">button.primary.background</span><span class="chip">input.border-focus</span><span class="chip">dialog.backdrop</span></div>
+    </div><div class="flowdown">may reference</div>
+<div class="tier" data-tier="semantic">
+      <div class="name">Semantic<span class="sub">25 tokens</span></div>
+      <div class="chips"><span class="chip">radius.control</span><span class="chip">color.primary</span><span class="chip">color.on-primary</span><span class="chip">typography.size-md</span></div>
+    </div><div class="flowdown">may reference</div>
+<div class="tier" data-tier="global">
+      <div class="name">Global<span class="sub">31 tokens</span></div>
+      <div class="chips"><span class="chip">radius.md = 8px</span><span class="chip">color.blue.600 = #2563EB</span><span class="chip">space.4 = 16px</span></div>
+    </div></div>
+
+<p>Each tier answers a different question, and the questions are asked by different people:</p>
+
+<div class="tablewrap">
+  <table>
+    <thead><tr><th>Tier</th><th>Answers</th><th>Example</th><th>Who changes it</th></tr></thead>
+    <tbody>
+      <tr><td><b>Global</b></td><td>What values exist in our palette at all?</td><td><code>color.blue.600 = #2563EB</code></td><td>Rarely — this is the raw material</td></tr>
+      <tr><td><b>Semantic</b></td><td>What does this value <em>mean</em> to us?</td><td><code>color.primary = {color.blue.600}</code></td><td>Design leads; brands override here most</td></tr>
+      <tr><td><b>Component</b></td><td>What does <em>this component</em> use?</td><td><code>button.primary.background = {color.primary}</code></td><td>Whoever owns the component</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="callout rule">
+  <div class="title">The tier rule</div>
+  <p>
+    A reference may point at its own tier or a lower one. Never upward. Component may reference
+    semantic and global; semantic may reference global; global references nothing. Violations are a
+    build error, reported by <code>validateTierDirection()</code>.
+  </p>
+  <p>
+    Without this rule the tiers are just folders. With it, you can reason about blast radius: a
+    global change may affect anything, a component change affects that component. That guarantee is
+    the whole return on the extra indirection.
+  </p>
+</div>
+
+<details class="aside">
+  <summary>Why not two tiers? Or four? — the argument for exactly three</summary>
+  
+  <p>
+    <b>Two tiers</b> (raw + component) means every component references raw values directly. Change
+    "our primary blue" and you must edit every component that used the blue — and you must know
+    which uses of <code>blue.600</code> meant "primary" versus "that particular blue". The
+    information about <em>why</em> a value was chosen is nowhere.
+  </p>
+  <p>
+    <b>Four or more tiers</b> is where teams usually end up by accretion, and the cost is that
+    nobody can predict where a value comes from. Each hop is a place to look during debugging. The
+    example workspace's longest chain is three hops, which is already enough that the
+    <a href="#walker">walker widget below</a> earns its keep.
+  </p>
+  <p>
+    <b>Three</b> is the smallest number that separates the three questions in the table above:
+    what exists, what it means, what uses it. That separation is what makes a brand overlay a
+    values-only operation.
+  </p>
+
+</details>
+
+<h2 id="aliases">Alias chains</h2>
+
+<p>
+  A token whose <code>$value</code> is <code>{another.token}</code> is an alias. Chains form
+  naturally from the tier structure. Here is the real chain for a button's corner radius on the
+  default brand:
+</p>
+
+<div class="chain bleed">
+    <div class="hop" data-tier="component" data-override="false">
+      <span class="tierbadge">component</span>
+      <span class="path">button.radius<span style="color:var(--text-faint)"> = {radius.control}</span></span>
+      <span class="val">8px</span>
+    </div>
+    <div class="hop" data-tier="semantic" data-override="false">
+      <span class="tierbadge">semantic</span>
+      <span class="path">radius.control<span style="color:var(--text-faint)"> = {radius.md}</span></span>
+      <span class="val">8px</span>
+    </div>
+    <div class="hop" data-tier="global" data-override="false">
+      <span class="tierbadge">global</span>
+      <span class="path">radius.md<span style="color:var(--text-faint)"> = 8px</span></span>
+      <span class="val">8px</span>
+    </div>
+  </div>
+
+<p>
+  Three hops, three tiers, and only the last one holds an actual number. Now the same chain on the
+  <code>seller</code> brand — same structure, one overridden value:
+</p>
+
+<div class="chain bleed">
+    <div class="hop" data-tier="component" data-override="false">
+      <span class="tierbadge">component</span>
+      <span class="path">button.radius<span style="color:var(--text-faint)"> = {radius.control}</span></span>
+      <span class="val">2px</span>
+    </div>
+    <div class="hop" data-tier="semantic" data-override="false">
+      <span class="tierbadge">semantic</span>
+      <span class="path">radius.control<span style="color:var(--text-faint)"> = {radius.md}</span></span>
+      <span class="val">2px</span>
+    </div>
+    <div class="hop" data-tier="global" data-override="true">
+      <span class="tierbadge">global</span>
+      <span class="path">radius.md<span style="color:var(--text-faint)"> = 2px</span></span>
+      <span class="val">2px</span>
+    </div>
+  </div>
+
+<p>
+  The highlighted row is the override. Note where it is: <code>radius.md</code>, in the
+  <em>global</em> tier. The seller brand did not touch <code>button.radius</code> at all. It changed
+  a raw value two levels down, and the change arrived at the button through the alias chain. That is
+  the three-tier design paying for itself.
+</p>
+
+<div class="callout gotcha">
+  <div class="title">This is also why the chain reaches things you did not think about</div>
+  <p>
+    <code>input.radius</code> and <code>checkbox.radius</code> also point at
+    <code>radius.control</code> (well, <code>radius.control-sm</code> for the checkbox). So the
+    seller override reaches them too, automatically. That is usually exactly what you want — and it
+    is exactly why you should override at the lowest tier that expresses your intent, not the
+    highest one you can reach.
+  </p>
+</div>
+
+<h2 id="walker">Trace a chain yourself</h2>
+
+<p>
+  Pick a token and a brand and step down the chain. Everything here is read from the resolved graph
+  girih produced; nothing is hardcoded.
+</p>
+
+<div class="widget" id="w-walker">
+  <header>
+    <span class="wt">Alias chain walker</span>
+    <span class="wh">Step a token down to its raw value, per brand</span>
+  </header>
+  <div class="body">
+    <div class="controls" style="margin-bottom:0.9rem">
+      <select class="sel" data-w-path aria-label="Token to trace"><option value="button.radius">button.radius</option><option value="button.primary.background">button.primary.background</option><option value="input.border-focus">input.border-focus</option><option value="badge.primary.background">badge.primary.background</option></select>
+      <span class="seg" role="group" aria-label="Brand"><button type="button" data-w-brand="marketplace" aria-pressed="true">marketplace</button><button type="button" data-w-brand="seller" aria-pressed="false">seller</button></span>
+      <button class="btn" type="button" data-w-step>Step down ↓</button>
+      <button class="btn primary" type="button" data-w-play>Play</button>
+      <button class="btn" type="button" data-w-reset>Reset</button>
+    </div>
+    <div data-w-chain></div>
+    <p data-w-verdict style="margin:0.9rem 0 0;font-family:var(--util);font-size:var(--t-sm);color:var(--text-muted)"></p>
+  </div>
+</div>
+
+<h2 id="brands">Brands: the override-only rule</h2>
+
+<p>
+  A brand is a folder with one file. The <code>marketplace</code> brand is the default and overrides
+  nothing at all, so its file is literally empty:
+</p>
+
+<figure class="code" data-lang="json">
+  <figcaption>
+      <span class="path">brands/marketplace/tokens.json</span>
+      <span class="badge authored">You write this</span>
+    </figcaption>
+  <pre><code>{}</code></pre>
+</figure>
+
+<p>The <code>seller</code> brand overrides exactly three values:</p>
+
+<figure class="code" data-lang="json">
+  <figcaption>
+      <span class="path">brands/seller/tokens.json</span>
+      <span class="badge authored">You write this</span>
+    </figcaption>
+  <pre><code>{
+  <span class="tk-s">&quot;color&quot;</span>: {
+    <span class="tk-s">&quot;primary&quot;</span>: { <span class="tk-s">&quot;$value&quot;</span>: <span class="tk-s">&quot;<span class="tk-r">{color.green.600}</span>&quot;</span> },
+    <span class="tk-s">&quot;primary-hover&quot;</span>: { <span class="tk-s">&quot;$value&quot;</span>: <span class="tk-s">&quot;<span class="tk-r">{color.green.700}</span>&quot;</span> }
+  },
+  <span class="tk-s">&quot;radius&quot;</span>: {
+    <span class="tk-s">&quot;md&quot;</span>: { <span class="tk-s">&quot;$value&quot;</span>: <span class="tk-s">&quot;2px&quot;</span> }
+  }
+}
+</code></pre>
+</figure>
+
+<div class="callout danger">
+  <div class="title">An overlay may only override. Never add.</div>
+  <p>
+    If <code>brands/seller/tokens.json</code> introduced a path that does not exist in the base
+    token set, that is an error — not a merge. The reason is structural: if brands could add tokens,
+    a component contract could reference a token that exists for one brand and not another, and
+    there would be no such thing as "one component set that serves every brand". Every brand must
+    end up with an identical set of paths, which <code>validateBrandParity()</code> checks
+    explicitly.
+  </p>
+  <p><b>Brands are skins, never forks.</b> This rule is what that slogan cashes out to.</p>
+</div>
+
+<h2 id="live">The live brand switch</h2>
+
+<p>
+  Below is the real generated CSS from <code>examples/acme-ds</code> — both
+  <code>tokens.css</code> and <code>components.css</code>, embedded verbatim into this page — with
+  markup matching what the generated React components render. Switching brands changes one
+  attribute. No stylesheet is swapped, nothing is rebuilt, no JavaScript recalculates a value.
+</p>
+
+<div class="widget" id="w-branddemo">
+  <header>
+    <span class="wt">Live brand switch</span>
+    <span class="wh">Real generated CSS · no reload, no rebuild</span>
+  </header>
+  <div class="body">
+    <div class="controls" style="margin-bottom:1rem">
+      <span class="demolabel" style="min-width:auto">Brand</span>
+      <span class="seg" role="group" aria-label="Choose brand"><button type="button" data-brand-set="marketplace" aria-pressed="true">marketplace</button><button type="button" data-brand-set="seller" aria-pressed="false">seller</button></span>
+      <span style="font-family:var(--util);font-size:var(--t-xs);color:var(--text-muted)"><span data-brand-note="marketplace" style="display:inline">the default brand — overrides nothing</span><span data-brand-note="seller" style="display:none">overrides 3 tokens: <code>color.primary</code>, <code>color.primary-hover</code>, <code>radius.md</code></span></span>
+    </div>
+    <div class="dsdemo demosurface" data-brand="marketplace">
+      <div class="demorow">
+        <span class="demolabel">Variants</span>
+        <button class="ds-button" data-variant="primary" data-size="md" type="button">Primary</button>
+            <button class="ds-button" data-variant="secondary" data-size="md" type="button">Secondary</button>
+            <button class="ds-button" data-variant="danger" data-size="md" type="button">Danger</button>
+      </div>
+      <div class="demorow">
+        <span class="demolabel">Sizes</span>
+        <button class="ds-button" data-variant="primary" data-size="sm" type="button">Size sm</button>
+            <button class="ds-button" data-variant="primary" data-size="md" type="button">Size md</button>
+            <button class="ds-button" data-variant="primary" data-size="lg" type="button">Size lg</button>
+      </div>
+      <div class="demorow">
+        <span class="demolabel">Extension</span>
+        <button class="ds-button ds-x-payment-button" data-variant="primary" data-size="md" type="button">Pay now</button>
+        <span style="font-family:var(--util);font-size:var(--t-xs);color:var(--text-faint)">PaymentButton — deliberately brand-independent</span>
+      </div>
+      <div class="demorow">
+        <span class="demolabel">Badges</span>
+        <span class="ds-badge" data-tone="neutral">neutral</span>
+            <span class="ds-badge" data-tone="primary">primary</span>
+            <span class="ds-badge" data-tone="danger">danger</span>
+      </div>
+      <div class="demorow">
+        <span class="demolabel">Input</span>
+        <input class="ds-input" data-size="md" placeholder="you@example.com" aria-label="Email">
+      </div>
+      <div class="ds-card">
+        <span class="demolabel" style="display:block;margin-bottom:0.5rem">Card</span>
+        <span style="font-family:var(--util);font-size:var(--t-sm)">A card is structure plus four token references — background, border, radius, padding.</span>
+      </div>
+    </div>
+    <p style="margin:1rem 0 0;font-family:var(--util);font-size:var(--t-xs);color:var(--text-muted)">
+      Watch the corner radius, not just the colour. <code>seller</code> overrides the
+      <em>global</em> <code>radius.md</code>, so the change arrives through two levels of alias.
+    </p>
+  </div>
+</div>
+
+<p>
+  Watch the corner radius as well as the colour. The colour comes from a semantic override
+  (<code>color.primary</code>); the radius comes from a global one (<code>radius.md</code>) that has
+  to travel two hops. Both arrive through the same mechanism.
+</p>
+
+<div class="callout rule">
+  <div class="title">Why the PaymentButton does not change colour</div>
+  <p>
+    <code>PaymentButton</code> is an extension that pins its background to <code>{color.text}</code>
+    and its foreground to <code>{color.background}</code> — neither of which any brand overrides. It
+    is deliberately brand-independent: a checkout call-to-action that should look identical
+    everywhere. Extensions are covered in <a href="05-contracts.html">chapter 05</a>.
+  </p>
+</div>
+
+<h2 id="closure">The dependents closure</h2>
+
+<p>
+  Here is the part that trips people up. The seller brand overrides three tokens. Its CSS block
+  contains twelve declarations:
+</p>
+
+<figure class="code" data-lang="css">
+  <figcaption>
+      <span class="path">styles/tokens.css — real output</span>
+      <span class="badge generated">girih writes this</span>
+    </figcaption>
+  <pre><code>[data-brand=<span class="tk-s">&quot;seller&quot;</span>] {
+  --ds-radius-md: 2px;                                        <span class="tk-c">/* overridden */</span>
+  --ds-color-primary: var(--ds-color-green-600);              <span class="tk-c">/* overridden */</span>
+  --ds-color-primary-hover: var(--ds-color-green-700);        <span class="tk-c">/* overridden */</span>
+  --ds-radius-control: var(--ds-radius-md);                   <span class="tk-c">/* dependent */</span>
+  --ds-badge-primary-background: var(--ds-color-primary);     <span class="tk-c">/* dependent */</span>
+  --ds-button-primary-background: var(--ds-color-primary);    <span class="tk-c">/* dependent */</span>
+  --ds-button-primary-background-hover: var(--ds-color-primary-hover);
+  --ds-button-radius: var(--ds-radius-control);               <span class="tk-c">/* dependent */</span>
+  --ds-checkbox-background-checked: var(--ds-color-primary);  <span class="tk-c">/* dependent */</span>
+  --ds-checkbox-border-hover: var(--ds-color-primary);        <span class="tk-c">/* dependent */</span>
+  --ds-input-border-focus: var(--ds-color-primary);           <span class="tk-c">/* dependent */</span>
+  --ds-input-radius: var(--ds-radius-control);                <span class="tk-c">/* dependent */</span>
+}</code></pre>
+</figure>
+
+<p>
+  The nine extra declarations are the <b>dependents closure</b>: every token that transitively
+  references an overridden one. They are there because of a specific property of CSS custom
+  properties that is easy to state and easy to forget.
+</p>
+
+<div class="callout gotcha">
+  <div class="title">Custom properties are computed where they are declared</div>
+  <p>
+    Suppose the emitter had written only the three overrides into the seller block, leaving
+    <code>--ds-button-radius: var(--ds-radius-control)</code> in <code>:root</code>. Inside a
+    <code>[data-brand="seller"]</code> element, what is <code>--ds-button-radius</code>?
+  </p>
+  <p>
+    It is <code>8px</code>. The declaration lives in <code>:root</code>, so it was computed against
+    <code>:root</code>'s <code>--ds-radius-control</code>, which resolves to <code>:root</code>'s
+    <code>--ds-radius-md</code> — the un-overridden <code>8px</code>. The brand's <code>2px</code>
+    is simply never consulted. Colour would appear to work (a direct reference) while radius
+    silently would not (a two-hop reference), which is the worst possible failure mode: partial.
+  </p>
+  <p>
+    Re-declaring the chain inside the scope fixes it, because now the whole chain is computed there.
+    That is <code>dependentsClosure()</code> in
+    <code>packages/generator-css/src/generate.ts</code>, and it is about twenty lines of
+    reverse-graph walk.
+  </p>
+</div>
+
+<details class="aside">
+  <summary>The default brand gets a scoped block too — and that is not redundant</summary>
+  
+  <p>
+    Look at the real output and you will find both <code>:root</code> <em>and</em>
+    <code>[data-brand="marketplace"]</code>, even though marketplace is the default and overrides
+    nothing. Why emit a block for a brand with no overrides?
+  </p>
+  <p>
+    Because of nesting. Consider a seller-branded page containing a marketplace-branded widget:
+    <code>&lt;div data-brand="seller"&gt;&lt;div data-brand="marketplace"&gt;</code>. Without a
+    marketplace block, the inner div inherits the seller values — the outer scope's declarations are
+    still in effect and nothing resets them. So the default brand's block re-declares the closure of
+    every token that <em>any</em> brand overrides, which restores the base values inside that scope.
+  </p>
+  <p>
+    This is the kind of detail that only shows up in a real product, usually as a bug report about
+    one widget on one page looking wrong.
+  </p>
+
+</details>
+
+<h2 id="validation">What girih checks</h2>
+
+<div class="tablewrap">
+  <table>
+    <thead><tr><th>Check</th><th>Code</th><th>Catches</th></tr></thead>
+    <tbody>
+      <tr><td>Unknown reference</td><td><code>GIRIH2030</code></td><td>A <code>{typo}</code> — with "did you mean" suggestions from the real token set</td></tr>
+      <tr><td>Circular reference</td><td><code>GIRIH2031</code></td><td>A → B → A, reported with the full chain, once per cycle</td></tr>
+      <tr><td>Tier direction</td><td><code>GIRIH2040</code>–<code>GIRIH2042</code></td><td>A reference pointing upward through the tiers</td></tr>
+      <tr><td>Brand parity</td><td><code>GIRIH2020</code>–<code>GIRIH2021</code></td><td>One brand having a token another lacks</td></tr>
+      <tr><td>Overlay adds a path</td><td><code>GIRIH2010</code>–<code>GIRIH2011</code></td><td>A brand trying to introduce a new token</td></tr>
+      <tr><td>Unclassifiable file</td><td><code>GIRIH2004</code></td><td>A token file whose tier cannot be inferred from its name</td></tr>
+      <tr><td>CSS var collision</td><td><code>GIRIH3003</code></td><td>Two token paths mapping to the same custom property name</td></tr>
+      <tr><td>Unflattenable value</td><td><code>GIRIH3002</code></td><td>A composite value no CSS transform could serialize</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="callout gotcha">
+  <div class="title">The collision check is subtler than it looks</div>
+  <p>
+    <code>color.primary.hover</code> and <code>color.primary-hover</code> are different token paths.
+    Both become <code>--ds-color-primary-hover</code>, because the name transform joins segments
+    with a hyphen and lowercases. In CSS that is a silent last-one-wins. girih makes it
+    <code>GIRIH3003</code>, a hard error — one of those bugs that would otherwise cost an afternoon.
+  </p>
+</div>
+
+<hr class="strap">
+
+<h2 id="authoring">Authoring rules</h2>
+
+<p>Practical guidance, in rough order of how often it matters:</p>
+
+<ol>
+  <li>
+    <strong>Name the tier in the filename.</strong> <code>global*.tokens.json</code>,
+    <code>semantic*.tokens.json</code>, or under <code>tokens/components/</code>. Otherwise you get
+    a warning and a possibly wrong tier.
+  </li>
+  <li>
+    <strong>Override at the lowest tier that expresses your intent.</strong> Overriding
+    <code>radius.md</code> says "this brand is squarer". Overriding
+    <code>button.radius</code> says "this brand's buttons are squarer, and I accept that inputs and
+    checkboxes will not match". Both are legitimate; only one is usually meant.
+  </li>
+  <li>
+    <strong>Keep names lowercase and kebab-case.</strong> They become CSS custom property names.
+    Mixed case invites the collision above.
+  </li>
+  <li>
+    <strong>Declare <code>$type</code> on the group, not per token.</strong> Less repetition and it
+    inherits correctly.
+  </li>
+  <li>
+    <strong>Do not create a semantic token with one consumer.</strong> If exactly one component uses
+    it, it is a component token wearing a disguise, and the indirection costs a debugging hop.
+  </li>
+  <li>
+    <strong>Run <code>girih check</code> before you commit.</strong> It prints the resolved value of
+    every token for a chosen brand — <code>--brand seller</code> — which is faster than reasoning
+    about the chain in your head.
+  </li>
+</ol>
+
+<figure class="code" data-lang="none">
+  <figcaption>
+      <span class="path"></span>
+      <span class="badge shell">Terminal</span>
+    </figcaption>
+  <pre><code>$ pnpm exec girih check --brand seller
+
+TOKEN                     TIER       TYPE       RESOLVED (seller)
+button.radius             component  dimension  2px
+button.primary.background component  color      #16A34A
+radius.control            semantic   dimension  2px
+radius.md                 global     dimension  2px
+…
+
+6 component contracts: Badge, Button, Card, Checkbox, Dialog, Input
+1 extension: PaymentButton → Button
+109 tokens (31 global, 25 semantic, 53 component) · 2 brands: marketplace (default), seller (3 overrides)</code></pre>
+</figure>
+
+<p>
+  Tokens are the hard half. <a href="05-contracts.html">Chapter 05</a> is about the other half:
+  turning a contract into a component that uses them.
+</p>
+</div>
+        <div class="pager"><a class="prev" href="03-how-it-works.html"><span class="dir">← Previous</span><span class="t">How it works</span></a><a class="next" href="05-contracts.html"><span class="dir">Next →</span><span class="t">Contracts and components</span></a></div>
+      </div>
+    </main>
+  </div>
+  <style>hr.strap { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%231B3B8F' stroke-opacity='0.30' stroke-width='1'%3E%3Cpath d='M24.00,2.00L26.97,14.87L36.93,6.20L31.77,18.36L44.92,17.20L33.60,24.00L44.92,30.80L31.77,29.64L36.93,41.80L26.97,33.13L24.00,46.00L21.03,33.13L11.07,41.80L16.23,29.64L3.08,30.80L14.40,24.00L3.08,17.20L16.23,18.36L11.07,6.20L21.03,14.87Z'/%3E%3Cpath d='M24.00,2.00L36.93,6.20L44.92,17.20L44.92,30.80L36.93,41.80L24.00,46.00L11.07,41.80L3.08,30.80L3.08,17.20L11.07,6.20Z'/%3E%3Cpath d='M0,24 L48,24' stroke-opacity='0.15'/%3E%3C/g%3E%3C/svg%3E"); }</style>
+  <script>
+(function () {
+  var root = document.getElementById("w-branddemo");
+  if (!root) return;
+  var surface = root.querySelector('.dsdemo');
+  root.querySelectorAll('[data-brand-set]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var brand = btn.getAttribute('data-brand-set');
+      surface.setAttribute('data-brand', brand);
+      root.querySelectorAll('[data-brand-set]').forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
+      root.querySelectorAll('[data-brand-note]').forEach(function (n) {
+        n.style.display = n.getAttribute('data-brand-note') === brand ? 'inline' : 'none';
+      });
+    });
+  });
+})();
+
+
+(function () {
+  var CHAINS = {"marketplace":{"button.radius":[{"path":"button.radius","tier":"component","authored":"{radius.control}","resolved":"8px","overriddenHere":false},{"path":"radius.control","tier":"semantic","authored":"{radius.md}","resolved":"8px","overriddenHere":false},{"path":"radius.md","tier":"global","authored":"8px","resolved":"8px","overriddenHere":false}],"button.primary.background":[{"path":"button.primary.background","tier":"component","authored":"{color.primary}","resolved":"#2563EB","overriddenHere":false},{"path":"color.primary","tier":"semantic","authored":"{color.blue.600}","resolved":"#2563EB","overriddenHere":false},{"path":"color.blue.600","tier":"global","authored":"#2563EB","resolved":"#2563EB","overriddenHere":false}],"input.border-focus":[{"path":"input.border-focus","tier":"component","authored":"{color.primary}","resolved":"#2563EB","overriddenHere":false},{"path":"color.primary","tier":"semantic","authored":"{color.blue.600}","resolved":"#2563EB","overriddenHere":false},{"path":"color.blue.600","tier":"global","authored":"#2563EB","resolved":"#2563EB","overriddenHere":false}],"badge.primary.background":[{"path":"badge.primary.background","tier":"component","authored":"{color.primary}","resolved":"#2563EB","overriddenHere":false},{"path":"color.primary","tier":"semantic","authored":"{color.blue.600}","resolved":"#2563EB","overriddenHere":false},{"path":"color.blue.600","tier":"global","authored":"#2563EB","resolved":"#2563EB","overriddenHere":false}]},"seller":{"button.radius":[{"path":"button.radius","tier":"component","authored":"{radius.control}","resolved":"2px","overriddenHere":false},{"path":"radius.control","tier":"semantic","authored":"{radius.md}","resolved":"2px","overriddenHere":false},{"path":"radius.md","tier":"global","authored":"2px","resolved":"2px","overriddenHere":true}],"button.primary.background":[{"path":"button.primary.background","tier":"component","authored":"{color.primary}","resolved":"#16A34A","overriddenHere":false},{"path":"color.primary","tier":"semantic","authored":"{color.green.600}","resolved":"#16A34A","overriddenHere":true},{"path":"color.green.600","tier":"global","authored":"#16A34A","resolved":"#16A34A","overriddenHere":false}],"input.border-focus":[{"path":"input.border-focus","tier":"component","authored":"{color.primary}","resolved":"#16A34A","overriddenHere":false},{"path":"color.primary","tier":"semantic","authored":"{color.green.600}","resolved":"#16A34A","overriddenHere":true},{"path":"color.green.600","tier":"global","authored":"#16A34A","resolved":"#16A34A","overriddenHere":false}],"badge.primary.background":[{"path":"badge.primary.background","tier":"component","authored":"{color.primary}","resolved":"#16A34A","overriddenHere":false},{"path":"color.primary","tier":"semantic","authored":"{color.green.600}","resolved":"#16A34A","overriddenHere":true},{"path":"color.green.600","tier":"global","authored":"#16A34A","resolved":"#16A34A","overriddenHere":false}]}};
+  var root = document.getElementById("w-walker");
+  if (!root) return;
+
+  var pathSel  = root.querySelector('[data-w-path]');
+  var chainBox = root.querySelector('[data-w-chain]');
+  var verdict  = root.querySelector('[data-w-verdict]');
+  var brand = "marketplace";
+  var shown = 1;
+  var timer = null;
+
+  var COLOR = /^(#[0-9a-f]{3,8}|rgba?\(|hsla?\()/i;
+
+  function chain() { return (CHAINS[brand] || {})[pathSel.value] || []; }
+
+  function draw() {
+    var hops = chain();
+    chainBox.innerHTML = hops.map(function (h, i) {
+      var isColor = typeof h.resolved === 'string' && COLOR.test(String(h.resolved).trim());
+      var swatch = isColor
+        ? '<span class="swatch" style="background:' + String(h.resolved).replace(/"/g, '') + '"></span>'
+        : '';
+      return '<div class="hop' + (i < shown ? '' : ' dim') + '" data-tier="' + h.tier +
+        '" data-override="' + (h.overriddenHere ? 'true' : 'false') + '">' +
+        '<span class="tierbadge">' + h.tier + '</span>' +
+        '<span class="path">' + h.path +
+        '<span style="color:var(--text-faint)"> = ' + h.authored + '</span></span>' +
+        '<span class="val">' + (i < shown ? swatch + h.resolved : '&middot;&middot;&middot;') + '</span>' +
+        '</div>';
+    }).join('');
+    chainBox.className = 'chain bleed';
+
+    var hop = hops[shown - 1];
+    var last = hops[hops.length - 1];
+    if (!hop) { verdict.textContent = ''; return; }
+    if (shown < hops.length) {
+      verdict.innerHTML = 'Hop ' + shown + ' of ' + hops.length + ': <code>' + hop.path +
+        '</code> does not hold a value — it points at <code>' + (hop.authored || '') + '</code>. Keep going.';
+    } else {
+      var overridden = hops.filter(function (h) { return h.overriddenHere; });
+      verdict.innerHTML = 'Bottom of the chain. <code>' + hops[0].path + '</code> resolves to <b>' +
+        last.resolved + '</b> for <b>' + brand + '</b>' +
+        (overridden.length
+          ? ', because this brand overrides <code>' + overridden.map(function (h) { return h.path; }).join('</code>, <code>') + '</code>.'
+          : ' — no override on this path, so it inherits the base value.');
+    }
+  }
+
+  function reset() { shown = 1; if (timer) { clearInterval(timer); timer = null; } draw(); }
+
+  root.querySelector('[data-w-step]').addEventListener('click', function () {
+    shown = shown >= chain().length ? 1 : shown + 1;
+    draw();
+  });
+  root.querySelector('[data-w-play]').addEventListener('click', function () {
+    if (timer) { clearInterval(timer); timer = null; return; }
+    shown = 1; draw();
+    timer = setInterval(function () {
+      if (shown >= chain().length) { clearInterval(timer); timer = null; return; }
+      shown += 1; draw();
+    }, 750);
+  });
+  root.querySelector('[data-w-reset]').addEventListener('click', reset);
+  pathSel.addEventListener('change', reset);
+  root.querySelectorAll('[data-w-brand]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      brand = btn.getAttribute('data-w-brand');
+      root.querySelectorAll('[data-w-brand]').forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
+      reset();
+    });
+  });
+
+  shown = 1;
+  draw();
+})();
+</script>
+</body>
+</html>
