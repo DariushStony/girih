@@ -157,14 +157,14 @@
       "severity": "error",
       "message": "Config is missing 'name' (the published package name, e.g. '@acme/design-system').",
       "messageDynamic": false,
-      "help": null,
+      "help": "Add `name: '@scope/design-system'`. It is the name the generated package is published under, so it has to be one you own.",
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 197,
+      "line": 202,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:197"
+        "packages/girih-core/src/config.ts:202"
       ]
     },
     {
@@ -176,10 +176,10 @@
       "helpDynamic": true,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 172,
+      "line": 176,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:172"
+        "packages/girih-core/src/config.ts:176"
       ]
     },
     {
@@ -187,14 +187,14 @@
       "severity": "error",
       "message": "Config must define at least one brand under brands.definitions.",
       "messageDynamic": false,
-      "help": null,
+      "help": "Add one: `brands: { default: 'base', definitions: { base: { tokens: 'brands/base/tokens.json' } } }`. An empty {} overlay is valid, so the default brand can override nothing.",
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 206,
+      "line": 212,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:206"
+        "packages/girih-core/src/config.ts:212"
       ]
     },
     {
@@ -206,10 +206,10 @@
       "helpDynamic": true,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 213,
+      "line": 220,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:213"
+        "packages/girih-core/src/config.ts:220"
       ]
     },
     {
@@ -217,14 +217,14 @@
       "severity": "error",
       "message": "ds.config.ts must default-export a config object (use defineConfig).",
       "messageDynamic": false,
-      "help": null,
+      "help": "Write `export default defineConfig({ … })`. A named export is not read, and neither is a default that is not an object.",
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 188,
+      "line": 192,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:188"
+        "packages/girih-core/src/config.ts:192"
       ]
     },
     {

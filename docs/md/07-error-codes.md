@@ -104,13 +104,15 @@ Failed to load ${configPath}: ${message.split('\n')[0]}
 
 GIRIH1003
 error
-packages/girih-core/src/config.ts:197
+packages/girih-core/src/config.ts:202
 
 Config is missing 'name' (the published package name, e.g. '@acme/design-system').
 
+Add `name: '@scope/design-system'`. It is the name the generated package is published under, so it has to be one you own.
+
 GIRIH1004
 error
-packages/girih-core/src/config.ts:172
+packages/girih-core/src/config.ts:176
 
 Brand '${brand.name}' points at a missing token file: ${brand.tokensFile}
 
@@ -118,13 +120,15 @@ Create the overlay file (an empty {} is valid) or fix brands.definitions.${brand
 
 GIRIH1005
 error
-packages/girih-core/src/config.ts:206
+packages/girih-core/src/config.ts:212
 
 Config must define at least one brand under brands.definitions.
 
+Add one: `brands: { default: 'base', definitions: { base: { tokens: 'brands/base/tokens.json' } } }`. An empty {} overlay is valid, so the default brand can override nothing.
+
 GIRIH1006
 error
-packages/girih-core/src/config.ts:213
+packages/girih-core/src/config.ts:220
 
 brands.default ('${raw.brands?.default}') is not a key of brands.definitions.
 
@@ -132,9 +136,11 @@ Known brands: ${Object.keys(definitions).join(', ')}
 
 GIRIH1007
 error
-packages/girih-core/src/config.ts:188
+packages/girih-core/src/config.ts:192
 
 ds.config.ts must default-export a config object (use defineConfig).
+
+Write `export default defineConfig({ … })`. A named export is not read, and neither is a default that is not an object.
 
 GIRIH1008
 error
@@ -636,7 +642,7 @@ No diagnostics match that filter.
 
 ## An honest note on coverage
 
-35 of the 71 diagnostics have no
+32 of the 71 diagnostics have no
 `help` line. The project's own convention is that anything actionable should carry a
 one-line suggestion, so that number is a real gap rather than a deliberate choice — most of the
 missing ones are in the `GIRIH4xxx` contract family, where the message is often

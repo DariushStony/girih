@@ -1510,50 +1510,50 @@ select.sel, input.txt {
         <p class="msg">Failed to load <i class="ph">${configPath}</i>: <i class="ph">${message.split('\n')[0]}</i></p>
         
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH1003" data-search="girih1003 config is missing 'name' (the published package name, e.g. '@acme/design-system').  girih-core">
+      <div class="codecard" data-sev="error" data-code="GIRIH1003" data-search="girih1003 config is missing 'name' (the published package name, e.g. '@acme/design-system'). add `name: '@scope/design-system'`. it is the name the generated package is published under, so it has to be one you own. girih-core">
         <div class="top">
           <span class="cid">GIRIH1003</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:197</span>
+          <span class="src">packages/girih-core/src/config.ts:202</span>
         </div>
         <p class="msg">Config is missing 'name' (the published package name, e.g. '@acme/design-system').</p>
-        
+        <p class="help">Add `name: '@scope/design-system'`. It is the name the generated package is published under, so it has to be one you own.</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH1004" data-search="girih1004 brand '${brand.name}' points at a missing token file: ${brand.tokensfile} create the overlay file (an empty {} is valid) or fix brands.definitions.${brand.name}.tokens. girih-core">
         <div class="top">
           <span class="cid">GIRIH1004</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:172</span>
+          <span class="src">packages/girih-core/src/config.ts:176</span>
         </div>
         <p class="msg">Brand '<i class="ph">${brand.name}</i>' points at a missing token file: <i class="ph">${brand.tokensFile}</i></p>
         <p class="help">Create the overlay file (an empty {} is valid) or fix brands.definitions.<i class="ph">${brand.name}</i>.tokens.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH1005" data-search="girih1005 config must define at least one brand under brands.definitions.  girih-core">
+      <div class="codecard" data-sev="error" data-code="GIRIH1005" data-search="girih1005 config must define at least one brand under brands.definitions. add one: `brands: { default: 'base', definitions: { base: { tokens: 'brands/base/tokens.json' } } }`. an empty {} overlay is valid, so the default brand can override nothing. girih-core">
         <div class="top">
           <span class="cid">GIRIH1005</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:206</span>
+          <span class="src">packages/girih-core/src/config.ts:212</span>
         </div>
         <p class="msg">Config must define at least one brand under brands.definitions.</p>
-        
+        <p class="help">Add one: `brands: { default: 'base', definitions: { base: { tokens: 'brands/base/tokens.json' } } }`. An empty {} overlay is valid, so the default brand can override nothing.</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH1006" data-search="girih1006 brands.default ('${raw.brands?.default}') is not a key of brands.definitions. known brands: ${object.keys(definitions).join(', ')} girih-core">
         <div class="top">
           <span class="cid">GIRIH1006</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:213</span>
+          <span class="src">packages/girih-core/src/config.ts:220</span>
         </div>
         <p class="msg">brands.default ('<i class="ph">${raw.brands?.default}</i>') is not a key of brands.definitions.</p>
         <p class="help">Known brands: <i class="ph">${Object.keys(definitions).join(', ')}</i></p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH1007" data-search="girih1007 ds.config.ts must default-export a config object (use defineconfig).  girih-core">
+      <div class="codecard" data-sev="error" data-code="GIRIH1007" data-search="girih1007 ds.config.ts must default-export a config object (use defineconfig). write `export default defineconfig({ … })`. a named export is not read, and neither is a default that is not an object. girih-core">
         <div class="top">
           <span class="cid">GIRIH1007</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:188</span>
+          <span class="src">packages/girih-core/src/config.ts:192</span>
         </div>
         <p class="msg">ds.config.ts must default-export a config object (use defineConfig).</p>
-        
+        <p class="help">Write `export default defineConfig({ … })`. A named export is not read, and neither is a default that is not an object.</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH1008" data-search="girih1008 unknown brand '${options.brand}'. known brands: ${[...build.graphs.keys()].join(', ')}. girih">
         <div class="top">
@@ -2211,7 +2211,7 @@ select.sel, input.txt {
 <h2 id="gaps">An honest note on coverage</h2>
 
 <p>
-  35 of the 71 diagnostics have no
+  32 of the 71 diagnostics have no
   <code>help</code> line. The project's own convention is that anything actionable should carry a
   one-line suggestion, so that number is a real gap rather than a deliberate choice — most of the
   missing ones are in the <code>GIRIH4xxx</code> contract family, where the message is often

@@ -121,6 +121,10 @@ export async function loadConfig(cwd: string): Promise<LoadConfigResult> {
       severity: 'error',
       message: `Failed to load ${configPath}: ${message.split('\n')[0]}`,
       file: 'ds.config.ts',
+      // A default rather than a bare code, because the wrapped message is only the first
+      // line of the original — without this the user sees a truncated error and no route
+      // to the rest of it. The missing-install case below is specific enough to override.
+      help: 'The error comes from ds.config.ts itself. It is evaluated as real TypeScript, so a syntax error, an unresolved import, or a throw at module scope all land here.',
     };
     if (message.includes('@faravahar/girih')) {
       diagnostic.help = "ds.config.ts imports '@faravahar/girih' — install it first: npm install -D @faravahar/girih";
@@ -189,6 +193,7 @@ function validateRawConfig(raw: GirihConfig): Diagnostic[] {
       severity: 'error',
       message: 'ds.config.ts must default-export a config object (use defineConfig).',
       file: 'ds.config.ts',
+      help: 'Write `export default defineConfig({ … })`. A named export is not read, and neither is a default that is not an object.',
     });
     return diagnostics;
   }
@@ -198,6 +203,7 @@ function validateRawConfig(raw: GirihConfig): Diagnostic[] {
       severity: 'error',
       message: "Config is missing 'name' (the published package name, e.g. '@acme/design-system').",
       file: 'ds.config.ts',
+      help: "Add `name: '@scope/design-system'`. It is the name the generated package is published under, so it has to be one you own.",
     });
   }
   const definitions = raw.brands?.definitions ?? {};
@@ -207,6 +213,7 @@ function validateRawConfig(raw: GirihConfig): Diagnostic[] {
       severity: 'error',
       message: 'Config must define at least one brand under brands.definitions.',
       file: 'ds.config.ts',
+      help: "Add one: `brands: { default: 'base', definitions: { base: { tokens: 'brands/base/tokens.json' } } }`. An empty {} overlay is valid, so the default brand can override nothing.",
     });
   } else if (!raw.brands.default || !definitions[raw.brands.default]) {
     diagnostics.push({

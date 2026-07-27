@@ -38,6 +38,27 @@ describe('loadConfig', () => {
     expect(config).toBeNull();
     expect(diagnostics.some((d) => d.code === 'GIRIH1004')).toBe(true);
   });
+
+  // Asserts the help line exists, not its wording — the text should stay free to improve.
+  // These four carried only a code, which is the least useful moment to withhold guidance:
+  // every one of them fires on a first run, before the user knows the config's shape.
+  it.each([
+    ['GIRIH1002', 'export default {'],
+    ['GIRIH1007', 'export default 42;'],
+    // Brands are supplied so only the missing name is reported: an error from
+    // validateRawConfig returns before the brand overlay files are checked.
+    ['GIRIH1003', "export default { brands: { default: 'base', definitions: { base: { tokens: 'b.json' } } } };"],
+    ['GIRIH1005', "export default { name: '@test/ds' };"],
+  ])('reports %s with a help line', async (code, source) => {
+    const dir = await mkdtemp(join(tmpdir(), 'girih-help-'));
+    await writeFile(join(dir, 'ds.config.ts'), source, 'utf8');
+    const { diagnostics } = await loadConfig(dir);
+    const found = diagnostics.find((d) => d.code === code);
+    expect(found, `expected ${code} among ${diagnostics.map((d) => d.code).join(', ')}`).toBeDefined();
+    expect(found!.help).toBeTypeOf('string');
+    expect(found!.help).not.toHaveLength(0);
+    await rm(dir, { recursive: true });
+  });
 });
 
 describe('write/verifyEmittedFiles', () => {
