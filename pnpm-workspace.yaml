@@ -4,3 +4,9 @@ packages:
   - e2e
 allowBuilds:
   esbuild: true
+
+# Peers are declared deliberately: react is a peer of the runtime and must be the
+# consumer's choice, so silently installing one would hide a real mismatch.
+# Lives here rather than in .npmrc, which is also read by npm — and npm warns
+# "Unknown project config" for a pnpm-only key on every command.
+autoInstallPeers: false
