@@ -45,10 +45,31 @@ from assembly, not from cutting new tiles.
 | **Generated files are never silently lost** | `.ds/manifest.json` stores a SHA-256 per emitted file. `girih generate` refuses to overwrite anything a human edited, and names the files.                                     |
 | **The version number means something**      | The semver bump is computed from a diff of the contract — token value = patch, new variant = minor, anything removed = major — not chosen by a human.                          |
 
-## See it in 60 seconds
+## Start in 60 seconds
 
 ```bash
-git clone <this-repo> girih && cd girih
+npx create-girih my-ds        # or: pnpm create girih my-ds
+cd my-ds
+
+girih check                   # resolved token table + contract validation
+girih generate react          # compile the design system package
+open demo/index.html          # every variant, size and brand
+```
+
+Flip the brand toggle and watch the **corner radius** change along with the colour. In the worked
+example the `seller` brand overrides three tokens — one of them `radius.md`, a _global_ token two
+alias hops away from a button's corner. That cascade arriving correctly, with no rebuild, is the
+whole thesis.
+
+```bash
+npm install -g @faravahar/girih   # then `girih create my-ds` needs no second download
+```
+
+To read the engine and the fully worked example — six contracts, two brands, an extension, an
+ejected fork — clone instead:
+
+```bash
+git clone https://github.com/DariushStony/girih.git && cd girih
 pnpm install && pnpm build
 
 cd examples/acme-ds
@@ -57,15 +78,10 @@ pnpm run demo:react           # generate the React package, bundle the demo
 open demo/react/index.html    # variant matrix with a live brand toggle
 ```
 
-Flip the brand toggle and watch the **corner radius** change along with the colour. The `seller`
-brand overrides three tokens — one of them `radius.md`, a _global_ token two alias hops away from a
-button's corner. That cascade arriving correctly, with no rebuild, is the whole thesis.
-
-> [!IMPORTANT]
-> **Nothing is published to npm yet.** Every package is at `0.1.0` and unpublished, so
-> `npm install @faravahar/girih` and `npx create-girih` do not work today. Both paths are wired and
-> proven — the end-to-end suite packs real tarballs, installs them into a fresh consumer, and
-> server-renders every component — but the publish has not happened. Build from source for now.
+> [!NOTE]
+> Requires **Node 22+** — `style-dictionary` sets that floor, and girih declares it rather than
+> promising something its dependencies contradict. `girih doctor` tells you in one line if your
+> environment is short of anything.
 
 ---
 
@@ -83,7 +99,7 @@ illustration.
 | 03  | [**How it works**](docs/md/03-how-it-works.md) | The six-stage compile pipeline with real data moving through it.                                         |
 | 04  | [**Tokens and brands**](docs/md/04-tokens.md)  | Three tiers, alias chains, the override-only rule, the dependents closure. **The chapter that matters.** |
 | 05  | [**Contracts**](docs/md/05-contracts.md)       | `defineSpec` → IR → typed React. Extensions, ejection, contract-derived semver.                          |
-| 06  | [**The code**](docs/md/06-the-code.md)         | All nine packages, the dependency direction, and where to look when something breaks.                    |
+| 06  | [**The code**](docs/md/06-the-code.md)         | All nine packages (eight published), the dependency direction, and where to look when something breaks.  |
 | 07  | [**Error codes**](docs/md/07-error-codes.md)   | All 70 `GIRIH` diagnostics, extracted from source, with what each is telling you.                        |
 | 08  | [**Check yourself**](docs/md/08-quiz.md)       | Ten questions that are hard to answer without the model.                                                 |
 
@@ -97,8 +113,8 @@ running on the real generated CSS, an **alias-chain walker**, a **pipeline stepp
 open docs/index.html
 ```
 
-To publish them, enable **GitHub Pages** for this repository with source `main` / `/docs`
-(Settings → Pages). The site then serves at `https://<owner>.github.io/<repo>/`, and a workflow at
+To publish them, set **Settings → Pages → Build and deployment → Source** to **GitHub Actions**.
+The site then serves at `https://<owner>.github.io/<repo>/`, and a workflow at
 [`.github/workflows/pages.yml`](.github/workflows/pages.yml) will deploy on every push to `main`.
 
 New to design tokens? Chapter 01 opens with a collapsible primer that assumes nothing.
@@ -227,8 +243,12 @@ Milestones M1–M6 are functional.
   under every consumer `moduleResolution`); `girih publish` derives the bump from the contract diff,
   dry-run by default.
 
-**Not done:** the Figma target is a stub, and `girih update` reports drift in ejected forks but does
-not perform the three-way merge. Nothing is published to npm.
+**Not done:** the Figma target is a stub, and `girih forks` reports drift in ejected forks but does
+not perform the three-way merge that would rebase them.
+
+**M7 — Published.** Eight packages on npm under `@faravahar`, plus unscoped `create-girih`.
+`girih create`, `girih doctor` and `girih update` complete the workspace lifecycle; the drift report
+that used to be `girih update` is now `girih forks`.
 
 ## License
 

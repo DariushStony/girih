@@ -7,12 +7,16 @@ anything. The long version is the [documentation](docs/md/index.md) — in parti
 ## Setup
 
 ```bash
-pnpm install
+pnpm install      # also installs the husky hooks, via `prepare`
 pnpm build        # required: several tests and all CLI usage run against dist/
-pnpm test
+pnpm verify       # build, typecheck, lint, format, tests, and the example's drift gate
 ```
 
-You need Node 22+ and pnpm 11.8.0 (pinned via `packageManager`; `corepack enable` handles it).
+You need Node 22+ and pnpm 11.8.0 (pinned via `packageManager`; `corepack enable` handles it). Node
+22 is the real floor, not a preference — `style-dictionary` requires it.
+
+A pre-commit hook runs `lint-staged` (ESLint `--fix` then Prettier on staged files), and a
+`commit-msg` hook runs commitlint. Both ignore every generated path; see below.
 
 ## The invariants
 
@@ -110,53 +114,95 @@ Smallest scope that proves it:
 | CLI behaviour                            | `pnpm build` first — `cli` is **not** source-aliased in vitest — then exercise the command |
 | Packaging or `dist/` shape               | `pnpm test` including `e2e/test/consumer.test.ts` (slow; packs real tarballs)              |
 
-There is **no linter and no formatter**. Verification is `pnpm typecheck` and `pnpm test`. Both
-must pass. `exactOptionalPropertyTypes` and `noUncheckedIndexedAccess` are on and will reject code
-that looks fine.
+`pnpm verify` is the whole gate — build, typecheck, lint, `format:check`, tests, then the example's
+`girih check` and drift check. It is what `pnpm release` runs first, so if it passes locally the
+release will not fall over on something mechanical.
 
-Never run `girih publish --yes`.
+`exactOptionalPropertyTypes` and `noUncheckedIndexedAccess` are on and will reject code that looks
+fine.
 
-### Known flake
+Never run `girih publish --yes` — that publishes a _consumer's_ design system, not girih. girih's
+own release is `pnpm release`; see below.
 
-`e2e/test/consumer.test.ts` intermittently fails with `ENOENT … e2e/.tmp/consumer/app/smoke.mjs`.
-`e2e/test/workspace.test.ts` removes all of `e2e/.tmp` in its `afterAll`, while `consumer.test.ts`
-keeps its scratch under `e2e/.tmp/consumer` — and vitest runs the two files in parallel, so a
-teardown can delete a live sibling's directory. Re-run, or run the file alone. It is not your
-change. The fix, for whoever wants it, is to scope that teardown to `e2e/.tmp/e2e-ds` and
-`e2e/.tmp/bad-brand`.
+### Tests must not depend on the network
+
+The suite gates releases, so nothing in it may depend on the registry being up or on what is
+currently published. girih is spawned with `GIRIH_NO_UPDATE_CHECK=1` in the e2e helpers, and
+`girih doctor --offline` skips its update check. Keep it that way.
+
+## Never format generated output
+
+`.prettierignore` and `eslint.config.js` both exclude every emitted path —
+`examples/*/{packages,styles,.ds}/`, `docs/*.html`, `docs/md/`, `docs/data/`. This is load-bearing,
+not tidiness: `.ds/manifest.json` stores a hash per emitted file, so reformatting one registers as
+drift that the next `girih generate` reverts, and any diff under `docs/` fails the Pages workflow. If
+you add a generator, add its output to both files.
 
 ## Documentation
 
 The docs are generated. Edit `docs/scripts/pages/*.mjs`, never `docs/*.html` or `docs/md/*.md`.
 
 ```bash
-pnpm build
-node docs/scripts/extract-tokens.mjs        # real token graphs from examples/acme-ds
-node docs/scripts/extract-diagnostics.mjs   # every GIRIH code, from source
-node docs/scripts/build-docs.mjs            # → docs/*.html + docs/md/*.md
+pnpm docs:generate  # the whole chain, in the only order that works
 ```
+
+That expands to `pnpm build` → `girih generate react` in the example → the two extractors →
+`build-docs`. The middle step is easy to forget and not optional: the extractors read the example's
+emitted CSS, which is gitignored, so they fail or go stale without it. For a prose-only edit,
+`pnpm docs:build` alone is enough — it reads the already-committed `docs/data/*.json`.
+
+Commit the result: `docs/*.html`, `docs/md/*.md`, `docs/README.md`, and `docs/data/*.json`. The Pages
+workflow regenerates and fails on any diff, so a stale `docs/` blocks the deploy.
 
 Every value quoted in the documentation is extracted by running girih's own engine over the example
 workspace. Please keep it that way — if you need a value in prose, extract it rather than typing it,
 so it cannot go stale.
 
+## Releasing girih
+
+Eight packages publish, lockstep, from `main`. `@faravahar/girih-figma` is `private: true` and does
+not.
+
+```bash
+pnpm release        # verify → pack:verify → pnpm -r publish --access public
+```
+
+Read this before running it:
+
+- **pnpm, never npm.** Five packages depend on each other by `workspace:*`. `pnpm publish` rewrites
+  those to real versions; `npm publish` copies them verbatim and every consumer install dies with
+  `EUNSUPPORTEDPROTOCOL`. `pnpm pack` in a package directory is fine; `npm pack` is not.
+- **Versions move together.** The rewrite produces an _exact_ pin (`"…-core": "0.1.0"`), so a change
+  in `core` cannot reach consumers without republishing everything above it. Bump all eight.
+- **Bumping is three files, not one.** The eight `version` fields, plus
+  `generator-react/src/generate.ts`'s `RUNTIME_VERSION_RANGE` and `create-girih/src/versions.ts`.
+  Those two ranges ship inside published code — one of them into a package _consumers_ publish — and
+  `^0.x` admits a single minor. Tests assert both against the real versions, so a forgotten one fails
+  rather than shipping.
+- **`pnpm pack:verify` is not optional.** `dist/` is gitignored, so a clean clone can pack tarballs
+  containing nothing but `package.json` — silently. npm never lets a version be reused, so that
+  mistake is permanent. The script packs all eight and checks the archives.
+- Publishing needs a clean tree (`pnpm publish` refuses otherwise) and an npm token with publish
+  rights on the `faravahar` scope.
+
 ## Commits
 
-This repository uses milestone-style subjects:
+Conventional commits, enforced by commitlint via a husky `commit-msg` hook:
 
 ```
-M6: packaging and publish — compiled dist, contract-diff semver
+feat(cli): add girih doctor
+fix(tokens): reject an upward tier reference
 ```
 
-There is no commitlint. Match the existing style, keep the subject a summary of intent rather than
-a file list, and put the reasoning in the body.
+Scopes are the package directory names, plus `docs`, `e2e`, `release` and `deps`. Earlier history
+uses milestone subjects (`M6: …`); those are no longer valid. Keep the subject a summary of intent
+rather than a file list, and put the reasoning in the body.
 
 ## Things to ask before doing
 
-- Adding a linter, formatter, or CI config
 - Changing the package manager or `tsconfig.base.json` compiler options
 - Growing `@faravahar/girih-figma` beyond its stub
-- Publishing anything to npm
+- Publishing to npm, or changing what the release publishes
 - Adding a new top-level package
 
 ## Comments

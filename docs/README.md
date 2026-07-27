@@ -79,12 +79,23 @@ The pages are generated, in the same spirit as girih's own output — one design
 to nine pages, rather than nine hand-maintained copies of it.
 
 ```bash
-pnpm build                                    # required: the extractor imports built packages
-node docs/scripts/extract-tokens.mjs          # real token graphs  → docs/data/tokens.json
-node docs/scripts/extract-diagnostics.mjs     # all GIRIH codes    → docs/data/diagnostics.json
-node docs/scripts/build-docs.mjs              # → docs/*.html and docs/md/*.md
-node docs/scripts/verify-docs.mjs             # 564 structural checks over the output
+pnpm docs:generate                            # the whole chain, in the only order that works
+node docs/scripts/verify-docs.mjs             # structural checks over the output
 ```
+
+`pnpm docs:generate` expands to the four steps below. The `girih generate react` in the middle is easy to
+forget and not optional — the token extractor reads the example's emitted CSS, which is gitignored.
+
+```bash
+pnpm build                                    # required: the extractor imports built packages
+pnpm --filter acme-ds-example exec girih generate react
+node docs/scripts/extract-diagnostics.mjs     # all GIRIH codes    → docs/data/diagnostics.json
+node docs/scripts/extract-tokens.mjs          # real token graphs  → docs/data/tokens.json
+node docs/scripts/build-docs.mjs              # → docs/*.html and docs/md/*.md
+```
+
+For a prose-only edit, `pnpm docs:build` alone is enough: it reads the committed
+`docs/data/*.json`.
 
 `fetch-fonts.mjs` is the only script that needs network, and its output is committed — so the
 build and CI never hit the network. Re-run it only to change the typefaces:

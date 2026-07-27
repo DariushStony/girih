@@ -152,9 +152,14 @@ ${gotcha(
   'Current status, honestly',
   `<p>
     Milestones M1–M6 work: tokens, multi-brand CSS, contracts, React generation, the workspace
-    commands, the component catalog, packaging and publishing. What is <em>not</em> done: the Figma
-    target is a stub, and <code>girih update</code> reports drift in ejected forks but does not yet
-    perform the three-way merge. Where a page below describes something unfinished, it says so.
+    commands, the component catalog, packaging and publishing. Eight packages are on npm under the
+    <code>@faravahar</code> scope, plus <code>create-girih</code>; the version is <code>0.1.x</code>
+    and the API may still move.
+  </p>
+  <p>
+    What is <em>not</em> done: the Figma target is a stub, and <code>girih forks</code> reports drift
+    in ejected forks but does not yet perform the three-way merge that would rebase them. Where a
+    page below describes something unfinished, it says so.
   </p>`,
 )}
 

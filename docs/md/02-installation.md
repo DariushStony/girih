@@ -12,57 +12,120 @@
 
 ---
 
-Two paths. Path A explores the example workspace in this repository and takes about two minutes;
-it is the fastest way to see what girih produces. Path B scaffolds a workspace of your own. Do A
-first even if you want B.
+Two paths. Path A scaffolds a workspace of your own from npm and takes about a minute. Path B
+clones this repository to read the example and the engine behind it. Path A is what you want
+unless you are here to change girih itself.
 
 ## Before you start
 
 | You need | Version | Check with |
 | --- | --- | --- |
-| Node.js | 20 or newer | `node --version` |
-| pnpm | 11.8.0 (this repo pins it) | `pnpm --version` |
-| git | any recent | `git --version` |
+| Node.js | 22 or newer | `node --version` |
+| A package manager | npm, pnpm, yarn or bun | `npm --version` |
+| git | any recent — Path B only | `git --version` |
+
+> **🟡 Watch out — Why Node 22 and not 20**
+>
+> girih's token pipeline builds on `style-dictionary`, which declares
+> `engines.node >= 22`. Every girih package declares the same floor rather than
+> promising something its own dependencies contradict. If you are on 20, `girih doctor`
+> will say so in one line instead of letting a dependency fail obscurely later.
 
 pnpm is pinned through the `packageManager` field, so if you have corepack enabled the
 right version is used automatically. If you do not have pnpm at all:
 
-**[Terminal]**
+## Path A: start your own workspace
 
-```
-corepack enable          # ships with Node 20+, easiest route
-# or:
-npm install -g pnpm@11.8.0
-```
-
-> **🟡 Watch out — Why pnpm specifically**
->
-> This is a workspace monorepo where the example app depends on the packages by
-> `workspace:*`, and the end-to-end test packs real tarballs and installs them into a
-> scratch consumer. npm and yarn can host workspaces too, but the lockfile here is pnpm's and the
-> scripts assume its layout. Use pnpm for the repo; your own _consuming_ app can use
-> whatever it likes.
-
-## A note on installing
-
-> **🔴 Important — Nothing is published to npm yet**
->
-> Every package in this repository is at version `0.1.0` and has never been published.
-> `npm install @girih/cli` will not work today, and neither will
-> `npx create-girih`. Both are wired and tested — the end-to-end suite packs real
-> tarballs and installs them into a fresh consumer — but the publish has not happened. Until it
-> does, you build from source, which is what both paths below do.
-
-## Path A: explore this repo
+`create-girih` scaffolds a working workspace — tokens in three tiers, one Button
+contract, a brand overlay, and a demo page that needs no build step. Use whichever form matches
+your package manager; they all resolve to the same package:
 
 **[Terminal]**
 
 ```
-git clone <this-repo> girih
+npx create-girih my-ds
+pnpm create girih my-ds
+npm create girih my-ds
+yarn create girih my-ds
+```
+
+It creates the directory, writes `package.json`, installs the toolchain, then hands off
+to `girih init` — so the workspace template lives in the CLI and the two can never
+drift apart. Then:
+
+**[Terminal]**
+
+```
+cd my-ds
+
+girih check            # resolved token table + contract validation
+girih generate react   # compile the design system package
+open demo/index.html   # every variant, size and brand
+```
+
+If you would rather install the CLI once and reuse it, `girih create` does the same job
+without a second download:
+
+**[Terminal]**
+
+```
+npm install -g @faravahar/girih
+girih create my-ds
+```
+
+And to add girih to a project that already has a `package.json`, use
+`girih init`. It refuses to run if a config file is already present, and warns you if
+an ancestor directory is already a girih workspace:
+
+**[Terminal]**
+
+```
+cd existing-project
+npm install -D @faravahar/girih
+npx girih init --name @acme/design-system --brand main
+```
+
+> **🟢 In plain words**
+>
+> Three doors into the same room. `npx create-girih` needs nothing installed and makes a
+> new folder. `girih create` also makes a new folder, but expects you already have the
+> CLI. `girih init` adds girih to the folder you are already standing in, and is the
+> only one that does not write a `package.json` — because you already have one.
+
+> **🟡 Watch out — girih init does not install anything for you**
+>
+> The other two run your package manager; `init` only writes files. So after it, install
+> the pieces the generated components import — the runtime, react, and react's types:
+>
+> `npm install -D @faravahar/girih-react-runtime react @types/react`
+>
+> If you skip that, `girih build` stops with a single `GIRIH6002` naming
+> exactly what is missing rather than a wall of TypeScript errors about files you never wrote.
+
+## Path B: explore this repo
+
+For reading the engine, or changing it. This is also the path to the fully worked example — six
+contracts, two brands, an extension and an ejected fork — which the scaffold deliberately does not
+include.
+
+**[Terminal]**
+
+```
+git clone https://github.com/DariushStony/girih.git
 cd girih
+corepack enable       # pnpm 11.8.0 is pinned via packageManager
 pnpm install
 pnpm build            # tsup builds every package into dist/
 ```
+
+> **🟡 Watch out — Why pnpm for the repo specifically**
+>
+> This is a workspace monorepo where the example depends on the packages by
+> `workspace:*`, and the end-to-end suite packs real tarballs and installs them into
+> scratch consumers. npm and yarn can host workspaces too, but the lockfile here is pnpm's, the
+> scripts assume its layout, and only pnpm's packer rewrites `workspace:*` into a real
+> version range at publish time. Use pnpm for the repo; your own workspace from Path A can use
+> whatever you like.
 
 `pnpm build` is required before anything else, because the CLI you are about to run is
 the compiled one in `packages/cli/dist/cli.js`. Now compile the example design system:
@@ -90,42 +153,19 @@ no React at all:
 open demo/index.html   # plain HTML + the generated tokens.css, no bundler
 ```
 
-## Path B: start your own workspace
+<details>
+<summary><b>Working on girih itself, from a workspace outside the repo</b></summary>
 
-`create-girih` scaffolds a working workspace — tokens in three tiers, one Button
-contract, and a demo page that needs no build step. Run it from the built binary:
+`create-girih --workspace` links the girih packages through the pnpm workspace
+protocol instead of published ranges, so a scaffolded workspace inside this monorepo tracks your
+local changes rather than npm:
 
-**[Terminal]**
+`node packages/create-girih/dist/cli.js my-ds --workspace`
 
-```
-# from the root of this repo, after pnpm build
-node packages/create-girih/dist/cli.js my-ds --workspace
+Only useful inside the repo, and only after `pnpm build` — which is why it is here
+rather than in Path A.
 
-cd my-ds
-pnpm install
-pnpm exec girih generate react
-open demo/index.html
-```
-
-The `--workspace` flag makes the new directory a pnpm workspace that links back to
-this repo's packages, which is what you want while nothing is on npm. Once published, the same
-thing becomes `npx create-girih my-ds` with no flag.
-
-If you would rather add girih to a directory that already exists, use `girih init`
-instead. It refuses to run if a config file is already present, and warns you if an ancestor
-directory is already a girih workspace:
-
-**[Terminal]**
-
-```
-cd existing-project
-pnpm exec girih init --name @acme/design-system --brand main
-```
-
-> **🟢 In plain words**
->
-> `create-girih` makes a new folder from nothing. `girih init` adds girih to
-> a folder you are already standing in. Same result, different starting point.
+</details>
 
 ---
 
@@ -212,16 +252,42 @@ generated `package.json` marks CSS as having side effects
 
 | Command | What it does | Writes? |
 | --- | --- | --- |
-| `girih init` | Scaffold a workspace in the current directory | Yes |
+| `girih create ` | Create a new workspace in a new directory, install, initialise | Yes |
+| `girih init` | Scaffold into the current directory (which already has a `package.json`) | Yes |
 | `girih brand create ` | Add a brand overlay and register it in `ds.config.ts` | Yes |
 | `girih check` | Validate tokens, brands, contracts, extensions; print the token table | No |
+| `girih doctor` | Diagnose the _environment_: node, package manager, resolution, prerequisites | No |
 | `girih generate css` | Emit `tokens.css` + `tokens.d.ts` | Yes |
 | `girih generate react` | Emit the whole React package plus canonical IR | Yes |
 | `girih generate react --check` | Verify the output on disk is current. The CI gate. | **No** |
 | `girih eject ` | Convert one generated component into a tracked fork | Yes |
+| `girih forks` | Report ejected forks that drifted from current templates | No |
 | `girih build` | Compile the generated package to publishable `dist/` | Yes |
 | `girih publish` | Derive the semver bump from the contract diff and publish | Dry run by default |
-| `girih update` | Report ejected forks that drifted from current templates | No |
+| `girih update` | Upgrade the `@faravahar/girih-*` packages in this workspace | Yes |
+| `girih --version` | Print the installed version | No |
+
+> **🔵 Rule — check and doctor answer different questions**
+>
+> `girih check` validates what your workspace _contains_ — do the tokens resolve,
+> do the contracts reference tokens that exist in every brand, has generated output been edited by
+> hand. `girih doctor` validates the environment it runs _in_ — node version,
+> package manager, whether the CLI resolves, whether the build prerequisites are installed, whether
+> the girih packages are at matching versions.
+>
+> Between them they answer "it worked on my machine". Reach for `doctor` when something
+> fails before girih has said anything useful, and `check` when girih is running but
+> disagrees with you.
+
+> **🟡 Watch out — girih publish does not publish girih**
+>
+> It publishes _your_ generated design system — it stages
+> `packages/design-system`, computes the version from the contract diff, and hands that
+> to npm. girih's own packages are released from its repository by its maintainers.
+>
+> `girih update` is the mirror of that: it upgrades the girih tooling installed in your
+> workspace. It has nothing to do with `girih forks`, which reports ejected components
+> that have drifted from their template.
 
 > **🟡 Watch out — Two flags to be careful with**
 >
@@ -235,15 +301,35 @@ generated `package.json` marks CSS as having side effects
 
 ## When it does not work
 
+Start with `girih doctor`. It checks the things that go wrong before girih has had a
+chance to say anything useful, and prints a fix for each:
+
+**[Terminal]**
+
+```
+$ girih doctor
+
+✔ node                 v24.11.0 (>=22 required)
+✔ package manager      pnpm (/path/to/pnpm-lock.yaml)
+✔ @faravahar/girih     resolves from /path/to/my-ds
+✔ ds.config.ts         @acme/design-system · 2 brands · default 'marketplace'
+✗ build prerequisites  react missing — `girih build` will not compile
+                       fix: npm install -D react
+
+✖ 1 problem will stop girih working here.
+```
+
 | Symptom | Cause | Fix |
 | --- | --- | --- |
-| `` run `pnpm build` before the consumer e2e `` | The CLI in `dist/` does not exist yet | `pnpm build` from the repo root |
-| `girih: command not found` | The binary is workspace-local, not global | Use `pnpm exec girih …` from inside the workspace |
+| `girih: command not found` | Installed locally, not globally | Use `npx girih …` inside the workspace, or `npm i -g @faravahar/girih` |
+| `GIRIH1002` — cannot load `ds.config.ts` | It imports `@faravahar/girih`, which is not installed _here_ | `npm install -D @faravahar/girih` — a global install is not enough for the config |
+| `GIRIH6002` — imports not installed | The generated components need react and the runtime; `girih init` installs nothing | `npm i -D @faravahar/girih-react-runtime react @types/react` |
 | `GIRIH1001` — no config found | You are not in a girih workspace | `cd` to the directory containing `ds.config.ts` |
 | `GIRIH2006` — no token files matched | Empty or misnamed `tokens/` | Create `tokens/global.tokens.json`; the tier comes from the filename |
 | `GIRIH1010` — file edited by hand | Someone edited generated output | Undo it, or `girih eject` the component to keep the edits |
 | Brand switch changes colour but not radius | A brand block is missing part of the dependents closure | Regenerate. If it persists it is a generator bug — see [chapter 06](06-the-code.md) |
-| `ENOENT … e2e/.tmp/consumer/app/smoke.mjs` | Known flake: two e2e files share `e2e/.tmp` and one deletes it in teardown | Re-run. It passes in isolation with `pnpm vitest run e2e/test/consumer.test.ts` |
+| `girih build` fails on a plain pnpm install | Stale girih: the CLI used to depend on esbuild, whose postinstall pnpm 10+ blocks | `girih update`. Current versions have no install scripts at all |
+| Path B: `packages/cli/dist/cli.js` missing | The repo runs its own compiled CLI | `pnpm build` from the repo root |
 
 Every diagnostic girih can emit is listed in [chapter 07](07-error-codes.md),
 extracted directly from the source. If you got a code that is not there, the reference is stale —

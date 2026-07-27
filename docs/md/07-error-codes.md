@@ -12,7 +12,7 @@
 
 ---
 
-All 70 diagnostics girih can emit — 57 errors and
+All 71 diagnostics girih can emit — 58 errors and
 13 warnings — extracted straight from
 `packages/*/src` by a script. The messages below are the real strings, not paraphrases.
 
@@ -66,7 +66,7 @@ source before you have read a word of the message.
 | [`GIRIH3xxx`](#family-3) | `generator-css` | CSS emission | 3 |
 | [`GIRIH4xxx`](#family-4) | `spec` | Component contracts and extensions | 31 |
 | [`GIRIH5xxx`](#family-5) | `generator-react` | React emission | 1 |
-| [`GIRIH6xxx`](#family-6) | `cli` | Build and publish | 1 |
+| [`GIRIH6xxx`](#family-6) | `cli` | Build and publish | 2 |
 
 > **🟡 Watch out — Stay in your range, and never reuse a retired number**
 >
@@ -138,7 +138,7 @@ ds.config.ts must default-export a config object (use defineConfig).
 
 GIRIH1008
 error
-packages/cli/src/cli.ts:271
+packages/cli/src/cli.ts:348
 
 Unknown brand '${options.brand}'.
 
@@ -146,7 +146,7 @@ Known brands: ${[...build.graphs.keys()].join(', ')}.
 
 GIRIH1010
 warning
-packages/cli/src/cli.ts:329
+packages/cli/src/cli.ts:406
 
 Generated file ${path} was edited by hand since the last \`girih generate\`.
 
@@ -154,7 +154,7 @@ Undo the edit or eject the component (M5); the next generate will refuse to over
 
 GIRIH1011
 warning
-packages/cli/src/cli.ts:321
+packages/cli/src/cli.ts:398
 
 .ds/manifest.json is corrupt or from an incompatible girih version — drift detection is disabled.
 
@@ -162,7 +162,7 @@ Delete .ds/manifest.json and regenerate.
 
 GIRIH1012
 error
-packages/cli/src/cli.ts:105
+packages/cli/src/cli.ts:115
 
 '${name}' is recorded as ejected in ds.lock, but ${path} is missing.
 
@@ -170,7 +170,7 @@ Restore the file, or remove the '${name}' entry from ds.lock to return to genera
 
 GIRIH1013
 error
-packages/cli/src/cli.ts:79
+packages/cli/src/cli.ts:89
 
 ds.lock is corrupt or from an incompatible girih version.
 
@@ -178,15 +178,15 @@ ds.lock is machine-managed and committed — restore it from git history.
 
 GIRIH1014
 warning
-packages/cli/src/cli.ts:119
+packages/cli/src/cli.ts:132
 
 '${name}' was ejected from a different spec/template than the current one — the fork may not honor the contract anymore.
 
-Review the fork against the current spec, or re-eject after removing the ds.lock entry (girih update will automate this in M6).
+Review the fork against the current spec, or re-eject after removing the ds.lock entry (`girih forks` reports this; the 3-way merge is not built yet).
 
 GIRIH1015
 warning
-packages/cli/src/cli.ts:93
+packages/cli/src/cli.ts:103
 
 ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated.
 
@@ -362,7 +362,7 @@ CSS generation failed for brand '${brand}': ${(error as Error).message}
 
 GIRIH3002
 error
-packages/generator-css/src/generate.ts:222
+packages/generator-css/src/generate.ts:220
 
 '${variable}' (brand '${brand}') has a composite value no CSS transform could flatten.
 
@@ -370,7 +370,7 @@ Give the token a supported $type (shadow, typography, border, transition, cubicB
 
 GIRIH3003
 error
-packages/generator-css/src/generate.ts:178
+packages/generator-css/src/generate.ts:176
 
 Tokens ${paths.map((p) => `'${p}'`).join(' and ')} both map to the CSS variable '${varName}'.
 
@@ -387,13 +387,13 @@ references that do not resolve for every brand, and extensions reaching past
 
 GIRIH4001
 error
-packages/spec/src/validate.ts:66
+packages/spec/src/validate.ts:142
 
 Component name '${ir.name}' must be PascalCase (it becomes an exported React identifier).
 
 GIRIH4002
 error
-packages/spec/src/extensions.ts:163 (+1 more)
+packages/spec/src/extensions.ts:162 (+1 more)
 
 Extension '${extension.name}' references '{${path}}', which ${
 missing.length === graphs.size ? 'no brand resolves' : `brand(s) ${missing.join(', ')} do not resolve`
@@ -401,31 +401,31 @@ missing.length === graphs.size ? 'no brand resolves' : `brand(s) ${missing.join(
 
 GIRIH4003
 warning
-packages/spec/src/extensions.ts:180 (+1 more)
+packages/spec/src/extensions.ts:179 (+1 more)
 
 Extension '${extension.name}' references global token '{${path}}' — extensions should consume semantic or component tokens.
 
 GIRIH4005
 error
-packages/spec/src/validate.ts:74
+packages/spec/src/validate.ts:150
 
 Component '${ir.name}' is defined more than once (${seen.get(ir.name)} and ${file}).
 
 GIRIH4006
 error
-packages/spec/src/validate.ts:171
+packages/spec/src/validate.ts:250
 
 Variant axis '${axis.axis}' of '${ir.name}' has no values.
 
 GIRIH4007
 error
-packages/spec/src/validate.ts:192
+packages/spec/src/validate.ts:271
 
 Variant axis '${axis.axis}' of '${ir.name}' defaults to '${axis.default}', which is not one of [${axis.values.join(', ')}].
 
 GIRIH4008
 error
-packages/spec/src/validate.ts:205
+packages/spec/src/validate.ts:284
 
 '${ir.name}' declares state '${state}', which the '${ir.template}' template does not implement.
 
@@ -433,55 +433,55 @@ States of '${ir.template}': ${implementableStates.join(', ') || '(none)'}. State
 
 GIRIH4009
 error
-packages/spec/src/validate.ts:242
+packages/spec/src/validate.ts:321
 
 '${ir.name}' styles variant axis '${block.axis}', which is not declared under variants.
 
 GIRIH4010
 error
-packages/spec/src/validate.ts:252
+packages/spec/src/validate.ts:331
 
 '${ir.name}' styles '${block.axis}.${block.value}', but '${block.value}' is not a declared value of that axis.
 
 GIRIH4011
 error
-packages/spec/src/validate.ts:229 (+1 more)
+packages/spec/src/validate.ts:308 (+1 more)
 
 '${ir.name}' styles state '${state.state}' under tokens.states, but does not declare that state.
 
 GIRIH4012
 error
-packages/spec/src/extensions.ts:151 (+1 more)
+packages/spec/src/extensions.ts:150 (+1 more)
 
 Extension '${extension.name}' has a malformed token reference '${ref}' at ${property} — expected '{token.path}'.
 
 GIRIH4013
 error
-packages/spec/src/validate.ts:125 (+3 more)
+packages/spec/src/validate.ts:204 (+3 more)
 
 '${ir.name}' ${what} '${name}' is not a valid camelCase identifier — it becomes a React prop.
 
 GIRIH4014
 error
-packages/spec/src/ir.ts:34
+packages/spec/src/ir.ts:28
 
 '${spec.name}' has a non-string declaration for '${property}' at ${where} — every styled value must be a '{token.path}' reference.
 
 GIRIH4015
 warning
-packages/spec/src/validate.ts:277
+packages/spec/src/validate.ts:356
 
 '${ir.name}' styles unknown CSS property '${property}' at ${where} — it will be emitted verbatim.
 
 GIRIH4016
 error
-packages/spec/src/validate.ts:217
+packages/spec/src/validate.ts:296
 
 '${ir.name}' maps aria attributes to state '${aria.state}', which it does not declare under states.
 
 GIRIH4018
 warning
-packages/spec/src/validate.ts:96
+packages/spec/src/validate.ts:172
 
 '${ir.name}' renders '', which is not a known host element.
 
@@ -499,7 +499,7 @@ packages/spec/src/load.ts:48
 
 ${file} does not default-export a component spec.
 
-Export the result of defineSpec({...}) from '@girih/cli'.
+Export the result of defineSpec({...}) from '@faravahar/girih'.
 
 GIRIH4022
 error
@@ -511,33 +511,33 @@ Remove functions, dates, class instances, and symbols; a spec is a contract, not
 
 GIRIH4030
 error
-packages/spec/src/extensions.ts:47
+packages/spec/src/extensions.ts:46
 
 ${file} does not default-export a variant extension.
 
-Export the result of defineVariant({ name, extends, tokens }) from '@girih/cli'.
+Export the result of defineVariant({ name, extends, tokens }) from '@faravahar/girih'.
 
 GIRIH4031
 error
-packages/spec/src/extensions.ts:58
+packages/spec/src/extensions.ts:57
 
 Failed to load extension: ${(error as Error).message}
 
 GIRIH4032
 error
-packages/spec/src/extensions.ts:86
+packages/spec/src/extensions.ts:85
 
 Extension name '${extension.name}' must be PascalCase (it becomes an exported React identifier).
 
 GIRIH4033
 error
-packages/spec/src/extensions.ts:95
+packages/spec/src/extensions.ts:94
 
 Extension '${extension.name}' collides with an existing component or extension.
 
 GIRIH4034
 error
-packages/spec/src/extensions.ts:107
+packages/spec/src/extensions.ts:106
 
 Extension '${extension.name}' extends '${extension.extends}', which is not in the component catalog.
 
@@ -545,13 +545,13 @@ Known components: ${[...byName.keys()].join(', ') || '(none)'}.
 
 GIRIH4035
 error
-packages/spec/src/extensions.ts:117
+packages/spec/src/extensions.ts:116
 
 '${extension.extends}' does not allow extensions (extensibility.allowExtends is false).
 
 GIRIH4036
 error
-packages/spec/src/extensions.ts:139
+packages/spec/src/extensions.ts:138
 
 Extension '${extension.name}' overrides '${property}', which '${extension.extends}' does not list under extensibility.overridableTokens.
 
@@ -559,13 +559,13 @@ Overridable: ${base.extensibility.overridableTokens.join(', ') || '(none)'}.
 
 GIRIH4037
 error
-packages/spec/src/extensions.ts:126
+packages/spec/src/extensions.ts:125
 
 '${extension.extends}' is a compound (dialog) component — extensions can only build on single-element components.
 
 GIRIH4038
 warning
-packages/spec/src/extensions.ts:188
+packages/spec/src/extensions.ts:187
 
 Extension '${extension.name}' reaches into '{${path}}', another component's token namespace.
 
@@ -573,7 +573,7 @@ Use semantic tokens or '${componentNamespace(extension.extends)}.*' tokens so th
 
 GIRIH4040
 error
-packages/spec/src/validate.ts:85
+packages/spec/src/validate.ts:161
 
 '${ir.name}' uses template '${ir.template}', which this girih version does not ship.
 
@@ -581,15 +581,17 @@ Available templates: ${Object.keys(templates).join(', ')}.
 
 GIRIH4041
 error
-packages/spec/src/validate.ts:108
+packages/spec/src/validate.ts:184
 
 '${ir.name}' styles part '${part.part}', which the '${ir.template}' template does not have.
 
-declaredParts.size > 0 ? `Parts of '${ir.template}': ${[...declaredParts].join(', ')}.` : `The '${ir.template}' template has no parts — use tokens.base.`
+declaredParts.size > 0
+? `Parts of '${ir.template}': ${[...declaredParts].join(', ')}.`
+: `The '${ir.template}' template has no parts — use tokens.base.`
 
 GIRIH4042
 error
-packages/spec/src/validate.ts:157
+packages/spec/src/validate.ts:236
 
 '${ir.name}' declares variant axis '${axis.axis}', but the '${ir.template}' template only wires up: ${template.variantAxes.join(', ')}.
 
@@ -605,28 +607,36 @@ error, because the component still works; it is just less accessible than the co
 
 GIRIH5001
 warning
-packages/generator-react/src/generate.ts:101
+packages/generator-react/src/generate.ts:103
 
 '${ir.name}' maps aria attributes to state '${aria.state}', which the '${ir.template}' template only expresses in CSS — the attributes are not wired.
 
 ### `GIRIH6xxx` — Build and publish
 
-Owned by `cli` · 1 code
+Owned by `cli` · 2 codes
 
 One code, guarding the packaging step: there are no TypeScript sources to compile, which
 means `girih generate react` has not run yet.
 
 GIRIH6001
 error
-packages/cli/src/build.ts:42
+packages/cli/src/build.ts:60
 
 No TypeScript sources in ${srcDir} — run \`girih generate react\` first.
+
+GIRIH6002
+error
+packages/cli/src/build.ts:75
+
+The generated package imports ${missing.map((m) => `'${m}'`).join(', ')}, which ${missing.length === 1 ? 'is' : 'are'} not installed.
+
+Install the build prerequisites: npm install -D ${missing.join(' ')}
 
 No diagnostics match that filter.
 
 ## An honest note on coverage
 
-35 of the 70 diagnostics have no
+35 of the 71 diagnostics have no
 `help` line. The project's own convention is that anything actionable should carry a
 one-line suggestion, so that number is a real gap rather than a deliberate choice — most of the
 missing ones are in the `GIRIH4xxx` contract family, where the message is often

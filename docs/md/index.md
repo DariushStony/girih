@@ -106,9 +106,13 @@ It is a poor fit if:
 > **🟡 Watch out — Current status, honestly**
 >
 > Milestones M1–M6 work: tokens, multi-brand CSS, contracts, React generation, the workspace
-> commands, the component catalog, packaging and publishing. What is _not_ done: the Figma
-> target is a stub, and `girih update` reports drift in ejected forks but does not yet
-> perform the three-way merge. Where a page below describes something unfinished, it says so.
+> commands, the component catalog, packaging and publishing. Eight packages are on npm under the
+> `@faravahar` scope, plus `create-girih`; the version is `0.1.x`
+> and the API may still move.
+>
+> What is _not_ done: the Figma target is a stub, and `girih forks` reports drift
+> in ejected forks but does not yet perform the three-way merge that would rebase them. Where a
+> page below describes something unfinished, it says so.
 
 ## The four promises
 
@@ -133,7 +137,7 @@ read 02 then 04; that is the shortest path to being useful.
 - [**Tokens and brands**](04-tokens.md) — Three tiers, alias chains, and the rule that makes one stylesheet serve everyone.
 - [**Contracts**](05-contracts.md) — How data becomes a typed, accessible component you can read and review.
 - [**The code**](06-the-code.md) — All nine packages: what each owns and where to look when something breaks.
-- [**Error codes**](07-error-codes.md) — All 70 GIRIH diagnostics, extracted from source, explained.
+- [**Error codes**](07-error-codes.md) — All 71 GIRIH diagnostics, extracted from source, explained.
 - [**Check yourself**](08-quiz.md) — Ten questions that are hard to fake your way through.
 
 | Tier | Holds | Examples |

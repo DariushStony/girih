@@ -1385,7 +1385,7 @@ select.sel, input.txt {
         
 <div class="prose">
 <p class="lede">
-  All 70 diagnostics girih can emit — 57 errors and
+  All 71 diagnostics girih can emit — 58 errors and
   13 warnings — extracted straight from
   <code>packages/*/src</code> by a script. The messages below are the real strings, not paraphrases.
 </p>
@@ -1463,7 +1463,7 @@ select.sel, input.txt {
       <tr><td><a href="#family-3"><code>GIRIH3xxx</code></a></td><td><code>generator-css</code></td><td>CSS emission</td><td class="num"><span class="num">3</span></td></tr>
       <tr><td><a href="#family-4"><code>GIRIH4xxx</code></a></td><td><code>spec</code></td><td>Component contracts and extensions</td><td class="num"><span class="num">31</span></td></tr>
       <tr><td><a href="#family-5"><code>GIRIH5xxx</code></a></td><td><code>generator-react</code></td><td>React emission</td><td class="num"><span class="num">1</span></td></tr>
-      <tr><td><a href="#family-6"><code>GIRIH6xxx</code></a></td><td><code>cli</code></td><td>Build and publish</td><td class="num"><span class="num">1</span></td></tr>
+      <tr><td><a href="#family-6"><code>GIRIH6xxx</code></a></td><td><code>cli</code></td><td>Build and publish</td><td class="num"><span class="num">2</span></td></tr>
     </tbody>
   </table>
 </div>
@@ -1559,7 +1559,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1008</span>
           <span class="sev">error</span>
-          <span class="src">packages/cli/src/cli.ts:271</span>
+          <span class="src">packages/cli/src/cli.ts:348</span>
         </div>
         <p class="msg">Unknown brand '<i class="ph">${options.brand}</i>'.</p>
         <p class="help">Known brands: <i class="ph">${[...build.graphs.keys()].join(', ')}</i>.</p>
@@ -1568,7 +1568,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1010</span>
           <span class="sev">warning</span>
-          <span class="src">packages/cli/src/cli.ts:329</span>
+          <span class="src">packages/cli/src/cli.ts:406</span>
         </div>
         <p class="msg">Generated file <i class="ph">${path}</i> was edited by hand since the last \`girih generate\`.</p>
         <p class="help">Undo the edit or eject the component (M5); the next generate will refuse to overwrite it.</p>
@@ -1577,7 +1577,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1011</span>
           <span class="sev">warning</span>
-          <span class="src">packages/cli/src/cli.ts:321</span>
+          <span class="src">packages/cli/src/cli.ts:398</span>
         </div>
         <p class="msg">.ds/manifest.json is corrupt or from an incompatible girih version — drift detection is disabled.</p>
         <p class="help">Delete .ds/manifest.json and regenerate.</p>
@@ -1586,7 +1586,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1012</span>
           <span class="sev">error</span>
-          <span class="src">packages/cli/src/cli.ts:105</span>
+          <span class="src">packages/cli/src/cli.ts:115</span>
         </div>
         <p class="msg">'<i class="ph">${name}</i>' is recorded as ejected in ds.lock, but <i class="ph">${path}</i> is missing.</p>
         <p class="help">Restore the file, or remove the '<i class="ph">${name}</i>' entry from ds.lock to return to generation.</p>
@@ -1595,25 +1595,25 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1013</span>
           <span class="sev">error</span>
-          <span class="src">packages/cli/src/cli.ts:79</span>
+          <span class="src">packages/cli/src/cli.ts:89</span>
         </div>
         <p class="msg">ds.lock is corrupt or from an incompatible girih version.</p>
         <p class="help">ds.lock is machine-managed and committed — restore it from git history.</p>
       </div>
-      <div class="codecard" data-sev="warning" data-code="GIRIH1014" data-search="girih1014 '${name}' was ejected from a different spec/template than the current one — the fork may not honor the contract anymore. review the fork against the current spec, or re-eject after removing the ds.lock entry (girih update will automate this in m6). cli">
+      <div class="codecard" data-sev="warning" data-code="GIRIH1014" data-search="girih1014 '${name}' was ejected from a different spec/template than the current one — the fork may not honor the contract anymore. review the fork against the current spec, or re-eject after removing the ds.lock entry (`girih forks` reports this; the 3-way merge is not built yet). cli">
         <div class="top">
           <span class="cid">GIRIH1014</span>
           <span class="sev">warning</span>
-          <span class="src">packages/cli/src/cli.ts:119</span>
+          <span class="src">packages/cli/src/cli.ts:132</span>
         </div>
         <p class="msg">'<i class="ph">${name}</i>' was ejected from a different spec/template than the current one — the fork may not honor the contract anymore.</p>
-        <p class="help">Review the fork against the current spec, or re-eject after removing the ds.lock entry (girih update will automate this in M6).</p>
+        <p class="help">Review the fork against the current spec, or re-eject after removing the ds.lock entry (`girih forks` reports this; the 3-way merge is not built yet).</p>
       </div>
       <div class="codecard" data-sev="warning" data-code="GIRIH1015" data-search="girih1015 ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated. restore components/${name.charat(0).tolowercase()}${name.slice(1)}.spec.ts, or remove the entry and components/ejected/${name}.tsx. cli">
         <div class="top">
           <span class="cid">GIRIH1015</span>
           <span class="sev">warning</span>
-          <span class="src">packages/cli/src/cli.ts:93</span>
+          <span class="src">packages/cli/src/cli.ts:103</span>
         </div>
         <p class="msg">ds.lock records '<i class="ph">${name}</i>' as ejected, but no spec with that name exists — the fork is not generated.</p>
         <p class="help">Restore components/<i class="ph">${name.charAt(0).toLowerCase()}</i><i class="ph">${name.slice(1)}</i>.spec.ts, or remove the entry and components/ejected/<i class="ph">${name}</i>.tsx.</p>
@@ -1837,7 +1837,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH3002</span>
           <span class="sev">error</span>
-          <span class="src">packages/generator-css/src/generate.ts:222</span>
+          <span class="src">packages/generator-css/src/generate.ts:220</span>
         </div>
         <p class="msg">'<i class="ph">${variable}</i>' (brand '<i class="ph">${brand}</i>') has a composite value no CSS transform could flatten.</p>
         <p class="help">Give the token a supported $type (shadow, typography, border, transition, cubicBezier, fontFamily) or split it into scalar tokens.</p>
@@ -1846,7 +1846,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH3003</span>
           <span class="sev">error</span>
-          <span class="src">packages/generator-css/src/generate.ts:178</span>
+          <span class="src">packages/generator-css/src/generate.ts:176</span>
         </div>
         <p class="msg">Tokens <i class="ph">${paths.map((p) =&gt; `'${p}</i>'`).join(' and ')} both map to the CSS variable '<i class="ph">${varName}</i>'.</p>
         <p class="help">Rename one of them — CSS variable names are case-insensitive here and join segments with &quot;-&quot;.</p>
@@ -1868,7 +1868,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4001</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/validate.ts:66</span>
+          <span class="src">packages/spec/src/validate.ts:142</span>
         </div>
         <p class="msg">Component name '<i class="ph">${ir.name}</i>' must be PascalCase (it becomes an exported React identifier).</p>
         
@@ -1879,7 +1879,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4002</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/extensions.ts:163 (+1 more)</span>
+          <span class="src">packages/spec/src/extensions.ts:162 (+1 more)</span>
         </div>
         <p class="msg">Extension '<i class="ph">${extension.name}</i>' references '{<i class="ph">${path}</i>}', which <i class="ph">${
             missing.length === graphs.size ? 'no brand resolves' : `brand(s) ${missing.join(', ')}</i> do not resolve`
@@ -1890,7 +1890,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4003</span>
           <span class="sev">warning</span>
-          <span class="src">packages/spec/src/extensions.ts:180 (+1 more)</span>
+          <span class="src">packages/spec/src/extensions.ts:179 (+1 more)</span>
         </div>
         <p class="msg">Extension '<i class="ph">${extension.name}</i>' references global token '{<i class="ph">${path}</i>}' — extensions should consume semantic or component tokens.</p>
         
@@ -1899,7 +1899,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4005</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/validate.ts:74</span>
+          <span class="src">packages/spec/src/validate.ts:150</span>
         </div>
         <p class="msg">Component '<i class="ph">${ir.name}</i>' is defined more than once (<i class="ph">${seen.get(ir.name)}</i> and <i class="ph">${file}</i>).</p>
         
@@ -1908,7 +1908,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4006</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/validate.ts:171</span>
+          <span class="src">packages/spec/src/validate.ts:250</span>
         </div>
         <p class="msg">Variant axis '<i class="ph">${axis.axis}</i>' of '<i class="ph">${ir.name}</i>' has no values.</p>
         
@@ -1917,7 +1917,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4007</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/validate.ts:192</span>
+          <span class="src">packages/spec/src/validate.ts:271</span>
         </div>
         <p class="msg">Variant axis '<i class="ph">${axis.axis}</i>' of '<i class="ph">${ir.name}</i>' defaults to '<i class="ph">${axis.default}</i>', which is not one of [<i class="ph">${axis.values.join(', ')}</i>].</p>
         
@@ -1926,7 +1926,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4008</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/validate.ts:205</span>
+          <span class="src">packages/spec/src/validate.ts:284</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' declares state '<i class="ph">${state}</i>', which the '<i class="ph">${ir.template}</i>' template does not implement.</p>
         <p class="help">States of '<i class="ph">${ir.template}</i>': <i class="ph">${implementableStates.join(', ') || '(none)'}</i>. States are template capability flags, not arbitrary behavior.</p>
@@ -1935,7 +1935,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4009</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/validate.ts:242</span>
+          <span class="src">packages/spec/src/validate.ts:321</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' styles variant axis '<i class="ph">${block.axis}</i>', which is not declared under variants.</p>
         
@@ -1944,7 +1944,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4010</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/validate.ts:252</span>
+          <span class="src">packages/spec/src/validate.ts:331</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' styles '<i class="ph">${block.axis}</i>.<i class="ph">${block.value}</i>', but '<i class="ph">${block.value}</i>' is not a declared value of that axis.</p>
         
@@ -1953,7 +1953,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4011</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/validate.ts:229 (+1 more)</span>
+          <span class="src">packages/spec/src/validate.ts:308 (+1 more)</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' styles state '<i class="ph">${state.state}</i>' under tokens.states, but does not declare that state.</p>
         
@@ -1962,7 +1962,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4012</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/extensions.ts:151 (+1 more)</span>
+          <span class="src">packages/spec/src/extensions.ts:150 (+1 more)</span>
         </div>
         <p class="msg">Extension '<i class="ph">${extension.name}</i>' has a malformed token reference '<i class="ph">${ref}</i>' at <i class="ph">${property}</i> — expected '{token.path}'.</p>
         
@@ -1971,7 +1971,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4013</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/validate.ts:125 (+3 more)</span>
+          <span class="src">packages/spec/src/validate.ts:204 (+3 more)</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' <i class="ph">${what}</i> '<i class="ph">${name}</i>' is not a valid camelCase identifier — it becomes a React prop.</p>
         
@@ -1980,7 +1980,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4014</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/ir.ts:34</span>
+          <span class="src">packages/spec/src/ir.ts:28</span>
         </div>
         <p class="msg">'<i class="ph">${spec.name}</i>' has a non-string declaration for '<i class="ph">${property}</i>' at <i class="ph">${where}</i> — every styled value must be a '{token.path}' reference.</p>
         
@@ -1989,7 +1989,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4015</span>
           <span class="sev">warning</span>
-          <span class="src">packages/spec/src/validate.ts:277</span>
+          <span class="src">packages/spec/src/validate.ts:356</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' styles unknown CSS property '<i class="ph">${property}</i>' at <i class="ph">${where}</i> — it will be emitted verbatim.</p>
         
@@ -1998,7 +1998,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4016</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/validate.ts:217</span>
+          <span class="src">packages/spec/src/validate.ts:296</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' maps aria attributes to state '<i class="ph">${aria.state}</i>', which it does not declare under states.</p>
         
@@ -2007,7 +2007,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4018</span>
           <span class="sev">warning</span>
-          <span class="src">packages/spec/src/validate.ts:96</span>
+          <span class="src">packages/spec/src/validate.ts:172</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' renders '&lt;<i class="ph">${ir.element}</i>&gt;', which is not a known host element.</p>
         <p class="help">Known elements: <i class="ph">${[...KNOWN_ELEMENTS].join(', ')}</i>.</p>
@@ -2021,14 +2021,14 @@ select.sel, input.txt {
         <p class="msg">Failed to load spec: <i class="ph">${(error as Error).message}</i></p>
         
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4021" data-search="girih4021 ${file} does not default-export a component spec. export the result of definespec({...}) from '@girih/cli'. spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4021" data-search="girih4021 ${file} does not default-export a component spec. export the result of definespec({...}) from '@faravahar/girih'. spec">
         <div class="top">
           <span class="cid">GIRIH4021</span>
           <span class="sev">error</span>
           <span class="src">packages/spec/src/load.ts:48</span>
         </div>
         <p class="msg"><i class="ph">${file}</i> does not default-export a component spec.</p>
-        <p class="help">Export the result of defineSpec({...}) from '@girih/cli'.</p>
+        <p class="help">Export the result of defineSpec({...}) from '@faravahar/girih'.</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH4022" data-search="girih4022 ${file} contains a non-serializable value at '${impure}' — specs must be pure data. remove functions, dates, class instances, and symbols; a spec is a contract, not a program. spec">
         <div class="top">
@@ -2039,20 +2039,20 @@ select.sel, input.txt {
         <p class="msg"><i class="ph">${file}</i> contains a non-serializable value at '<i class="ph">${impure}</i>' — specs must be pure data.</p>
         <p class="help">Remove functions, dates, class instances, and symbols; a spec is a contract, not a program.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4030" data-search="girih4030 ${file} does not default-export a variant extension. export the result of definevariant({ name, extends, tokens }) from '@girih/cli'. spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4030" data-search="girih4030 ${file} does not default-export a variant extension. export the result of definevariant({ name, extends, tokens }) from '@faravahar/girih'. spec">
         <div class="top">
           <span class="cid">GIRIH4030</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/extensions.ts:47</span>
+          <span class="src">packages/spec/src/extensions.ts:46</span>
         </div>
         <p class="msg"><i class="ph">${file}</i> does not default-export a variant extension.</p>
-        <p class="help">Export the result of defineVariant({ name, extends, tokens }) from '@girih/cli'.</p>
+        <p class="help">Export the result of defineVariant({ name, extends, tokens }) from '@faravahar/girih'.</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH4031" data-search="girih4031 failed to load extension: ${(error as error).message}  spec">
         <div class="top">
           <span class="cid">GIRIH4031</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/extensions.ts:58</span>
+          <span class="src">packages/spec/src/extensions.ts:57</span>
         </div>
         <p class="msg">Failed to load extension: <i class="ph">${(error as Error).message}</i></p>
         
@@ -2061,7 +2061,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4032</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/extensions.ts:86</span>
+          <span class="src">packages/spec/src/extensions.ts:85</span>
         </div>
         <p class="msg">Extension name '<i class="ph">${extension.name}</i>' must be PascalCase (it becomes an exported React identifier).</p>
         
@@ -2070,7 +2070,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4033</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/extensions.ts:95</span>
+          <span class="src">packages/spec/src/extensions.ts:94</span>
         </div>
         <p class="msg">Extension '<i class="ph">${extension.name}</i>' collides with an existing component or extension.</p>
         
@@ -2079,7 +2079,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4034</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/extensions.ts:107</span>
+          <span class="src">packages/spec/src/extensions.ts:106</span>
         </div>
         <p class="msg">Extension '<i class="ph">${extension.name}</i>' extends '<i class="ph">${extension.extends}</i>', which is not in the component catalog.</p>
         <p class="help">Known components: <i class="ph">${[...byName.keys()].join(', ') || '(none)'}</i>.</p>
@@ -2088,7 +2088,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4035</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/extensions.ts:117</span>
+          <span class="src">packages/spec/src/extensions.ts:116</span>
         </div>
         <p class="msg">'<i class="ph">${extension.extends}</i>' does not allow extensions (extensibility.allowExtends is false).</p>
         
@@ -2097,7 +2097,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4036</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/extensions.ts:139</span>
+          <span class="src">packages/spec/src/extensions.ts:138</span>
         </div>
         <p class="msg">Extension '<i class="ph">${extension.name}</i>' overrides '<i class="ph">${property}</i>', which '<i class="ph">${extension.extends}</i>' does not list under extensibility.overridableTokens.</p>
         <p class="help">Overridable: <i class="ph">${base.extensibility.overridableTokens.join(', ') || '(none)'}</i>.</p>
@@ -2106,7 +2106,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4037</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/extensions.ts:126</span>
+          <span class="src">packages/spec/src/extensions.ts:125</span>
         </div>
         <p class="msg">'<i class="ph">${extension.extends}</i>' is a compound (dialog) component — extensions can only build on single-element components.</p>
         
@@ -2115,7 +2115,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4038</span>
           <span class="sev">warning</span>
-          <span class="src">packages/spec/src/extensions.ts:188</span>
+          <span class="src">packages/spec/src/extensions.ts:187</span>
         </div>
         <p class="msg">Extension '<i class="ph">${extension.name}</i>' reaches into '{<i class="ph">${path}</i>}', another component's token namespace.</p>
         <p class="help">Use semantic tokens or '<i class="ph">${componentNamespace(extension.extends)}</i>.*' tokens so the extension survives refactors of unrelated components.</p>
@@ -2124,25 +2124,29 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4040</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/validate.ts:85</span>
+          <span class="src">packages/spec/src/validate.ts:161</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' uses template '<i class="ph">${ir.template}</i>', which this girih version does not ship.</p>
         <p class="help">Available templates: <i class="ph">${Object.keys(templates).join(', ')}</i>.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4041" data-search="girih4041 '${ir.name}' styles part '${part.part}', which the '${ir.template}' template does not have. declaredparts.size &gt; 0 ? `parts of '${ir.template}': ${[...declaredparts].join(', ')}.` : `the '${ir.template}' template has no parts — use tokens.base.` spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4041" data-search="girih4041 '${ir.name}' styles part '${part.part}', which the '${ir.template}' template does not have. declaredparts.size &gt; 0
+              ? `parts of '${ir.template}': ${[...declaredparts].join(', ')}.`
+              : `the '${ir.template}' template has no parts — use tokens.base.` spec">
         <div class="top">
           <span class="cid">GIRIH4041</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/validate.ts:108</span>
+          <span class="src">packages/spec/src/validate.ts:184</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' styles part '<i class="ph">${part.part}</i>', which the '<i class="ph">${ir.template}</i>' template does not have.</p>
-        <p class="help">declaredParts.size &gt; 0 ? `Parts of '<i class="ph">${ir.template}</i>': <i class="ph">${[...declaredParts].join(', ')}</i>.` : `The '<i class="ph">${ir.template}</i>' template has no parts — use tokens.base.`</p>
+        <p class="help">declaredParts.size &gt; 0
+              ? `Parts of '<i class="ph">${ir.template}</i>': <i class="ph">${[...declaredParts].join(', ')}</i>.`
+              : `The '<i class="ph">${ir.template}</i>' template has no parts — use tokens.base.`</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH4042" data-search="girih4042 '${ir.name}' declares variant axis '${axis.axis}', but the '${ir.template}' template only wires up: ${template.variantaxes.join(', ')}. a silently-ignored axis would validate and then do nothing — declare only axes the template implements. spec">
         <div class="top">
           <span class="cid">GIRIH4042</span>
           <span class="sev">error</span>
-          <span class="src">packages/spec/src/validate.ts:157</span>
+          <span class="src">packages/spec/src/validate.ts:236</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' declares variant axis '<i class="ph">${axis.axis}</i>', but the '<i class="ph">${ir.template}</i>' template only wires up: <i class="ph">${template.variantAxes.join(', ')}</i>.</p>
         <p class="help">A silently-ignored axis would validate and then do nothing — declare only axes the template implements.</p>
@@ -2163,7 +2167,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH5001</span>
           <span class="sev">warning</span>
-          <span class="src">packages/generator-react/src/generate.ts:101</span>
+          <span class="src">packages/generator-react/src/generate.ts:103</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' maps aria attributes to state '<i class="ph">${aria.state}</i>', which the '<i class="ph">${ir.template}</i>' template only expresses in CSS — the attributes are not wired.</p>
         
@@ -2174,7 +2178,7 @@ select.sel, input.txt {
 <section data-family="6">
   <h3 id="family-6"><code>GIRIH6xxx</code> — Build and publish</h3>
   <p style="font-family:var(--util);font-size:var(--t-sm);color:var(--text-muted)">
-    Owned by <code>cli</code> · 1 code
+    Owned by <code>cli</code> · 2 codes
   </p>
   <p>One code, guarding the packaging step: there are no TypeScript sources to compile, which
       means <code>girih generate react</code> has not run yet.</p>
@@ -2183,10 +2187,19 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH6001</span>
           <span class="sev">error</span>
-          <span class="src">packages/cli/src/build.ts:42</span>
+          <span class="src">packages/cli/src/build.ts:60</span>
         </div>
         <p class="msg">No TypeScript sources in <i class="ph">${srcDir}</i> — run \`girih generate react\` first.</p>
         
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH6002" data-search="girih6002 the generated package imports ${missing.map((m) =&gt; `'${m}'`).join(', ')}, which ${missing.length === 1 ? 'is' : 'are'} not installed. install the build prerequisites: npm install -d ${missing.join(' ')} cli">
+        <div class="top">
+          <span class="cid">GIRIH6002</span>
+          <span class="sev">error</span>
+          <span class="src">packages/cli/src/build.ts:75</span>
+        </div>
+        <p class="msg">The generated package imports <i class="ph">${missing.map((m) =&gt; `'${m}</i>'`).join(', ')}, which <i class="ph">${missing.length === 1 ? 'is' : 'are'}</i> not installed.</p>
+        <p class="help">Install the build prerequisites: npm install -D <i class="ph">${missing.join(' ')}</i></p>
       </div>
   </div>
 </section>
@@ -2198,7 +2211,7 @@ select.sel, input.txt {
 <h2 id="gaps">An honest note on coverage</h2>
 
 <p>
-  35 of the 70 diagnostics have no
+  35 of the 71 diagnostics have no
   <code>help</code> line. The project's own convention is that anything actionable should carry a
   one-line suggestion, so that number is a real gap rather than a deliberate choice — most of the
   missing ones are in the <code>GIRIH4xxx</code> contract family, where the message is often

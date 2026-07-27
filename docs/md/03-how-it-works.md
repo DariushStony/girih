@@ -86,8 +86,8 @@ girih working and girih looking like it works.
 identical token pipeline; the React path adds contract loading on top.
 
 ```
-tokens/ + brands/  (you write)  →  buildTokenGraphs()  (@girih/tokens)  →  generateCss()  (@girih/generator-css)  →  tokens.css + tokens.d.ts  (emitted)
-components/*.spec.ts  (you write)  →  loadSpecs() → specToIR()  (@girih/spec)  →  generateReact()  (@girih/generator-react)  →  src/*.tsx + components.css  (emitted)
+tokens/ + brands/  (you write)  →  buildTokenGraphs()  (@faravahar/girih-tokens)  →  generateCss()  (@faravahar/girih-generator-css)  →  tokens.css + tokens.d.ts  (emitted)
+components/*.spec.ts  (you write)  →  loadSpecs() → specToIR()  (@faravahar/girih-spec)  →  generateReact()  (@faravahar/girih-generator-react)  →  src/*.tsx + components.css  (emitted)
 ```
 
 The contract path depends on the token path, not the other way round: `validateSpecs()`
@@ -154,7 +154,7 @@ whack-a-mole. The codes are partitioned by owning package:
 | `GIRIH3xxx` | `generator-css` | CSS emission | 3 |
 | `GIRIH4xxx` | `spec` | Component contracts and extensions | 31 |
 | `GIRIH5xxx` | `generator-react` | React emission | 1 |
-| `GIRIH6xxx` | `cli` | Build and publish | 1 |
+| `GIRIH6xxx` | `cli` | Build and publish | 2 |
 
 Some diagnostics do real work beyond reporting. `GIRIH2030` — an unknown token
 reference — runs a small similarity search over the token set and suggests the paths you probably

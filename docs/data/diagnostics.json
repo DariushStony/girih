@@ -1,9 +1,9 @@
 {
   "generatedBy": "docs/scripts/extract-diagnostics.mjs",
   "note": "Do not edit by hand. Re-run the script after changing any diagnostic in packages/*/src.",
-  "total": 70,
+  "total": 71,
   "bySeverity": {
-    "error": 57,
+    "error": 58,
     "warning": 13
   },
   "families": {
@@ -116,7 +116,8 @@
       "owner": "cli",
       "topic": "Build and publish",
       "codes": [
-        "GIRIH6001"
+        "GIRIH6001",
+        "GIRIH6002"
       ]
     }
   },
@@ -235,10 +236,10 @@
       "helpDynamic": true,
       "package": "cli",
       "file": "packages/cli/src/cli.ts",
-      "line": 271,
+      "line": 348,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/cli.ts:271"
+        "packages/cli/src/cli.ts:348"
       ]
     },
     {
@@ -250,10 +251,10 @@
       "helpDynamic": false,
       "package": "cli",
       "file": "packages/cli/src/cli.ts",
-      "line": 329,
+      "line": 406,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/cli.ts:329"
+        "packages/cli/src/cli.ts:406"
       ]
     },
     {
@@ -265,10 +266,10 @@
       "helpDynamic": false,
       "package": "cli",
       "file": "packages/cli/src/cli.ts",
-      "line": 321,
+      "line": 398,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/cli.ts:321"
+        "packages/cli/src/cli.ts:398"
       ]
     },
     {
@@ -280,10 +281,10 @@
       "helpDynamic": true,
       "package": "cli",
       "file": "packages/cli/src/cli.ts",
-      "line": 105,
+      "line": 115,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/cli.ts:105"
+        "packages/cli/src/cli.ts:115"
       ]
     },
     {
@@ -295,10 +296,10 @@
       "helpDynamic": false,
       "package": "cli",
       "file": "packages/cli/src/cli.ts",
-      "line": 79,
+      "line": 89,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/cli.ts:79"
+        "packages/cli/src/cli.ts:89"
       ]
     },
     {
@@ -306,14 +307,14 @@
       "severity": "warning",
       "message": "'${name}' was ejected from a different spec/template than the current one — the fork may not honor the contract anymore.",
       "messageDynamic": true,
-      "help": "Review the fork against the current spec, or re-eject after removing the ds.lock entry (girih update will automate this in M6).",
+      "help": "Review the fork against the current spec, or re-eject after removing the ds.lock entry (`girih forks` reports this; the 3-way merge is not built yet).",
       "helpDynamic": false,
       "package": "cli",
       "file": "packages/cli/src/cli.ts",
-      "line": 119,
+      "line": 132,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/cli.ts:119"
+        "packages/cli/src/cli.ts:132"
       ]
     },
     {
@@ -325,10 +326,10 @@
       "helpDynamic": true,
       "package": "cli",
       "file": "packages/cli/src/cli.ts",
-      "line": 93,
+      "line": 103,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/cli.ts:93"
+        "packages/cli/src/cli.ts:103"
       ]
     },
     {
@@ -656,10 +657,10 @@
       "helpDynamic": false,
       "package": "generator-css",
       "file": "packages/generator-css/src/generate.ts",
-      "line": 222,
+      "line": 220,
       "sites": 1,
       "allSites": [
-        "packages/generator-css/src/generate.ts:222"
+        "packages/generator-css/src/generate.ts:220"
       ]
     },
     {
@@ -671,10 +672,10 @@
       "helpDynamic": false,
       "package": "generator-css",
       "file": "packages/generator-css/src/generate.ts",
-      "line": 178,
+      "line": 176,
       "sites": 1,
       "allSites": [
-        "packages/generator-css/src/generate.ts:178"
+        "packages/generator-css/src/generate.ts:176"
       ]
     },
     {
@@ -686,10 +687,10 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/validate.ts",
-      "line": 66,
+      "line": 142,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:66"
+        "packages/spec/src/validate.ts:142"
       ]
     },
     {
@@ -701,11 +702,11 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/extensions.ts",
-      "line": 163,
+      "line": 162,
       "sites": 2,
       "allSites": [
-        "packages/spec/src/extensions.ts:163",
-        "packages/spec/src/validate.ts:300"
+        "packages/spec/src/extensions.ts:162",
+        "packages/spec/src/validate.ts:379"
       ]
     },
     {
@@ -717,11 +718,11 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/extensions.ts",
-      "line": 180,
+      "line": 179,
       "sites": 2,
       "allSites": [
-        "packages/spec/src/extensions.ts:180",
-        "packages/spec/src/validate.ts:313"
+        "packages/spec/src/extensions.ts:179",
+        "packages/spec/src/validate.ts:392"
       ]
     },
     {
@@ -733,10 +734,10 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/validate.ts",
-      "line": 74,
+      "line": 150,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:74"
+        "packages/spec/src/validate.ts:150"
       ]
     },
     {
@@ -748,10 +749,10 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/validate.ts",
-      "line": 171,
+      "line": 250,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:171"
+        "packages/spec/src/validate.ts:250"
       ]
     },
     {
@@ -763,10 +764,10 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/validate.ts",
-      "line": 192,
+      "line": 271,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:192"
+        "packages/spec/src/validate.ts:271"
       ]
     },
     {
@@ -778,10 +779,10 @@
       "helpDynamic": true,
       "package": "spec",
       "file": "packages/spec/src/validate.ts",
-      "line": 205,
+      "line": 284,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:205"
+        "packages/spec/src/validate.ts:284"
       ]
     },
     {
@@ -793,10 +794,10 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/validate.ts",
-      "line": 242,
+      "line": 321,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:242"
+        "packages/spec/src/validate.ts:321"
       ]
     },
     {
@@ -808,10 +809,10 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/validate.ts",
-      "line": 252,
+      "line": 331,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:252"
+        "packages/spec/src/validate.ts:331"
       ]
     },
     {
@@ -823,11 +824,11 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/validate.ts",
-      "line": 229,
+      "line": 308,
       "sites": 2,
       "allSites": [
-        "packages/spec/src/validate.ts:229",
-        "packages/spec/src/validate.ts:262"
+        "packages/spec/src/validate.ts:308",
+        "packages/spec/src/validate.ts:341"
       ]
     },
     {
@@ -839,11 +840,11 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/extensions.ts",
-      "line": 151,
+      "line": 150,
       "sites": 2,
       "allSites": [
-        "packages/spec/src/extensions.ts:151",
-        "packages/spec/src/validate.ts:288"
+        "packages/spec/src/extensions.ts:150",
+        "packages/spec/src/validate.ts:367"
       ]
     },
     {
@@ -855,13 +856,13 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/validate.ts",
-      "line": 125,
+      "line": 204,
       "sites": 4,
       "allSites": [
-        "packages/spec/src/validate.ts:125",
-        "packages/spec/src/validate.ts:133",
-        "packages/spec/src/validate.ts:141",
-        "packages/spec/src/validate.ts:182"
+        "packages/spec/src/validate.ts:204",
+        "packages/spec/src/validate.ts:212",
+        "packages/spec/src/validate.ts:220",
+        "packages/spec/src/validate.ts:261"
       ]
     },
     {
@@ -873,10 +874,10 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/ir.ts",
-      "line": 34,
+      "line": 28,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/ir.ts:34"
+        "packages/spec/src/ir.ts:28"
       ]
     },
     {
@@ -888,10 +889,10 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/validate.ts",
-      "line": 277,
+      "line": 356,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:277"
+        "packages/spec/src/validate.ts:356"
       ]
     },
     {
@@ -903,10 +904,10 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/validate.ts",
-      "line": 217,
+      "line": 296,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:217"
+        "packages/spec/src/validate.ts:296"
       ]
     },
     {
@@ -918,10 +919,10 @@
       "helpDynamic": true,
       "package": "spec",
       "file": "packages/spec/src/validate.ts",
-      "line": 96,
+      "line": 172,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:96"
+        "packages/spec/src/validate.ts:172"
       ]
     },
     {
@@ -944,7 +945,7 @@
       "severity": "error",
       "message": "${file} does not default-export a component spec.",
       "messageDynamic": true,
-      "help": "Export the result of defineSpec({...}) from '@girih/cli'.",
+      "help": "Export the result of defineSpec({...}) from '@faravahar/girih'.",
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/load.ts",
@@ -974,14 +975,14 @@
       "severity": "error",
       "message": "${file} does not default-export a variant extension.",
       "messageDynamic": true,
-      "help": "Export the result of defineVariant({ name, extends, tokens }) from '@girih/cli'.",
+      "help": "Export the result of defineVariant({ name, extends, tokens }) from '@faravahar/girih'.",
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/extensions.ts",
-      "line": 47,
+      "line": 46,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/extensions.ts:47"
+        "packages/spec/src/extensions.ts:46"
       ]
     },
     {
@@ -993,10 +994,10 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/extensions.ts",
-      "line": 58,
+      "line": 57,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/extensions.ts:58"
+        "packages/spec/src/extensions.ts:57"
       ]
     },
     {
@@ -1008,10 +1009,10 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/extensions.ts",
-      "line": 86,
+      "line": 85,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/extensions.ts:86"
+        "packages/spec/src/extensions.ts:85"
       ]
     },
     {
@@ -1023,10 +1024,10 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/extensions.ts",
-      "line": 95,
+      "line": 94,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/extensions.ts:95"
+        "packages/spec/src/extensions.ts:94"
       ]
     },
     {
@@ -1038,10 +1039,10 @@
       "helpDynamic": true,
       "package": "spec",
       "file": "packages/spec/src/extensions.ts",
-      "line": 107,
+      "line": 106,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/extensions.ts:107"
+        "packages/spec/src/extensions.ts:106"
       ]
     },
     {
@@ -1053,10 +1054,10 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/extensions.ts",
-      "line": 117,
+      "line": 116,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/extensions.ts:117"
+        "packages/spec/src/extensions.ts:116"
       ]
     },
     {
@@ -1068,10 +1069,10 @@
       "helpDynamic": true,
       "package": "spec",
       "file": "packages/spec/src/extensions.ts",
-      "line": 139,
+      "line": 138,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/extensions.ts:139"
+        "packages/spec/src/extensions.ts:138"
       ]
     },
     {
@@ -1083,10 +1084,10 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/extensions.ts",
-      "line": 126,
+      "line": 125,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/extensions.ts:126"
+        "packages/spec/src/extensions.ts:125"
       ]
     },
     {
@@ -1098,10 +1099,10 @@
       "helpDynamic": true,
       "package": "spec",
       "file": "packages/spec/src/extensions.ts",
-      "line": 188,
+      "line": 187,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/extensions.ts:188"
+        "packages/spec/src/extensions.ts:187"
       ]
     },
     {
@@ -1113,10 +1114,10 @@
       "helpDynamic": true,
       "package": "spec",
       "file": "packages/spec/src/validate.ts",
-      "line": 85,
+      "line": 161,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:85"
+        "packages/spec/src/validate.ts:161"
       ]
     },
     {
@@ -1124,14 +1125,14 @@
       "severity": "error",
       "message": "'${ir.name}' styles part '${part.part}', which the '${ir.template}' template does not have.",
       "messageDynamic": true,
-      "help": "declaredParts.size > 0 ? `Parts of '${ir.template}': ${[...declaredParts].join(', ')}.` : `The '${ir.template}' template has no parts — use tokens.base.`",
+      "help": "declaredParts.size > 0\n              ? `Parts of '${ir.template}': ${[...declaredParts].join(', ')}.`\n              : `The '${ir.template}' template has no parts — use tokens.base.`",
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/validate.ts",
-      "line": 108,
+      "line": 184,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:108"
+        "packages/spec/src/validate.ts:184"
       ]
     },
     {
@@ -1143,10 +1144,10 @@
       "helpDynamic": false,
       "package": "spec",
       "file": "packages/spec/src/validate.ts",
-      "line": 157,
+      "line": 236,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:157"
+        "packages/spec/src/validate.ts:236"
       ]
     },
     {
@@ -1158,10 +1159,10 @@
       "helpDynamic": false,
       "package": "generator-react",
       "file": "packages/generator-react/src/generate.ts",
-      "line": 101,
+      "line": 103,
       "sites": 1,
       "allSites": [
-        "packages/generator-react/src/generate.ts:101"
+        "packages/generator-react/src/generate.ts:103"
       ]
     },
     {
@@ -1173,10 +1174,25 @@
       "helpDynamic": false,
       "package": "cli",
       "file": "packages/cli/src/build.ts",
-      "line": 42,
+      "line": 60,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/build.ts:42"
+        "packages/cli/src/build.ts:60"
+      ]
+    },
+    {
+      "code": "GIRIH6002",
+      "severity": "error",
+      "message": "The generated package imports ${missing.map((m) => `'${m}'`).join(', ')}, which ${missing.length === 1 ? 'is' : 'are'} not installed.",
+      "messageDynamic": true,
+      "help": "Install the build prerequisites: npm install -D ${missing.join(' ')}",
+      "helpDynamic": true,
+      "package": "cli",
+      "file": "packages/cli/src/build.ts",
+      "line": 75,
+      "sites": 1,
+      "allSites": [
+        "packages/cli/src/build.ts:75"
       ]
     }
   ]

@@ -18,17 +18,17 @@ and most bad ideas in this codebase announce themselves as a need to import upwa
 ## The dependency direction
 
 ```
-@girih/core  (kernel — depends on nothing)
+@faravahar/girih-core  (kernel — depends on nothing)
 ↑ depended on by ↑
-@girih/tokens  (token pipeline)  +  @girih/core
+@faravahar/girih-tokens  (token pipeline)  +  @faravahar/girih-core
 ↑
-@girih/generator-css  (tokens → CSS)  ·  @girih/spec  (contracts)
+@faravahar/girih-generator-css  (tokens → CSS)  ·  @faravahar/girih-spec  (contracts)
 ↑
-@girih/generator-react  (IR → React (core + spec))
+@faravahar/girih-generator-react  (IR → React (core + spec))
 ↑
-@girih/cli  (the only package allowed to depend on all of them)
+@faravahar/girih  (the only package allowed to depend on all of them)
 standalone:
-@girih/react-runtime  (react is a peer dep)  create-girih  (zero workspace deps)  @girih/figma  (phase-2 stub)
+@faravahar/girih-react-runtime  (react is a peer dep)  create-girih  (zero workspace deps)  @faravahar/girih-figma  (phase-2 stub)
 ```
 
 > **▶ The dependency direction** — interactive
@@ -51,7 +51,7 @@ standalone:
 > Each layer may rest on the ones below it and never on the ones above. The CLI sits on top, which
 > is why it can see everything — and why nothing may depend on the CLI.
 
-## @girih/core — the shared kernel
+## @faravahar/girih-core — the shared kernel
 
 Small on purpose. Four files, and every one exists so that other packages cannot disagree with
 each other.
@@ -85,7 +85,7 @@ Twelve lines carrying four features: drift detection, the `--check` CI gate, orp
 cleanup, and publish-time staleness refusal. Worth reading before you write anything that emits a
 file.
 
-## @girih/tokens — the pipeline
+## @faravahar/girih-tokens — the pipeline
 
 | File | Owns | Start here when |
 | --- | --- | --- |
@@ -111,7 +111,7 @@ full. Three algorithms share it, and the ordering between them is load-bearing:
 > being girih's private interpretation. Composite values (shadow, typography) are walked manually so
 > references _inside_ objects and arrays resolve too.
 
-## @girih/generator-css
+## @faravahar/girih-generator-css
 
 Three files, and one function inside them matters more than the rest.
 
@@ -155,7 +155,7 @@ The package also emits `tokens.d.ts`: a `TokenPath` string-literal union of
 every real token path. That is what makes token references in contracts type-checked rather than
 merely string-shaped.
 
-## @girih/spec
+## @faravahar/girih-spec
 
 | File | Owns |
 | --- | --- |
@@ -171,7 +171,7 @@ merely string-shaped.
 arbitrary user TypeScript, and girih needs to distinguish "a contract" from "some object someone
 default-exported" without trusting the type system across a runtime boundary.
 
-## @girih/generator-react
+## @faravahar/girih-generator-react
 
 | File | Owns |
 | --- | --- |
@@ -187,7 +187,7 @@ contract validation, so an unimplementable state is a build error rather than a 
 and ejection, which records the template version so `girih update` can report a fork
 whose template has since moved.
 
-## @girih/cli
+## @faravahar/girih
 
 | File | Owns |
 | --- | --- |
@@ -211,7 +211,7 @@ whose template has since moved.
 > configuration. `e2e/test/consumer.test.ts` is what proves it: it packs a real tarball,
 > installs it into a scratch consumer, and server-renders every component.
 
-## @girih/react-runtime
+## @faravahar/girih-react-runtime
 
 One file, three exports, and `react` is a _peer_ dependency — never a real one,
 or a consumer could end up with two Reacts.
@@ -225,14 +225,14 @@ or a consumer could end up with two Reacts.
 That is the entire runtime cost of girih's theming. Everything else is CSS resolving in the
 browser.
 
-## create-girih and @girih/figma
+## create-girih and @faravahar/girih-figma
 
 `create-girih` has **zero workspace dependencies**, which is a constraint
 rather than an oversight: it has to run via `npx` before anything is installed, so it
-cannot import `@girih/cli`. It detects the package manager from the environment and
+cannot import `@faravahar/girih`. It detects the package manager from the environment and
 shells out.
 
-`@girih/figma` is a private phase-2 stub. It consumes `ComponentIR`, which is
+`@faravahar/girih-figma` is a private phase-2 stub. It consumes `ComponentIR`, which is
 the reason the IR exists as a target-neutral form at all. Do not grow it without being asked.
 
 ---
@@ -263,11 +263,11 @@ source so unit tests run without a build:
 resolve: {
   // Tests run against source so packages don't need a build first.
   alias: {
-    '@girih/core': r('packages/core/src/index.ts'),
-    '@girih/tokens': r('packages/tokens/src/index.ts'),
-    '@girih/generator-css': r('packages/generator-css/src/index.ts'),
-    '@girih/generator-react': r('packages/generator-react/src/index.ts'),
-    '@girih/spec': r('packages/spec/src/index.ts'),
+    '@faravahar/girih-core': r('packages/core/src/index.ts'),
+    '@faravahar/girih-tokens': r('packages/tokens/src/index.ts'),
+    '@faravahar/girih-generator-css': r('packages/generator-css/src/index.ts'),
+    '@faravahar/girih-generator-react': r('packages/generator-react/src/index.ts'),
+    '@faravahar/girih-spec': r('packages/spec/src/index.ts'),
   },
 },
 test: { include: ['packages/*/test/**/*.test.ts', 'e2e/test/**/*.test.ts'] },
@@ -275,7 +275,7 @@ test: { include: ['packages/*/test/**/*.test.ts', 'e2e/test/**/*.test.ts'] },
 
 > **🟡 Watch out — Two packages are deliberately NOT aliased**
 >
-> `@girih/cli` and `@girih/react-runtime` are absent from that list. Anything
+> `@faravahar/girih` and `@faravahar/girih-react-runtime` are absent from that list. Anything
 > exercising them runs against `dist/`, so `pnpm build` is required first.
 > That is intentional for the CLI: the end-to-end tests should exercise the same compiled binary a
 > user would run, not a source alias that might behave differently.
