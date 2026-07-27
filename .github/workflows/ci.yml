@@ -46,17 +46,12 @@ jobs:
       - run: pnpm test:unit
 
   packaging:
-    # The e2e suite spawns processes, packs tarballs, walks parent directories and
-    # joins paths — every one of which behaves differently on Windows. girih is
-    # published for all three platforms, so all three have to actually run it.
-    name: packaging (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
-    strategy:
-      # Never cancel siblings: a Windows-only failure is exactly the thing worth
-      # seeing alongside a passing Linux run.
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+    # Linux only. The portability work stays in the code — the e2e spawns package
+    # managers through a shell on win32, and printed paths are normalised to forward
+    # slashes — but nothing verifies it on Windows or macOS any more. If a
+    # platform-specific bug appears, it will appear for a user rather than here.
+    name: packaging
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -81,8 +76,4 @@ jobs:
       # Proves the eight tarballs are publishable — non-empty dist/, no surviving
       # workspace: range, runnable bins. Catches the two mistakes that would burn a
       # version number permanently, and costs seconds here versus a wasted release.
-      #
-      # Linux only: it shells out to `tar`, and the point is the tarball contents,
-      # which do not vary by platform. The e2e above is what needs the matrix.
       - run: pnpm pack:verify
-        if: matrix.os == 'ubuntu-latest'
