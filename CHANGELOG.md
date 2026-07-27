@@ -8,15 +8,6 @@ All eight published packages move in lockstep. Internal dependencies publish as 
 pins, so a change in `girih-core` cannot reach consumers without republishing everything
 above it — the version is a property of the release, not of one package.
 
-## 0.1.1 — 2026-07-27
-
-No functional changes. `dist/index.js` and the type declarations are byte-identical to
-0.1.0; only sourcemaps differ, because they embed source text and a comment moved. Every
-change since 0.1.0 was CI configuration, documentation, or a comment.
-
-Published deliberately rather than by accident — recorded here so nobody goes looking for
-the behaviour change.
-
 ## 0.1.0 — 2026-07-27
 
 The first public release.

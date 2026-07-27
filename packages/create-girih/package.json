@@ -1,6 +1,6 @@
 {
   "name": "create-girih",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "description": "Scaffold a girih design-system workspace: npx create-girih my-ds",
   "keywords": [
     "girih",

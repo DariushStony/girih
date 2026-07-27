@@ -5,10 +5,10 @@
 name: ci
 
 on:
-  push:
-    branches: [main]
+  # No push trigger: release.yml runs this as the first stage of the pipeline on main, so
+  # a push trigger here would duplicate every job on every merge.
   pull_request:
-  workflow_call: # release.yml reuses this as its gate
+  workflow_call:
 
 # One run per ref. Cancel superseded PR runs, but never cancel main: its result is
 # what release.yml relies on.

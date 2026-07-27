@@ -1,7 +1,10 @@
 # Publish the documentation in docs/ to GitHub Pages.
 #
 # One-time setup: Settings → Pages → Build and deployment → Source: "GitHub Actions".
-# After that this runs on every push to main that touches the docs.
+#
+# Called by release.yml as the second stage of the pipeline (ci → docs → release), so it
+# has no push trigger of its own — the paths filter it used to need is now just "did ci
+# pass on this commit".
 #
 # The docs are generated artifacts committed to the repo, so this workflow only uploads
 # them — it does not rebuild. The `verify` job re-runs the generators and fails if the
@@ -10,17 +13,7 @@
 name: docs
 
 on:
-  push:
-    branches: [main]
-    # Every input the doc generators read, not just docs/. extract-tokens.mjs runs
-    # girih's own engine over examples/acme-ds and extract-diagnostics.mjs greps
-    # packages/*/src, so a change in either can make committed docs/ stale — and a
-    # docs-only filter would leave the staleness gate blind to exactly that.
-    paths:
-      - 'docs/**'
-      - 'packages/*/src/**'
-      - 'examples/acme-ds/**'
-      - '.github/workflows/pages.yml'
+  workflow_call:
   workflow_dispatch:
 
 permissions:

@@ -1,39 +1,31 @@
-# Publish the eight public packages to npm.
+# The pipeline: ci → docs → release.
 #
-# workflow_dispatch only. Never on push: npm will not let a version be reused, so an
-# accidental publish is permanent, and a merge to main must not be able to cause one.
+# Runs on every push to main. The first two stages are the same reusable workflows a pull
+# request runs, so "passing CI" means one thing everywhere. The third publishes to npm,
+# and only when the commit that landed is a release commit — which is what merging the
+# release PR produces.
 #
-# One-time setup: add an npm granular access token with publish rights on the
-# `faravahar` scope as the NPM_TOKEN secret, and create a `release` environment
-# (Settings → Environments) if you want an approval step before it runs.
+# The publish stage deliberately re-verifies nothing: ci and docs are its `needs`, so by
+# the time it runs, lint, types, unit tests, cross-OS packaging, the tarball audit and the
+# docs gate have all passed on this exact commit.
 #
-# Versions are lockstep. Bumping is three edits, not one — see CONTRIBUTING.md:
-#   1. the eight `version` fields
-#   2. generator-react/src/generate.ts  RUNTIME_VERSION_RANGE
-#   3. create-girih/src/versions.ts     CLI_VERSION_RANGE + RUNTIME_VERSION_RANGE
-# Tests assert 2 and 3 against the real versions, so a forgotten one fails the gate.
+# One-time setup: an npm granular access token with publish rights on the `faravahar`
+# scope, stored as the NPM_TOKEN secret.
 name: release
 
 on:
+  push:
+    branches: [main]
+  # Manual re-run, for when a publish failed after the gates already passed.
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Version being published (must already be committed, e.g. 0.1.0)'
-        required: true
-        type: string
-      tag:
-        description: 'npm dist-tag'
-        required: true
-        default: latest
-        type: choice
-        options: [latest, next]
       dry-run:
         description: 'Resolve and pack everything, but do not publish'
         required: false
         default: true
         type: boolean
 
-# Never two publishes at once: they would race on the same version numbers.
+# Never two pipelines on main at once: they would race on the same version numbers.
 concurrency:
   group: release
   cancel-in-progress: false
@@ -42,16 +34,64 @@ permissions:
   contents: read
 
 jobs:
-  # The full quality gate, reused rather than duplicated, so release and CI can never
-  # disagree about what passing means.
-  gate:
+  ci:
     uses: ./.github/workflows/ci.yml
 
+  docs:
+    needs: ci
+    uses: ./.github/workflows/docs.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+  # Is this commit a release? `chore(release): X.Y.Z` is what release-pr.yml writes and
+  # merging that PR is the only thing that produces it, so the shape is the signal.
+  detect:
+    needs: docs
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.check.outputs.version }}
+      publish: ${{ steps.check.outputs.publish }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: check
+        run: |
+          subject=$(git log -1 --format=%s)
+          version=$(node -p "require('./packages/girih/package.json').version")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+          if [ '${{ github.event_name }}' = 'workflow_dispatch' ]; then
+            echo "Dispatched manually — publishing $version."
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          case "$subject" in
+            "chore(release): $version")
+              echo "Release commit for $version."
+              echo "publish=true" >> "$GITHUB_OUTPUT"
+              ;;
+            "chore(release):"*)
+              # A release commit whose subject and manifests disagree means someone
+              # edited one of them by hand. Refuse rather than publish the wrong number.
+              echo "::error::commit says '$subject' but the manifests say $version"
+              exit 1
+              ;;
+            *)
+              echo "Not a release commit — nothing to publish."
+              echo "publish=false" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
   publish:
-    name: publish to npm
-    needs: gate
+    needs: detect
+    if: needs.detect.outputs.publish == 'true'
     runs-on: ubuntu-latest
     environment: release
+    permissions:
+      contents: write # to push the version tag
     steps:
       - uses: actions/checkout@v4
 
@@ -65,31 +105,32 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # Fail before touching the registry if the requested version is not what is
-      # actually committed. Guards against dispatching with a stale input.
-      - name: check the input matches the committed versions
+      # prepublishOnly builds each package, but building here too means a broken build
+      # fails before anything touches the registry rather than midway through publishing.
+      - run: pnpm build
+
+      # Refuse a version that is already on npm. npm would reject it anyway, but only
+      # after publishing whichever packages come earlier in the topological order —
+      # leaving the release half-done.
+      - name: check the version is unpublished
         run: |
-          expected='${{ inputs.version }}'
+          version='${{ needs.detect.outputs.version }}'
           fail=0
           for manifest in packages/*/package.json; do
+            node -p "require('./$manifest').private === true" | grep -q true && continue
             name=$(node -p "require('./$manifest').name")
-            private=$(node -p "require('./$manifest').private === true")
-            [ "$private" = "true" ] && continue
-            actual=$(node -p "require('./$manifest').version")
-            if [ "$actual" != "$expected" ]; then
-              echo "::error::$name is $actual, expected $expected"
+            if npm view "$name@$version" version >/dev/null 2>&1; then
+              echo "::error::$name@$version is already published"
               fail=1
             fi
           done
           [ "$fail" = "0" ] || exit 1
-          echo "All publishable packages are at $expected."
-
-      - run: pnpm build
+          echo "$version is unpublished everywhere."
 
       # Exercises pnpm's real manifest rewriting — unlike `npm whoami`, which proves
       # nothing about the path the publish actually takes.
       - name: dry run
-        run: pnpm -r --filter "./packages/*" publish --access public --tag '${{ inputs.tag }}' --no-git-checks --dry-run
+        run: pnpm -r --filter "./packages/*" publish --access public --no-git-checks --dry-run
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -97,28 +138,40 @@ jobs:
       # pnpm's packer rewrites those into real version ranges. npm ships them verbatim
       # and every consumer install fails with EUNSUPPORTEDPROTOCOL.
       #
-      # --no-git-checks because the runner's checkout is a detached HEAD, which pnpm's
-      # branch check rejects; the version check above is the real guard.
+      # --no-git-checks because a runner checkout is a detached HEAD, which pnpm's branch
+      # check rejects; the detect job is the real guard.
       - name: publish
-        if: ${{ !inputs.dry-run }}
-        run: pnpm -r --filter "./packages/*" publish --access public --tag '${{ inputs.tag }}' --no-git-checks
+        if: ${{ github.event_name == 'push' || !inputs.dry-run }}
+        run: pnpm -r --filter "./packages/*" publish --access public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # The tag is what release-prepare measures the next release from, so it has to
+      # exist or every subsequent bump reconsiders the whole history.
+      - name: tag
+        if: ${{ github.event_name == 'push' || !inputs.dry-run }}
+        run: |
+          version='${{ needs.detect.outputs.version }}'
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git tag -a "v$version" -m "v$version"
+          git push origin "v$version"
 
       - name: summary
         run: |
           {
-            if [ '${{ inputs.dry-run }}' = 'true' ]; then
-              echo '### Dry run — nothing published'
+            version='${{ needs.detect.outputs.version }}'
+            if [ '${{ github.event_name }}' = 'workflow_dispatch' ] && [ '${{ inputs.dry-run }}' = 'true' ]; then
+              echo "### Dry run — nothing published"
             else
-              echo '### Published ${{ inputs.version }} to the `${{ inputs.tag }}` tag'
+              echo "### Published $version"
             fi
             echo
             for manifest in packages/*/package.json; do
               node -e "
                 const p = require('./$manifest');
                 if (p.private) process.exit(0);
-                console.log('- `' + p.name + '@' + p.version + '`');
+                console.log('- \`' + p.name + '@' + p.version + '\`');
               "
             done
           } >> "$GITHUB_STEP_SUMMARY"

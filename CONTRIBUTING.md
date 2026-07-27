@@ -117,14 +117,14 @@ Smallest scope that proves it:
 | Packaging or `dist/` shape               | `pnpm test` including `e2e/test/consumer.test.ts` (slow; packs real tarballs)              |
 
 `pnpm verify` is the whole gate — build, typecheck, lint, `format:check`, tests, then the example's
-`girih check` and drift check. It is what `pnpm release` runs first, so if it passes locally the
-release will not fall over on something mechanical.
+`girih check` and drift check, plus the docs gate. It is the same set `ci` runs, so a green verify
+means a green pipeline.
 
 `exactOptionalPropertyTypes` and `noUncheckedIndexedAccess` are on and will reject code that looks
 fine.
 
 Never run `girih publish --yes` — that publishes a _consumer's_ design system, not girih. girih's
-own release is `pnpm release`; see below.
+own release is a merged release PR; see below.
 
 ### Tests must not depend on the network
 
@@ -137,7 +137,7 @@ currently published. girih is spawned with `GIRIH_NO_UPDATE_CHECK=1` in the e2e 
 `.prettierignore` and `.oxlintrc.json` both exclude every emitted path —
 `examples/*/{packages,styles,.ds}/`, `docs/*.html`, `docs/md/`, `docs/data/`. This is load-bearing,
 not tidiness: `.ds/manifest.json` stores a hash per emitted file, so reformatting one registers as
-drift that the next `girih generate` reverts, and any diff under `docs/` fails the Pages workflow. If
+drift that the next `girih generate` reverts, and any diff under `docs/` fails the docs stage. If
 you add a generator, add its output to both files.
 
 ## Documentation
@@ -162,30 +162,56 @@ so it cannot go stale.
 
 ## Releasing girih
 
-Eight packages publish, lockstep, from `main`. `@faravahar/girih-figma` is `private: true` and does
-not.
+Nothing about a release is typed by hand. The version comes from the commits.
 
-```bash
-pnpm release        # verify → pack:verify → pnpm -r publish --access public
-```
+That is deliberate: girih's seventh invariant says a version comes from the contract diff
+rather than judgement, and `girih publish` enforces it for a consumer's design system. This is
+the same rule turned on girih itself.
 
-Read this before running it:
+**How it works**
 
-- **pnpm, never npm.** Five packages depend on each other by `workspace:*`. `pnpm publish` rewrites
-  those to real versions; `npm publish` copies them verbatim and every consumer install dies with
-  `EUNSUPPORTEDPROTOCOL`. `pnpm pack` in a package directory is fine; `npm pack` is not.
-- **Versions move together.** The rewrite produces an _exact_ pin (`"…-core": "0.1.0"`), so a change
-  in `core` cannot reach consumers without republishing everything above it. Bump all eight.
-- **Bumping is three files, not one.** The eight `version` fields, plus
-  `generator-react/src/generate.ts`'s `RUNTIME_VERSION_RANGE` and `create-girih/src/versions.ts`.
-  Those two ranges ship inside published code — one of them into a package _consumers_ publish — and
-  `^0.x` admits a single minor. Tests assert both against the real versions, so a forgotten one fails
-  rather than shipping.
-- **`pnpm pack:verify` is not optional.** `dist/` is gitignored, so a clean clone can pack tarballs
-  containing nothing but `package.json` — silently. npm never lets a version be reused, so that
-  mistake is permanent. The script packs all eight and checks the archives.
-- Publishing needs a clean tree (`pnpm publish` refuses otherwise) and an npm token with publish
-  rights on the `faravahar` scope.
+1. You merge normal work to `main` with conventional commit subjects.
+2. `release-pr.yml` recomputes the next version from the commits since the last `v*` tag and
+   keeps a single pull request open — `chore(release): X.Y.Z`. It contains the whole release:
+   eight `version` fields, the two version ranges that ship inside published source, the
+   changelogs, and regenerated docs.
+3. You read the computed version and the generated notes. Merging that PR publishes.
+4. `release.yml` runs `ci` → `docs` → `release` on the merge, recognises the release commit,
+   publishes all eight packages and pushes the `vX.Y.Z` tag.
+
+Locally, `pnpm release:plan` shows what the next release would be and writes nothing.
+`pnpm release:prepare` applies the edits, if you ever need to do it by hand.
+
+**What determines the bump**
+
+| Commit                                              | Bump                          |
+| --------------------------------------------------- | ----------------------------- |
+| `feat:`                                             | minor                         |
+| `fix:` `perf:` `revert:`                            | patch                         |
+| `build:`                                            | patch — it changes what ships |
+| `!` or a `BREAKING CHANGE:` footer                  | major                         |
+| `docs:` `chore:` `test:` `ci:` `style:` `refactor:` | none                          |
+
+Below 1.0 those are then remapped by girih's own pre-1.0 rule — breaking moves the minor,
+a feature moves the patch — using the same logic as
+[`packages/girih/src/semver.ts`](packages/girih/src/semver.ts). A test asserts the two agree,
+so they cannot drift.
+
+**Things worth knowing**
+
+- **pnpm, never npm.** Five packages depend on each other by `workspace:*`. `pnpm publish`
+  rewrites those to real versions; `npm publish` copies them verbatim and every consumer
+  install dies with `EUNSUPPORTEDPROTOCOL`. `pnpm pack` in a package directory is fine;
+  `npm pack` is not.
+- **All eight move together.** The rewrite produces an _exact_ pin, so a change in `core`
+  cannot reach consumers without republishing everything above it. The tooling does this;
+  do not bump one package alone.
+- **A version is permanent.** npm never allows reuse, so `release.yml` refuses a version
+  that already exists rather than publishing the packages that come earlier in the
+  topological order and leaving the release half-done.
+- **`@faravahar/girih-figma` never publishes.** It is `private: true`, a phase-2 stub, and the
+  tooling skips it. Its version stays `0.0.0` on purpose.
+- To hold a release back, leave the PR open. It updates itself on every push to `main`.
 
 ## Commits
 

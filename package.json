@@ -26,7 +26,8 @@
     "docs:verify": "node docs/scripts/verify-docs.mjs",
     "verify": "pnpm build && pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm example:check && pnpm example:drift && pnpm docs:check",
     "pack:verify": "node scripts/verify-tarballs.mjs",
-    "release": "pnpm verify && pnpm pack:verify && pnpm -r --filter \"./packages/*\" publish --access public --publish-branch main",
+    "release:plan": "node scripts/release-prepare.mjs --dry-run",
+    "release:prepare": "node scripts/release-prepare.mjs",
     "prepare": "husky || true"
   },
   "lint-staged": {

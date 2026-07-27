@@ -30,16 +30,16 @@ Milestones M1–M6 are functional. Read `README.md` for what each milestone deli
 
 - **Language:** TypeScript 6.0, ESM only (`"type": "module"` everywhere), Node ≥ 22.22.1 (`.nvmrc`, `engine-strict`)
 - **Structure:** pnpm workspace (`packages/*`, `examples/*`, `e2e`) + turbo for `build` / `typecheck`
-- **Package manager:** pnpm 11.8.0 (corepack-managed via `package.json#packageManager`)
+- **Package manager:** pnpm 11.17.0 (corepack-managed via `package.json#packageManager`)
 - **Bundler:** tsup per package for JS (`--format esm --sourcemap --clean`), then `tsc -p tsconfig.build.json` for `.d.ts` — tsup's bundled-dts pipeline hardcodes the deprecated `baseUrl`. esbuild for the React demo bundle
 - **Tests:** vitest 4, single root config (`vitest.config.ts`), no per-package vitest config
 - **Type config:** `tsconfig.base.json` — `NodeNext` module + resolution, `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `isolatedModules`, `noEmit`
 - **CLI:** commander + picocolors; config loading via jiti; token pipeline uses style-dictionary; file globbing via tinyglobby
 - **Headless primitives:** `@base-ui-components/react` (Dialog only, behind a swappable adapter)
-- **Quality tooling:** Prettier + oxlint (`.oxlintrc.json`), husky + lint-staged pre-commit, commitlint. Verification is `pnpm verify` — build, typecheck, lint, format:check, tests, then the example's `girih check` and drift gate.
+- **Quality tooling:** Prettier + oxlint (`.oxlintrc.json`), husky + lint-staged pre-commit, commitlint. Conventional commit _types_ drive the release version, so the subject line is load-bearing, not cosmetic. Verification is `pnpm verify` — build, typecheck, lint, format:check, tests, then the example's `girih check` and drift gate.
 - **Commits are conventional** (`feat(cli): …`, `fix(tokens): …`), enforced by commitlint. The older milestone subjects (`M6: …`) stay in history but are no longer valid.
 
-> **The ignore lists are load-bearing.** `.prettierignore` and `.oxlintrc.json` both exclude every generated path — `examples/*/{packages,styles,.ds}/`, `docs/*.html`, `docs/md/`, `docs/data/`. Formatting a generated file registers as drift that the next `girih generate` reverts, and the Pages workflow hard-fails on any `docs/` diff. If you add a generator, add its output to both.
+> **The ignore lists are load-bearing.** `.prettierignore` and `.oxlintrc.json` both exclude every generated path — `examples/*/{packages,styles,.ds}/`, `docs/*.html`, `docs/md/`, `docs/data/`. Formatting a generated file registers as drift that the next `girih generate` reverts, and the docs stage hard-fails on any `docs/` diff. If you add a generator, add its output to both.
 
 # Architecture
 
@@ -92,7 +92,7 @@ Two distinctions worth keeping straight, because conflating them is easy:
 - **`check` vs `doctor`** — `check` validates the workspace's _content_ (tokens, contracts, drift). `doctor` validates the _environment_ (node, package manager, resolution, build prerequisites, version skew). `doctor` lives in [doctor.ts](packages/girih/src/doctor.ts) and must never duplicate a `check` validation.
 - **`update` vs `forks`** — `update` upgrades the `@faravahar/girih-*` packages installed in the workspace. `forks` reports ejected components that drifted from their template (this was called `update` before publishing; the 3-way merge is still unbuilt).
 
-`girih publish` publishes **the consumer's** generated design system, never girih itself. girih's own release is the root `release` script.
+`girih publish` publishes **the consumer's** generated design system, never girih itself. girih's own release is automated: `release-pr.yml` derives the next version from conventional commits and keeps a `chore(release): X.Y.Z` PR open; merging it runs `ci → docs → release` and publishes. `pnpm release:plan` shows what the next version would be. Never hand-edit a `version` field.
 
 Resolution helpers live in [resolve.ts](packages/girih/src/resolve.ts) — `resolvePackageDir`, `resolvesFrom`, `installedVersion`. Use them rather than adding a fourth `node_modules` walk. Registry access goes through [registry.ts](packages/girih/src/registry.ts), which caches for 24h and honours `GIRIH_NO_UPDATE_CHECK`.
 

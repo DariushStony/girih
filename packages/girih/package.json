@@ -1,6 +1,6 @@
 {
   "name": "@faravahar/girih",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "description": "girih CLI — compile a multi-brand design system from tokens and component contracts",
   "keywords": [
     "girih",
