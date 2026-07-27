@@ -2,11 +2,19 @@
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
     "build": {
+      // A package's .d.ts emit resolves siblings through node_modules, so their dist
+      // really does have to exist first — this dependency is load-bearing.
       "dependsOn": ["^build"],
+      "inputs": ["src/**", "package.json", "tsconfig.json", "tsconfig.build.json", "$TURBO_DEFAULT$"],
       "outputs": ["dist/**"]
     },
     "typecheck": {
-      "dependsOn": ["^build"]
+      // Deliberately no dependsOn. tsconfig.base.json maps sibling packages to their
+      // source, so typecheck needs nobody's dist and every package checks in parallel.
+      // Reintroducing ^build here costs a full serial build before any checking starts.
+      "inputs": ["src/**", "test/**", "package.json", "tsconfig.json", "$TURBO_DEFAULT$"],
+      // No file output; turbo caches the log, which is what makes a repeat run instant.
+      "outputs": []
     }
   }
 }

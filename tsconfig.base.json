@@ -17,6 +17,23 @@
     "declaration": false,
     "sourceMap": true,
     "resolveJsonModule": true,
-    "noEmit": true
+    "noEmit": true,
+
+    // Resolve sibling packages to source rather than to their built dist/.
+    //
+    // Two payoffs: `typecheck` no longer has to build every dependency first (turbo
+    // can run all of them in parallel), and go-to-definition in an editor lands on the
+    // real code instead of a .d.ts. Mirrors what vitest.config.ts already aliases.
+    //
+    // Declaration emit must NOT use these — pulling a sibling's source into the program
+    // breaks rootDir — so tsconfig.build.json clears them.
+    "paths": {
+      "@faravahar/girih-core": ["./packages/girih-core/src/index.ts"],
+      "@faravahar/girih-tokens": ["./packages/girih-tokens/src/index.ts"],
+      "@faravahar/girih-spec": ["./packages/girih-spec/src/index.ts"],
+      "@faravahar/girih-generator-css": ["./packages/girih-generator-css/src/index.ts"],
+      "@faravahar/girih-generator-react": ["./packages/girih-generator-react/src/index.ts"],
+      "@faravahar/girih-react-runtime": ["./packages/girih-react-runtime/src/index.tsx"]
+    }
   }
 }
