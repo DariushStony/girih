@@ -98,19 +98,19 @@ Run `girih init` to scaffold a workspace, or cd into an existing one.
 
 GIRIH1002
 error
-packages/girih-core/src/config.ts:114
+packages/girih-core/src/config.ts:120
 
 Failed to load ${configPath}: ${message.split('\n')[0]}
 
 GIRIH1003
 error
-packages/girih-core/src/config.ts:191
+packages/girih-core/src/config.ts:197
 
 Config is missing 'name' (the published package name, e.g. '@acme/design-system').
 
 GIRIH1004
 error
-packages/girih-core/src/config.ts:166
+packages/girih-core/src/config.ts:172
 
 Brand '${brand.name}' points at a missing token file: ${brand.tokensFile}
 
@@ -118,13 +118,13 @@ Create the overlay file (an empty {} is valid) or fix brands.definitions.${brand
 
 GIRIH1005
 error
-packages/girih-core/src/config.ts:200
+packages/girih-core/src/config.ts:206
 
 Config must define at least one brand under brands.definitions.
 
 GIRIH1006
 error
-packages/girih-core/src/config.ts:207
+packages/girih-core/src/config.ts:213
 
 brands.default ('${raw.brands?.default}') is not a key of brands.definitions.
 
@@ -132,7 +132,7 @@ Known brands: ${Object.keys(definitions).join(', ')}
 
 GIRIH1007
 error
-packages/girih-core/src/config.ts:182
+packages/girih-core/src/config.ts:188
 
 ds.config.ts must default-export a config object (use defineConfig).
 

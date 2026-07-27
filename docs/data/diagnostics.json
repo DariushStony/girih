@@ -146,10 +146,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 114,
+      "line": 120,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:114"
+        "packages/girih-core/src/config.ts:120"
       ]
     },
     {
@@ -161,10 +161,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 191,
+      "line": 197,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:191"
+        "packages/girih-core/src/config.ts:197"
       ]
     },
     {
@@ -176,10 +176,10 @@
       "helpDynamic": true,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 166,
+      "line": 172,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:166"
+        "packages/girih-core/src/config.ts:172"
       ]
     },
     {
@@ -191,10 +191,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 200,
+      "line": 206,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:200"
+        "packages/girih-core/src/config.ts:206"
       ]
     },
     {
@@ -206,10 +206,10 @@
       "helpDynamic": true,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 207,
+      "line": 213,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:207"
+        "packages/girih-core/src/config.ts:213"
       ]
     },
     {
@@ -221,10 +221,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 182,
+      "line": 188,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:182"
+        "packages/girih-core/src/config.ts:188"
       ]
     },
     {

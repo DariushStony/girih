@@ -1505,7 +1505,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1002</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:114</span>
+          <span class="src">packages/girih-core/src/config.ts:120</span>
         </div>
         <p class="msg">Failed to load <i class="ph">${configPath}</i>: <i class="ph">${message.split('\n')[0]}</i></p>
         
@@ -1514,7 +1514,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1003</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:191</span>
+          <span class="src">packages/girih-core/src/config.ts:197</span>
         </div>
         <p class="msg">Config is missing 'name' (the published package name, e.g. '@acme/design-system').</p>
         
@@ -1523,7 +1523,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1004</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:166</span>
+          <span class="src">packages/girih-core/src/config.ts:172</span>
         </div>
         <p class="msg">Brand '<i class="ph">${brand.name}</i>' points at a missing token file: <i class="ph">${brand.tokensFile}</i></p>
         <p class="help">Create the overlay file (an empty {} is valid) or fix brands.definitions.<i class="ph">${brand.name}</i>.tokens.</p>
@@ -1532,7 +1532,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1005</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:200</span>
+          <span class="src">packages/girih-core/src/config.ts:206</span>
         </div>
         <p class="msg">Config must define at least one brand under brands.definitions.</p>
         
@@ -1541,7 +1541,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1006</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:207</span>
+          <span class="src">packages/girih-core/src/config.ts:213</span>
         </div>
         <p class="msg">brands.default ('<i class="ph">${raw.brands?.default}</i>') is not a key of brands.definitions.</p>
         <p class="help">Known brands: <i class="ph">${Object.keys(definitions).join(', ')}</i></p>
@@ -1550,7 +1550,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1007</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:182</span>
+          <span class="src">packages/girih-core/src/config.ts:188</span>
         </div>
         <p class="msg">ds.config.ts must default-export a config object (use defineConfig).</p>
         
