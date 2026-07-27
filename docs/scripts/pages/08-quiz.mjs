@@ -62,7 +62,7 @@ const QUESTIONS = [
         why: 'Right. This is the override-only rule, and <code>validateBrandParity()</code> exists to enforce the same invariant from the other direction.',
       },
       {
-        text: 'Merges it in and emits it only inside that brand\'s scope.',
+        text: "Merges it in and emits it only inside that brand's scope.",
         why: 'That is what a naive deep-merge would do, and it is precisely the fork-by-accident girih is built to prevent.',
       },
       {
@@ -125,7 +125,7 @@ const QUESTIONS = [
     options: [
       {
         text: 'It refuses and names the file. The right move is <code>girih eject Button</code>, which carries their hand edits into a tracked fork rather than discarding them.',
-        why: 'Correct. <code>--force</code> would work but discards exactly the work the gate is protecting. Ejection is the gate\'s own remedy, and it preserves the edits.',
+        why: "Correct. <code>--force</code> would work but discards exactly the work the gate is protecting. Ejection is the gate's own remedy, and it preserves the edits.",
       },
       {
         text: 'It overwrites the file, since generated output is always authoritative.',
@@ -173,7 +173,7 @@ const QUESTIONS = [
       },
       {
         text: 'Yes — extensions do not receive brand-scoped custom properties.',
-        why: 'They do. The extension\'s CSS uses <code>var()</code> like everything else; it simply references tokens this brand does not override.',
+        why: "They do. The extension's CSS uses <code>var()</code> like everything else; it simply references tokens this brand does not override.",
       },
       {
         text: 'Yes — extensions must be re-generated per brand and this one was not.',
@@ -274,7 +274,7 @@ ${feedback}
   }).join('\n\n---\n\n');
 }
 
-export default function page(data) {
+export default function page(_data) {
   const widget = quiz(QUESTIONS, { id: 'w-quiz' });
 
   const sections = [
@@ -314,7 +314,12 @@ ${widget.html}
 <h2 id="after">Where to go from here</h2>
 
 ${cards([
-  { n: '04', title: 'Tokens and brands', href: '04-tokens.html', detail: 'Re-read this if the closure or the override-only rule cost you a question.' },
+  {
+    n: '04',
+    title: 'Tokens and brands',
+    href: '04-tokens.html',
+    detail: 'Re-read this if the closure or the override-only rule cost you a question.',
+  },
   { n: '05', title: 'Contracts', href: '05-contracts.html', detail: 'Re-read this if the IR, extensions, ejection or versioning did.' },
   { n: '06', title: 'The code', href: '06-the-code.html', detail: 'Ready to change something? This maps every concept onto a file.' },
   { n: '07', title: 'Error codes', href: '07-error-codes.html', detail: 'The reference you will actually keep open while working.' },

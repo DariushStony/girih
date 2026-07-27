@@ -21,7 +21,10 @@ const acmeConfig = {
     ],
   },
   components: { specs: 'components/*.spec.ts', ejected: [], extensions: 'extensions/*.ext.ts' },
-  targets: { react: { output: 'packages/design-system' }, css: { output: 'packages/design-system/styles', selector: 'data-attribute' as const } },
+  targets: {
+    react: { output: 'packages/design-system' },
+    css: { output: 'packages/design-system/styles', selector: 'data-attribute' as const },
+  },
   publish: { access: 'restricted' as const },
 };
 

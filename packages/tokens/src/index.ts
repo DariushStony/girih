@@ -1,11 +1,4 @@
-export type {
-  TokenTier,
-  TokenFileInput,
-  RawToken,
-  RawTokenSet,
-  ResolvedToken,
-  ResolvedTokenGraph,
-} from './types.js';
+export type { TokenTier, TokenFileInput, RawToken, RawTokenSet, ResolvedToken, ResolvedTokenGraph } from './types.js';
 export { parseTokenFile } from './parse.js';
 export { mergeTokenFiles, applyBrandOverlay, toNestedDtcg } from './merge.js';
 export type { MergeResult, OverlayResult } from './merge.js';

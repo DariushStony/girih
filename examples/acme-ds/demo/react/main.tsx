@@ -1,41 +1,26 @@
-import { createRoot } from "react-dom/client";
-import { useState } from "react";
-import {
-  Badge,
-  BrandProvider,
-  Button,
-  Card,
-  Checkbox,
-  Dialog,
-  Input,
-  PaymentButton,
-} from "../../packages/design-system/src/index";
-import type {
-  ButtonSize,
-  ButtonVariant,
-} from "../../packages/design-system/src/Button";
+import { createRoot } from 'react-dom/client';
+import { useState } from 'react';
+import { Badge, BrandProvider, Button, Card, Checkbox, Dialog, Input, PaymentButton } from '../../packages/design-system/src/index';
+import type { ButtonSize, ButtonVariant } from '../../packages/design-system/src/Button';
 
-const VARIANTS: ButtonVariant[] = ["primary", "secondary", "danger"];
-const SIZES: ButtonSize[] = ["sm", "md", "lg"];
+const VARIANTS: ButtonVariant[] = ['primary', 'secondary', 'danger'];
+const SIZES: ButtonSize[] = ['sm', 'md', 'lg'];
 
 function App() {
-  const [brand, setBrand] = useState<"marketplace" | "seller">("marketplace");
+  const [brand, setBrand] = useState<'marketplace' | 'seller'>('marketplace');
 
   return (
     <BrandProvider brand={brand}>
       <main className="page">
         <h1>@acme/design-system — the M5 catalog</h1>
         <p>
-          Six generated components plus one governed extension. Brand:{" "}
-          <strong>{brand}</strong>
+          Six generated components plus one governed extension. Brand: <strong>{brand}</strong>
         </p>
         <label className="toggle">
           <Checkbox
             size="sm"
-            checked={brand === "seller"}
-            onChange={(event) =>
-              setBrand(event.target.checked ? "seller" : "marketplace")
-            }
+            checked={brand === 'seller'}
+            onChange={(event) => setBrand(event.target.checked ? 'seller' : 'marketplace')}
           />
           Seller brand
         </label>
@@ -94,22 +79,13 @@ function App() {
             Dialog <Badge tone="danger">Base UI</Badge>
           </h2>
           <Dialog.Root>
-            <Dialog.Trigger render={<Button variant="secondary" />}>
-              Delete workspace…
-            </Dialog.Trigger>
+            <Dialog.Trigger render={<Button variant="secondary" />}>Delete workspace…</Dialog.Trigger>
             <Dialog.Popup size="sm">
               <Dialog.Title>Delete workspace?</Dialog.Title>
-              <Dialog.Description>
-                This removes every token, brand, and contract. The action cannot
-                be undone.
-              </Dialog.Description>
+              <Dialog.Description>This removes every token, brand, and contract. The action cannot be undone.</Dialog.Description>
               <div className="row">
-                <Dialog.Close render={<Button variant="danger" />}>
-                  Delete
-                </Dialog.Close>
-                <Dialog.Close render={<Button variant="secondary" />}>
-                  Cancel
-                </Dialog.Close>
+                <Dialog.Close render={<Button variant="danger" />}>Delete</Dialog.Close>
+                <Dialog.Close render={<Button variant="secondary" />}>Cancel</Dialog.Close>
               </div>
             </Dialog.Popup>
           </Dialog.Root>
@@ -119,4 +95,4 @@ function App() {
   );
 }
 
-createRoot(document.getElementById("root")!).render(<App />);
+createRoot(document.getElementById('root')!).render(<App />);

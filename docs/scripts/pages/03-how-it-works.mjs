@@ -107,8 +107,24 @@ ${rule(
 </p>
 
 ${pkgMap([
-  [{ name: 'tokens/ + brands/', role: 'you write', layer: 'kernel' }, '→', { name: 'buildTokenGraphs()', role: '@faravahar/girih-tokens', layer: 'pipeline' }, '→', { name: 'generateCss()', role: '@faravahar/girih-generator-css', layer: 'generator' }, '→', { name: 'tokens.css + tokens.d.ts', role: 'emitted', layer: 'surface' }],
-  [{ name: 'components/*.spec.ts', role: 'you write', layer: 'kernel' }, '→', { name: 'loadSpecs() → specToIR()', role: '@faravahar/girih-spec', layer: 'pipeline' }, '→', { name: 'generateReact()', role: '@faravahar/girih-generator-react', layer: 'generator' }, '→', { name: 'src/*.tsx + components.css', role: 'emitted', layer: 'surface' }],
+  [
+    { name: 'tokens/ + brands/', role: 'you write', layer: 'kernel' },
+    '→',
+    { name: 'buildTokenGraphs()', role: '@faravahar/girih-tokens', layer: 'pipeline' },
+    '→',
+    { name: 'generateCss()', role: '@faravahar/girih-generator-css', layer: 'generator' },
+    '→',
+    { name: 'tokens.css + tokens.d.ts', role: 'emitted', layer: 'surface' },
+  ],
+  [
+    { name: 'components/*.spec.ts', role: 'you write', layer: 'kernel' },
+    '→',
+    { name: 'loadSpecs() → specToIR()', role: '@faravahar/girih-spec', layer: 'pipeline' },
+    '→',
+    { name: 'generateReact()', role: '@faravahar/girih-generator-react', layer: 'generator' },
+    '→',
+    { name: 'src/*.tsx + components.css', role: 'emitted', layer: 'surface' },
+  ],
 ])}
 
 <p>
@@ -119,7 +135,8 @@ ${pkgMap([
   is wrong.
 </p>
 
-${code(`// packages/cli/src/cli.ts — the one function generate, build and publish all route through
+${code(
+  `// packages/cli/src/cli.ts — the one function generate, build and publish all route through
 async function composeReact(config, build, cssFiles) {
   const { irs, extensions } = await loadComponentIRs(config, build);
   const ejected = await loadEjectedSources(config, build, irs);
@@ -127,7 +144,9 @@ async function composeReact(config, build, cssFiles) {
   const version = lock?.published?.version ?? '0.0.0-dev';
   const reactResult = generateReact(irs, { packageName: config.name, ... }, { extensions, ejected });
   return { files: [...cssFiles, ...reactResult.files], irFiles: ..., irs, extensions, ejected };
-}`, { path: 'packages/cli/src/cli.ts', kind: 'authored' })}
+}`,
+  { path: 'packages/cli/src/cli.ts', kind: 'authored' },
+)}
 
 ${rule(
   'Why one function and not three',
@@ -150,7 +169,8 @@ ${strap()}
   <code>help</code>.
 </p>
 
-${code(`export interface Diagnostic {
+${code(
+  `export interface Diagnostic {
   /** Stable machine-readable code, e.g. 'GIRIH2003'. */
   code: string;
   severity: 'error' | 'warning' | 'info';
@@ -161,7 +181,9 @@ ${code(`export interface Diagnostic {
   path?: string;
   /** One-line suggestion for fixing the problem. */
   help?: string;
-}`, { path: 'packages/core/src/diagnostics.ts', kind: 'authored' })}
+}`,
+  { path: 'packages/core/src/diagnostics.ts', kind: 'authored' },
+)}
 
 <p>
   Diagnostics accumulate through the whole run rather than aborting at the first problem, so one
@@ -186,8 +208,11 @@ ${table(
   meant:
 </p>
 
-${code(`error GIRIH2030: 'button.primary.background' references '{color.primaryy}', which does not exist.
-  help: Did you mean '{color.primary}' or '{color.primary-hover}'?`, { kind: 'shell', lang: 'none' })}
+${code(
+  `error GIRIH2030: 'button.primary.background' references '{color.primaryy}', which does not exist.
+  help: Did you mean '{color.primary}' or '{color.primary-hover}'?`,
+  { kind: 'shell', lang: 'none' },
+)}
 
 <p>
   And <code>GIRIH2031</code> reports the <em>entire</em> cycle rather than just announcing that one
@@ -195,8 +220,11 @@ ${code(`error GIRIH2030: 'button.primary.background' references '{color.primaryy
   three-tier alias graph:
 </p>
 
-${code(`error GIRIH2031: Circular token reference: 'radius.control' → 'button.radius' → 'radius.control'.
-  help: Break the cycle by pointing one of these tokens at a raw value.`, { kind: 'shell', lang: 'none' })}
+${code(
+  `error GIRIH2031: Circular token reference: 'radius.control' → 'button.radius' → 'radius.control'.
+  help: Break the cycle by pointing one of these tokens at a raw value.`,
+  { kind: 'shell', lang: 'none' },
+)}
 
 <h2 id="gates">The four gates</h2>
 

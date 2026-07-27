@@ -7,11 +7,7 @@
  */
 
 export function esc(s) {
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 /** Escape for a JS string embedded in a <script> block. */
@@ -33,8 +29,7 @@ export function highlight(source, lang) {
 
   // Split on comments and strings first so we never highlight inside them.
   const parts = [];
-  const pattern =
-    /(\/\*[\s\S]*?\*\/|\/\/[^\n]*|#[^\n]*|&quot;(?:[^&\\]|\\.)*?&quot;|'(?:[^'\\]|\\.)*?'|`(?:[^`\\]|\\.)*?`)/g;
+  const pattern = /(\/\*[\s\S]*?\*\/|\/\/[^\n]*|#[^\n]*|&quot;(?:[^&\\]|\\.)*?&quot;|'(?:[^'\\]|\\.)*?'|`(?:[^`\\]|\\.)*?`)/g;
   let last = 0;
   let m;
   while ((m = pattern.exec(text)) !== null) {
@@ -51,7 +46,7 @@ export function highlight(source, lang) {
       if (part.kind === 'comment') return `<span class="tk-c">${part.text}</span>`;
       if (part.kind === 'string') {
         // A {token.ref} inside a string is the most important thing on the line.
-        const withRefs = part.text.replace(/\{[a-z0-9.\-]+\}/gi, (r) => `<span class="tk-r">${r}</span>`);
+        const withRefs = part.text.replace(/\{[a-z0-9.-]+\}/gi, (r) => `<span class="tk-r">${r}</span>`);
         return `<span class="tk-s">${withRefs}</span>`;
       }
       return part.text.replace(KEYWORDS, (k) => `<span class="tk-k">${k}</span>`);
@@ -108,12 +103,7 @@ export function aside(summary, html) {
 export function table(headers, rows, { align = [] } = {}) {
   const head = headers.map((h) => `<th>${h}</th>`).join('');
   const body = rows
-    .map(
-      (row) =>
-        `<tr>${row
-          .map((cell, i) => `<td${align[i] === 'num' ? ' class="num"' : ''}>${cell}</td>`)
-          .join('')}</tr>`,
-    )
+    .map((row) => `<tr>${row.map((cell, i) => `<td${align[i] === 'num' ? ' class="num"' : ''}>${cell}</td>`).join('')}</tr>`)
     .join('\n      ');
   return `<div class="tablewrap">
   <table>
@@ -133,15 +123,12 @@ export function table(headers, rows, { align = [] } = {}) {
  */
 export function tierStack(tiers, { flowLabel = 'may reference' } = {}) {
   const blocks = tiers.map((t, i) => {
-    const chips = (t.chips ?? [])
-      .map((c) => `<span class="chip${c.state ? ` ${c.state}` : ''}">${esc(c.text)}</span>`)
-      .join('');
+    const chips = (t.chips ?? []).map((c) => `<span class="chip${c.state ? ` ${c.state}` : ''}">${esc(c.text)}</span>`).join('');
     const block = `<div class="tier" data-tier="${esc(t.tier)}">
       <div class="name">${esc(t.name)}<span class="sub">${esc(t.sub ?? '')}</span></div>
       <div class="chips">${chips}</div>
     </div>`;
-    const arrow =
-      i < tiers.length - 1 ? `<div class="flowdown">${esc(flowLabel)}</div>` : '';
+    const arrow = i < tiers.length - 1 ? `<div class="flowdown">${esc(flowLabel)}</div>` : '';
     return block + arrow;
   });
   return `<div class="tiers bleed reveal">${blocks.join('\n')}</div>`;
@@ -197,9 +184,7 @@ export function chainDiagram(hops, { dimAfter = null } = {}) {
   const rowsHtml = hops
     .map((h, i) => {
       const isColor = typeof h.resolved === 'string' && COLOR_RE.test(h.resolved.trim());
-      const swatch = isColor
-        ? `<span class="swatch" style="background:${esc(h.resolved)}"></span>`
-        : '';
+      const swatch = isColor ? `<span class="swatch" style="background:${esc(h.resolved)}"></span>` : '';
       const dim = dimAfter !== null && i > dimAfter ? ' dim' : '';
       return `<div class="hop${dim}" data-tier="${esc(h.tier)}" data-override="${h.overriddenHere ? 'true' : 'false'}">
       <span class="tierbadge">${esc(h.tier)}</span>

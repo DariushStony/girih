@@ -19,16 +19,39 @@
     "docs:data": "node docs/scripts/extract-diagnostics.mjs && node docs/scripts/extract-tokens.mjs",
     "docs:build": "node docs/scripts/build-docs.mjs",
     "docs:verify": "node docs/scripts/verify-docs.mjs",
-    "verify": "pnpm build && pnpm typecheck && pnpm test && pnpm example:check && pnpm example:drift",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "verify": "pnpm build && pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm example:check && pnpm example:drift",
     "pack:verify": "node scripts/verify-tarballs.mjs",
-    "release": "pnpm verify && pnpm pack:verify && pnpm -r --filter \"./packages/*\" publish --access public --publish-branch main"
+    "release": "pnpm verify && pnpm pack:verify && pnpm -r --filter \"./packages/*\" publish --access public --publish-branch main",
+    "prepare": "husky || true"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,mjs,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml,css,html}": [
+      "prettier --write"
+    ]
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
+    "@eslint/js": "^10.0.1",
     "@types/node": "^26.1.1",
+    "eslint": "^10.8.0",
+    "globals": "^17.7.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.2.0",
+    "prettier": "^3.9.6",
     "tsup": "^8.5.1",
     "tsx": "^4.23.1",
     "turbo": "^2.10.5",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.65.0",
     "vitest": "^4.1.10"
   }
 }

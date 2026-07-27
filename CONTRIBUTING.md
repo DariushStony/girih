@@ -68,14 +68,14 @@ the file and path it concerns, and — for anything actionable — a one-line `h
 Codes are partitioned by owning package. Stay in your range and never reuse a retired number;
 somebody's CI filter or runbook is still matching the old meaning. Gaps are free, collisions are not.
 
-| Range | Owner | Covers |
-| --- | --- | --- |
-| `GIRIH1xxx` | `core`, `cli` | Config, workspace, manifest/drift, `ds.lock` |
-| `GIRIH2xxx` | `tokens` | Parse, overlay, alias resolution, tier validation |
-| `GIRIH3xxx` | `generator-css` | CSS emission, var-name collisions, unserializable values |
-| `GIRIH4xxx` | `spec` | Contract shape, token refs, states, extensions |
-| `GIRIH5xxx` | `generator-react` | React emission |
-| `GIRIH6xxx` | `cli` | Build and publish |
+| Range       | Owner             | Covers                                                   |
+| ----------- | ----------------- | -------------------------------------------------------- |
+| `GIRIH1xxx` | `core`, `cli`     | Config, workspace, manifest/drift, `ds.lock`             |
+| `GIRIH2xxx` | `tokens`          | Parse, overlay, alias resolution, tier validation        |
+| `GIRIH3xxx` | `generator-css`   | CSS emission, var-name collisions, unserializable values |
+| `GIRIH4xxx` | `spec`            | Contract shape, token refs, states, extensions           |
+| `GIRIH5xxx` | `generator-react` | React emission                                           |
+| `GIRIH6xxx` | `cli`             | Build and publish                                        |
 
 When you add a diagnostic:
 
@@ -102,13 +102,13 @@ exists to prevent. Likewise, every CSS variable name comes from `cssVarName()` �
 
 Smallest scope that proves it:
 
-| Change | Verification |
-| --- | --- |
-| One package's internals | `pnpm vitest run packages/<pkg>` then `pnpm typecheck` |
-| Token engine or CSS generator | above, plus `cd examples/acme-ds && pnpm exec girih check` |
-| Contract, validation, or React templates | above, plus `pnpm exec girih generate react --check` |
-| CLI behaviour | `pnpm build` first — `cli` is **not** source-aliased in vitest — then exercise the command |
-| Packaging or `dist/` shape | `pnpm test` including `e2e/test/consumer.test.ts` (slow; packs real tarballs) |
+| Change                                   | Verification                                                                               |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------ |
+| One package's internals                  | `pnpm vitest run packages/<pkg>` then `pnpm typecheck`                                     |
+| Token engine or CSS generator            | above, plus `cd examples/acme-ds && pnpm exec girih check`                                 |
+| Contract, validation, or React templates | above, plus `pnpm exec girih generate react --check`                                       |
+| CLI behaviour                            | `pnpm build` first — `cli` is **not** source-aliased in vitest — then exercise the command |
+| Packaging or `dist/` shape               | `pnpm test` including `e2e/test/consumer.test.ts` (slow; packs real tarballs)              |
 
 There is **no linter and no formatter**. Verification is `pnpm typecheck` and `pnpm test`. Both
 must pass. `exactOptionalPropertyTypes` and `noUncheckedIndexedAccess` are on and will reject code

@@ -40,7 +40,8 @@ export default function page(data) {
   <code>$value</code> and <code>$type</code>.
 </p>
 
-${code(`{
+${code(
+  `{
   "radius": {
     "$type": "dimension",
     "sm":   { "$value": "4px" },
@@ -48,7 +49,9 @@ ${code(`{
     "lg":   { "$value": "16px" },
     "pill": { "$value": "999px" }
   }
-}`, { path: 'tokens/global.tokens.json (excerpt)', kind: 'authored', lang: 'json' })}
+}`,
+  { path: 'tokens/global.tokens.json (excerpt)', kind: 'authored', lang: 'json' },
+)}
 
 <p>
   Note that <code>$type</code> is declared once on the group and inherited by every member.
@@ -56,10 +59,13 @@ ${code(`{
   keyed by dotted path, and that flat map is what every later stage speaks:
 </p>
 
-${code(`radius.sm    tier=global  type=dimension  value="4px"
+${code(
+  `radius.sm    tier=global  type=dimension  value="4px"
 radius.md    tier=global  type=dimension  value="8px"
 radius.lg    tier=global  type=dimension  value="16px"
-radius.pill  tier=global  type=dimension  value="999px"`, { path: 'after mergeTokenFiles()', kind: 'generated', lang: 'none' })}
+radius.pill  tier=global  type=dimension  value="999px"`,
+  { path: 'after mergeTokenFiles()', kind: 'generated', lang: 'none' },
+)}
 
 ${eli5(`
   <p>
@@ -84,33 +90,19 @@ ${tierStack([
     tier: 'component',
     name: 'Component',
     sub: `${data.counts.tiers.component} tokens in the example`,
-    chips: [
-      { text: 'button.radius' },
-      { text: 'button.primary.background' },
-      { text: 'input.border-focus' },
-      { text: 'dialog.backdrop' },
-    ],
+    chips: [{ text: 'button.radius' }, { text: 'button.primary.background' }, { text: 'input.border-focus' }, { text: 'dialog.backdrop' }],
   },
   {
     tier: 'semantic',
     name: 'Semantic',
     sub: `${data.counts.tiers.semantic} tokens`,
-    chips: [
-      { text: 'radius.control' },
-      { text: 'color.primary' },
-      { text: 'color.on-primary' },
-      { text: 'typography.size-md' },
-    ],
+    chips: [{ text: 'radius.control' }, { text: 'color.primary' }, { text: 'color.on-primary' }, { text: 'typography.size-md' }],
   },
   {
     tier: 'global',
     name: 'Global',
     sub: `${data.counts.tiers.global} tokens`,
-    chips: [
-      { text: 'radius.md = 8px' },
-      { text: 'color.blue.600 = #2563EB' },
-      { text: 'space.4 = 16px' },
-    ],
+    chips: [{ text: 'radius.md = 8px' }, { text: 'color.blue.600 = #2563EB' }, { text: 'space.4 = 16px' }],
   },
 ])}
 
@@ -119,9 +111,24 @@ ${tierStack([
 ${table(
   ['Tier', 'Answers', 'Example', 'Who changes it'],
   [
-    ['<b>Global</b>', 'What values exist in our palette at all?', '<code>color.blue.600 = #2563EB</code>', 'Rarely — this is the raw material'],
-    ['<b>Semantic</b>', 'What does this value <em>mean</em> to us?', '<code>color.primary = {color.blue.600}</code>', 'Design leads; brands override here most'],
-    ['<b>Component</b>', 'What does <em>this component</em> use?', '<code>button.primary.background = {color.primary}</code>', 'Whoever owns the component'],
+    [
+      '<b>Global</b>',
+      'What values exist in our palette at all?',
+      '<code>color.blue.600 = #2563EB</code>',
+      'Rarely — this is the raw material',
+    ],
+    [
+      '<b>Semantic</b>',
+      'What does this value <em>mean</em> to us?',
+      '<code>color.primary = {color.blue.600}</code>',
+      'Design leads; brands override here most',
+    ],
+    [
+      '<b>Component</b>',
+      'What does <em>this component</em> use?',
+      '<code>button.primary.background = {color.primary}</code>',
+      'Whoever owns the component',
+    ],
   ],
 )}
 
@@ -237,10 +244,10 @@ ${code(`{}`, { path: 'brands/marketplace/tokens.json', kind: 'authored', lang: '
 <p>The <code>seller</code> brand overrides exactly three values:</p>
 
 ${code(data.sources['brands/seller/tokens.json'] ?? '{}', {
-    path: 'brands/seller/tokens.json',
-    kind: 'authored',
-    lang: 'json',
-  })}
+  path: 'brands/seller/tokens.json',
+  kind: 'authored',
+  lang: 'json',
+})}
 
 ${danger(
   'An overlay may only override. Never add.',
@@ -289,7 +296,8 @@ ${rule(
   contains twelve declarations:
 </p>
 
-${code(`[data-brand="seller"] {
+${code(
+  `[data-brand="seller"] {
   --ds-radius-md: 2px;                                        /* overridden */
   --ds-color-primary: var(--ds-color-green-600);              /* overridden */
   --ds-color-primary-hover: var(--ds-color-green-700);        /* overridden */
@@ -302,7 +310,9 @@ ${code(`[data-brand="seller"] {
   --ds-checkbox-border-hover: var(--ds-color-primary);        /* dependent */
   --ds-input-border-focus: var(--ds-color-primary);           /* dependent */
   --ds-input-radius: var(--ds-radius-control);                /* dependent */
-}`, { path: 'styles/tokens.css — real output', kind: 'generated', lang: 'css' })}
+}`,
+  { path: 'styles/tokens.css — real output', kind: 'generated', lang: 'css' },
+)}
 
 <p>
   The nine extra declarations are the <b>dependents closure</b>: every token that transitively
@@ -428,7 +438,8 @@ ${strap()}
   </li>
 </ol>
 
-${code(`$ pnpm exec girih check --brand seller
+${code(
+  `$ pnpm exec girih check --brand seller
 
 TOKEN                     TIER       TYPE       RESOLVED (seller)
 button.radius             component  dimension  2px
@@ -439,10 +450,12 @@ radius.md                 global     dimension  2px
 
 6 component contracts: Badge, Button, Card, Checkbox, Dialog, Input
 1 extension: PaymentButton → Button
-${data.counts.tokens} tokens (${data.counts.tiers.global} global, ${data.counts.tiers.semantic} semantic, ${data.counts.tiers.component} component) · 2 brands: marketplace (default), seller (3 overrides)`, {
+${data.counts.tokens} tokens (${data.counts.tiers.global} global, ${data.counts.tiers.semantic} semantic, ${data.counts.tiers.component} component) · 2 brands: marketplace (default), seller (3 overrides)`,
+  {
     kind: 'shell',
     lang: 'none',
-  })}
+  },
+)}
 
 <p>
   Tokens are the hard half. <a href="05-contracts.html">Chapter 05</a> is about the other half:

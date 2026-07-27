@@ -14,7 +14,13 @@ const scratch = join(repoRoot, 'e2e/.tmp/commands');
 const manifest = JSON.parse(readFileSync(join(repoRoot, 'packages/cli/package.json'), 'utf8')) as { version: string };
 
 function girih(cwd: string, ...args: string[]): { status: number | null; output: string } {
-  const result = spawnSync('node', [cliPath, ...args], { cwd, encoding: 'utf8' });
+  const result = spawnSync('node', [cliPath, ...args], {
+    cwd,
+    encoding: 'utf8',
+    // No test in a release gate should depend on the network being up or on what is
+    // currently published. `doctor --offline` covers its own case; this covers `update`.
+    env: { ...process.env, GIRIH_NO_UPDATE_CHECK: '1' },
+  });
   return { status: result.status, output: `${result.stdout}\n${result.stderr}` };
 }
 

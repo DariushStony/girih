@@ -82,11 +82,7 @@ async function loadComponentIRs(
 }
 
 /** Ejected sources from ds.lock, read from components/ejected/, cross-checked against the catalog. */
-async function loadEjectedSources(
-  config: ResolvedConfig,
-  build: TokenBuildResult,
-  irs: ComponentIR[],
-): Promise<Record<string, string>> {
+async function loadEjectedSources(config: ResolvedConfig, build: TokenBuildResult, irs: ComponentIR[]): Promise<Record<string, string>> {
   const { lock, invalid } = await readLock(config.root);
   if (invalid) {
     build.diagnostics.push({
@@ -127,7 +123,10 @@ async function loadEjectedSources(
     sources[name] = contents;
 
     // The fork's base is frozen; the spec/template are not. Make divergence visible.
-    const currentRender = emittedFile('x', renderComponentSource(ir, { classPrefix: config.tokens.prefix, runtimePackage: RUNTIME_PACKAGE }));
+    const currentRender = emittedFile(
+      'x',
+      renderComponentSource(ir, { classPrefix: config.tokens.prefix, runtimePackage: RUNTIME_PACKAGE }),
+    );
     if (currentRender.hash !== entry.baseHash) {
       build.diagnostics.push({
         code: 'GIRIH1014',
@@ -319,7 +318,11 @@ program
     const snippet = `'${name}': { tokens: '${overlayPath}' },`;
     if (match) {
       const insertAt = match.index! + match[0].length;
-      await writeFile(configPath, `${source.slice(0, insertAt - match[1]!.length)}${match[1]}${snippet}\n${match[1]}${source.slice(insertAt)}`, 'utf8');
+      await writeFile(
+        configPath,
+        `${source.slice(0, insertAt - match[1]!.length)}${match[1]}${snippet}\n${match[1]}${source.slice(insertAt)}`,
+        'utf8',
+      );
       console.log(`${pc.green('update')}  ds.config.ts ${pc.dim(`(registered '${name}')`)}`);
     } else {
       console.log(pc.yellow(`Could not safely edit ds.config.ts — add this under brands.definitions yourself:`));
@@ -547,7 +550,9 @@ program
       const extension = extensions.find((e) => e.extension.name === componentName);
       if (extension) {
         console.error(
-          pc.red(`'${componentName}' is an extension (${extension.file}) — extensions are pure data and always regenerated; edit the .ext.ts instead of ejecting.`),
+          pc.red(
+            `'${componentName}' is an extension (${extension.file}) — extensions are pure data and always regenerated; edit the .ext.ts instead of ejecting.`,
+          ),
         );
       } else {
         console.error(pc.red(`Unknown component '${componentName}'. Catalog: ${irs.map((i) => i.name).join(', ') || '(empty)'}`));
@@ -600,7 +605,9 @@ program
     });
 
     console.log(`${pc.green('create')}  ${ejectedPath}`);
-    console.log(`${pc.green('update')}  ds.lock ${pc.dim(`(base: ${ir.template}@v${TEMPLATE_REGISTRY[ir.template]?.version}, ${baseFile.hash.slice(0, 12)})`)}`);
+    console.log(
+      `${pc.green('update')}  ds.lock ${pc.dim(`(base: ${ir.template}@v${TEMPLATE_REGISTRY[ir.template]?.version}, ${baseFile.hash.slice(0, 12)})`)}`,
+    );
     console.log(`\n'${componentName}' is now yours: edit ${pc.cyan(ejectedPath)} freely — commit it and ds.lock.`);
     console.log(pc.dim('Its spec is still validated and its CSS still generated — only markup/behavior is forked.'));
     console.log(`Run ${pc.cyan('girih generate react')} to stitch it into the package.`);
@@ -646,7 +653,9 @@ program
     }
     const js = result.files.filter((f) => f.path.endsWith('.js')).length;
     const dts = result.files.filter((f) => f.path.endsWith('.d.ts')).length;
-    console.log(`${pc.green('build')}  ${join(outputBase, 'dist')} ${pc.dim(`(${js} module${js === 1 ? '' : 's'} + ${dts} declaration${dts === 1 ? '' : 's'})`)}`);
+    console.log(
+      `${pc.green('build')}  ${join(outputBase, 'dist')} ${pc.dim(`(${js} module${js === 1 ? '' : 's'} + ${dts} declaration${dts === 1 ? '' : 's'})`)}`,
+    );
     printDiagnostics(build.diagnostics.filter((d) => d.severity !== 'info'));
   });
 
@@ -700,7 +709,9 @@ program
     }
     const nextVersion = applyBump(previous?.version ?? '0.0.0', diff.bump);
 
-    console.log(`${pc.bold(config.name)}  ${pc.dim(previous?.version ?? '(unpublished)')} → ${pc.bold(nextVersion)}  ${pc.cyan(`[${diff.bump}]`)}`);
+    console.log(
+      `${pc.bold(config.name)}  ${pc.dim(previous?.version ?? '(unpublished)')} → ${pc.bold(nextVersion)}  ${pc.cyan(`[${diff.bump}]`)}`,
+    );
     for (const reason of diff.reasons.slice(0, 12)) console.log(`  ${pc.dim(reason)}`);
     if (diff.reasons.length > 12) console.log(pc.dim(`  …and ${diff.reasons.length - 12} more`));
 
@@ -722,7 +733,11 @@ program
     for (const dir of ['dist', 'styles']) await cp(join(outDir, dir), join(staging, dir), { recursive: true });
     const readmePath = join(outDir, 'README.md');
     if (existsSync(readmePath)) await cp(readmePath, join(staging, 'README.md'));
-    await writeFile(join(staging, 'package.json'), bumpPackageVersion(await readFile(join(outDir, 'package.json'), 'utf8'), nextVersion), 'utf8');
+    await writeFile(
+      join(staging, 'package.json'),
+      bumpPackageVersion(await readFile(join(outDir, 'package.json'), 'utf8'), nextVersion),
+      'utf8',
+    );
 
     // A scoped package's FIRST publish is private-by-default and fails without
     // --access public — and `--dry-run` never surfaces that, so make it explicit.
@@ -907,7 +922,9 @@ program
     }
     if (stale > 0) {
       console.log(
-        pc.dim(`\n${stale} fork(s) no longer match their recorded base. Review them against the current template/spec, or remove the ds.lock entry and re-eject. (Automated 3-way merge is planned.)`),
+        pc.dim(
+          `\n${stale} fork(s) no longer match their recorded base. Review them against the current template/spec, or remove the ds.lock entry and re-eject. (Automated 3-way merge is planned.)`,
+        ),
       );
     }
   });

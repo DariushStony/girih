@@ -1,11 +1,5 @@
 import type { Diagnostic } from '@faravahar/girih-core';
-import type {
-  ComponentIR,
-  ComponentSpecInput,
-  ComponentState,
-  StyleRuleIR,
-  VariantBlockIR,
-} from './types.js';
+import type { ComponentIR, ComponentSpecInput, ComponentState, StyleRuleIR, VariantBlockIR } from './types.js';
 
 /** camelCase → kebab-case; a leading capital marks a vendor prefix (WebkitMask → -webkit-mask). */
 export function kebabCase(camel: string): string {

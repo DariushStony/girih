@@ -35,9 +35,7 @@ function inline(html) {
   out = out.replace(/<a\s[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi, (m, href, text) => {
     const label = inline(text).trim();
     // Rewrite sibling page links to the Markdown mirror.
-    const target = /^(index|\d\d-[a-z-]+)\.html(#.*)?$/.test(href)
-      ? href.replace(/\.html/, '.md')
-      : href;
+    const target = /^(index|\d\d-[a-z-]+)\.html(#.*)?$/.test(href) ? href.replace(/\.html/, '.md') : href;
     return `[${label}](${target})`;
   });
   out = out.replace(/<code>([\s\S]*?)<\/code>/gi, (m, t) => {
@@ -74,7 +72,10 @@ function extractBlocks(html, tagName, className) {
     while ((t = re.exec(html)) !== null) {
       if (t[0].toLowerCase().startsWith('</')) {
         depth--;
-        if (depth === 0) { end = t.index; break; }
+        if (depth === 0) {
+          end = t.index;
+          break;
+        }
       } else depth++;
     }
     if (end === -1) continue;
@@ -107,15 +108,11 @@ function replaceBlocks(html, tagName, className, renderer) {
 
 function renderTable(body) {
   const headRow = /<thead>[\s\S]*?<tr>([\s\S]*?)<\/tr>[\s\S]*?<\/thead>/i.exec(body);
-  const headers = headRow
-    ? [...headRow[1].matchAll(/<th[^>]*>([\s\S]*?)<\/th>/gi)].map((c) => inline(c[1]).trim())
-    : [];
+  const headers = headRow ? [...headRow[1].matchAll(/<th[^>]*>([\s\S]*?)<\/th>/gi)].map((c) => inline(c[1]).trim()) : [];
   const bodyPart = /<tbody>([\s\S]*)<\/tbody>/i.exec(body);
   const rows = bodyPart
     ? [...bodyPart[1].matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/gi)].map((r) =>
-        [...r[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/gi)].map((c) =>
-          inline(c[1]).trim().replace(/\n+/g, ' ').replace(/\|/g, '\\|'),
-        ),
+        [...r[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/gi)].map((c) => inline(c[1]).trim().replace(/\n+/g, ' ').replace(/\|/g, '\\|')),
       )
     : [];
   if (headers.length === 0 && rows.length === 0) return '';
@@ -161,19 +158,14 @@ function renderTiers(body) {
   const lines = ['| Tier | Holds | Examples |', '| --- | --- | --- |'];
   for (const [, tier, chunk] of tiers) {
     const name = /<div class="name">([\s\S]*?)<span class="sub">([\s\S]*?)<\/span>/i.exec(chunk);
-    const chips = [...chunk.matchAll(/<span class="chip[^"]*">([\s\S]*?)<\/span>/gi)].map((c) =>
-      `\`${inline(c[1]).trim()}\``,
-    );
-    lines.push(
-      `| **${name ? inline(name[1]).trim() : tier}** | ${name ? inline(name[2]).trim() : ''} | ${chips.join(', ')} |`,
-    );
+    const chips = [...chunk.matchAll(/<span class="chip[^"]*">([\s\S]*?)<\/span>/gi)].map((c) => `\`${inline(c[1]).trim()}\``);
+    lines.push(`| **${name ? inline(name[1]).trim() : tier}** | ${name ? inline(name[2]).trim() : ''} | ${chips.join(', ')} |`);
   }
   lines.push('', '_References flow downward only: component → semantic → global._');
   return lines.join('\n');
 }
 
 function renderRail(body) {
-  const stages = [...body.matchAll(/<div class="stage"[^>]*>([\s\S]*?)<\/div>\s*(?=<div class="stage"|<\/div>|$)/gi)];
   const parsed = [...body.matchAll(/<div class="t">([\s\S]*?)<\/div>\s*<div class="d">([\s\S]*?)<\/div>/gi)];
   if (parsed.length === 0) return '';
   const lines = ['| # | Stage | What happens |', '| --- | --- | --- |'];
@@ -262,9 +254,7 @@ export function toMarkdown(html, { widgetNote = '' } = {}) {
     const pre = /<pre><code>([\s\S]*?)<\/code><\/pre>/i.exec(body);
     if (!pre) return '';
     const source = decode(pre[1].replace(/<[^>]+>/g, ''));
-    const label = [cap && inline(cap[1]).trim(), badge && `[${inline(badge[2]).trim()}]`]
-      .filter(Boolean)
-      .join('  ');
+    const label = [cap && inline(cap[1]).trim(), badge && `[${inline(badge[2]).trim()}]`].filter(Boolean).join('  ');
     // Carry the language onto the fence so GitHub highlights it. 'none' means plain.
     const declared = /data-lang="([^"]*)"/.exec(attrs)?.[1] ?? '';
     const lang = declared === 'none' ? '' : declared;
@@ -277,11 +267,7 @@ export function toMarkdown(html, { widgetNote = '' } = {}) {
     const title = /<span class="wt">([\s\S]*?)<\/span>/i.exec(body);
     const hint = /<span class="wh">([\s\S]*?)<\/span>/i.exec(body);
     const name = title ? inline(title[1]).trim() : 'Interactive widget';
-    return keep(
-      `> **▶ ${name}** — interactive\n>\n> ${
-        hint ? inline(hint[1]).trim() + '. ' : ''
-      }${widgetNote}`,
-    );
+    return keep(`> **▶ ${name}** — interactive\n>\n> ${hint ? inline(hint[1]).trim() + '. ' : ''}${widgetNote}`);
   });
 
   // 3. Diagram families.
@@ -302,7 +288,10 @@ export function toMarkdown(html, { widgetNote = '' } = {}) {
     const label = CALLOUT_LABEL[kind] ?? '🔵 Note';
     const heading = title ? inline(title[1]).trim() : '';
     const inner = toMarkdown(rest, { widgetNote }).trim();
-    const quoted = inner.split('\n').map((l) => (l ? `> ${l}` : '>')).join('\n');
+    const quoted = inner
+      .split('\n')
+      .map((l) => (l ? `> ${l}` : '>'))
+      .join('\n');
     return keep(`> **${label}${heading && heading !== 'In plain words' ? ` — ${heading}` : ''}**\n>\n${quoted}`);
   });
 
@@ -310,9 +299,7 @@ export function toMarkdown(html, { widgetNote = '' } = {}) {
     const summary = /<summary>([\s\S]*?)<\/summary>/i.exec(body);
     const rest = body.replace(/<summary>[\s\S]*?<\/summary>/i, '');
     const inner = toMarkdown(rest, { widgetNote }).trim();
-    return keep(
-      `<details>\n<summary><b>${summary ? inline(summary[1]).trim() : 'More'}</b></summary>\n\n${inner}\n\n</details>`,
-    );
+    return keep(`<details>\n<summary><b>${summary ? inline(summary[1]).trim() : 'More'}</b></summary>\n\n${inner}\n\n</details>`);
   });
 
   // 6. Lists.
@@ -335,7 +322,10 @@ export function toMarkdown(html, { widgetNote = '' } = {}) {
   out = out.replace(/<hr[^>]*>/gi, '\n\n---\n\n');
 
   // 8. Anything structural left over: keep the text, drop the tags.
-  out = out.replace(/<\/?(div|section|span|main|nav|header|footer|figure|figcaption|pre|button|input|select|option|svg|polygon|table|thead|tbody|tr|th|td|li|summary|details)[^>]*>/gi, '');
+  out = out.replace(
+    /<\/?(div|section|span|main|nav|header|footer|figure|figcaption|pre|button|input|select|option|svg|polygon|table|thead|tbody|tr|th|td|li|summary|details)[^>]*>/gi,
+    '',
+  );
   out = out.replace(/<[^>]+>/g, '');
   out = decode(out);
 
@@ -355,5 +345,8 @@ export function toMarkdown(html, { widgetNote = '' } = {}) {
     return line.replace(/^[ \t]+(?=\S)/, '').replace(/[ \t]+$/, '');
   });
 
-  return tidied.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  return tidied
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }

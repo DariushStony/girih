@@ -18,29 +18,81 @@ import { fileURLToPath } from 'node:url';
  * here rather than being guessed.
  */
 const sitePath = fileURLToPath(new URL('../../data/site.json', import.meta.url));
-const SITE_URL = existsSync(sitePath)
-  ? (JSON.parse(readFileSync(sitePath, 'utf8')).siteUrl ?? '')
-  : '';
+const SITE_URL = existsSync(sitePath) ? (JSON.parse(readFileSync(sitePath, 'utf8')).siteUrl ?? '') : '';
 
 export const PAGES = [
-  { slug: 'index', n: '00', title: 'Start here', nav: 'Start here', group: 'Orientation',
-    blurb: 'What girih is, who it is for, and the one-paragraph version of how it works.' },
-  { slug: '01-the-idea', n: '01', title: 'The idea', nav: 'The idea', group: 'Orientation',
-    blurb: 'Why design systems drift, what a girih tile has to do with it, and the bet this project makes.' },
-  { slug: '02-installation', n: '02', title: 'Installation', nav: 'Installation', group: 'Orientation',
-    blurb: 'Get a working design system on your screen, from an empty folder, in about five minutes.' },
-  { slug: '03-how-it-works', n: '03', title: 'How it works', nav: 'How it works', group: 'The model',
-    blurb: 'The whole compile pipeline, one stage at a time, with real data moving through it.' },
-  { slug: '04-tokens', n: '04', title: 'Tokens and brands', nav: 'Tokens & brands', group: 'The model',
-    blurb: 'Three tiers, alias chains, and the override-only rule that lets one stylesheet serve every brand.' },
-  { slug: '05-contracts', n: '05', title: 'Contracts and components', nav: 'Contracts', group: 'The model',
-    blurb: 'How a contract you write as data becomes a typed, accessible React component you can read.' },
-  { slug: '06-the-code', n: '06', title: 'The code', nav: 'The code', group: 'Reference',
-    blurb: 'A guided tour of all nine packages: what each owns, and where to look when something breaks.' },
-  { slug: '07-error-codes', n: '07', title: 'Every error code', nav: 'Error codes', group: 'Reference',
-    blurb: 'All 70 GIRIH diagnostics, extracted from source, with what each one is actually telling you.' },
-  { slug: '08-quiz', n: '08', title: 'Check yourself', nav: 'Quiz', group: 'Reference',
-    blurb: 'Ten questions that are hard to answer unless you actually understood the model.' },
+  {
+    slug: 'index',
+    n: '00',
+    title: 'Start here',
+    nav: 'Start here',
+    group: 'Orientation',
+    blurb: 'What girih is, who it is for, and the one-paragraph version of how it works.',
+  },
+  {
+    slug: '01-the-idea',
+    n: '01',
+    title: 'The idea',
+    nav: 'The idea',
+    group: 'Orientation',
+    blurb: 'Why design systems drift, what a girih tile has to do with it, and the bet this project makes.',
+  },
+  {
+    slug: '02-installation',
+    n: '02',
+    title: 'Installation',
+    nav: 'Installation',
+    group: 'Orientation',
+    blurb: 'Get a working design system on your screen, from an empty folder, in about five minutes.',
+  },
+  {
+    slug: '03-how-it-works',
+    n: '03',
+    title: 'How it works',
+    nav: 'How it works',
+    group: 'The model',
+    blurb: 'The whole compile pipeline, one stage at a time, with real data moving through it.',
+  },
+  {
+    slug: '04-tokens',
+    n: '04',
+    title: 'Tokens and brands',
+    nav: 'Tokens & brands',
+    group: 'The model',
+    blurb: 'Three tiers, alias chains, and the override-only rule that lets one stylesheet serve every brand.',
+  },
+  {
+    slug: '05-contracts',
+    n: '05',
+    title: 'Contracts and components',
+    nav: 'Contracts',
+    group: 'The model',
+    blurb: 'How a contract you write as data becomes a typed, accessible React component you can read.',
+  },
+  {
+    slug: '06-the-code',
+    n: '06',
+    title: 'The code',
+    nav: 'The code',
+    group: 'Reference',
+    blurb: 'A guided tour of all nine packages: what each owns, and where to look when something breaks.',
+  },
+  {
+    slug: '07-error-codes',
+    n: '07',
+    title: 'Every error code',
+    nav: 'Error codes',
+    group: 'Reference',
+    blurb: 'All 70 GIRIH diagnostics, extracted from source, with what each one is actually telling you.',
+  },
+  {
+    slug: '08-quiz',
+    n: '08',
+    title: 'Check yourself',
+    nav: 'Quiz',
+    group: 'Reference',
+    blurb: 'Ten questions that are hard to answer unless you actually understood the model.',
+  },
 ];
 
 const GROUPS = ['Orientation', 'The model', 'Reference'];
@@ -90,9 +142,7 @@ function pager(current, href) {
 /** On-page TOC built from the page's own section list. */
 function toc(sections) {
   if (!sections || sections.length < 2) return '';
-  const items = sections
-    .map((s) => `<li><a href="#${esc(s.id)}">${esc(s.title)}</a></li>`)
-    .join('\n      ');
+  const items = sections.map((s) => `<li><a href="#${esc(s.id)}">${esc(s.title)}</a></li>`).join('\n      ');
   return `<div class="toc">
     <div class="label">On this page</div>
     <ol>

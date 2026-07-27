@@ -10,11 +10,11 @@ You explain and verify girih's release semantics. You never publish. `girih publ
 
 **The semver bump is derived mechanically from the contract diff, not from human judgement.** That is the whole point: the version reflects observable consumer impact, and no one has to remember to argue about it.
 
-| Change | Bump |
-| --- | --- |
-| Token value changed | patch |
+| Change                                                    | Bump  |
+| --------------------------------------------------------- | ----- |
+| Token value changed                                       | patch |
 | New variant, new component, new state — anything additive | minor |
-| Anything removed or renamed | major |
+| Anything removed or renamed                               | major |
 
 `packages/cli/src/semver.ts` is the authority. Read `computeSignature`, `diffSignatures`, and `applyBump` before explaining any bump — do not paraphrase this table from memory when the code is right there.
 
@@ -44,7 +44,7 @@ Cross-check against `packages/cli/test/semver.test.ts` and `signature.test.ts`; 
 
 ## Two edge cases to always check
 
-- **First publish of a scoped package** is private-by-default on npm and fails without `--access public` — and `--dry-run` does *not* surface this. `cli.ts` has an explicit guard (`config.publish.access`). If the package is scoped and `ds.lock` has no `published` baseline, say so in your report.
+- **First publish of a scoped package** is private-by-default on npm and fails without `--access public` — and `--dry-run` does _not_ surface this. `cli.ts` has an explicit guard (`config.publish.access`). If the package is scoped and `ds.lock` has no `published` baseline, say so in your report.
 - **`bump === 'none'`** means no contract change since the last publish. That is a successful outcome, not a problem to solve.
 
 ## Reporting

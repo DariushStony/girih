@@ -36,7 +36,10 @@ Milestones M1–M6 are functional. Read `README.md` for what each milestone deli
 - **Type config:** `tsconfig.base.json` — `NodeNext` module + resolution, `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `isolatedModules`, `noEmit`
 - **CLI:** commander + picocolors; config loading via jiti; token pipeline uses style-dictionary; file globbing via tinyglobby
 - **Headless primitives:** `@base-ui-components/react` (Dialog only, behind a swappable adapter)
-- **No linter, no formatter, no husky, no CI config in-repo.** Verification is `pnpm typecheck` + `pnpm test`. Do not add lint tooling unless asked.
+- **Quality tooling:** Prettier + ESLint (flat config, `typescript-eslint`), husky + lint-staged pre-commit, commitlint. Verification is `pnpm verify` — build, typecheck, lint, format:check, tests, then the example's `girih check` and drift gate.
+- **Commits are conventional** (`feat(cli): …`, `fix(tokens): …`), enforced by commitlint. The older milestone subjects (`M6: …`) stay in history but are no longer valid.
+
+> **The ignore lists are load-bearing.** `.prettierignore` and `eslint.config.js` both exclude every generated path — `examples/*/{packages,styles,.ds}/`, `docs/*.html`, `docs/md/`, `docs/data/`. Formatting a generated file registers as drift that the next `girih generate` reverts, and the Pages workflow hard-fails on any `docs/` diff. If you add a generator, add its output to both.
 
 # Architecture
 
@@ -71,14 +74,14 @@ core, tokens, spec, generator-css, generator-react  ←  cli
 
 **Diagnostics.** Every user-facing problem is a `Diagnostic` with a stable `GIRIH<n>` code, a `severity`, and — for anything actionable — a one-line `help`. Codes are partitioned by owner; stay in your range and never reuse a retired number:
 
-| Range | Owner | Covers |
-| --- | --- | --- |
-| `GIRIH1xxx` | `core`, `cli` | config, workspace, manifest/drift, `ds.lock` |
-| `GIRIH2xxx` | `tokens` | parse, overlay, alias resolution, tier validation |
-| `GIRIH3xxx` | `generator-css` | CSS emission, var-name collisions, unserializable values |
-| `GIRIH4xxx` | `spec` | contract shape, token refs, states, extensions |
-| `GIRIH5xxx` | `generator-react` | React emission |
-| `GIRIH6xxx` | `cli` | build/publish |
+| Range       | Owner             | Covers                                                   |
+| ----------- | ----------------- | -------------------------------------------------------- |
+| `GIRIH1xxx` | `core`, `cli`     | config, workspace, manifest/drift, `ds.lock`             |
+| `GIRIH2xxx` | `tokens`          | parse, overlay, alias resolution, tier validation        |
+| `GIRIH3xxx` | `generator-css`   | CSS emission, var-name collisions, unserializable values |
+| `GIRIH4xxx` | `spec`            | contract shape, token refs, states, extensions           |
+| `GIRIH5xxx` | `generator-react` | React emission                                           |
+| `GIRIH6xxx` | `cli`             | build/publish                                            |
 
 Never `throw` where a diagnostic will do. Errors that reach the user as a stack trace are bugs.
 
@@ -86,7 +89,7 @@ Never `throw` where a diagnostic will do. Errors that reach the user as a stack 
 
 Two distinctions worth keeping straight, because conflating them is easy:
 
-- **`check` vs `doctor`** — `check` validates the workspace's *content* (tokens, contracts, drift). `doctor` validates the *environment* (node, package manager, resolution, build prerequisites, version skew). `doctor` lives in [doctor.ts](packages/cli/src/doctor.ts) and must never duplicate a `check` validation.
+- **`check` vs `doctor`** — `check` validates the workspace's _content_ (tokens, contracts, drift). `doctor` validates the _environment_ (node, package manager, resolution, build prerequisites, version skew). `doctor` lives in [doctor.ts](packages/cli/src/doctor.ts) and must never duplicate a `check` validation.
 - **`update` vs `forks`** — `update` upgrades the `@faravahar/girih-*` packages installed in the workspace. `forks` reports ejected components that drifted from their template (this was called `update` before publishing; the 3-way merge is still unbuilt).
 
 `girih publish` publishes **the consumer's** generated design system, never girih itself. girih's own release is the root `release` script.
@@ -160,13 +163,13 @@ Comments in this codebase carry **rationale**, not description — they explain 
 
 Prefer the smallest verification scope possible:
 
-| Change | Verification |
-| --- | --- |
-| One package's internals | `pnpm vitest run packages/<pkg>` then `pnpm typecheck` |
-| Token engine or CSS generator | above + `cd examples/acme-ds && pnpm exec girih check` |
-| Contract, spec validation, or React templates | above + `pnpm exec girih generate react --check` in `examples/acme-ds` |
-| CLI behavior | `pnpm build` first (cli is not source-aliased in vitest), then exercise the command in `examples/acme-ds` |
-| Packaging, `dist/` shape, or publish flow | `pnpm test` including `e2e/test/consumer.test.ts` — it packs tarballs and SSRs every component, and it is slow |
+| Change                                        | Verification                                                                                                   |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| One package's internals                       | `pnpm vitest run packages/<pkg>` then `pnpm typecheck`                                                         |
+| Token engine or CSS generator                 | above + `cd examples/acme-ds && pnpm exec girih check`                                                         |
+| Contract, spec validation, or React templates | above + `pnpm exec girih generate react --check` in `examples/acme-ds`                                         |
+| CLI behavior                                  | `pnpm build` first (cli is not source-aliased in vitest), then exercise the command in `examples/acme-ds`      |
+| Packaging, `dist/` shape, or publish flow     | `pnpm test` including `e2e/test/consumer.test.ts` — it packs tarballs and SSRs every component, and it is slow |
 
 Avoid `pnpm build` at the root unless you changed something that downstream packages consume at build time. Never run `girih publish --yes`.
 
@@ -182,7 +185,7 @@ Avoid `pnpm build` at the root unless you changed something that downstream pack
 - **Token authoring:** three tiers under `examples/acme-ds/tokens/` — `global.tokens.json`, `semantic.tokens.json`, `components/<name>.tokens.json`. Brand overlays under `brands/<brand>/tokens.json` contain overrides only.
 - **Contracts:** `examples/acme-ds/components/<name>.spec.ts` (default-exported `defineSpec`), extensions in `extensions/<name>.ext.ts` (default-exported `defineVariant`). Filenames are kebab-case; the `name` field is PascalCase and drives the emitted component name.
 - **Commits:** this repo uses milestone-style subjects (`M6: packaging and publish — compiled dist, contract-diff semver`). Match that style; there is no commitlint to save you. Commit or push only when asked.
-- **Never** commit `graphify-out/`, add a linter or formatter, change the package manager, edit `tsconfig.base.json` compiler options, run `girih publish --yes`, or create new README/markdown files unless explicitly asked.
+- **Never** commit `graphify-out/`, change the package manager, edit `tsconfig.base.json` compiler options, run `girih publish --yes`, or create new README/markdown files unless explicitly asked.
 
 # Subagents
 

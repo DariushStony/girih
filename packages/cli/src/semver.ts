@@ -225,12 +225,7 @@ export function diffSignatures(base: PublishSignature | null, next: PublishSigna
   return { bump, reasons };
 }
 
-function diffComponent(
-  name: string,
-  base: ComponentSignature,
-  next: ComponentSignature,
-  note: (b: Bump, reason: string) => void,
-): void {
+function diffComponent(name: string, base: ComponentSignature, next: ComponentSignature, note: (b: Bump, reason: string) => void): void {
   // Identity first: a different template is breaking regardless of version numbers.
   if (base.template !== next.template) {
     note('major', `'${name}' template changed (${base.template} → ${next.template})`);
@@ -261,7 +256,8 @@ function diffComponent(
       continue;
     }
     diffList(`'${name}.${axis}'`, baseAxis.values, nextAxis.values, note);
-    if (baseAxis.default !== nextAxis.default) note('minor', `'${name}.${axis}' default changed (${baseAxis.default} → ${nextAxis.default})`);
+    if (baseAxis.default !== nextAxis.default)
+      note('minor', `'${name}.${axis}' default changed (${baseAxis.default} → ${nextAxis.default})`);
   }
 
   // Aria wiring and the styling contract.
@@ -300,12 +296,22 @@ export function applyBump(version: string, bump: Bump): string {
   const preOneStable = major === 0;
   switch (bump) {
     case 'major':
-      if (preOneStable) minor += 1, (patch = 0);
-      else major += 1, (minor = 0), (patch = 0);
+      if (preOneStable) {
+        minor += 1;
+        patch = 0;
+      } else {
+        major += 1;
+        minor = 0;
+        patch = 0;
+      }
       break;
     case 'minor':
-      if (preOneStable) patch += 1;
-      else minor += 1, (patch = 0);
+      if (preOneStable) {
+        patch += 1;
+      } else {
+        minor += 1;
+        patch = 0;
+      }
       break;
     case 'patch':
       patch += 1;

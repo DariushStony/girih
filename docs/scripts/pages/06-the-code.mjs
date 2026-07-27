@@ -1,7 +1,7 @@
 import { code, eli5, rule, gotcha, aside, table, pkgMap, strap } from '../lib/ui.mjs';
 import { packageGraph } from '../lib/viz.mjs';
 
-export default function page(data) {
+export default function page(_data) {
   const pkggraph = packageGraph({ id: 'w-pkggraph' });
 
   const sections = [
@@ -30,9 +30,17 @@ export default function page(data) {
 ${pkgMap([
   [{ name: '@faravahar/girih-core', role: 'kernel — depends on nothing', layer: 'kernel' }],
   ['↑ depended on by ↑'],
-  [{ name: '@faravahar/girih-tokens', role: 'token pipeline', layer: 'pipeline' }, '+', { name: '@faravahar/girih-core', role: '', layer: 'kernel' }],
+  [
+    { name: '@faravahar/girih-tokens', role: 'token pipeline', layer: 'pipeline' },
+    '+',
+    { name: '@faravahar/girih-core', role: '', layer: 'kernel' },
+  ],
   ['↑'],
-  [{ name: '@faravahar/girih-generator-css', role: 'tokens → CSS', layer: 'generator' }, '·', { name: '@faravahar/girih-spec', role: 'contracts', layer: 'pipeline' }],
+  [
+    { name: '@faravahar/girih-generator-css', role: 'tokens → CSS', layer: 'generator' },
+    '·',
+    { name: '@faravahar/girih-spec', role: 'contracts', layer: 'pipeline' },
+  ],
   ['↑'],
   [{ name: '@faravahar/girih-generator-react', role: 'IR → React (core + spec)', layer: 'generator' }],
   ['↑'],
@@ -79,14 +87,31 @@ ${eli5(`
 ${table(
   ['File', 'Exports', 'Why it is here and not elsewhere'],
   [
-    ['<code>config.ts</code>', '<code>loadConfig</code>, <code>defineConfig</code>, <code>ResolvedConfig</code>, <code>CONFIG_FILENAMES</code>', 'Everything needs the workspace shape; jiti loads the TS config at runtime'],
-    ['<code>diagnostics.ts</code>', '<code>Diagnostic</code>, <code>DiagnosticBag</code>, <code>formatDiagnostic</code>', 'One reporting vocabulary, so the CLI can render any package\'s problems identically'],
-    ['<code>files.ts</code>', '<code>emittedFile</code>, <code>writeEmittedFiles</code>, <code>verifyEmittedFiles</code>', 'One hashing and writing path — drift detection and publish diffing both depend on the hash being computed the same way everywhere'],
-    ['<code>naming.ts</code>', '<code>cssVarName</code>', 'Emitted <code>tokens.css</code>, <code>tokens.d.ts</code> and <code>components.css</code> must agree on variable names or the output silently breaks'],
+    [
+      '<code>config.ts</code>',
+      '<code>loadConfig</code>, <code>defineConfig</code>, <code>ResolvedConfig</code>, <code>CONFIG_FILENAMES</code>',
+      'Everything needs the workspace shape; jiti loads the TS config at runtime',
+    ],
+    [
+      '<code>diagnostics.ts</code>',
+      '<code>Diagnostic</code>, <code>DiagnosticBag</code>, <code>formatDiagnostic</code>',
+      "One reporting vocabulary, so the CLI can render any package's problems identically",
+    ],
+    [
+      '<code>files.ts</code>',
+      '<code>emittedFile</code>, <code>writeEmittedFiles</code>, <code>verifyEmittedFiles</code>',
+      'One hashing and writing path — drift detection and publish diffing both depend on the hash being computed the same way everywhere',
+    ],
+    [
+      '<code>naming.ts</code>',
+      '<code>cssVarName</code>',
+      'Emitted <code>tokens.css</code>, <code>tokens.d.ts</code> and <code>components.css</code> must agree on variable names or the output silently breaks',
+    ],
   ],
 )}
 
-${code(`export function emittedFile(path: string, contents: string): EmittedFile {
+${code(
+  `export function emittedFile(path: string, contents: string): EmittedFile {
   return { path, contents, hash: createHash('sha256').update(contents).digest('hex') };
 }
 
@@ -98,7 +123,9 @@ export async function verifyEmittedFiles(root: string, files: EmittedFile[]): Pr
     if (onDisk !== file.contents) stale.push(file.path);
   }
   return stale;
-}`, { path: 'packages/core/src/files.ts', kind: 'authored' })}
+}`,
+  { path: 'packages/core/src/files.ts', kind: 'authored' },
+)}
 
 <p>
   Twelve lines carrying four features: drift detection, the <code>--check</code> CI gate, orphan
@@ -111,11 +138,27 @@ export async function verifyEmittedFiles(root: string, files: EmittedFile[]): Pr
 ${table(
   ['File', 'Owns', 'Start here when'],
   [
-    ['<code>engine.ts</code>', '<code>buildTokenGraphs()</code> — orchestrates everything; <code>inferTier()</code>', 'You want the overall flow, or tier inference is wrong'],
+    [
+      '<code>engine.ts</code>',
+      '<code>buildTokenGraphs()</code> — orchestrates everything; <code>inferTier()</code>',
+      'You want the overall flow, or tier inference is wrong',
+    ],
     ['<code>parse.ts</code>', 'DTCG reading, <code>$type</code> inheritance', 'A token file is misread or a type is not inherited'],
-    ['<code>merge.ts</code>', '<code>mergeTokenFiles()</code>, <code>applyBrandOverlay()</code>, <code>toNestedDtcg()</code>', 'An overlay does the wrong thing, or the override-only rule misfires'],
-    ['<code>resolve.ts</code>', '<code>resolveTokenSet()</code> — aliases, cycles, poison propagation', 'A value resolves wrongly, or a cycle report is confusing'],
-    ['<code>validate.ts</code>', '<code>validateTierDirection()</code>, <code>validateBrandParity()</code>', 'A tier or parity error looks wrong'],
+    [
+      '<code>merge.ts</code>',
+      '<code>mergeTokenFiles()</code>, <code>applyBrandOverlay()</code>, <code>toNestedDtcg()</code>',
+      'An overlay does the wrong thing, or the override-only rule misfires',
+    ],
+    [
+      '<code>resolve.ts</code>',
+      '<code>resolveTokenSet()</code> — aliases, cycles, poison propagation',
+      'A value resolves wrongly, or a cycle report is confusing',
+    ],
+    [
+      '<code>validate.ts</code>',
+      '<code>validateTierDirection()</code>, <code>validateBrandParity()</code>',
+      'A tier or parity error looks wrong',
+    ],
   ],
 )}
 
@@ -156,7 +199,8 @@ ${gotcha(
 
 <p>Three files, and one function inside them matters more than the rest.</p>
 
-${code(`/** The given paths plus every token that (transitively) references one of them. */
+${code(
+  `/** The given paths plus every token that (transitively) references one of them. */
 function dependentsClosure(roots: string[], graph: ResolvedTokenGraph): Set<string> {
   const closure = new Set(roots);
   if (closure.size === 0) return closure;
@@ -177,7 +221,9 @@ function dependentsClosure(roots: string[], graph: ResolvedTokenGraph): Set<stri
     }
   }
   return closure;
-}`, { path: 'packages/generator-css/src/generate.ts', kind: 'authored' })}
+}`,
+  { path: 'packages/generator-css/src/generate.ts', kind: 'authored' },
+)}
 
 <p>
   Build the reverse reference graph, then breadth-first from the overridden paths. That set is what
@@ -320,15 +366,35 @@ ${strap()}
 ${table(
   ['Symptom', 'Look at', 'Then'],
   [
-    ['A token resolves to the wrong value', '<code>tokens/src/resolve.ts</code>', '<code>girih check --brand X</code> to see the resolved table'],
-    ['A brand override does not apply', '<code>tokens/src/merge.ts</code>', 'Check <code>applyBrandOverlay()</code> recorded the path in <code>overriddenPaths</code>'],
-    ['Colour rebrands but radius does not', '<code>generator-css/src/generate.ts</code>', '<code>dependentsClosure()</code> — a missing closure member'],
+    [
+      'A token resolves to the wrong value',
+      '<code>tokens/src/resolve.ts</code>',
+      '<code>girih check --brand X</code> to see the resolved table',
+    ],
+    [
+      'A brand override does not apply',
+      '<code>tokens/src/merge.ts</code>',
+      'Check <code>applyBrandOverlay()</code> recorded the path in <code>overriddenPaths</code>',
+    ],
+    [
+      'Colour rebrands but radius does not',
+      '<code>generator-css/src/generate.ts</code>',
+      '<code>dependentsClosure()</code> — a missing closure member',
+    ],
     ['A CSS variable has the wrong name', '<code>core/src/naming.ts</code>', 'Every emitter must route through <code>cssVarName()</code>'],
     ['A contract error seems wrong', '<code>spec/src/validate.ts</code>', 'The tests enumerate intended failures with their codes'],
     ['Emitted TSX is malformed', '<code>generator-react/src/templates/</code>', 'Find the template for that <code>element</code>'],
-    ['A state has no CSS', '<code>generator-react/src/css.ts</code>', '<code>STATE_SELECTORS</code>, and whether the template claims the capability'],
+    [
+      'A state has no CSS',
+      '<code>generator-react/src/css.ts</code>',
+      '<code>STATE_SELECTORS</code>, and whether the template claims the capability',
+    ],
     ['<code>generate</code> refuses to run', '<code>cli/src/manifest.ts</code>', '<code>detectDrift()</code> — something was hand-edited'],
-    ['The wrong version is proposed', '<code>cli/src/semver.ts</code>', '<code>diffSignatures()</code> reasons; compare to <code>ds.lock</code>'],
+    [
+      'The wrong version is proposed',
+      '<code>cli/src/semver.ts</code>',
+      '<code>diffSignatures()</code> reasons; compare to <code>ds.lock</code>',
+    ],
     ['The package fails to import downstream', '<code>cli/src/build.ts</code>', '<code>addJsExtensions()</code>, then the consumer e2e'],
   ],
 )}
@@ -340,7 +406,8 @@ ${table(
   source so unit tests run without a build:
 </p>
 
-${code(`resolve: {
+${code(
+  `resolve: {
   // Tests run against source so packages don't need a build first.
   alias: {
     '@faravahar/girih-core': r('packages/core/src/index.ts'),
@@ -350,10 +417,12 @@ ${code(`resolve: {
     '@faravahar/girih-spec': r('packages/spec/src/index.ts'),
   },
 },
-test: { include: ['packages/*/test/**/*.test.ts', 'e2e/test/**/*.test.ts'] },`, {
+test: { include: ['packages/*/test/**/*.test.ts', 'e2e/test/**/*.test.ts'] },`,
+  {
     path: 'vitest.config.ts',
     kind: 'authored',
-  })}
+  },
+)}
 
 ${gotcha(
   'Two packages are deliberately NOT aliased',

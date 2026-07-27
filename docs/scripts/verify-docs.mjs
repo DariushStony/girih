@@ -57,11 +57,7 @@ for (const file of htmlFiles) {
   const hasPreWhitespaceRule = /white-space:\s*pre(-wrap)?/.test(html);
   check(hasPreWhitespaceRule, file, 'no white-space: pre rule found for code blocks');
   // Any styled div masquerading as a code block would need pre-wrap; we emit none.
-  check(
-    !/<div[^>]*class="[^"]*\bcodeblock\b/.test(html),
-    file,
-    'found a div-based code block; only <pre> is allowed',
-  );
+  check(!/<div[^>]*class="[^"]*\bcodeblock\b/.test(html), file, 'found a div-based code block; only <pre> is allowed');
 
   // Tag balance for the containers that carry layout.
   for (const tag of ['div', 'figure', 'details', 'table', 'section']) {
@@ -228,7 +224,9 @@ for (const file of mdFiles) {
   }
   notes.push(
     `brand assets present; og:image is ${
-      /content="https?:\/\//.test(readFileSync(join(docsDir, 'index.html'), 'utf8').match(/property="og:image" content="([^"]*)"/)?.[0] ?? '')
+      /content="https?:\/\//.test(
+        readFileSync(join(docsDir, 'index.html'), 'utf8').match(/property="og:image" content="([^"]*)"/)?.[0] ?? '',
+      )
         ? 'absolute'
         : 'RELATIVE — most scrapers need an absolute URL; rebuild with --site-url once Pages is live'
     }`,
@@ -244,11 +242,7 @@ for (const file of mdFiles) {
  * early). Both have happened; both are caught by simply asking Node to parse the file.
  */
 {
-  const scriptDirs = [
-    join(docsDir, 'scripts'),
-    join(docsDir, 'scripts/lib'),
-    join(docsDir, 'scripts/pages'),
-  ];
+  const scriptDirs = [join(docsDir, 'scripts'), join(docsDir, 'scripts/lib'), join(docsDir, 'scripts/pages')];
   for (const dir of scriptDirs) {
     if (!existsSync(dir)) continue;
     for (const name of readdirSync(dir).filter((f) => f.endsWith('.mjs'))) {
@@ -282,11 +276,7 @@ if (existsSync(tokPath)) {
       `generated["${key}"] is missing or empty — the brand-switch widget will not work`,
     );
   }
-  check(
-    tokens.chains?.seller?.['button.radius']?.length >= 2,
-    'docs/data/tokens.json',
-    'the button.radius teaching chain is missing',
-  );
+  check(tokens.chains?.seller?.['button.radius']?.length >= 2, 'docs/data/tokens.json', 'the button.radius teaching chain is missing');
   const sellerRadius = tokens.chains?.seller?.['button.radius']?.at(-1)?.resolved;
   const marketRadius = tokens.chains?.marketplace?.['button.radius']?.at(-1)?.resolved;
   check(

@@ -20,13 +20,13 @@ The second rule: **a contract must be satisfiable by every brand, not just the d
 
 Work through these against `packages/spec/src/validate.ts` — it is the authority, not your memory of it:
 
-- **Token refs.** Every `{token.path}` in `tokens.base`, `tokens.variants.*`, and nested `states` resolves in *every* brand graph. Unknown ref → `GIRIH4xxx` error.
+- **Token refs.** Every `{token.path}` in `tokens.base`, `tokens.variants.*`, and nested `states` resolves in _every_ brand graph. Unknown ref → `GIRIH4xxx` error.
 - **Variants.** Each variant group has a `default` that is a member of its own `values`. No duplicate values. Variant and value names must survive becoming data attributes and CSS selectors.
 - **States.** Every declared state is implementable by the chosen template. Check `TEMPLATE_REGISTRY` in `packages/generator-react/src/templates/registry.ts` for what the element actually supports — a `loading` state on a non-interactive element is unimplementable, not merely unused.
 - **Reserved props.** Variant and slot names must not collide with reserved React/DOM props or with the generator's own emitted props.
 - **Slots.** `required: true` slots must be reflected in the emitted type as required. `childrenRequired` follows from `slots.children.required`.
 - **Accessibility.** `focusable` and the `aria` map must correspond to real states. An `aria` entry keyed on a state that isn't declared is dead configuration.
-- **Extensibility.** `allowExtends` and `overridableTokens` bound what a `defineVariant` extension may touch. An extension overriding a token outside `overridableTokens` is a contract violation — verify against the *base* spec, not the extension's intent.
+- **Extensibility.** `allowExtends` and `overridableTokens` bound what a `defineVariant` extension may touch. An extension overriding a token outside `overridableTokens` is a contract violation — verify against the _base_ spec, not the extension's intent.
 - **Naming.** File is kebab-case (`payment-button.ext.ts`), `name` is PascalCase and becomes the emitted component name. Spec files live in `components/`, extensions in `extensions/`.
 
 ## Method
@@ -43,7 +43,7 @@ For a new or changed contract, compare it against the closest existing sibling i
 ## Reporting
 
 - **Findings**, most severe first. For each: the contract field, the rule broken, the `GIRIH` code that will fire (or should fire), and the concrete failing input — e.g. "`{button.tertiary.background}` in `variant.tertiary` resolves in `marketplace` but not `seller`".
-- **Validation gaps.** If the contract has a defect that current validation would *not* catch, say so explicitly and propose the diagnostic — a silent hole in `validateSpecs` is worth more than a caught error.
+- **Validation gaps.** If the contract has a defect that current validation would _not_ catch, say so explicitly and propose the diagnostic — a silent hole in `validateSpecs` is worth more than a caught error.
 - **Verdict.** Would `girih check` pass? Would `girih generate react` produce a component that honors this contract under every brand?
 
 If the contract is sound, say so in one line and stop. Do not invent findings to fill a report.

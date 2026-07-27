@@ -39,7 +39,7 @@ function starPoints(R, cx, cy, innerRatio = INNER_RATIO, rotate = -Math.PI / 2) 
 
 function polyPoints(R, cx, cy, n = POINTS, rotate = -Math.PI / 2) {
   return Array.from({ length: n }, (_, i) => {
-    const a = (Math.PI * 2 / n) * i + rotate;
+    const a = ((Math.PI * 2) / n) * i + rotate;
     return [cx + R * Math.cos(a), cy + R * Math.sin(a)];
   });
 }
@@ -74,14 +74,7 @@ export const BRAND = {
  *   ground     tile fill; null for transparent
  *   id         gradient id, must be unique per document if several are inlined
  */
-export function tileIcon({
-  box = 64,
-  starScale = 0.78,
-  rounded = 0.1875,
-  maskable = false,
-  ground = BRAND.manganese,
-  id = 'g',
-} = {}) {
+export function tileIcon({ box = 64, starScale = 0.78, rounded = 0.1875, maskable = false, ground = BRAND.manganese, id = 'g' } = {}) {
   const c = box / 2;
   // A maskable icon must survive being cropped to a circle of 80% of the canvas, so the
   // art lives inside that circle rather than filling the square.
@@ -94,9 +87,7 @@ export function tileIcon({
   const deca = fmt(polyPoints(R * 1.16, c, c));
   const rx = rounded > 0 ? (box * rounded).toFixed(2) : 0;
 
-  const groundLayer = ground
-    ? `<rect width="${box}" height="${box}" rx="${rx}" fill="${ground}"/>`
-    : '';
+  const groundLayer = ground ? `<rect width="${box}" height="${box}" rx="${rx}" fill="${ground}"/>` : '';
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${box} ${box}" width="${box}" height="${box}" role="img" aria-label="girih">
   <defs>
@@ -156,7 +147,9 @@ export function embeddedFontCss(subsets = ['latin', 'arabic']) {
   for (const [family, info] of Object.entries(fontsCache.families)) {
     for (const face of info.faces) {
       if (!subsets.includes(face.subset)) continue;
-      faces.push(`@font-face{font-family:'${family}';font-weight:${face.weightRange};font-style:normal;src:url(${face.dataUri}) format('woff2');${face.unicodeRange ? `unicode-range:${face.unicodeRange};` : ''}}`);
+      faces.push(
+        `@font-face{font-family:'${family}';font-weight:${face.weightRange};font-style:normal;src:url(${face.dataUri}) format('woff2');${face.unicodeRange ? `unicode-range:${face.unicodeRange};` : ''}}`,
+      );
     }
   }
   return faces.join('');
@@ -227,9 +220,7 @@ export function socialCard({ w = 1200, h = 630, variant = 'og' } = {}) {
       const order = [];
       for (let i = 0, at = 0; i < 10; i++, at = (at + 3) % 10) order.push(mids[at]);
       const strap = fmt(order);
-      const inner = fmt(
-        mids.map(([mx, my]) => [mx + (x - mx) * 0.42, my + (y - my) * 0.42]),
-      );
+      const inner = fmt(mids.map(([mx, my]) => [mx + (x - mx) * 0.42, my + (y - my) * 0.42]));
       tiles.push(
         `<polygon points="${outline}" fill="none" stroke="${BRAND.plaster}" stroke-opacity="0.07" stroke-width="1"/>` +
           `<polygon points="${strap}" fill="none" stroke="${BRAND.lajvard}" stroke-opacity="0.30" stroke-width="1.4"/>` +

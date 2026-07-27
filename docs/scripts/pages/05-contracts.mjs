@@ -1,4 +1,4 @@
-import { code, eli5, rule, gotcha, danger, aside, table, rail, strap } from '../lib/ui.mjs';
+import { code, eli5, rule, gotcha, danger, table, rail, strap } from '../lib/ui.mjs';
 
 export default function page(data) {
   const sections = [
@@ -56,9 +56,9 @@ ${eli5(`
 <p>Here is the real Button contract from the example workspace, in full:</p>
 
 ${code(data.sources['components/button.spec.ts'] ?? '', {
-    path: 'components/button.spec.ts',
-    kind: 'authored',
-  })}
+  path: 'components/button.spec.ts',
+  kind: 'authored',
+})}
 
 <p>Field by field:</p>
 
@@ -68,11 +68,19 @@ ${table(
     ['<code>name</code>', 'PascalCase component name', 'The exported identifier and the CSS class (<code>.ds-button</code>)'],
     ['<code>element</code>', 'The underlying DOM element', 'Which template is chosen, and what props are inherited'],
     ['<code>variants</code>', 'Named axes with values and a default', 'A TypeScript union per axis plus a <code>data-*</code> attribute'],
-    ['<code>states</code>', 'Interaction states to express', 'CSS selectors — <code>:hover</code>, <code>:focus-visible</code>, <code>[data-loading]</code>'],
+    [
+      '<code>states</code>',
+      'Interaction states to express',
+      'CSS selectors — <code>:hover</code>, <code>:focus-visible</code>, <code>[data-loading]</code>',
+    ],
     ['<code>slots</code>', 'Content holes and whether they are required', '<code>children</code> typing'],
     ['<code>tokens</code>', 'Which token drives which CSS property', 'Every declaration in <code>components.css</code>'],
     ['<code>accessibility</code>', 'Focusability and state→ARIA mapping', '<code>aria-busy</code>, <code>aria-disabled</code>, focus ring'],
-    ['<code>extensibility</code>', 'Whether it may be extended, and which tokens', 'What <code>defineVariant</code> is allowed to override'],
+    [
+      '<code>extensibility</code>',
+      'Whether it may be extended, and which tokens',
+      'What <code>defineVariant</code> is allowed to override',
+    ],
   ],
 )}
 
@@ -113,7 +121,8 @@ ${rail([
   <em>committed</em>, which surprises people.
 </p>
 
-${code(`{
+${code(
+  `{
   "name": "Button",
   "template": "element",
   "element": "button",
@@ -143,7 +152,9 @@ ${code(`{
   "accessibility": { "focusable": true, "aria": [{ "state": "loading", "attributes": { "aria-busy": "true" } }] },
   "extensibility": { "allowExtends": true, "overridableTokens": ["background", "color", "borderColor"] },
   "sourceFile": "components/button.spec.ts"
-}`, { path: '.ds/ir/Button.json (excerpt of the real file)', kind: 'generated', lang: 'json' })}
+}`,
+  { path: '.ds/ir/Button.json (excerpt of the real file)', kind: 'generated', lang: 'json' },
+)}
 
 <p>The IR exists for three reasons, and they are all about decoupling:</p>
 
@@ -182,10 +193,10 @@ ${gotcha(
 </p>
 
 ${code(data.generated['src/Button.tsx'] ?? '', {
-    path: 'packages/design-system/src/Button.tsx',
-    kind: 'generated',
-    lang: 'tsx',
-  })}
+  path: 'packages/design-system/src/Button.tsx',
+  kind: 'generated',
+  lang: 'tsx',
+})}
 
 <p>Read what the contract bought you:</p>
 
@@ -215,7 +226,8 @@ ${code(data.generated['src/Button.tsx'] ?? '', {
 
 <p>And the CSS — structure and token references, nothing else:</p>
 
-${code(`.ds-button {
+${code(
+  `.ds-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -245,7 +257,9 @@ ${code(`.ds-button {
 .ds-button[data-variant="primary"] {
   background: var(--ds-button-primary-background);
   color: var(--ds-button-primary-foreground);
-}`, { path: 'styles/components.css — real output', kind: 'generated', lang: 'css' })}
+}`,
+  { path: 'styles/components.css — real output', kind: 'generated', lang: 'css' },
+)}
 
 ${rule(
   'Every design value is a var(). No exceptions.',
@@ -308,17 +322,17 @@ ${strap()}
 </p>
 
 ${code(data.sources['extensions/payment-button.ext.ts'] ?? '', {
-    path: 'extensions/payment-button.ext.ts',
-    kind: 'authored',
-  })}
+  path: 'extensions/payment-button.ext.ts',
+  kind: 'authored',
+})}
 
 <p>That compiles to a component that is a thin wrapper over the base, plus a scoped CSS rule:</p>
 
 ${code(data.generated['src/PaymentButton.tsx'] ?? '', {
-    path: 'packages/design-system/src/PaymentButton.tsx',
-    kind: 'generated',
-    lang: 'tsx',
-  })}
+  path: 'packages/design-system/src/PaymentButton.tsx',
+  kind: 'generated',
+  lang: 'tsx',
+})}
 
 <p>
   It inherits <code>ButtonProps</code> exactly, so every variant and size still works, and it adds
@@ -375,14 +389,17 @@ ${rule(
   operation.
 </p>
 
-${code(`$ pnpm exec girih eject Dialog
+${code(
+  `$ pnpm exec girih eject Dialog
 
 create  components/ejected/Dialog.tsx
 update  ds.lock (base: dialog@v1, 4f2a9c1e8b03)
 
 'Dialog' is now yours: edit components/ejected/Dialog.tsx freely — commit it and ds.lock.
 Its spec is still validated and its CSS still generated — only markup/behavior is forked.
-Run \`girih generate react\` to stitch it into the package.`, { kind: 'shell', lang: 'none' })}
+Run \`girih generate react\` to stitch it into the package.`,
+  { kind: 'shell', lang: 'none' },
+)}
 
 <p>Four things happen, and each one is doing specific work:</p>
 
@@ -451,17 +468,20 @@ ${table(
   <li>A token value change in <em>any</em> brand counts, not only the default one.</li>
 </ul>
 
-${code(`$ pnpm exec girih publish
+${code(
+  `$ pnpm exec girih publish
 
 @acme/design-system  0.2.1 → 0.3.0  [minor]
   Button: variant 'tertiary' added
   Badge: token 'badge.primary.background' value changed
   …
 
-Dry run — nothing published, workspace unchanged. Re-run with --yes to publish 0.3.0.`, {
+Dry run — nothing published, workspace unchanged. Re-run with --yes to publish 0.3.0.`,
+  {
     kind: 'shell',
     lang: 'none',
-  })}
+  },
+)}
 
 ${danger(
   'Dry run by default, and one npm trap girih handles for you',

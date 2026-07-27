@@ -7,8 +7,7 @@ import { kebabCase } from './ir.js';
 import type { ComponentIR, VariantExtensionInput } from './types.js';
 
 /** PascalCase component name → its token namespace (Button → button). No vendor-prefix rule here. */
-const componentNamespace = (name: string) =>
-  name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+const componentNamespace = (name: string) => name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 
 const EXTENSION_BRAND = Symbol.for('girih.variant-extension');
 const PASCAL_CASE = /^[A-Z][A-Za-z0-9]*$/;

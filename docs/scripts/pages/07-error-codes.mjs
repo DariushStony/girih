@@ -1,4 +1,4 @@
-import { code, eli5, rule, gotcha, table, esc, jsStr, strap } from '../lib/ui.mjs';
+import { code, eli5, rule, gotcha, table, esc, strap } from '../lib/ui.mjs';
 
 /** `${token.path}` inside a message is a runtime placeholder — mark it as such. */
 function renderMessage(message) {
@@ -122,15 +122,18 @@ ${rule(
   greppable, testable, and machine-readable:
 </p>
 
-${code(`error GIRIH2030: 'button.primary.background' references '{color.primaryy}', which does not exist.
+${code(
+  `error GIRIH2030: 'button.primary.background' references '{color.primaryy}', which does not exist.
       │         │      └─ message, with the offending path interpolated
       │         └─ stable code — safe to grep for, safe to assert in a test
       └─ severity: error | warning | info
   help: Did you mean '{color.primary}' or '{color.primary-hover}'?
-      └─ one line, actionable, and computed from your actual token set`, {
+      └─ one line, actionable, and computed from your actual token set`,
+  {
     kind: 'shell',
     lang: 'none',
-  })}
+  },
+)}
 
 ${eli5(`
   <p>
@@ -204,11 +207,14 @@ ${familyBlocks}
   <code>help</code>.
 </p>
 
-${code(`# regenerate after changing any diagnostic
+${code(
+  `# regenerate after changing any diagnostic
 node docs/scripts/extract-diagnostics.mjs
 
 # fail if the committed JSON is stale — suitable for a pre-commit hook or CI
-node docs/scripts/extract-diagnostics.mjs --check`, { kind: 'shell', lang: 'none' })}
+node docs/scripts/extract-diagnostics.mjs --check`,
+  { kind: 'shell', lang: 'none' },
+)}
 </div>`;
 
   const script = `

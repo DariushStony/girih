@@ -26,8 +26,7 @@ const repoRoot = fileURLToPath(new URL('../..', import.meta.url));
 const outPath = join(repoRoot, 'docs/data/fonts.json');
 
 // A modern UA is required or Google serves TTF instead of WOFF2.
-const UA =
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36';
+const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36';
 
 const REQUESTS = [
   {
@@ -67,7 +66,7 @@ async function getBytes(url) {
 function parseFontFaces(css) {
   const faces = [];
   // Split on the subset comments so each chunk carries its subset name.
-  const chunks = css.split(/\/\*\s*([a-z0-9-\[\]]+)\s*\*\//i);
+  const chunks = css.split(/\/\*\s*([a-z0-9-[\]]+)\s*\*\//i);
   for (let i = 1; i < chunks.length; i += 2) {
     const subset = chunks[i];
     const block = chunks[i + 1] ?? '';
@@ -89,9 +88,7 @@ const out = { generatedBy: 'docs/scripts/fetch-fonts.mjs', families: {}, totalBy
 
 for (const req of REQUESTS) {
   const css = await getText(req.css);
-  const faces = parseFontFaces(css).filter(
-    (f) => req.subsets.includes(f.subset) && req.weights.includes(f.weight) && f.style === 'normal',
-  );
+  const faces = parseFontFaces(css).filter((f) => req.subsets.includes(f.subset) && req.weights.includes(f.weight) && f.style === 'normal');
 
   if (faces.length === 0) {
     console.error(`No matching faces for ${req.family}. Google's CSS was:\n${css.slice(0, 800)}`);

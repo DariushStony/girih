@@ -32,10 +32,12 @@ function elementStructuralCss(ir: ComponentIR, base: string): string[] {
   if (!INTERACTIVE_ELEMENTS.has(ir.element)) {
     // Non-interactive inline hosts (Badge) still need box behavior for padding to work.
     return INLINE_ELEMENTS.has(ir.element)
-      ? [`${base} {
+      ? [
+          `${base} {
   display: inline-flex;
   align-items: center;
-}`]
+}`,
+        ]
       : [];
   }
   const textEntry = TEXT_ENTRY_ELEMENTS.has(ir.element);

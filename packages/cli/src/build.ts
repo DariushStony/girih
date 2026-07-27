@@ -1,4 +1,4 @@
-import { readFile, rm, writeFile } from 'node:fs/promises';
+import { readFile, rm } from 'node:fs/promises';
 import { dirname, join, relative } from 'node:path';
 import { glob } from 'tinyglobby';
 import ts from 'typescript';
@@ -56,7 +56,9 @@ export async function buildPackage(packageDir: string): Promise<BuildResult> {
   if (sourcePaths.length === 0) {
     return {
       files: [],
-      diagnostics: [{ code: 'GIRIH6001', severity: 'error', message: `No TypeScript sources in ${srcDir} — run \`girih generate react\` first.` }],
+      diagnostics: [
+        { code: 'GIRIH6001', severity: 'error', message: `No TypeScript sources in ${srcDir} — run \`girih generate react\` first.` },
+      ],
     };
   }
 

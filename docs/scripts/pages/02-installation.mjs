@@ -1,6 +1,6 @@
 import { code, eli5, rule, gotcha, danger, aside, table, strap } from '../lib/ui.mjs';
 
-export default function page(data) {
+export default function page(_data) {
   const sections = [
     { id: 'before', title: 'Before you start' },
     { id: 'notonnpm', title: 'A note on installing' },
@@ -36,9 +36,12 @@ ${table(
   right version is used automatically. If you do not have pnpm at all:
 </p>
 
-${code(`corepack enable          # ships with Node 22+, easiest route
+${code(
+  `corepack enable          # ships with Node 22+, easiest route
 # or:
-npm install -g pnpm@11.8.0`, { kind: 'shell', lang: 'none' })}
+npm install -g pnpm@11.8.0`,
+  { kind: 'shell', lang: 'none' },
+)}
 
 ${gotcha(
   'Why pnpm specifically',
@@ -66,21 +69,27 @@ ${danger(
 
 <h2 id="clone">Path A: explore this repo</h2>
 
-${code(`git clone <this-repo> girih
+${code(
+  `git clone <this-repo> girih
 cd girih
 pnpm install
-pnpm build            # tsup builds every package into dist/`, { kind: 'shell', lang: 'none' })}
+pnpm build            # tsup builds every package into dist/`,
+  { kind: 'shell', lang: 'none' },
+)}
 
 <p>
   <code>pnpm build</code> is required before anything else, because the CLI you are about to run is
   the compiled one in <code>packages/cli/dist/cli.js</code>. Now compile the example design system:
 </p>
 
-${code(`cd examples/acme-ds
+${code(
+  `cd examples/acme-ds
 
 pnpm check            # validate tokens + contracts, print the resolved token table
 pnpm run demo:react   # generate the React package, then bundle the demo
-open demo/react/index.html`, { kind: 'shell', lang: 'none' })}
+open demo/react/index.html`,
+  { kind: 'shell', lang: 'none' },
+)}
 
 <p>
   That last page is a variant matrix with a live brand toggle. Flip it and watch the corner radius
@@ -102,13 +111,16 @@ ${code(`open demo/index.html   # plain HTML + the generated tokens.css, no bundl
   contract, and a demo page that needs no build step. Run it from the built binary:
 </p>
 
-${code(`# from the root of this repo, after pnpm build
+${code(
+  `# from the root of this repo, after pnpm build
 node packages/create-girih/dist/cli.js my-ds --workspace
 
 cd my-ds
 pnpm install
 pnpm exec girih generate react
-open demo/index.html`, { kind: 'shell', lang: 'none' })}
+open demo/index.html`,
+  { kind: 'shell', lang: 'none' },
+)}
 
 <p>
   The <code>--workspace</code> flag makes the new directory a pnpm workspace that links back to
@@ -122,8 +134,11 @@ open demo/index.html`, { kind: 'shell', lang: 'none' })}
   directory is already a girih workspace:
 </p>
 
-${code(`cd existing-project
-pnpm exec girih init --name @acme/design-system --brand main`, { kind: 'shell', lang: 'none' })}
+${code(
+  `cd existing-project
+pnpm exec girih init --name @acme/design-system --brand main`,
+  { kind: 'shell', lang: 'none' },
+)}
 
 ${eli5(`
   <p>
@@ -141,7 +156,8 @@ ${strap()}
   its byte count — girih is deliberately loud about what it touched:
 </p>
 
-${code(`$ pnpm exec girih generate react
+${code(
+  `$ pnpm exec girih generate react
 
 write  packages/design-system/styles/tokens.css (6721 bytes)
 write  packages/design-system/styles/components.css (6402 bytes)
@@ -150,10 +166,12 @@ write  packages/design-system/src/index.ts (612 bytes)
 write  packages/design-system/package.json (694 bytes)
 write  .ds/ir/ (6 component IR files)
 
-Preview: open demo/index.html · usage: packages/design-system/README.md`, {
+Preview: open demo/index.html · usage: packages/design-system/README.md`,
+  {
     kind: 'shell',
     lang: 'none',
-  })}
+  },
+)}
 
 <p>Four things were produced, and it is worth knowing which is which:</p>
 
@@ -186,7 +204,8 @@ ${rule(
   once and the components wherever you need them:
 </p>
 
-${code(`import '@acme/design-system/styles/tokens.css';
+${code(
+  `import '@acme/design-system/styles/tokens.css';
 import '@acme/design-system/styles/components.css';
 import { Button, BrandProvider } from '@acme/design-system';
 
@@ -196,7 +215,9 @@ export function Checkout() {
       <Button variant="primary" size="lg">Pay now</Button>
     </BrandProvider>
   );
-}`, { path: 'your app', kind: 'authored', lang: 'tsx' })}
+}`,
+  { path: 'your app', kind: 'authored', lang: 'tsx' },
+)}
 
 <p>
   <code>BrandProvider</code> renders a wrapper carrying <code>data-brand="seller"</code>. That is
@@ -261,7 +282,7 @@ ${table(
   ['Symptom', 'Cause', 'Fix'],
   [
     [
-      '<code>run \`pnpm build\` before the consumer e2e</code>',
+      '<code>run `pnpm build` before the consumer e2e</code>',
       'The CLI in <code>dist/</code> does not exist yet',
       '<code>pnpm build</code> from the repo root',
     ],

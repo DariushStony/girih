@@ -53,12 +53,7 @@ export interface ManifestUpdate {
   orphans: string[];
 }
 
-export function planManifestUpdate(
-  previous: Manifest | null,
-  target: string,
-  outputBase: string,
-  files: EmittedFile[],
-): ManifestUpdate {
+export function planManifestUpdate(previous: Manifest | null, target: string, outputBase: string, files: EmittedFile[]): ManifestUpdate {
   const next: Manifest = previous
     ? { version: 1, files: { ...previous.files }, targets: { ...previous.targets } }
     : { version: 1, files: {}, targets: {} };

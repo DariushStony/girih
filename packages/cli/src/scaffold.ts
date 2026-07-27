@@ -95,7 +95,7 @@ export default defineConfig({
           6: { $value: '24px' },
         },
         font: {
-          family: { $type: 'fontFamily', sans: { $value: "system-ui, sans-serif" } },
+          family: { $type: 'fontFamily', sans: { $value: 'system-ui, sans-serif' } },
           size: { $type: 'dimension', sm: { $value: '13px' }, md: { $value: '15px' }, lg: { $value: '18px' } },
           weight: { $type: 'fontWeight', regular: { $value: 400 }, medium: { $value: 500 } },
         },

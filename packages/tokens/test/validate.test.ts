@@ -34,7 +34,11 @@ describe('validateTierDirection', () => {
 
   it('accepts component → semantic → global chains and same-tier references', () => {
     const graph = graphFrom([
-      { file: 'global.tokens.json', tier: 'global', contents: { color: { $type: 'color', blue: { $value: '#00F' }, indigo: { $value: '{color.blue}' } } } },
+      {
+        file: 'global.tokens.json',
+        tier: 'global',
+        contents: { color: { $type: 'color', blue: { $value: '#00F' }, indigo: { $value: '{color.blue}' } } },
+      },
       { file: 'semantic.tokens.json', tier: 'semantic', contents: { color: { $type: 'color', primary: { $value: '{color.indigo}' } } } },
       {
         file: 'components/button.tokens.json',
@@ -65,7 +69,12 @@ describe('validateBrandParity', () => {
   it('flags brands whose resolved path sets diverge', () => {
     const a = graphFrom([{ file: 'g.tokens.json', tier: 'global', contents: { color: { x: { $value: '#000', $type: 'color' } } } }]);
     const b = graphFrom([{ file: 'g.tokens.json', tier: 'global', contents: { color: { y: { $value: '#FFF', $type: 'color' } } } }]);
-    const diagnostics = validateBrandParity(new Map([['a', a], ['b', b]]));
+    const diagnostics = validateBrandParity(
+      new Map([
+        ['a', a],
+        ['b', b],
+      ]),
+    );
     expect(diagnostics).toHaveLength(1);
     expect(diagnostics[0]).toMatchObject({ code: 'GIRIH2050', severity: 'error' });
   });

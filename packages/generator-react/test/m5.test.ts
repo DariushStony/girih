@@ -1,11 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { defineSpec, defineVariant, specToIR } from '@faravahar/girih-spec';
-import {
-  generateReact,
-  renderCheckboxComponent,
-  renderComponentCss,
-  renderDialogComponent,
-} from '@faravahar/girih-generator-react';
+import { generateReact, renderCheckboxComponent, renderComponentCss, renderDialogComponent } from '@faravahar/girih-generator-react';
 
 const OPTS = { classPrefix: 'ds', runtimePackage: '@faravahar/girih-react-runtime' };
 
@@ -86,7 +81,7 @@ describe('dialog template', () => {
     const tsx = renderDialogComponent(dialogIR(), OPTS);
     expect(tsx).toContain("import { BaseDialog } from './internal/headless'");
     expect(tsx).toContain('Root: BaseDialog.Root');
-    expect(tsx).toContain("className=\"ds-dialog-backdrop\"");
+    expect(tsx).toContain('className="ds-dialog-backdrop"');
     expect(tsx).toContain('data-size={size}');
 
     const css = renderComponentCss(dialogIR(), { prefix: 'ds', classPrefix: 'ds' });
@@ -113,7 +108,11 @@ describe('extensions', () => {
       extends: 'Button',
       tokens: { background: '{color.text}' },
     });
-    const result = generateReact([buttonIR()], { packageName: '@t/ds', prefix: 'ds' }, { extensions: [{ file: 'extensions/payment-button.ext.ts', extension }] });
+    const result = generateReact(
+      [buttonIR()],
+      { packageName: '@t/ds', prefix: 'ds' },
+      { extensions: [{ file: 'extensions/payment-button.ext.ts', extension }] },
+    );
 
     const tsx = result.files.find((f) => f.path === 'src/PaymentButton.tsx')!.contents;
     expect(tsx).toContain("import { Button } from './Button'");
@@ -136,8 +135,6 @@ describe('extensions', () => {
       { ejected: { Button: '// user-owned fork\nexport const Button = null as never;\n' } },
     );
     expect(result.files.find((f) => f.path === 'src/Button.tsx')!.contents).toContain('user-owned fork');
-    expect(result.files.find((f) => f.path === 'styles/components.css')!.contents).toContain(
-      '.ds-button[data-variant="primary"]',
-    );
+    expect(result.files.find((f) => f.path === 'styles/components.css')!.contents).toContain('.ds-button[data-variant="primary"]');
   });
 });

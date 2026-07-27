@@ -54,7 +54,10 @@ function skipAtomic(text, i) {
   }
   if (ch === "'" || ch === '"') {
     for (let j = i + 1; j < text.length; j++) {
-      if (text[j] === '\\') { j++; continue; }
+      if (text[j] === '\\') {
+        j++;
+        continue;
+      }
       if (text[j] === ch) return j + 1;
       if (text[j] === '\n') return j; // unterminated — bail rather than run away
     }
@@ -62,7 +65,10 @@ function skipAtomic(text, i) {
   }
   if (ch === '`') {
     for (let j = i + 1; j < text.length; j++) {
-      if (text[j] === '\\') { j++; continue; }
+      if (text[j] === '\\') {
+        j++;
+        continue;
+      }
       if (text[j] === '`') return j + 1;
       if (text[j] === '$' && text[j + 1] === '{') {
         // Nested expression — walk it with full brace matching.
@@ -70,8 +76,16 @@ function skipAtomic(text, i) {
         let k = j + 2;
         while (k < text.length && depth > 0) {
           const c = text[k];
-          if (c === '{') { depth++; k++; continue; }
-          if (c === '}') { depth--; k++; continue; }
+          if (c === '{') {
+            depth++;
+            k++;
+            continue;
+          }
+          if (c === '}') {
+            depth--;
+            k++;
+            continue;
+          }
           const next = skipAtomic(text, k);
           k = next !== null && next > k ? next : k + 1;
         }
@@ -101,8 +115,17 @@ function findObjectEnd(text, open) {
   let i = open;
   while (i < text.length) {
     const ch = text[i];
-    if (ch === '{') { depth++; i++; continue; }
-    if (ch === '}') { depth--; i++; if (depth === 0) return i; continue; }
+    if (ch === '{') {
+      depth++;
+      i++;
+      continue;
+    }
+    if (ch === '}') {
+      depth--;
+      i++;
+      if (depth === 0) return i;
+      continue;
+    }
     const next = skipAtomic(text, i);
     i = next !== null && next > i ? next : i + 1;
   }
@@ -117,8 +140,16 @@ function topLevelProps(body) {
   let i = 0;
   while (i < body.length) {
     const ch = body[i];
-    if (ch === '{' || ch === '[' || ch === '(') { depth++; i++; continue; }
-    if (ch === '}' || ch === ']' || ch === ')') { depth--; i++; continue; }
+    if (ch === '{' || ch === '[' || ch === '(') {
+      depth++;
+      i++;
+      continue;
+    }
+    if (ch === '}' || ch === ']' || ch === ')') {
+      depth--;
+      i++;
+      continue;
+    }
     if (ch === ',' && depth === 0) {
       props.push(body.slice(start, i));
       start = i + 1;
@@ -136,7 +167,10 @@ function topLevelProps(body) {
 function parseProp(prop) {
   const colon = prop.indexOf(':');
   if (colon === -1) return null;
-  const key = prop.slice(0, colon).trim().replace(/^['"]|['"]$/g, '');
+  const key = prop
+    .slice(0, colon)
+    .trim()
+    .replace(/^['"]|['"]$/g, '');
   let value = prop.slice(colon + 1).trim();
   const quoted = value.startsWith("'") || value.startsWith('"') || value.startsWith('`');
   const dynamic = value.startsWith('`') && value.includes('${');
@@ -202,7 +236,7 @@ const FAMILIES = {
 };
 
 const codes = [...byCode.entries()]
-  .map(([code, sites]) => {
+  .map(([_code, sites]) => {
     // Prefer the site that carries a help string — it is the most informative.
     const sorted = [...sites].sort((a, b) => (b.help ? 1 : 0) - (a.help ? 1 : 0));
     return { ...sorted[0], sites: sites.length, allSites: sites.map((s) => `${s.file}:${s.line}`) };
@@ -238,9 +272,11 @@ if (process.argv.includes('--check')) {
 } else {
   mkdirSync(dirname(outPath), { recursive: true });
   writeFileSync(outPath, json, 'utf8');
-  const counts = Object.entries(payload.bySeverity).map(([k, v]) => `${v} ${k}`).join(', ');
+  const counts = Object.entries(payload.bySeverity)
+    .map(([k, v]) => `${v} ${k}`)
+    .join(', ');
   console.log(`Wrote ${relative(repoRoot, outPath)} — ${codes.length} codes (${counts}).`);
-  for (const [digit, family] of Object.entries(families)) {
+  for (const [_digit, family] of Object.entries(families)) {
     console.log(`  ${family.range.padEnd(10)} ${String(family.codes.length).padStart(2)} codes  ${family.owner}`);
   }
 }

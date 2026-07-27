@@ -15,7 +15,7 @@
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readdirSync, readFileSync, rmSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, dirname } from 'node:path';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -40,7 +40,11 @@ for (const { dir, manifest } of packages) {
   try {
     // --json puts the tarball path on stdout without the human summary.
     const out = execFileSync('pnpm', ['pack', '--pack-destination', staging], { cwd: packageDir, encoding: 'utf8' });
-    tgz = out.trim().split('\n').filter((l) => l.endsWith('.tgz')).pop();
+    tgz = out
+      .trim()
+      .split('\n')
+      .filter((l) => l.endsWith('.tgz'))
+      .pop();
   } catch (error) {
     fail(manifest.name, `pnpm pack failed — ${error.message.split('\n')[0]}`);
     continue;
@@ -107,10 +111,13 @@ for (const { dir, manifest } of packages) {
 
   // 6) A blank npm page reads as abandoned; LICENSE keeps the MIT claim honest.
   if (!entries.some((p) => /^README(\.md)?$/i.test(p))) fail(manifest.name, 'no README.md — its npm page would render blank');
-  if (!entries.some((p) => /^LICEN[SC]E/i.test(p))) fail(manifest.name, `declares "license": "${published.license}" but ships no LICENSE file`);
+  if (!entries.some((p) => /^LICEN[SC]E/i.test(p)))
+    fail(manifest.name, `declares "license": "${published.license}" but ships no LICENSE file`);
 
   const size = statSync(tgz).size;
-  console.log(`${failures.length ? ' ' : ''}${manifest.name.padEnd(34)} ${String(entries.length).padStart(3)} files  ${(size / 1024).toFixed(0)} KB`);
+  console.log(
+    `${failures.length ? ' ' : ''}${manifest.name.padEnd(34)} ${String(entries.length).padStart(3)} files  ${(size / 1024).toFixed(0)} KB`,
+  );
 }
 
 rmSync(staging, { recursive: true, force: true });

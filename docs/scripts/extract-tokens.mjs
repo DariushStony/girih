@@ -137,7 +137,7 @@ const missing = Object.entries(generated)
   .filter(([, contents]) => contents === null)
   .map(([name]) => name);
 if (missing.length > 0) {
-  console.error('Missing generated artifacts — the docs need girih\'s real output:');
+  console.error("Missing generated artifacts — the docs need girih's real output:");
   for (const name of missing) console.error(`  examples/acme-ds/packages/design-system/${name}`);
   console.error('\nRun this first:');
   console.error('  cd examples/acme-ds && pnpm exec girih generate react');
@@ -146,7 +146,7 @@ if (missing.length > 0) {
 
 const payload = {
   generatedBy: 'docs/scripts/extract-tokens.mjs',
-  note: 'Do not edit by hand. Produced by running girih\'s own token engine over examples/acme-ds.',
+  note: "Do not edit by hand. Produced by running girih's own token engine over examples/acme-ds.",
   workspace: { name: config.name, root: 'examples/acme-ds', prefix: config.tokens.prefix },
   brands: {
     all: brands,

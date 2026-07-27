@@ -9,10 +9,7 @@ describe('findReferences', () => {
   it('finds whole-value, embedded, and composite references', () => {
     expect(findReferences('{color.blue.500}')).toEqual(['color.blue.500']);
     expect(findReferences('0 4px 8px {color.shadow}')).toEqual(['color.shadow']);
-    expect(findReferences({ color: '{color.text}', offset: ['{space.1}', '2px'] })).toEqual([
-      'color.text',
-      'space.1',
-    ]);
+    expect(findReferences({ color: '{color.text}', offset: ['{space.1}', '2px'] })).toEqual(['color.text', 'space.1']);
     expect(findReferences('#FF0000')).toEqual([]);
   });
 });

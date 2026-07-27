@@ -137,8 +137,7 @@ export function tokenGraph(data, { id = 'w-tokengraph', brand = null } = {}) {
         <span class="seg" role="group" aria-label="Brand">
           ${data.brands.all
             .map(
-              (b, i) =>
-                `<button type="button" data-tg-brand="${esc(b)}" aria-pressed="${i === 0 ? 'true' : 'false'}">${esc(b)}</button>`,
+              (b, i) => `<button type="button" data-tg-brand="${esc(b)}" aria-pressed="${i === 0 ? 'true' : 'false'}">${esc(b)}</button>`,
             )
             .join('')}
         </span>
@@ -159,11 +158,7 @@ export function tokenGraph(data, { id = 'w-tokengraph', brand = null } = {}) {
 
   const js = `
 (function () {
-  var NODES = ${jsStr(
-    Object.fromEntries(
-      nodes.map((n) => [n.id, { tier: n.tier, refs: n.refs, overridden: n.overridden }]),
-    ),
-  )};
+  var NODES = ${jsStr(Object.fromEntries(nodes.map((n) => [n.id, { tier: n.tier, refs: n.refs, overridden: n.overridden }])))};
   var GRAPHS = ${jsStr(
     Object.fromEntries(
       Object.entries(data.graphs).map(([b, g]) => [
@@ -313,7 +308,7 @@ export function tileMapping({ id = 'w-tilemap' } = {}) {
   // Regular polygon helper, in a 0..100 box.
   const poly = (n, r, cx, cy, rot = -Math.PI / 2) =>
     Array.from({ length: n }, (_, i) => {
-      const a = (Math.PI * 2 / n) * i + rot;
+      const a = ((Math.PI * 2) / n) * i + rot;
       return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
     });
 
@@ -326,14 +321,38 @@ export function tileMapping({ id = 'w-tilemap' } = {}) {
       name: 'Hexagon',
       component: 'Button',
       // Elongated hexagon: two half-decagon ends joined by a straight run.
-      pts: [[-28, 0], [-14, -16], [14, -16], [28, 0], [14, 16], [-14, 16]],
+      pts: [
+        [-28, 0],
+        [-14, -16],
+        [14, -16],
+        [28, 0],
+        [14, 16],
+        [-14, 16],
+      ],
       note: 'the workhorse',
     },
-    { name: 'Rhombus', component: 'Badge', pts: [[-26, 0], [0, -14], [26, 0], [0, 14]], note: 'takes up the slack' },
+    {
+      name: 'Rhombus',
+      component: 'Badge',
+      pts: [
+        [-26, 0],
+        [0, -14],
+        [26, 0],
+        [0, 14],
+      ],
+      note: 'takes up the slack',
+    },
     {
       name: 'Bowtie',
       component: 'Checkbox',
-      pts: [[-24, -14], [0, -4], [24, -14], [24, 14], [0, 4], [-24, 14]],
+      pts: [
+        [-24, -14],
+        [0, -4],
+        [24, -14],
+        [24, 14],
+        [0, 4],
+        [-24, 14],
+      ],
       note: 'the awkward corners',
     },
   ];
@@ -395,12 +414,10 @@ export function tileMapping({ id = 'w-tilemap' } = {}) {
   const CAPTIONS = {
     tiles:
       'Five tiles. A decagon, a pentagon, an elongated hexagon, a rhombus and a bowtie — that is the entire kit medieval craftsmen worked from.',
-    tess:
-      'Fitted together they tessellate. Nothing has been redrawn; the same five shapes are simply placed against each other.',
+    tess: 'Fitted together they tessellate. Nothing has been redrawn; the same five shapes are simply placed against each other.',
     edges:
       'Here is the trick. Every tile carries decorative lines that cross its edges at the same angle, at the same points. So when two tiles meet, the lines continue — and a pattern emerges that nobody drew directly.',
-    map:
-      'That is girih the tool. The tiles are your <b>component contracts</b>; the matched edge treatment is the <b>token contract</b> — every component referencing design values by name rather than baking them in. The endless variety of finished patterns is your <b>brands</b>.',
+    map: 'That is girih the tool. The tiles are your <b>component contracts</b>; the matched edge treatment is the <b>token contract</b> — every component referencing design values by name rather than baking them in. The endless variety of finished patterns is your <b>brands</b>.',
   };
 
   const js = `
@@ -475,14 +492,35 @@ export function packageGraph({ id = 'w-pkggraph' } = {}) {
   const PKGS = [
     { name: '@faravahar/girih-core', layer: 0, role: 'config · diagnostics · emitted files · naming', deps: [] },
     { name: '@faravahar/girih-tokens', layer: 1, role: 'parse → merge → resolve → validate', deps: ['@faravahar/girih-core'] },
-    { name: '@faravahar/girih-spec', layer: 2, role: 'contracts · IR · validation', deps: ['@faravahar/girih-core', '@faravahar/girih-tokens'] },
-    { name: '@faravahar/girih-generator-css', layer: 2, role: 'tokens → CSS + TokenPath', deps: ['@faravahar/girih-core', '@faravahar/girih-tokens'] },
-    { name: '@faravahar/girih-generator-react', layer: 3, role: 'IR + templates → React', deps: ['@faravahar/girih-core', '@faravahar/girih-spec'] },
+    {
+      name: '@faravahar/girih-spec',
+      layer: 2,
+      role: 'contracts · IR · validation',
+      deps: ['@faravahar/girih-core', '@faravahar/girih-tokens'],
+    },
+    {
+      name: '@faravahar/girih-generator-css',
+      layer: 2,
+      role: 'tokens → CSS + TokenPath',
+      deps: ['@faravahar/girih-core', '@faravahar/girih-tokens'],
+    },
+    {
+      name: '@faravahar/girih-generator-react',
+      layer: 3,
+      role: 'IR + templates → React',
+      deps: ['@faravahar/girih-core', '@faravahar/girih-spec'],
+    },
     {
       name: '@faravahar/girih',
       layer: 4,
       role: 'the girih / ds binary',
-      deps: ['@faravahar/girih-core', '@faravahar/girih-tokens', '@faravahar/girih-spec', '@faravahar/girih-generator-css', '@faravahar/girih-generator-react'],
+      deps: [
+        '@faravahar/girih-core',
+        '@faravahar/girih-tokens',
+        '@faravahar/girih-spec',
+        '@faravahar/girih-generator-css',
+        '@faravahar/girih-generator-react',
+      ],
     },
     { name: '@faravahar/girih-react-runtime', layer: 4, role: 'BrandProvider · useBrand · cx', deps: [], standalone: true },
     { name: 'create-girih', layer: 4, role: 'npx bootstrapper', deps: [], standalone: true },

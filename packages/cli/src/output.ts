@@ -30,9 +30,15 @@ export function printSummaryLine(diagnostics: readonly Diagnostic[]): void {
 export function table(rows: string[][], header: string[]): string {
   const all = [header, ...rows];
   const widths = header.map((_, col) => Math.max(...all.map((row) => stripAnsi(row[col] ?? '').length)));
-  const line = (row: string[], pad = ' ') =>
-    row.map((cell, col) => cell + pad.repeat(widths[col]! - stripAnsi(cell).length)).join('  ');
-  return [pc.bold(line(header)), line(widths.map((w) => '─'.repeat(w)), '─'), ...rows.map((r) => line(r))].join('\n');
+  const line = (row: string[], pad = ' ') => row.map((cell, col) => cell + pad.repeat(widths[col]! - stripAnsi(cell).length)).join('  ');
+  return [
+    pc.bold(line(header)),
+    line(
+      widths.map((w) => '─'.repeat(w)),
+      '─',
+    ),
+    ...rows.map((r) => line(r)),
+  ].join('\n');
 }
 
 function stripAnsi(text: string): string {

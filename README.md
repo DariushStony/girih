@@ -6,7 +6,7 @@
 
 **One warp, many wefts — compile multi-brand design systems from tokens and component contracts.**
 
-girih (گره, Persian for *knot*) is design system **infrastructure**, not a component library.
+girih (گره, Persian for _knot_) is design system **infrastructure**, not a component library.
 You declare your design language once; girih compiles it into a governed, versioned npm package.
 
 [Documentation](docs/md/index.md) · [The idea](docs/md/01-the-idea.md) · [Install](docs/md/02-installation.md) · [How it works](docs/md/03-how-it-works.md) · [Error codes](docs/md/07-error-codes.md)
@@ -38,12 +38,12 @@ from assembly, not from cutting new tiles.
 
 ## What that buys you
 
-| | |
-| --- | --- |
-| **One component set serves every brand** | A brand overlay may only override token paths that already exist. Adding one is a hard error, so a brand can never quietly become a fork. |
-| **Rebranding needs no rebuild** | Aliases are emitted as live `var()` references and each brand scope re-declares the full dependents closure. Switching brand is one attribute change, resolved by the browser. |
-| **Generated files are never silently lost** | `.ds/manifest.json` stores a SHA-256 per emitted file. `girih generate` refuses to overwrite anything a human edited, and names the files. |
-| **The version number means something** | The semver bump is computed from a diff of the contract — token value = patch, new variant = minor, anything removed = major — not chosen by a human. |
+|                                             |                                                                                                                                                                                |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **One component set serves every brand**    | A brand overlay may only override token paths that already exist. Adding one is a hard error, so a brand can never quietly become a fork.                                      |
+| **Rebranding needs no rebuild**             | Aliases are emitted as live `var()` references and each brand scope re-declares the full dependents closure. Switching brand is one attribute change, resolved by the browser. |
+| **Generated files are never silently lost** | `.ds/manifest.json` stores a SHA-256 per emitted file. `girih generate` refuses to overwrite anything a human edited, and names the files.                                     |
+| **The version number means something**      | The semver bump is computed from a diff of the contract — token value = patch, new variant = minor, anything removed = major — not chosen by a human.                          |
 
 ## See it in 60 seconds
 
@@ -58,7 +58,7 @@ open demo/react/index.html    # variant matrix with a live brand toggle
 ```
 
 Flip the brand toggle and watch the **corner radius** change along with the colour. The `seller`
-brand overrides three tokens — one of them `radius.md`, a *global* token two alias hops away from a
+brand overrides three tokens — one of them `radius.md`, a _global_ token two alias hops away from a
 button's corner. That cascade arriving correctly, with no rebuild, is the whole thesis.
 
 > [!IMPORTANT]
@@ -75,17 +75,17 @@ Nine chapters, written to be read in order but usable as reference. Every value 
 from the real example workspace by running girih's own engine over it — nothing is invented for
 illustration.
 
-| # | Chapter | What it covers |
-| --- | --- | --- |
-| 00 | [**Start here**](docs/md/index.md) | What girih is, the shape of a workspace, the four promises. |
-| 01 | [**The idea**](docs/md/01-the-idea.md) | Why design systems drift, the girih tiles, and the bet this project makes. |
-| 02 | [**Installation**](docs/md/02-installation.md) | Empty folder to a rebrandable button, plus every command and every failure mode. |
-| 03 | [**How it works**](docs/md/03-how-it-works.md) | The six-stage compile pipeline with real data moving through it. |
-| 04 | [**Tokens and brands**](docs/md/04-tokens.md) | Three tiers, alias chains, the override-only rule, the dependents closure. **The chapter that matters.** |
-| 05 | [**Contracts**](docs/md/05-contracts.md) | `defineSpec` → IR → typed React. Extensions, ejection, contract-derived semver. |
-| 06 | [**The code**](docs/md/06-the-code.md) | All nine packages, the dependency direction, and where to look when something breaks. |
-| 07 | [**Error codes**](docs/md/07-error-codes.md) | All 70 `GIRIH` diagnostics, extracted from source, with what each is telling you. |
-| 08 | [**Check yourself**](docs/md/08-quiz.md) | Ten questions that are hard to answer without the model. |
+| #   | Chapter                                        | What it covers                                                                                           |
+| --- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| 00  | [**Start here**](docs/md/index.md)             | What girih is, the shape of a workspace, the four promises.                                              |
+| 01  | [**The idea**](docs/md/01-the-idea.md)         | Why design systems drift, the girih tiles, and the bet this project makes.                               |
+| 02  | [**Installation**](docs/md/02-installation.md) | Empty folder to a rebrandable button, plus every command and every failure mode.                         |
+| 03  | [**How it works**](docs/md/03-how-it-works.md) | The six-stage compile pipeline with real data moving through it.                                         |
+| 04  | [**Tokens and brands**](docs/md/04-tokens.md)  | Three tiers, alias chains, the override-only rule, the dependents closure. **The chapter that matters.** |
+| 05  | [**Contracts**](docs/md/05-contracts.md)       | `defineSpec` → IR → typed React. Extensions, ejection, contract-derived semver.                          |
+| 06  | [**The code**](docs/md/06-the-code.md)         | All nine packages, the dependency direction, and where to look when something breaks.                    |
+| 07  | [**Error codes**](docs/md/07-error-codes.md)   | All 70 `GIRIH` diagnostics, extracted from source, with what each is telling you.                        |
+| 08  | [**Check yourself**](docs/md/08-quiz.md)       | Ten questions that are hard to answer without the model.                                                 |
 
 ### Interactive version
 
@@ -111,7 +111,7 @@ Everything above is for someone deciding whether to use girih. Below is for some
 
 ### Layout
 
-Nine packages. The dependency direction *is* the architecture — nothing enforces it mechanically, so
+Nine packages. The dependency direction _is_ the architecture — nothing enforces it mechanically, so
 it is a review responsibility.
 
 ```
@@ -123,17 +123,17 @@ core, tokens, spec, generator-css, generator-react  ←  cli
 standalone:  react-runtime (react is a peer dep) · create-girih (zero workspace deps) · figma (stub)
 ```
 
-| Package | Role |
-| --- | --- |
-| [`@faravahar/girih-core`](packages/core) | Config loading, diagnostics, the emitted-file model, CSS variable naming. Depends on nothing. |
-| [`@faravahar/girih-tokens`](packages/tokens) | DTCG parse → brand merge → alias resolve → tier validation. |
-| [`@faravahar/girih-generator-css`](packages/generator-css) | Token graphs → multi-brand CSS custom properties + `TokenPath` types. |
-| [`@faravahar/girih-spec`](packages/spec) | `defineSpec` / `defineVariant` contracts, `ComponentIR`, cross-brand validation. |
-| [`@faravahar/girih-generator-react`](packages/generator-react) | IR + templates → React package and structure-only CSS. |
-| [`@faravahar/girih`](packages/cli) | The `girih` / `ds` binary. The only package allowed to depend on all of the above. |
-| [`@faravahar/girih-react-runtime`](packages/react-runtime) | `BrandProvider`, `useBrand`, `cx`. The entire runtime. |
-| [`create-girih`](packages/create-girih) | `npx` bootstrapper. Zero workspace deps by necessity. |
-| [`@faravahar/girih-figma`](packages/figma) | Phase-2 stub; consumes `ComponentIR`. |
+| Package                                                        | Role                                                                                          |
+| -------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| [`@faravahar/girih-core`](packages/core)                       | Config loading, diagnostics, the emitted-file model, CSS variable naming. Depends on nothing. |
+| [`@faravahar/girih-tokens`](packages/tokens)                   | DTCG parse → brand merge → alias resolve → tier validation.                                   |
+| [`@faravahar/girih-generator-css`](packages/generator-css)     | Token graphs → multi-brand CSS custom properties + `TokenPath` types.                         |
+| [`@faravahar/girih-spec`](packages/spec)                       | `defineSpec` / `defineVariant` contracts, `ComponentIR`, cross-brand validation.              |
+| [`@faravahar/girih-generator-react`](packages/generator-react) | IR + templates → React package and structure-only CSS.                                        |
+| [`@faravahar/girih`](packages/cli)                             | The `girih` / `ds` binary. The only package allowed to depend on all of the above.            |
+| [`@faravahar/girih-react-runtime`](packages/react-runtime)     | `BrandProvider`, `useBrand`, `cx`. The entire runtime.                                        |
+| [`create-girih`](packages/create-girih)                        | `npx` bootstrapper. Zero workspace deps by necessity.                                         |
+| [`@faravahar/girih-figma`](packages/figma)                     | Phase-2 stub; consumes `ComponentIR`.                                                         |
 
 ### Verifying a change
 

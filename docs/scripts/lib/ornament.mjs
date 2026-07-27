@@ -18,7 +18,7 @@
  *
  * @param {object} opts  size, whether to animate, and a unique id for the gradient
  */
-export function girihLogo({ size = 30, animate = true, id = 'mark' } = {}) {
+export function girihLogo({ size = 30, animate = true, id: _id = 'mark' } = {}) {
   const R = 21;
   const cx = 24;
   const cy = 24;
@@ -26,7 +26,7 @@ export function girihLogo({ size = 30, animate = true, id = 'mark' } = {}) {
 
   const ring = (r, rotate = -Math.PI / 2) =>
     Array.from({ length: points }, (_, i) => {
-      const a = (Math.PI * 2 / points) * i + rotate;
+      const a = ((Math.PI * 2) / points) * i + rotate;
       return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
     });
 
@@ -44,9 +44,7 @@ export function girihLogo({ size = 30, animate = true, id = 'mark' } = {}) {
 
   const decagon = ring(R);
   // Construction radii — the lines struck from centre to each vertex.
-  const radii = decagon
-    .map(([x, y]) => `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(2)}" y2="${y.toFixed(2)}"/>`)
-    .join('');
+  const radii = decagon.map(([x, y]) => `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(2)}" y2="${y.toFixed(2)}"/>`).join('');
 
   const anim = animate ? ' data-animate="true"' : '';
 

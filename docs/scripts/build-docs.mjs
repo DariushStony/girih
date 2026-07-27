@@ -15,7 +15,7 @@
  *   node docs/scripts/build-docs.mjs --artifact-urls urls.json   also emit artifact bodies
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
-import { join, dirname, relative } from 'node:path';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { PAGES, render } from './lib/shell.mjs';
@@ -60,9 +60,7 @@ for (const page of PAGES) {
 
 const urlFlagIndex = process.argv.indexOf('--artifact-urls');
 const artifactUrls =
-  urlFlagIndex !== -1 && process.argv[urlFlagIndex + 1]
-    ? JSON.parse(readFileSync(process.argv[urlFlagIndex + 1], 'utf8'))
-    : null;
+  urlFlagIndex !== -1 && process.argv[urlFlagIndex + 1] ? JSON.parse(readFileSync(process.argv[urlFlagIndex + 1], 'utf8')) : null;
 
 /* ------------------------------------------------------------------------- build */
 
@@ -78,8 +76,14 @@ for (const page of PAGES) {
   const { sections, body, widgets = [], mdBody = null } = modules[page.slug](data);
 
   // Hoist widget CSS and JS out of the body so they land once, in the right place.
-  const widgetCss = widgets.map((w) => w.css).filter(Boolean).join('\n');
-  const widgetJs = widgets.map((w) => w.js).filter(Boolean).join('\n');
+  const widgetCss = widgets
+    .map((w) => w.css)
+    .filter(Boolean)
+    .join('\n');
+  const widgetJs = widgets
+    .map((w) => w.js)
+    .filter(Boolean)
+    .join('\n');
 
   const bodyWithCss = widgetCss ? `<style>\n${widgetCss}\n</style>\n${body}` : body;
 
@@ -152,10 +156,7 @@ ${navLine}
     // Artifact bodies are a publishing intermediate, not a repo artifact — they go
     // wherever --artifact-out says, defaulting outside the working tree.
     const outFlag = process.argv.indexOf('--artifact-out');
-    const outDir =
-      outFlag !== -1 && process.argv[outFlag + 1]
-        ? process.argv[outFlag + 1]
-        : join(repoRoot, '.artifact-build');
+    const outDir = outFlag !== -1 && process.argv[outFlag + 1] ? process.argv[outFlag + 1] : join(repoRoot, '.artifact-build');
     mkdirSync(outDir, { recursive: true });
     const p = join(outDir, `${page.slug}.html`);
     writeFileSync(p, artifactHtml, 'utf8');

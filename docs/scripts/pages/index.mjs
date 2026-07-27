@@ -53,7 +53,8 @@ ${eli5(`
   and committed to git. Everything on the right is produced by a command and is never edited.
 </p>
 
-${code(`my-design-system/
+${code(
+  `my-design-system/
 ├── ds.config.ts             ← which brands exist, what the package is called
 ├── tokens/                  ← the design language: colour, space, type, radius
 │   ├── global.tokens.json         raw values         (${t.tiers.global} tokens in the example)
@@ -69,10 +70,12 @@ ${code(`my-design-system/
     ├── src/*.tsx                  typed React components
     ├── styles/tokens.css          every brand's values as CSS custom properties
     ├── styles/components.css      structure only — every value is a var()
-    └── dist/                      compiled ESM + .d.ts, ready to publish`, {
+    └── dist/                      compiled ESM + .d.ts, ready to publish`,
+  {
     path: 'a girih workspace',
     lang: 'none',
-  })}
+  },
+)}
 
 ${rule(
   'The one rule that explains all the others',
@@ -196,13 +199,48 @@ ${table(
 </p>
 
 ${cards([
-  { n: '01', title: 'The idea', href: '01-the-idea.html', detail: 'Why design systems drift, and what a 12th-century tiling pattern has to do with it.' },
-  { n: '02', title: 'Installation', href: '02-installation.html', detail: 'From empty folder to a rebrandable button in about five minutes.' },
-  { n: '03', title: 'How it works', href: '03-how-it-works.html', detail: 'The compile pipeline, stage by stage, with real values moving through it.' },
-  { n: '04', title: 'Tokens and brands', href: '04-tokens.html', detail: 'Three tiers, alias chains, and the rule that makes one stylesheet serve everyone.' },
-  { n: '05', title: 'Contracts', href: '05-contracts.html', detail: 'How data becomes a typed, accessible component you can read and review.' },
-  { n: '06', title: 'The code', href: '06-the-code.html', detail: 'All nine packages: what each owns and where to look when something breaks.' },
-  { n: '07', title: 'Error codes', href: '07-error-codes.html', detail: `All ${data.diagCount ?? 70} GIRIH diagnostics, extracted from source, explained.` },
+  {
+    n: '01',
+    title: 'The idea',
+    href: '01-the-idea.html',
+    detail: 'Why design systems drift, and what a 12th-century tiling pattern has to do with it.',
+  },
+  {
+    n: '02',
+    title: 'Installation',
+    href: '02-installation.html',
+    detail: 'From empty folder to a rebrandable button in about five minutes.',
+  },
+  {
+    n: '03',
+    title: 'How it works',
+    href: '03-how-it-works.html',
+    detail: 'The compile pipeline, stage by stage, with real values moving through it.',
+  },
+  {
+    n: '04',
+    title: 'Tokens and brands',
+    href: '04-tokens.html',
+    detail: 'Three tiers, alias chains, and the rule that makes one stylesheet serve everyone.',
+  },
+  {
+    n: '05',
+    title: 'Contracts',
+    href: '05-contracts.html',
+    detail: 'How data becomes a typed, accessible component you can read and review.',
+  },
+  {
+    n: '06',
+    title: 'The code',
+    href: '06-the-code.html',
+    detail: 'All nine packages: what each owns and where to look when something breaks.',
+  },
+  {
+    n: '07',
+    title: 'Error codes',
+    href: '07-error-codes.html',
+    detail: `All ${data.diagCount ?? 70} GIRIH diagnostics, extracted from source, explained.`,
+  },
   { n: '08', title: 'Check yourself', href: '08-quiz.html', detail: 'Ten questions that are hard to fake your way through.' },
 ])}
 

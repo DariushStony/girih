@@ -31,7 +31,7 @@ export function starPoints({ points = 10, outer = 22, inner = 9.6, cx = 24, cy =
 export function polygonPoints({ points = 10, r = 22, cx = 24, cy = 24, rotate = -Math.PI / 2 } = {}) {
   const coords = [];
   for (let i = 0; i < points; i++) {
-    const angle = (Math.PI * 2 / points) * i + rotate;
+    const angle = ((Math.PI * 2) / points) * i + rotate;
     coords.push([cx + r * Math.cos(angle), cy + r * Math.sin(angle)]);
   }
   return coords;

@@ -1,7 +1,7 @@
 import { code, eli5, rule, gotcha, aside, table, tierStack, strap } from '../lib/ui.mjs';
 import { tileMapping } from '../lib/viz.mjs';
 
-export default function page(data) {
+export default function page(_data) {
   const tilemap = tileMapping({ id: 'w-tilemap' });
 
   const sections = [
@@ -218,7 +218,8 @@ ${rule(
   the difference, using real values from the example workspace:
 </p>
 
-${code(`/* If aliases were flattened to literals — the naive approach */
+${code(
+  `/* If aliases were flattened to literals — the naive approach */
 :root                      { --ds-button-radius: 8px; }
 [data-brand="seller"]      { --ds-button-radius: 2px; }
 /* Every dependent value must be recomputed and re-emitted by the build.
@@ -232,11 +233,13 @@ ${code(`/* If aliases were flattened to literals — the naive approach */
                              --ds-radius-control: var(--ds-radius-md);
                              --ds-button-radius: var(--ds-radius-control); }
 /* The seller block redeclares the chain, so the whole chain re-resolves
-   inside that scope. The browser does the work, at any depth of nesting. */`, {
+   inside that scope. The browser does the work, at any depth of nesting. */`,
+  {
     path: 'the difference between flattened and live aliases',
     lang: 'css',
     kind: 'generated',
-  })}
+  },
+)}
 
 ${gotcha(
   'Why the chain has to be redeclared, not just the root',
@@ -264,7 +267,10 @@ ${table(
   [
     ['Components are generated from a description', 'Validate the description against every brand, not just the default one'],
     ['The output is a build artifact', 'Detect hand edits and refuse to overwrite them — <code>.ds/manifest.json</code>'],
-    ['People will occasionally need to escape the generator', 'Offer a <em>tracked</em> fork (<code>girih eject</code>) rather than letting them fork silently'],
+    [
+      'People will occasionally need to escape the generator',
+      'Offer a <em>tracked</em> fork (<code>girih eject</code>) rather than letting them fork silently',
+    ],
     ['The contract is data', 'Be able to diff two contracts, and therefore derive the semver bump mechanically'],
     ['Aliases must stay live', 'Compute the dependents closure per brand and re-declare it in scope'],
     ['One stylesheet serves every brand', 'Keep component CSS structure-only, with every design value a <code>var()</code>'],

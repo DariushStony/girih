@@ -52,7 +52,10 @@ describe('missingBuildDependencies', () => {
     // A dialog contract adds @base-ui-components/react to the emitted dependencies;
     // nothing in the preflight names it, which is the point of reading the manifest.
     const dir = await generatedPackage(
-      { dependencies: { '@faravahar/girih-react-runtime': '^0.1.0', '@base-ui-components/react': '1.0.0-rc.0' }, peerDependencies: { react: '>=18' } },
+      {
+        dependencies: { '@faravahar/girih-react-runtime': '^0.1.0', '@base-ui-components/react': '1.0.0-rc.0' },
+        peerDependencies: { react: '>=18' },
+      },
       ['@faravahar/girih-react-runtime', 'react', '@types/react'],
     );
     expect(await missingBuildDependencies(dir)).toEqual(['@base-ui-components/react']);

@@ -70,7 +70,10 @@ export function validateBrandParity(graphs: Map<string, ResolvedTokenGraph>): Di
         severity: 'error',
         message:
           `Brand '${brand}' does not resolve the same token set as '${brands[0]}': ` +
-          [missing.length > 0 ? `missing ${missing.slice(0, 5).join(', ')}` : '', extra.length > 0 ? `extra ${extra.slice(0, 5).join(', ')}` : '']
+          [
+            missing.length > 0 ? `missing ${missing.slice(0, 5).join(', ')}` : '',
+            extra.length > 0 ? `extra ${extra.slice(0, 5).join(', ')}` : '',
+          ]
             .filter(Boolean)
             .join('; ') +
           '.',

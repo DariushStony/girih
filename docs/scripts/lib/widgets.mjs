@@ -28,15 +28,10 @@ export function brandToggle(data, { id = 'branddemo' } = {}) {
   const sizes = ['sm', 'md', 'lg']
     .map((s) => `<button class="ds-button" data-variant="primary" data-size="${s}" type="button">Size ${s}</button>`)
     .join('\n            ');
-  const badges = ['neutral', 'primary', 'danger']
-    .map((t) => `<span class="ds-badge" data-tone="${t}">${t}</span>`)
-    .join('\n            ');
+  const badges = ['neutral', 'primary', 'danger'].map((t) => `<span class="ds-badge" data-tone="${t}">${t}</span>`).join('\n            ');
 
   const brandButtons = brands
-    .map(
-      (b, i) =>
-        `<button type="button" data-brand-set="${esc(b)}" aria-pressed="${i === 0 ? 'true' : 'false'}">${esc(b)}</button>`,
-    )
+    .map((b, i) => `<button type="button" data-brand-set="${esc(b)}" aria-pressed="${i === 0 ? 'true' : 'false'}">${esc(b)}</button>`)
     .join('');
 
   const overrideNote = brands
@@ -358,9 +353,7 @@ brand parity: marketplace 109 paths · seller 109 paths    ✓ identical`,
 
   const js = `
 (function () {
-  var STAGES = ${jsStr(
-    STAGES.map((s) => ({ title: s.title, owner: s.owner, note: s.note, data: s.data })),
-  )};
+  var STAGES = ${jsStr(STAGES.map((s) => ({ title: s.title, owner: s.owner, note: s.note, data: s.data })))};
   var root = document.getElementById(${jsStr(id)});
   if (!root) return;
 

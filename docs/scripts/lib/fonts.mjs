@@ -45,9 +45,7 @@ export function fontFaceCss() {
   font-style: normal;
   font-weight: ${face.weightRange};
   font-display: swap;
-  src: url(${face.dataUri}) format('woff2');${
-    face.unicodeRange ? `\n  unicode-range: ${face.unicodeRange};` : ''
-  }
+  src: url(${face.dataUri}) format('woff2');${face.unicodeRange ? `\n  unicode-range: ${face.unicodeRange};` : ''}
 }`);
     }
   }

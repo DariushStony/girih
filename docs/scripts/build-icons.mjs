@@ -239,8 +239,7 @@ console.log('  github-social-preview.png (1280x640)');
 const manifest = {
   name: 'girih — design system infrastructure',
   short_name: 'girih',
-  description:
-    'Compile multi-brand design systems from DTCG tokens and component contracts. One warp, many wefts.',
+  description: 'Compile multi-brand design systems from DTCG tokens and component contracts. One warp, many wefts.',
   start_url: './index.html',
   scope: './',
   display: 'standalone',
@@ -335,7 +334,4 @@ if (siteUrl) {
 }
 
 // Record the site URL so build-docs can emit absolute og: tags without being told twice.
-write(
-  join(docsDir, 'data/site.json'),
-  JSON.stringify({ siteUrl, generatedBy: 'docs/scripts/build-icons.mjs' }, null, 2) + '\n',
-);
+write(join(docsDir, 'data/site.json'), JSON.stringify({ siteUrl, generatedBy: 'docs/scripts/build-icons.mjs' }, null, 2) + '\n');

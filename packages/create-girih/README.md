@@ -15,12 +15,12 @@ drift apart.
 
 ## Options
 
-| Flag | |
-| --- | --- |
-| `--name <package>` | Published package name (default: `@<directory>/design-system`) |
-| `--brand <name>` | Default brand, lowercase kebab-case (default: `main`) |
-| `--workspace` | Link the girih packages by workspace protocol, for development inside the girih monorepo |
-| `--no-install` | Scaffold only, then print the commands to finish by hand |
+| Flag               |                                                                                          |
+| ------------------ | ---------------------------------------------------------------------------------------- |
+| `--name <package>` | Published package name (default: `@<directory>/design-system`)                           |
+| `--brand <name>`   | Default brand, lowercase kebab-case (default: `main`)                                    |
+| `--workspace`      | Link the girih packages by workspace protocol, for development inside the girih monorepo |
+| `--no-install`     | Scaffold only, then print the commands to finish by hand                                 |
 
 ## What you get
 
