@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { applyBump as girihApplyBump } from '../../packages/girih/src/semver.js';
 // @ts-expect-error — plain JS release tooling, deliberately not typed.
-import { BUMP_BY_TYPE, applyBump, parseCommit, renderNotes, strongest } from '../../scripts/release-prepare.mjs';
+import { BUMP_BY_TYPE, applyBump, parseCommit, renderNotes, strongest } from '../../scripts/lib/release-bump.mjs';
 
 /**
  * The release script decides girih's own version. Nothing else checks it, and getting it
