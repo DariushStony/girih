@@ -1,19 +1,55 @@
 {
   "input": {
-    "background": { "$type": "color", "$value": "{color.background}" },
-    "foreground": { "$type": "color", "$value": "{color.text}" },
-    "placeholder": { "$type": "color", "$value": "{color.text-muted}" },
+    "background": {
+      "$type": "color",
+      "$value": "{color.background}"
+    },
+    "foreground": {
+      "$type": "color",
+      "$value": "{color.text}"
+    },
+    "placeholder": {
+      "$type": "color",
+      "$value": "{color.text-muted}"
+    },
     "border": {
       "$type": "border",
-      "$value": { "width": "1px", "style": "solid", "color": "{color.border}" }
+      "$value": {
+        "width": "1px",
+        "style": "solid",
+        "color": "{color.border}"
+      }
     },
-    "border-focus": { "$type": "color", "$value": "{color.primary}" },
-    "radius": { "$type": "dimension", "$value": "{radius.control}" },
+    "border-focus": {
+      "$type": "color",
+      "$value": "{color.primary}"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.control}"
+    },
     "size": {
       "$type": "dimension",
-      "sm": { "height": { "$value": "32px" } },
-      "md": { "height": { "$value": "40px" } },
-      "lg": { "height": { "$value": "48px" } }
+      "sm": {
+        "height": {
+          "$value": "32px"
+        }
+      },
+      "md": {
+        "height": {
+          "$value": "40px"
+        }
+      },
+      "lg": {
+        "height": {
+          "$value": "48px"
+        }
+      }
+    },
+    "border-invalid": {
+      "$value": "{color.danger}",
+      "$type": "color",
+      "$description": "Border colour when the input is in an invalid state."
     }
   }
 }

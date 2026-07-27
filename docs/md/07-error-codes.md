@@ -98,19 +98,19 @@ Run `girih init` to scaffold a workspace, or cd into an existing one.
 
 GIRIH1002
 error
-packages/girih-core/src/config.ts:108
+packages/girih-core/src/config.ts:114
 
 Failed to load ${configPath}: ${message.split('\n')[0]}
 
 GIRIH1003
 error
-packages/girih-core/src/config.ts:185
+packages/girih-core/src/config.ts:191
 
 Config is missing 'name' (the published package name, e.g. '@acme/design-system').
 
 GIRIH1004
 error
-packages/girih-core/src/config.ts:160
+packages/girih-core/src/config.ts:166
 
 Brand '${brand.name}' points at a missing token file: ${brand.tokensFile}
 
@@ -118,13 +118,13 @@ Create the overlay file (an empty {} is valid) or fix brands.definitions.${brand
 
 GIRIH1005
 error
-packages/girih-core/src/config.ts:194
+packages/girih-core/src/config.ts:200
 
 Config must define at least one brand under brands.definitions.
 
 GIRIH1006
 error
-packages/girih-core/src/config.ts:201
+packages/girih-core/src/config.ts:207
 
 brands.default ('${raw.brands?.default}') is not a key of brands.definitions.
 
@@ -132,13 +132,13 @@ Known brands: ${Object.keys(definitions).join(', ')}
 
 GIRIH1007
 error
-packages/girih-core/src/config.ts:176
+packages/girih-core/src/config.ts:182
 
 ds.config.ts must default-export a config object (use defineConfig).
 
 GIRIH1008
 error
-packages/girih/src/cli.ts:352
+packages/girih/src/commands/check.ts:23
 
 Unknown brand '${options.brand}'.
 
@@ -146,7 +146,7 @@ Known brands: ${[...build.graphs.keys()].join(', ')}.
 
 GIRIH1010
 warning
-packages/girih/src/cli.ts:410
+packages/girih/src/commands/check.ts:81
 
 Generated file ${path} was edited by hand since the last \`girih generate\`.
 
@@ -154,7 +154,7 @@ Undo the edit or eject the component (M5); the next generate will refuse to over
 
 GIRIH1011
 warning
-packages/girih/src/cli.ts:402
+packages/girih/src/commands/check.ts:73
 
 .ds/manifest.json is corrupt or from an incompatible girih version — drift detection is disabled.
 
@@ -162,7 +162,7 @@ Delete .ds/manifest.json and regenerate.
 
 GIRIH1012
 error
-packages/girih/src/cli.ts:115
+packages/girih/src/workspace.ts:87
 
 '${name}' is recorded as ejected in ds.lock, but ${path} is missing.
 
@@ -170,7 +170,7 @@ Restore the file, or remove the '${name}' entry from ds.lock to return to genera
 
 GIRIH1013
 error
-packages/girih/src/cli.ts:89
+packages/girih/src/workspace.ts:61
 
 ds.lock is corrupt or from an incompatible girih version.
 
@@ -178,7 +178,7 @@ ds.lock is machine-managed and committed — restore it from git history.
 
 GIRIH1014
 warning
-packages/girih/src/cli.ts:132
+packages/girih/src/workspace.ts:104
 
 '${name}' was ejected from a different spec/template than the current one — the fork may not honor the contract anymore.
 
@@ -186,7 +186,7 @@ Review the fork against the current spec, or re-eject after removing the ds.lock
 
 GIRIH1015
 warning
-packages/girih/src/cli.ts:103
+packages/girih/src/workspace.ts:75
 
 ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated.
 

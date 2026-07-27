@@ -64,7 +64,7 @@ girih requires tokens to live in one of three tiers. The tier is inferred from t
 
 | Tier | Holds | Examples |
 | --- | --- | --- |
-| **Component** | 53 tokens in the example | `button.radius`, `button.primary.background`, `input.border-focus`, `dialog.backdrop` |
+| **Component** | 54 tokens in the example | `button.radius`, `button.primary.background`, `input.border-focus`, `dialog.backdrop` |
 | **Semantic** | 25 tokens | `radius.control`, `color.primary`, `color.on-primary`, `typography.size-md` |
 | **Global** | 31 tokens | `radius.md = 8px`, `color.blue.600 = #2563EB`, `space.4 = 16px` |
 
@@ -159,7 +159,7 @@ through and see how many other tokens depend on it.
 
 > **▶ Every token, and what it points at** — interactive
 >
-> 109 real tokens · hover or focus a node to trace its chain. Open [the interactive version](../04-tokens.html) in a browser to use it.
+> 110 real tokens · hover or focus a node to trace its chain. Open [the interactive version](../04-tokens.html) in a browser to use it.
 
 Two things are worth noticing. The bottom band is almost entirely leaves — global tokens hold
 values and reference nothing, so no edge ever leaves them heading further down. And the fan-out
@@ -349,7 +349,7 @@ radius.md                 global     dimension  2px
 
 6 component contracts: Badge, Button, Card, Checkbox, Dialog, Input
 1 extension: PaymentButton → Button
-109 tokens (31 global, 25 semantic, 53 component) · 2 brands: marketplace (default), seller (3 overrides)
+110 tokens (31 global, 25 semantic, 54 component) · 2 brands: marketplace (default), seller (3 overrides)
 ```
 
 Tokens are the hard half. [Chapter 05](05-contracts.md) is about the other half:

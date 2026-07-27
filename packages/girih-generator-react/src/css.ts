@@ -13,6 +13,10 @@ const STATE_SELECTORS: Record<ComponentState, string[]> = {
   disabled: [':disabled', '[aria-disabled="true"]'],
   loading: ['[data-loading="true"]'],
   checked: [':checked'],
+  // Targets the announced attribute rather than data-invalid, so a consumer who sets
+  // aria-invalid directly on a native input gets the styling too. The template emits
+  // both from one prop, so they cannot disagree.
+  invalid: ['[aria-invalid="true"]'],
 };
 
 function declarations(rules: StyleRuleIR[], prefix: string): string {

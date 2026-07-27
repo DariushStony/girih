@@ -146,10 +146,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 108,
+      "line": 114,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:108"
+        "packages/girih-core/src/config.ts:114"
       ]
     },
     {
@@ -161,10 +161,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 185,
+      "line": 191,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:185"
+        "packages/girih-core/src/config.ts:191"
       ]
     },
     {
@@ -176,10 +176,10 @@
       "helpDynamic": true,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 160,
+      "line": 166,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:160"
+        "packages/girih-core/src/config.ts:166"
       ]
     },
     {
@@ -191,10 +191,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 194,
+      "line": 200,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:194"
+        "packages/girih-core/src/config.ts:200"
       ]
     },
     {
@@ -206,10 +206,10 @@
       "helpDynamic": true,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 201,
+      "line": 207,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:201"
+        "packages/girih-core/src/config.ts:207"
       ]
     },
     {
@@ -221,10 +221,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 176,
+      "line": 182,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:176"
+        "packages/girih-core/src/config.ts:182"
       ]
     },
     {
@@ -235,11 +235,11 @@
       "help": "Known brands: ${[...build.graphs.keys()].join(', ')}.",
       "helpDynamic": true,
       "package": "girih",
-      "file": "packages/girih/src/cli.ts",
-      "line": 352,
+      "file": "packages/girih/src/commands/check.ts",
+      "line": 23,
       "sites": 1,
       "allSites": [
-        "packages/girih/src/cli.ts:352"
+        "packages/girih/src/commands/check.ts:23"
       ]
     },
     {
@@ -250,11 +250,11 @@
       "help": "Undo the edit or eject the component (M5); the next generate will refuse to overwrite it.",
       "helpDynamic": false,
       "package": "girih",
-      "file": "packages/girih/src/cli.ts",
-      "line": 410,
+      "file": "packages/girih/src/commands/check.ts",
+      "line": 81,
       "sites": 1,
       "allSites": [
-        "packages/girih/src/cli.ts:410"
+        "packages/girih/src/commands/check.ts:81"
       ]
     },
     {
@@ -265,11 +265,11 @@
       "help": "Delete .ds/manifest.json and regenerate.",
       "helpDynamic": false,
       "package": "girih",
-      "file": "packages/girih/src/cli.ts",
-      "line": 402,
+      "file": "packages/girih/src/commands/check.ts",
+      "line": 73,
       "sites": 1,
       "allSites": [
-        "packages/girih/src/cli.ts:402"
+        "packages/girih/src/commands/check.ts:73"
       ]
     },
     {
@@ -280,11 +280,11 @@
       "help": "Restore the file, or remove the '${name}' entry from ds.lock to return to generation.",
       "helpDynamic": true,
       "package": "girih",
-      "file": "packages/girih/src/cli.ts",
-      "line": 115,
+      "file": "packages/girih/src/workspace.ts",
+      "line": 87,
       "sites": 1,
       "allSites": [
-        "packages/girih/src/cli.ts:115"
+        "packages/girih/src/workspace.ts:87"
       ]
     },
     {
@@ -295,11 +295,11 @@
       "help": "ds.lock is machine-managed and committed — restore it from git history.",
       "helpDynamic": false,
       "package": "girih",
-      "file": "packages/girih/src/cli.ts",
-      "line": 89,
+      "file": "packages/girih/src/workspace.ts",
+      "line": 61,
       "sites": 1,
       "allSites": [
-        "packages/girih/src/cli.ts:89"
+        "packages/girih/src/workspace.ts:61"
       ]
     },
     {
@@ -310,11 +310,11 @@
       "help": "Review the fork against the current spec, or re-eject after removing the ds.lock entry (`girih forks` reports this; the 3-way merge is not built yet).",
       "helpDynamic": false,
       "package": "girih",
-      "file": "packages/girih/src/cli.ts",
-      "line": 132,
+      "file": "packages/girih/src/workspace.ts",
+      "line": 104,
       "sites": 1,
       "allSites": [
-        "packages/girih/src/cli.ts:132"
+        "packages/girih/src/workspace.ts:104"
       ]
     },
     {
@@ -325,11 +325,11 @@
       "help": "Restore components/${name.charAt(0).toLowerCase()}${name.slice(1)}.spec.ts, or remove the entry and components/ejected/${name}.tsx.",
       "helpDynamic": true,
       "package": "girih",
-      "file": "packages/girih/src/cli.ts",
-      "line": 103,
+      "file": "packages/girih/src/workspace.ts",
+      "line": 75,
       "sites": 1,
       "allSites": [
-        "packages/girih/src/cli.ts:103"
+        "packages/girih/src/workspace.ts:75"
       ]
     },
     {

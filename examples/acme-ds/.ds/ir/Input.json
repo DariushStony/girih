@@ -17,7 +17,8 @@
   "states": [
     "hover",
     "focus-visible",
-    "disabled"
+    "disabled",
+    "invalid"
   ],
   "props": [],
   "childrenRequired": false,
@@ -51,6 +52,15 @@
           {
             "property": "border-color",
             "ref": "{input.border-focus}"
+          }
+        ]
+      },
+      {
+        "state": "invalid",
+        "declarations": [
+          {
+            "property": "border-color",
+            "ref": "{input.border-invalid}"
           }
         ]
       }

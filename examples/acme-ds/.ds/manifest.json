@@ -8,13 +8,13 @@
     "packages/design-system/src/Card.tsx": "7212315ca1583393d39892d09680de17dcbf93d4b24cc5d2a329fa6fc0736d64",
     "packages/design-system/src/Checkbox.tsx": "48b5d68e98e5866fc86d7e7bac8773e0c82f33ef92134c69c6674f44a536ef22",
     "packages/design-system/src/Dialog.tsx": "6345111e90901e473b0d6ff20de7182c4fec7a6aa07287aed369cc12be97583c",
-    "packages/design-system/src/Input.tsx": "f6dfd3c7f22d6fc3925b6663516e117839d2c10ac51e4487a2860369d7bdd12f",
+    "packages/design-system/src/Input.tsx": "e97d5496043d9bf59eb6ca99c18986bea6cc02bbd7069439f0567cf5d4705e3a",
     "packages/design-system/src/PaymentButton.tsx": "2130ad2c337aaab34545d0c214512ee666eda4e8fdc0ac50fe50de89b9f193b7",
     "packages/design-system/src/index.ts": "9ffb3515329de47a3e6ed647df7c4454386d79f0787eb692381407be1126e06b",
     "packages/design-system/src/internal/headless.ts": "9a30c951b55b8342defb5aa8873a4053367f98a85306d22cc05d2d59fca26b6d",
-    "packages/design-system/styles/components.css": "b3ca8204f91267f07deb62601445355a23fa3b6c2cc6abb9f2efaaf003f97298",
-    "packages/design-system/styles/tokens.css": "5250f25d2e1539412c04824e74e78f8d5740736f7d032d1cf816e96f5dba8fa3",
-    "packages/design-system/styles/tokens.d.ts": "3d0f0214d82bdbfcc1e862348c204970abc1fa6d2ad5b31d62e6c34e558ad4bd"
+    "packages/design-system/styles/components.css": "328af7283245f385ced478098e1805e1efc58a3cd4d15a569268068bfe93f94a",
+    "packages/design-system/styles/tokens.css": "f67cee692d66fe0355c8a7dc5d391bd56f069bb0a99e1a492726816a3bd2bd10",
+    "packages/design-system/styles/tokens.d.ts": "1d68cd1644d8851681fa07221b6dbb207def0b5347d4f1765f5a567eae54a77c"
   },
   "targets": {
     "css": [

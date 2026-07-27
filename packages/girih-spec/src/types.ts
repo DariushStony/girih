@@ -2,7 +2,7 @@
 export type TokenRef = string;
 
 /** States the template set knows how to implement. The spec cannot express arbitrary behavior. */
-export const SUPPORTED_STATES = ['hover', 'active', 'focus-visible', 'disabled', 'loading', 'checked'] as const;
+export const SUPPORTED_STATES = ['hover', 'active', 'focus-visible', 'disabled', 'loading', 'checked', 'invalid'] as const;
 export type ComponentState = (typeof SUPPORTED_STATES)[number];
 
 export interface VariantAxisInput {

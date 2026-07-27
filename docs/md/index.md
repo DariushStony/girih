@@ -49,7 +49,7 @@ my-design-system/
 ├── tokens/                  ← the design language: colour, space, type, radius
 │   ├── global.tokens.json         raw values         (31 tokens in the example)
 │   ├── semantic.tokens.json       named meanings     (25 tokens)
-│   └── components/*.json          per-component      (53 tokens)
+│   └── components/*.json          per-component      (54 tokens)
 ├── brands/                  ← one folder per brand, values only
 │   ├── marketplace/tokens.json
 │   └── seller/tokens.json

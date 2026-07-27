@@ -30,6 +30,7 @@ export function renderElementComponent(ir: ComponentIR, options: TemplateOptions
   const className = `${options.classPrefix}-${kebab(name)}`;
   const hasLoading = ir.states.includes('loading');
   const hasDisabled = ir.states.includes('disabled');
+  const hasInvalid = ir.states.includes('invalid');
   const nativeDisabled = ['button', 'input', 'textarea', 'select'].includes(element);
 
   const variantTypes = ir.variants
@@ -49,6 +50,7 @@ export function renderElementComponent(ir: ComponentIR, options: TemplateOptions
     ...ir.props.map((p) => `  ${p.name}?: boolean;`),
   ];
   if (hasLoading) propLines.push('  loading?: boolean;');
+  if (hasInvalid) propLines.push('  invalid?: boolean;');
   // Non-native hosts have no built-in disabled — the template owns the prop.
   if (hasDisabled && !nativeDisabled) propLines.push('  disabled?: boolean;');
 
@@ -57,6 +59,7 @@ export function renderElementComponent(ir: ComponentIR, options: TemplateOptions
     ...ir.props.map((p) => `${p.name} = ${p.default}`),
   ];
   if (hasLoading) destructured.push('loading = false');
+  if (hasInvalid) destructured.push('invalid = false');
   destructured.push('className');
   if (hasDisabled) destructured.push(nativeDisabled ? 'disabled' : 'disabled = false');
   if (element === 'button') destructured.push(`type = 'button'`);
@@ -69,6 +72,12 @@ export function renderElementComponent(ir: ComponentIR, options: TemplateOptions
     ...ir.props.map((p) => `data-${kebab(p.name)}={${p.name} || undefined}`),
   ];
   if (hasLoading) attrs.push(`data-loading={loading || undefined}`);
+  if (hasInvalid) {
+    attrs.push(`data-invalid={invalid || undefined}`);
+    // aria-invalid is the announced state; data-invalid is the styling hook. One
+    // prop drives both so they can never disagree.
+    attrs.push(`aria-invalid={invalid || undefined}`);
+  }
   const wiredAria = new Set<string>();
   for (const aria of ir.accessibility.aria) {
     if (aria.state === 'loading' && hasLoading) {

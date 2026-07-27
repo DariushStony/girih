@@ -7,13 +7,13 @@ import type { TemplateCapabilities } from '@faravahar/girih-spec';
  */
 export const TEMPLATE_REGISTRY: Record<string, TemplateCapabilities> = {
   element: {
-    version: 2, // v2: non-native disabled prop, type="button" default, focus ring
-    states: ['hover', 'active', 'focus-visible', 'disabled', 'loading'],
+    version: 3, // v3: invalid state -> data-invalid + aria-invalid
+    states: ['hover', 'active', 'focus-visible', 'disabled', 'loading', 'invalid'],
     parts: [],
   },
   checkbox: {
-    version: 1,
-    states: ['hover', 'focus-visible', 'disabled', 'checked'],
+    version: 2, // v2: invalid state -> data-invalid + aria-invalid
+    states: ['hover', 'focus-visible', 'disabled', 'checked', 'invalid'],
     parts: [],
     fixedElement: 'input',
   },

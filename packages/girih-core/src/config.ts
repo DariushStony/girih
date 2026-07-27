@@ -99,7 +99,13 @@ export async function loadConfig(cwd: string): Promise<LoadConfigResult> {
 
   let raw: GirihConfig;
   try {
-    const jiti = createJiti(import.meta.url);
+    // fsCache off deliberately. jiti otherwise caches transpiled config into a
+    // *shared* directory under the system temp dir, keyed by the parent directory
+    // name — so two girih processes running at once (turbo across workspaces, or a
+    // parallel test suite) can read a half-written entry and fail with a syntax
+    // error in a file the user never wrote. A ds.config.ts is a few lines; there is
+    // nothing here worth the shared mutable state.
+    const jiti = createJiti(import.meta.url, { fsCache: false });
     const mod = await jiti.import<{ default?: GirihConfig } | GirihConfig>(configPath);
     raw = (mod as { default?: GirihConfig }).default ?? (mod as GirihConfig);
   } catch (error) {

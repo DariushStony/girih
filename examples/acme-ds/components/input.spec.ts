@@ -8,7 +8,7 @@ export default defineSpec({
   variants: {
     size: { values: ['sm', 'md', 'lg'], default: 'md' },
   },
-  states: ['hover', 'focus-visible', 'disabled'],
+  states: ['hover', 'focus-visible', 'disabled', 'invalid'],
 
   tokens: {
     base: {
@@ -20,6 +20,7 @@ export default defineSpec({
     },
     states: {
       'focus-visible': { borderColor: '{input.border-focus}' },
+      invalid: { borderColor: '{input.border-invalid}' },
     },
     variants: {
       size: {
