@@ -8,6 +8,11 @@ Every girih package is released in lockstep, so a version exists here even when 
 package did not change — internal dependencies publish as exact pins, so they all move
 together. See the [root changelog](../../CHANGELOG.md) for the release as a whole.
 
-## Unreleased
+## 0.1.1 — 2026-07-27
 
-Nothing published yet. 0.1.0 is the first release.
+No functional changes; released in lockstep with the rest of girih. See the
+[root changelog](../../CHANGELOG.md).
+
+## 0.1.0 — 2026-07-27
+
+First release.
