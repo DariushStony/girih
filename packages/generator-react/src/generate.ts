@@ -1,6 +1,6 @@
-import type { Diagnostic, EmittedFile } from '@girih/core';
-import { emittedFile } from '@girih/core';
-import type { ComponentIR, LoadedExtension } from '@girih/spec';
+import type { Diagnostic, EmittedFile } from '@faravahar/girih-core';
+import { emittedFile } from '@faravahar/girih-core';
+import type { ComponentIR, LoadedExtension } from '@faravahar/girih-spec';
 import { renderComponentCss, renderExtensionCss } from './css.js';
 import { renderCheckboxComponent } from './templates/checkbox.js';
 import { renderDialogComponent, renderHeadlessAdapter } from './templates/dialog.js';
@@ -86,7 +86,7 @@ export function generateReact(
   const diagnostics: Diagnostic[] = [];
   const files: EmittedFile[] = [];
   const classPrefix = options.classPrefix ?? options.prefix;
-  const runtimePackage = options.runtimePackage ?? '@girih/react-runtime';
+  const runtimePackage = options.runtimePackage ?? '@faravahar/girih-react-runtime';
   const sorted = [...irs].sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
   const extensions = [...(extras.extensions ?? [])].sort((a, b) =>
     a.extension.name < b.extension.name ? -1 : 1,

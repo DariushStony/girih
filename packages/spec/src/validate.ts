@@ -1,5 +1,5 @@
-import type { Diagnostic } from '@girih/core';
-import type { ResolvedTokenGraph } from '@girih/tokens';
+import type { Diagnostic } from '@faravahar/girih-core';
+import type { ResolvedTokenGraph } from '@faravahar/girih-tokens';
 import { irTokenRefs } from './ir.js';
 import type { ComponentIR } from './types.js';
 import { SUPPORTED_STATES } from './types.js';

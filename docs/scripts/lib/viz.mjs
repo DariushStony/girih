@@ -473,20 +473,20 @@ export function tileMapping({ id = 'w-tilemap' } = {}) {
 export function packageGraph({ id = 'w-pkggraph' } = {}) {
   // Layer index doubles as the sequential ramp step: an ordered dimension.
   const PKGS = [
-    { name: '@girih/core', layer: 0, role: 'config · diagnostics · emitted files · naming', deps: [] },
-    { name: '@girih/tokens', layer: 1, role: 'parse → merge → resolve → validate', deps: ['@girih/core'] },
-    { name: '@girih/spec', layer: 2, role: 'contracts · IR · validation', deps: ['@girih/core', '@girih/tokens'] },
-    { name: '@girih/generator-css', layer: 2, role: 'tokens → CSS + TokenPath', deps: ['@girih/core', '@girih/tokens'] },
-    { name: '@girih/generator-react', layer: 3, role: 'IR + templates → React', deps: ['@girih/core', '@girih/spec'] },
+    { name: '@faravahar/girih-core', layer: 0, role: 'config · diagnostics · emitted files · naming', deps: [] },
+    { name: '@faravahar/girih-tokens', layer: 1, role: 'parse → merge → resolve → validate', deps: ['@faravahar/girih-core'] },
+    { name: '@faravahar/girih-spec', layer: 2, role: 'contracts · IR · validation', deps: ['@faravahar/girih-core', '@faravahar/girih-tokens'] },
+    { name: '@faravahar/girih-generator-css', layer: 2, role: 'tokens → CSS + TokenPath', deps: ['@faravahar/girih-core', '@faravahar/girih-tokens'] },
+    { name: '@faravahar/girih-generator-react', layer: 3, role: 'IR + templates → React', deps: ['@faravahar/girih-core', '@faravahar/girih-spec'] },
     {
-      name: '@girih/cli',
+      name: '@faravahar/girih',
       layer: 4,
       role: 'the girih / ds binary',
-      deps: ['@girih/core', '@girih/tokens', '@girih/spec', '@girih/generator-css', '@girih/generator-react'],
+      deps: ['@faravahar/girih-core', '@faravahar/girih-tokens', '@faravahar/girih-spec', '@faravahar/girih-generator-css', '@faravahar/girih-generator-react'],
     },
-    { name: '@girih/react-runtime', layer: 4, role: 'BrandProvider · useBrand · cx', deps: [], standalone: true },
+    { name: '@faravahar/girih-react-runtime', layer: 4, role: 'BrandProvider · useBrand · cx', deps: [], standalone: true },
     { name: 'create-girih', layer: 4, role: 'npx bootstrapper', deps: [], standalone: true },
-    { name: '@girih/figma', layer: 4, role: 'phase-2 stub', deps: [], standalone: true },
+    { name: '@faravahar/girih-figma', layer: 4, role: 'phase-2 stub', deps: [], standalone: true },
   ];
 
   const W = 900;
@@ -517,7 +517,9 @@ export function packageGraph({ id = 'w-pkggraph' } = {}) {
 
   const nodeSvg = PKGS.map((p) => {
     const { x, y } = pos.get(p.name);
-    const short = p.name.replace('@girih/', '');
+    // Labels must fit the 148px box at 11px mono — strip the scope, and give the
+    // CLI its role name since its package name carries no suffix to strip.
+    const short = p.name === '@faravahar/girih' ? 'cli' : p.name.replace('@faravahar/girih-', '');
     return `<g class="pnode" data-name="${esc(p.name)}" data-layer="${p.layer}" tabindex="0" role="listitem" aria-label="${esc(p.name)}: ${esc(p.role)}">
       <rect x="${(x - 74).toFixed(0)}" y="${(y - 14).toFixed(0)}" width="148" height="28" rx="4"
         fill="var(--bg-raised)" stroke="${RAMP[p.layer]}" stroke-width="${p.layer === 0 ? 2 : 1.5}"/>

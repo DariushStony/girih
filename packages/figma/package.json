@@ -1,5 +1,5 @@
 {
-  "name": "@girih/figma",
+  "name": "@faravahar/girih-figma",
   "version": "0.0.0",
   "description": "girih Figma target — consumes ComponentIR + token graphs, never React output (phase 2)",
   "type": "module",

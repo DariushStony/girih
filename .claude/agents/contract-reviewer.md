@@ -8,7 +8,7 @@ You review component contracts in the girih monorepo. You analyze and recommend;
 
 ## What you own
 
-`@girih/spec` — `defineSpec`, `defineVariant`, `ComponentIR`, and `validateSpecs` / `validateExtensions`. Diagnostic codes `GIRIH4xxx`. You also read `@girih/generator-react`'s `TEMPLATE_REGISTRY` because a contract is only valid if some template can actually implement it.
+`@faravahar/girih-spec` — `defineSpec`, `defineVariant`, `ComponentIR`, and `validateSpecs` / `validateExtensions`. Diagnostic codes `GIRIH4xxx`. You also read `@faravahar/girih-generator-react`'s `TEMPLATE_REGISTRY` because a contract is only valid if some template can actually implement it.
 
 ## The rule that governs everything here
 

@@ -107,8 +107,8 @@ ${rule(
 </p>
 
 ${pkgMap([
-  [{ name: 'tokens/ + brands/', role: 'you write', layer: 'kernel' }, '→', { name: 'buildTokenGraphs()', role: '@girih/tokens', layer: 'pipeline' }, '→', { name: 'generateCss()', role: '@girih/generator-css', layer: 'generator' }, '→', { name: 'tokens.css + tokens.d.ts', role: 'emitted', layer: 'surface' }],
-  [{ name: 'components/*.spec.ts', role: 'you write', layer: 'kernel' }, '→', { name: 'loadSpecs() → specToIR()', role: '@girih/spec', layer: 'pipeline' }, '→', { name: 'generateReact()', role: '@girih/generator-react', layer: 'generator' }, '→', { name: 'src/*.tsx + components.css', role: 'emitted', layer: 'surface' }],
+  [{ name: 'tokens/ + brands/', role: 'you write', layer: 'kernel' }, '→', { name: 'buildTokenGraphs()', role: '@faravahar/girih-tokens', layer: 'pipeline' }, '→', { name: 'generateCss()', role: '@faravahar/girih-generator-css', layer: 'generator' }, '→', { name: 'tokens.css + tokens.d.ts', role: 'emitted', layer: 'surface' }],
+  [{ name: 'components/*.spec.ts', role: 'you write', layer: 'kernel' }, '→', { name: 'loadSpecs() → specToIR()', role: '@faravahar/girih-spec', layer: 'pipeline' }, '→', { name: 'generateReact()', role: '@faravahar/girih-generator-react', layer: 'generator' }, '→', { name: 'src/*.tsx + components.css', role: 'emitted', layer: 'surface' }],
 ])}
 
 <p>

@@ -1,5 +1,5 @@
 {
-  "name": "@girih/core",
+  "name": "@faravahar/girih-core",
   "version": "0.1.0",
   "description": "girih shared kernel: workspace config, diagnostics, emitted-file model",
   "type": "module",

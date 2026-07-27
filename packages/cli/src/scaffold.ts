@@ -22,7 +22,7 @@ export interface ScaffoldResult {
 export function workspaceTemplate(options: ScaffoldOptions): Record<string, string> {
   const { name, brand } = options;
   return {
-    'ds.config.ts': `import { defineConfig } from '@girih/cli';
+    'ds.config.ts': `import { defineConfig } from '@faravahar/girih';
 
 export default defineConfig({
   name: '${name}',
@@ -129,7 +129,7 @@ export default defineConfig({
       2,
     )}\n`,
     [`brands/${brand}/tokens.json`]: '{}\n',
-    'components/button.spec.ts': `import { defineSpec } from '@girih/cli';
+    'components/button.spec.ts': `import { defineSpec } from '@faravahar/girih';
 
 export default defineSpec({
   name: 'Button',

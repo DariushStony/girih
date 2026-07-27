@@ -2,7 +2,7 @@
 /**
  * Extract the REAL resolved token graphs for examples/acme-ds into docs/data/tokens.json.
  *
- * This does not re-implement resolution — it calls girih's own @girih/core + @girih/tokens
+ * This does not re-implement resolution — it calls girih's own @faravahar/girih-core + @faravahar/girih-tokens
  * against the example workspace, so every value the documentation shows is the value girih
  * actually produces. If the pipeline changes, this output changes with it.
  *

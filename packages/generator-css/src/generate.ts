@@ -1,9 +1,9 @@
 import StyleDictionary from 'style-dictionary';
 import type { DesignTokens } from 'style-dictionary/types';
-import type { Diagnostic, EmittedFile } from '@girih/core';
-import { emittedFile } from '@girih/core';
-import { toNestedDtcg } from '@girih/tokens';
-import type { ResolvedTokenGraph, TokenBuildResult } from '@girih/tokens';
+import type { Diagnostic, EmittedFile } from '@faravahar/girih-core';
+import { emittedFile } from '@faravahar/girih-core';
+import { toNestedDtcg } from '@faravahar/girih-tokens';
+import type { ResolvedTokenGraph, TokenBuildResult } from '@faravahar/girih-tokens';
 import { cssVarName } from './naming.js';
 
 export interface GenerateCssOptions {

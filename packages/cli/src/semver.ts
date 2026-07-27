@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
-import type { EmittedFile } from '@girih/core';
-import type { ResolvedTokenGraph } from '@girih/tokens';
-import type { ComponentIR, LoadedExtension, StyleRuleIR } from '@girih/spec';
+import type { EmittedFile } from '@faravahar/girih-core';
+import type { ResolvedTokenGraph } from '@faravahar/girih-tokens';
+import type { ComponentIR, LoadedExtension, StyleRuleIR } from '@faravahar/girih-spec';
 
 /**
  * A structural fingerprint of everything a published package's public contract

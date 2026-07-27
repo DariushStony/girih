@@ -57,7 +57,7 @@ ${danger(
   'Nothing is published to npm yet',
   `<p>
     Every package in this repository is at version <code>0.1.0</code> and has never been published.
-    <code>npm install @girih/cli</code> will not work today, and neither will
+    <code>npm install @faravahar/girih</code> will not work today, and neither will
     <code>npx create-girih</code>. Both are wired and tested — the end-to-end suite packs real
     tarballs and installs them into a fresh consumer — but the publish has not happened. Until it
     does, you build from source, which is what both paths below do.

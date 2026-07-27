@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseTokenFile } from '@girih/tokens';
+import { parseTokenFile } from '@faravahar/girih-tokens';
 
 const file = (contents: unknown) => ({ file: 'tokens/test.tokens.json', tier: 'global' as const, contents });
 

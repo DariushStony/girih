@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { defineSpec, specToIR } from '@girih/spec';
-import { generateReact, renderComponentCss, renderElementComponent } from '@girih/generator-react';
+import { defineSpec, specToIR } from '@faravahar/girih-spec';
+import { generateReact, renderComponentCss, renderElementComponent } from '@faravahar/girih-generator-react';
 
 const buttonIR = () =>
   specToIR(
@@ -31,7 +31,7 @@ const buttonIR = () =>
 
 describe('renderElementComponent', () => {
   it('emits typed variant unions, data attributes, and capability-driven props', () => {
-    const tsx = renderElementComponent(buttonIR(), { classPrefix: 'ds', runtimePackage: '@girih/react-runtime' });
+    const tsx = renderElementComponent(buttonIR(), { classPrefix: 'ds', runtimePackage: '@faravahar/girih-react-runtime' });
     expect(tsx).toContain("export type ButtonVariant = 'primary' | 'secondary';");
     expect(tsx).toContain("export type ButtonSize = 'sm' | 'md';");
     expect(tsx).toContain("extends Omit<ComponentPropsWithoutRef<'button'>, 'variant' | 'size'>"); // axes shadow native attrs
@@ -55,7 +55,7 @@ describe('renderElementComponent', () => {
         accessibility: { focusable: false },
       }),
     ).ir;
-    const tsx = renderElementComponent(chip, { classPrefix: 'ds', runtimePackage: '@girih/react-runtime' });
+    const tsx = renderElementComponent(chip, { classPrefix: 'ds', runtimePackage: '@faravahar/girih-react-runtime' });
     expect(tsx).toContain('disabled?: boolean;');
     expect(tsx).toContain('disabled = false');
     expect(tsx).toContain("aria-disabled={disabled ? 'true' : undefined}");
@@ -92,7 +92,7 @@ describe('generateReact', () => {
 
     const index = a.files.find((f) => f.path === 'src/index.ts')!.contents;
     expect(index).toContain("export { Button } from './Button';");
-    expect(index).toContain("export { BrandProvider, useBrand, cx } from '@girih/react-runtime';");
+    expect(index).toContain("export { BrandProvider, useBrand, cx } from '@faravahar/girih-react-runtime';");
 
     const pkg = JSON.parse(a.files.find((f) => f.path === 'package.json')!.contents);
     expect(pkg.name).toBe('@acme/design-system');

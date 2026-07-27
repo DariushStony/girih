@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { applyBrandOverlay, mergeTokenFiles } from '@girih/tokens';
+import { applyBrandOverlay, mergeTokenFiles } from '@faravahar/girih-tokens';
 
 const base = () =>
   mergeTokenFiles([

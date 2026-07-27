@@ -1,5 +1,5 @@
 {
-  "name": "@girih/cli",
+  "name": "@faravahar/girih",
   "version": "0.1.0",
   "description": "girih CLI — compile a multi-brand design system from tokens and component contracts",
   "type": "module",
@@ -22,13 +22,13 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@girih/core": "workspace:*",
-    "@girih/generator-css": "workspace:*",
-    "@girih/tokens": "workspace:*",
+    "@faravahar/girih-core": "workspace:*",
+    "@faravahar/girih-generator-css": "workspace:*",
+    "@faravahar/girih-tokens": "workspace:*",
     "commander": "^14.0.0",
     "picocolors": "^1.1.1",
-    "@girih/spec": "workspace:*",
-    "@girih/generator-react": "workspace:*",
+    "@faravahar/girih-spec": "workspace:*",
+    "@faravahar/girih-generator-react": "workspace:*",
     "esbuild": "^0.25.0",
     "typescript": "^5.9.3",
     "tinyglobby": "^0.2.10"

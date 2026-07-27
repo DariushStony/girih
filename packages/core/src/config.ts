@@ -110,8 +110,8 @@ export async function loadConfig(cwd: string): Promise<LoadConfigResult> {
       message: `Failed to load ${configPath}: ${message.split('\n')[0]}`,
       file: 'ds.config.ts',
     };
-    if (message.includes('@girih/cli')) {
-      diagnostic.help = "ds.config.ts imports '@girih/cli' — install it first: npm install -D @girih/cli";
+    if (message.includes('@faravahar/girih')) {
+      diagnostic.help = "ds.config.ts imports '@faravahar/girih' — install it first: npm install -D @faravahar/girih";
     }
     diagnostics.push(diagnostic);
     return { config: null, diagnostics };

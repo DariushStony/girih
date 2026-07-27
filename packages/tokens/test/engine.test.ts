@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildTokenGraphs, inferTier } from '@girih/tokens';
+import { buildTokenGraphs, inferTier } from '@faravahar/girih-tokens';
 import { acmeConfig } from './fixture.js';
 
 describe('buildTokenGraphs on the acme-ds fixture', () => {

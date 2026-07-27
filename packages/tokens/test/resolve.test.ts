@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { findReferences, mergeTokenFiles, resolveTokenSet } from '@girih/tokens';
-import type { TokenFileInput } from '@girih/tokens';
+import { findReferences, mergeTokenFiles, resolveTokenSet } from '@faravahar/girih-tokens';
+import type { TokenFileInput } from '@faravahar/girih-tokens';
 
 const setFrom = (contents: TokenFileInput['contents'], tier: TokenFileInput['tier'] = 'global') =>
   mergeTokenFiles([{ file: 'tokens/test.tokens.json', tier, contents }]).set;

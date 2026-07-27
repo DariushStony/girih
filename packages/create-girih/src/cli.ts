@@ -7,8 +7,8 @@ import process from 'node:process';
 
 /**
  * npx create-girih <dir> — creates the directory and package.json, installs
- * @girih/cli, then delegates to the installed `girih init`. The workspace
- * template lives in @girih/cli so bootstrapper and CLI can never drift apart.
+ * @faravahar/girih, then delegates to the installed `girih init`. The workspace
+ * template lives in @faravahar/girih so bootstrapper and CLI can never drift apart.
  */
 const USAGE = 'Usage: create-girih <directory> [--name @scope/design-system] [--brand main] [--workspace] [--no-install]';
 const BRAND_NAME = /^[a-z][a-z0-9-]*$/;
@@ -81,7 +81,7 @@ if (existsSync(join(dir, 'package.json'))) {
   process.exit(1);
 }
 
-// --workspace links @girih/cli via the pnpm workspace protocol (for development
+// --workspace links @faravahar/girih via the pnpm workspace protocol (for development
 // inside the girih monorepo); the default targets the published package.
 const cliVersion = parsed.workspace ? 'workspace:*' : '^0.1.0';
 
@@ -98,7 +98,7 @@ await writeFile(
         generate: 'girih generate react',
         'generate:check': 'girih generate react --check',
       },
-      devDependencies: { '@girih/cli': cliVersion },
+      devDependencies: { '@faravahar/girih': cliVersion },
     },
     null,
     2,

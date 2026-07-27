@@ -32,10 +32,10 @@ importers:
       '@base-ui-components/react':
         specifier: 1.0.0-rc.0
         version: 1.0.0-rc.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@girih/cli':
+      '@faravahar/girih':
         specifier: workspace:*
         version: link:../packages/cli
-      '@girih/react-runtime':
+      '@faravahar/girih-react-runtime':
         specifier: workspace:*
         version: link:../packages/react-runtime
       '@types/react':
@@ -53,10 +53,10 @@ importers:
       '@base-ui-components/react':
         specifier: 1.0.0-rc.0
         version: 1.0.0-rc.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@girih/cli':
+      '@faravahar/girih':
         specifier: workspace:*
         version: link:../../packages/cli
-      '@girih/react-runtime':
+      '@faravahar/girih-react-runtime':
         specifier: workspace:*
         version: link:../../packages/react-runtime
       '@types/react':
@@ -74,19 +74,19 @@ importers:
 
   packages/cli:
     dependencies:
-      '@girih/core':
+      '@faravahar/girih-core':
         specifier: workspace:*
         version: link:../core
-      '@girih/generator-css':
+      '@faravahar/girih-generator-css':
         specifier: workspace:*
         version: link:../generator-css
-      '@girih/generator-react':
+      '@faravahar/girih-generator-react':
         specifier: workspace:*
         version: link:../generator-react
-      '@girih/spec':
+      '@faravahar/girih-spec':
         specifier: workspace:*
         version: link:../spec
-      '@girih/tokens':
+      '@faravahar/girih-tokens':
         specifier: workspace:*
         version: link:../tokens
       commander:
@@ -144,10 +144,10 @@ importers:
 
   packages/generator-css:
     dependencies:
-      '@girih/core':
+      '@faravahar/girih-core':
         specifier: workspace:*
         version: link:../core
-      '@girih/tokens':
+      '@faravahar/girih-tokens':
         specifier: workspace:*
         version: link:../tokens
       style-dictionary:
@@ -166,10 +166,10 @@ importers:
 
   packages/generator-react:
     dependencies:
-      '@girih/core':
+      '@faravahar/girih-core':
         specifier: workspace:*
         version: link:../core
-      '@girih/spec':
+      '@faravahar/girih-spec':
         specifier: workspace:*
         version: link:../spec
     devDependencies:
@@ -197,10 +197,10 @@ importers:
 
   packages/spec:
     dependencies:
-      '@girih/core':
+      '@faravahar/girih-core':
         specifier: workspace:*
         version: link:../core
-      '@girih/tokens':
+      '@faravahar/girih-tokens':
         specifier: workspace:*
         version: link:../tokens
       jiti:
@@ -222,7 +222,7 @@ importers:
 
   packages/tokens:
     dependencies:
-      '@girih/core':
+      '@faravahar/girih-core':
         specifier: workspace:*
         version: link:../core
       style-dictionary:

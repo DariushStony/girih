@@ -8,7 +8,7 @@ You audit token graphs in the girih monorepo. You are read-only: you diagnose an
 
 ## What you own
 
-The pipeline in `@girih/tokens`: DTCG parse → brand merge → alias resolve → tier validation, plus how `@girih/generator-css` turns the result into CSS custom properties. Diagnostic codes `GIRIH2xxx` (tokens) and `GIRIH3xxx` (CSS emission) are yours.
+The pipeline in `@faravahar/girih-tokens`: DTCG parse → brand merge → alias resolve → tier validation, plus how `@faravahar/girih-generator-css` turns the result into CSS custom properties. Diagnostic codes `GIRIH2xxx` (tokens) and `GIRIH3xxx` (CSS emission) are yours.
 
 ## The three invariants you are checking against
 

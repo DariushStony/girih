@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { mergeTokenFiles, resolveTokenSet } from '@girih/tokens';
+import { mergeTokenFiles, resolveTokenSet } from '@faravahar/girih-tokens';
 
 describe('composite token values (DTCG shadow/typography/fontFamily)', () => {
   it('resolves references inside object values', () => {
@@ -80,7 +80,7 @@ describe('prefix collisions', () => {
 
 describe('parse guards', () => {
   it('errors on non-$ children inside a token node', async () => {
-    const { parseTokenFile } = await import('@girih/tokens');
+    const { parseTokenFile } = await import('@faravahar/girih-tokens');
     const { diagnostics } = parseTokenFile({
       file: 't.tokens.json',
       tier: 'global',
@@ -90,7 +90,7 @@ describe('parse guards', () => {
   });
 
   it('warns on unknown $-prefixed keys instead of silently dropping them', async () => {
-    const { parseTokenFile } = await import('@girih/tokens');
+    const { parseTokenFile } = await import('@faravahar/girih-tokens');
     const { diagnostics } = parseTokenFile({
       file: 't.tokens.json',
       tier: 'global',
@@ -100,7 +100,7 @@ describe('parse guards', () => {
   });
 
   it('warns on names that do not translate cleanly to CSS variables', async () => {
-    const { parseTokenFile } = await import('@girih/tokens');
+    const { parseTokenFile } = await import('@faravahar/girih-tokens');
     const { diagnostics } = parseTokenFile({
       file: 't.tokens.json',
       tier: 'global',

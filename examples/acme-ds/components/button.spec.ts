@@ -1,4 +1,4 @@
-import { defineSpec } from '@girih/cli';
+import { defineSpec } from '@faravahar/girih';
 
 export default defineSpec({
   name: 'Button',

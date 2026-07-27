@@ -1,4 +1,4 @@
-import type { Diagnostic } from '@girih/core';
+import type { Diagnostic } from '@faravahar/girih-core';
 import { resolveReferences, usesReferences } from 'style-dictionary/utils';
 import { toNestedDtcg } from './merge.js';
 import type { RawTokenSet, ResolvedToken, ResolvedTokenGraph } from './types.js';

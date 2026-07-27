@@ -1,4 +1,4 @@
-import type { Diagnostic } from '@girih/core';
+import type { Diagnostic } from '@faravahar/girih-core';
 import type { ResolvedTokenGraph, TokenTier } from './types.js';
 
 const TIER_RANK: Record<TokenTier, number> = { global: 0, semantic: 1, component: 2 };

@@ -1,7 +1,7 @@
 import { createJiti } from 'jiti';
 import { join } from 'node:path';
 import { glob } from 'tinyglobby';
-import type { Diagnostic, ResolvedConfig } from '@girih/core';
+import type { Diagnostic, ResolvedConfig } from '@faravahar/girih-core';
 import { isSpec } from './define.js';
 import type { ComponentSpecInput } from './types.js';
 
@@ -49,7 +49,7 @@ export async function loadSpecs(config: ResolvedConfig): Promise<LoadSpecsResult
         severity: 'error',
         message: `${file} does not default-export a component spec.`,
         file,
-        help: "Export the result of defineSpec({...}) from '@girih/cli'.",
+        help: "Export the result of defineSpec({...}) from '@faravahar/girih'.",
       });
       continue;
     }

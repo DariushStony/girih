@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { buildTokenGraphs } from '@girih/tokens';
-import { defineSpec, defineVariant, isVariantExtension, specToIR, validateExtensions, validateSpecs } from '@girih/spec';
-import type { LoadedExtension, TemplateCapabilities } from '@girih/spec';
+import { buildTokenGraphs } from '@faravahar/girih-tokens';
+import { defineSpec, defineVariant, isVariantExtension, specToIR, validateExtensions, validateSpecs } from '@faravahar/girih-spec';
+import type { LoadedExtension, TemplateCapabilities } from '@faravahar/girih-spec';
 import { acmeConfig } from '../../tokens/test/fixture.js';
 
 const buttonIR = (allowExtends = true) =>

@@ -1,4 +1,4 @@
-import type { TemplateCapabilities } from '@girih/spec';
+import type { TemplateCapabilities } from '@faravahar/girih-spec';
 
 /**
  * The hand-maintained template catalog. Versions are recorded in ds.lock at

@@ -6,14 +6,14 @@ export default function page(data) {
 
   const sections = [
     { id: 'direction', title: 'The dependency direction' },
-    { id: 'core', title: '@girih/core — the shared kernel' },
-    { id: 'tokens', title: '@girih/tokens — the pipeline' },
-    { id: 'generator-css', title: '@girih/generator-css' },
-    { id: 'spec', title: '@girih/spec' },
-    { id: 'generator-react', title: '@girih/generator-react' },
-    { id: 'cli', title: '@girih/cli' },
-    { id: 'runtime', title: '@girih/react-runtime' },
-    { id: 'rest', title: 'create-girih and @girih/figma' },
+    { id: 'core', title: '@faravahar/girih-core — the shared kernel' },
+    { id: 'tokens', title: '@faravahar/girih-tokens — the pipeline' },
+    { id: 'generator-css', title: '@faravahar/girih-generator-css' },
+    { id: 'spec', title: '@faravahar/girih-spec' },
+    { id: 'generator-react', title: '@faravahar/girih-generator-react' },
+    { id: 'cli', title: '@faravahar/girih' },
+    { id: 'runtime', title: '@faravahar/girih-react-runtime' },
+    { id: 'rest', title: 'create-girih and @faravahar/girih-figma' },
     { id: 'debug', title: 'Where to look when something breaks' },
     { id: 'tests', title: 'The test layout' },
   ];
@@ -28,20 +28,20 @@ export default function page(data) {
 <h2 id="direction">The dependency direction</h2>
 
 ${pkgMap([
-  [{ name: '@girih/core', role: 'kernel — depends on nothing', layer: 'kernel' }],
+  [{ name: '@faravahar/girih-core', role: 'kernel — depends on nothing', layer: 'kernel' }],
   ['↑ depended on by ↑'],
-  [{ name: '@girih/tokens', role: 'token pipeline', layer: 'pipeline' }, '+', { name: '@girih/core', role: '', layer: 'kernel' }],
+  [{ name: '@faravahar/girih-tokens', role: 'token pipeline', layer: 'pipeline' }, '+', { name: '@faravahar/girih-core', role: '', layer: 'kernel' }],
   ['↑'],
-  [{ name: '@girih/generator-css', role: 'tokens → CSS', layer: 'generator' }, '·', { name: '@girih/spec', role: 'contracts', layer: 'pipeline' }],
+  [{ name: '@faravahar/girih-generator-css', role: 'tokens → CSS', layer: 'generator' }, '·', { name: '@faravahar/girih-spec', role: 'contracts', layer: 'pipeline' }],
   ['↑'],
-  [{ name: '@girih/generator-react', role: 'IR → React (core + spec)', layer: 'generator' }],
+  [{ name: '@faravahar/girih-generator-react', role: 'IR → React (core + spec)', layer: 'generator' }],
   ['↑'],
-  [{ name: '@girih/cli', role: 'the only package allowed to depend on all of them', layer: 'surface' }],
+  [{ name: '@faravahar/girih', role: 'the only package allowed to depend on all of them', layer: 'surface' }],
   ['standalone:'],
   [
-    { name: '@girih/react-runtime', role: 'react is a peer dep', layer: 'surface' },
+    { name: '@faravahar/girih-react-runtime', role: 'react is a peer dep', layer: 'surface' },
     { name: 'create-girih', role: 'zero workspace deps', layer: 'surface' },
-    { name: '@girih/figma', role: 'phase-2 stub', layer: 'surface' },
+    { name: '@faravahar/girih-figma', role: 'phase-2 stub', layer: 'surface' },
   ],
 ])}
 
@@ -69,7 +69,7 @@ ${eli5(`
   </p>
 `)}
 
-<h2 id="core">@girih/core — the shared kernel</h2>
+<h2 id="core">@faravahar/girih-core — the shared kernel</h2>
 
 <p>
   Small on purpose. Four files, and every one exists so that other packages cannot disagree with
@@ -106,7 +106,7 @@ export async function verifyEmittedFiles(root: string, files: EmittedFile[]): Pr
   file.
 </p>
 
-<h2 id="tokens">@girih/tokens — the pipeline</h2>
+<h2 id="tokens">@faravahar/girih-tokens — the pipeline</h2>
 
 ${table(
   ['File', 'Owns', 'Start here when'],
@@ -152,7 +152,7 @@ ${gotcha(
   </p>`,
 )}
 
-<h2 id="generator-css">@girih/generator-css</h2>
+<h2 id="generator-css">@faravahar/girih-generator-css</h2>
 
 <p>Three files, and one function inside them matters more than the rest.</p>
 
@@ -205,7 +205,7 @@ function dependentsClosure(roots: string[], graph: ResolvedTokenGraph): Set<stri
   merely string-shaped.
 </p>
 
-<h2 id="spec">@girih/spec</h2>
+<h2 id="spec">@faravahar/girih-spec</h2>
 
 ${table(
   ['File', 'Owns'],
@@ -226,7 +226,7 @@ ${table(
   default-exported" without trusting the type system across a runtime boundary.
 </p>
 
-<h2 id="generator-react">@girih/generator-react</h2>
+<h2 id="generator-react">@faravahar/girih-generator-react</h2>
 
 ${table(
   ['File', 'Owns'],
@@ -247,7 +247,7 @@ ${table(
   whose template has since moved.
 </p>
 
-<h2 id="cli">@girih/cli</h2>
+<h2 id="cli">@faravahar/girih</h2>
 
 ${table(
   ['File', 'Owns'],
@@ -278,7 +278,7 @@ ${gotcha(
   </p>`,
 )}
 
-<h2 id="runtime">@girih/react-runtime</h2>
+<h2 id="runtime">@faravahar/girih-react-runtime</h2>
 
 <p>
   One file, three exports, and <code>react</code> is a <em>peer</em> dependency — never a real one,
@@ -299,17 +299,17 @@ ${table(
   browser.
 </p>
 
-<h2 id="rest">create-girih and @girih/figma</h2>
+<h2 id="rest">create-girih and @faravahar/girih-figma</h2>
 
 <p>
   <code>create-girih</code> has <strong>zero workspace dependencies</strong>, which is a constraint
   rather than an oversight: it has to run via <code>npx</code> before anything is installed, so it
-  cannot import <code>@girih/cli</code>. It detects the package manager from the environment and
+  cannot import <code>@faravahar/girih</code>. It detects the package manager from the environment and
   shells out.
 </p>
 
 <p>
-  <code>@girih/figma</code> is a private phase-2 stub. It consumes <code>ComponentIR</code>, which is
+  <code>@faravahar/girih-figma</code> is a private phase-2 stub. It consumes <code>ComponentIR</code>, which is
   the reason the IR exists as a target-neutral form at all. Do not grow it without being asked.
 </p>
 
@@ -343,11 +343,11 @@ ${table(
 ${code(`resolve: {
   // Tests run against source so packages don't need a build first.
   alias: {
-    '@girih/core': r('packages/core/src/index.ts'),
-    '@girih/tokens': r('packages/tokens/src/index.ts'),
-    '@girih/generator-css': r('packages/generator-css/src/index.ts'),
-    '@girih/generator-react': r('packages/generator-react/src/index.ts'),
-    '@girih/spec': r('packages/spec/src/index.ts'),
+    '@faravahar/girih-core': r('packages/core/src/index.ts'),
+    '@faravahar/girih-tokens': r('packages/tokens/src/index.ts'),
+    '@faravahar/girih-generator-css': r('packages/generator-css/src/index.ts'),
+    '@faravahar/girih-generator-react': r('packages/generator-react/src/index.ts'),
+    '@faravahar/girih-spec': r('packages/spec/src/index.ts'),
   },
 },
 test: { include: ['packages/*/test/**/*.test.ts', 'e2e/test/**/*.test.ts'] },`, {
@@ -358,7 +358,7 @@ test: { include: ['packages/*/test/**/*.test.ts', 'e2e/test/**/*.test.ts'] },`, 
 ${gotcha(
   'Two packages are deliberately NOT aliased',
   `<p>
-    <code>@girih/cli</code> and <code>@girih/react-runtime</code> are absent from that list. Anything
+    <code>@faravahar/girih</code> and <code>@faravahar/girih-react-runtime</code> are absent from that list. Anything
     exercising them runs against <code>dist/</code>, so <code>pnpm build</code> is required first.
     That is intentional for the CLI: the end-to-end tests should exercise the same compiled binary a
     user would run, not a source alias that might behave differently.

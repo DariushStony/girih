@@ -1,8 +1,8 @@
 import { createJiti } from 'jiti';
 import { join } from 'node:path';
 import { glob } from 'tinyglobby';
-import type { Diagnostic, ResolvedConfig } from '@girih/core';
-import type { ResolvedTokenGraph } from '@girih/tokens';
+import type { Diagnostic, ResolvedConfig } from '@faravahar/girih-core';
+import type { ResolvedTokenGraph } from '@faravahar/girih-tokens';
 import { kebabCase } from './ir.js';
 import type { ComponentIR, VariantExtensionInput } from './types.js';
 
@@ -48,7 +48,7 @@ export async function loadExtensions(config: ResolvedConfig): Promise<{ extensio
           severity: 'error',
           message: `${file} does not default-export a variant extension.`,
           file,
-          help: "Export the result of defineVariant({ name, extends, tokens }) from '@girih/cli'.",
+          help: "Export the result of defineVariant({ name, extends, tokens }) from '@faravahar/girih'.",
         });
         continue;
       }

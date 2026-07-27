@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, describe, expect, it } from 'vitest';
-import { emittedFile, loadConfig, verifyEmittedFiles, writeEmittedFiles } from '@girih/core';
+import { emittedFile, loadConfig, verifyEmittedFiles, writeEmittedFiles } from '@faravahar/girih-core';
 
 const fixture = (name: string) => fileURLToPath(new URL(`./fixtures/${name}`, import.meta.url));
 

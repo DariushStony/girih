@@ -54,7 +54,7 @@ describe('consumer install: pack → install → SSR render', () => {
           type: 'module',
           dependencies: {
             '@acme/design-system': `file:${dsTgz}`,
-            '@girih/react-runtime': `file:${runtimeTgz}`,
+            '@faravahar/girih-react-runtime': `file:${runtimeTgz}`,
             '@base-ui-components/react': '1.0.0-rc.0',
             react: '^19.0.0',
             'react-dom': '^19.0.0',

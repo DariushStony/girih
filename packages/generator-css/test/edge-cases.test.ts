@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { applyBrandOverlay, mergeTokenFiles, resolveTokenSet } from '@girih/tokens';
-import type { TokenBuildResult, TokenFileInput } from '@girih/tokens';
-import { generateCss, generateTokenTypes } from '@girih/generator-css';
+import { applyBrandOverlay, mergeTokenFiles, resolveTokenSet } from '@faravahar/girih-tokens';
+import type { TokenBuildResult, TokenFileInput } from '@faravahar/girih-tokens';
+import { generateCss, generateTokenTypes } from '@faravahar/girih-generator-css';
 
 const options = { prefix: 'ds', defaultBrand: 'main', selector: 'data-attribute' as const };
 

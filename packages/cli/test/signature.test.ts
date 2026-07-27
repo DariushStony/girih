@@ -1,9 +1,9 @@
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { buildTokenGraphs } from '@girih/tokens';
-import { defineSpec, specToIR } from '@girih/spec';
-import type { ComponentIR } from '@girih/spec';
-import { TEMPLATE_REGISTRY } from '@girih/generator-react';
+import { buildTokenGraphs } from '@faravahar/girih-tokens';
+import { defineSpec, specToIR } from '@faravahar/girih-spec';
+import type { ComponentIR } from '@faravahar/girih-spec';
+import { TEMPLATE_REGISTRY } from '@faravahar/girih-generator-react';
 import { computeSignature, diffSignatures } from '../src/semver.js';
 import type { SignatureInput } from '../src/semver.js';
 

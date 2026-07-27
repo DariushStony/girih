@@ -1,5 +1,5 @@
 import pc from 'picocolors';
-import type { Diagnostic } from '@girih/core';
+import type { Diagnostic } from '@faravahar/girih-core';
 
 export function printDiagnostics(diagnostics: readonly Diagnostic[]): void {
   for (const d of diagnostics) {

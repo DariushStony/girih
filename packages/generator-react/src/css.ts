@@ -1,5 +1,5 @@
-import { cssVarName } from '@girih/core';
-import type { ComponentIR, ComponentState, StyleRuleIR, VariantExtensionInput } from '@girih/spec';
+import { cssVarName } from '@faravahar/girih-core';
+import type { ComponentIR, ComponentState, StyleRuleIR, VariantExtensionInput } from '@faravahar/girih-spec';
 import { checkboxStructuralCss } from './templates/checkbox.js';
 import { dialogStructuralCss } from './templates/dialog.js';
 

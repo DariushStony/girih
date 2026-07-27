@@ -1,4 +1,4 @@
-import { defineConfig } from '@girih/cli';
+import { defineConfig } from '@faravahar/girih';
 
 export default defineConfig({
   name: '@acme/design-system',

@@ -87,10 +87,10 @@ When you add a diagnostic:
 
 ## Emitting files
 
-Everything that writes a file goes through `@girih/core`:
+Everything that writes a file goes through `@faravahar/girih-core`:
 
 ```ts
-import { emittedFile, writeEmittedFiles, verifyEmittedFiles } from '@girih/core';
+import { emittedFile, writeEmittedFiles, verifyEmittedFiles } from '@faravahar/girih-core';
 ```
 
 `emittedFile()` computes the SHA-256 that drift detection, the `--check` gate, and publish diffing
@@ -155,7 +155,7 @@ a file list, and put the reasoning in the body.
 
 - Adding a linter, formatter, or CI config
 - Changing the package manager or `tsconfig.base.json` compiler options
-- Growing `@girih/figma` beyond its stub
+- Growing `@faravahar/girih-figma` beyond its stub
 - Publishing anything to npm
 - Adding a new top-level package
 

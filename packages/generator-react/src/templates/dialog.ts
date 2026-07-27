@@ -1,4 +1,4 @@
-import type { ComponentIR } from '@girih/spec';
+import type { ComponentIR } from '@faravahar/girih-spec';
 import type { TemplateOptions } from './element.js';
 
 const kebab = (s: string) => s.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();

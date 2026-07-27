@@ -63,7 +63,7 @@ button's corner. That cascade arriving correctly, with no rebuild, is the whole 
 
 > [!IMPORTANT]
 > **Nothing is published to npm yet.** Every package is at `0.1.0` and unpublished, so
-> `npm install @girih/cli` and `npx create-girih` do not work today. Both paths are wired and
+> `npm install @faravahar/girih` and `npx create-girih` do not work today. Both paths are wired and
 > proven — the end-to-end suite packs real tarballs, installs them into a fresh consumer, and
 > server-renders every component — but the publish has not happened. Build from source for now.
 
@@ -125,15 +125,15 @@ standalone:  react-runtime (react is a peer dep) · create-girih (zero workspace
 
 | Package | Role |
 | --- | --- |
-| [`@girih/core`](packages/core) | Config loading, diagnostics, the emitted-file model, CSS variable naming. Depends on nothing. |
-| [`@girih/tokens`](packages/tokens) | DTCG parse → brand merge → alias resolve → tier validation. |
-| [`@girih/generator-css`](packages/generator-css) | Token graphs → multi-brand CSS custom properties + `TokenPath` types. |
-| [`@girih/spec`](packages/spec) | `defineSpec` / `defineVariant` contracts, `ComponentIR`, cross-brand validation. |
-| [`@girih/generator-react`](packages/generator-react) | IR + templates → React package and structure-only CSS. |
-| [`@girih/cli`](packages/cli) | The `girih` / `ds` binary. The only package allowed to depend on all of the above. |
-| [`@girih/react-runtime`](packages/react-runtime) | `BrandProvider`, `useBrand`, `cx`. The entire runtime. |
+| [`@faravahar/girih-core`](packages/core) | Config loading, diagnostics, the emitted-file model, CSS variable naming. Depends on nothing. |
+| [`@faravahar/girih-tokens`](packages/tokens) | DTCG parse → brand merge → alias resolve → tier validation. |
+| [`@faravahar/girih-generator-css`](packages/generator-css) | Token graphs → multi-brand CSS custom properties + `TokenPath` types. |
+| [`@faravahar/girih-spec`](packages/spec) | `defineSpec` / `defineVariant` contracts, `ComponentIR`, cross-brand validation. |
+| [`@faravahar/girih-generator-react`](packages/generator-react) | IR + templates → React package and structure-only CSS. |
+| [`@faravahar/girih`](packages/cli) | The `girih` / `ds` binary. The only package allowed to depend on all of the above. |
+| [`@faravahar/girih-react-runtime`](packages/react-runtime) | `BrandProvider`, `useBrand`, `cx`. The entire runtime. |
 | [`create-girih`](packages/create-girih) | `npx` bootstrapper. Zero workspace deps by necessity. |
-| [`@girih/figma`](packages/figma) | Phase-2 stub; consumes `ComponentIR`. |
+| [`@faravahar/girih-figma`](packages/figma) | Phase-2 stub; consumes `ComponentIR`. |
 
 ### Verifying a change
 

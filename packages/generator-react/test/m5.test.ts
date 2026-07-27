@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { defineSpec, defineVariant, specToIR } from '@girih/spec';
+import { defineSpec, defineVariant, specToIR } from '@faravahar/girih-spec';
 import {
   generateReact,
   renderCheckboxComponent,
   renderComponentCss,
   renderDialogComponent,
-} from '@girih/generator-react';
+} from '@faravahar/girih-generator-react';
 
-const OPTS = { classPrefix: 'ds', runtimePackage: '@girih/react-runtime' };
+const OPTS = { classPrefix: 'ds', runtimePackage: '@faravahar/girih-react-runtime' };
 
 const checkboxIR = () =>
   specToIR(

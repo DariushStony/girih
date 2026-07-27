@@ -1,5 +1,5 @@
 {
-  "name": "@girih/spec",
+  "name": "@faravahar/girih-spec",
   "version": "0.1.0",
   "description": "girih component contracts: defineSpec, validation against brand token graphs, canonical ComponentIR",
   "type": "module",
@@ -19,8 +19,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@girih/core": "workspace:*",
-    "@girih/tokens": "workspace:*",
+    "@faravahar/girih-core": "workspace:*",
+    "@faravahar/girih-tokens": "workspace:*",
     "jiti": "^2.4.2",
     "tinyglobby": "^0.2.10"
   },

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { buildTokenGraphs } from '@girih/tokens';
-import { defineSpec, isSpec, specToIR, validateSpecs } from '@girih/spec';
-import type { ComponentSpecInput } from '@girih/spec';
+import { buildTokenGraphs } from '@faravahar/girih-tokens';
+import { defineSpec, isSpec, specToIR, validateSpecs } from '@faravahar/girih-spec';
+import type { ComponentSpecInput } from '@faravahar/girih-spec';
 import { acmeConfig } from '../../tokens/test/fixture.js';
 
 const buttonSpec = (): ComponentSpecInput =>
@@ -142,7 +142,7 @@ describe('specToIR robustness', () => {
   });
 
   it('kebab-cases vendor prefixes with a leading dash', async () => {
-    const { kebabCase } = await import('@girih/spec');
+    const { kebabCase } = await import('@faravahar/girih-spec');
     expect(kebabCase('WebkitMaskImage')).toBe('-webkit-mask-image');
     expect(kebabCase('paddingInline')).toBe('padding-inline');
   });

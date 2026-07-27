@@ -1,4 +1,4 @@
-import type { Diagnostic } from '@girih/core';
+import type { Diagnostic } from '@faravahar/girih-core';
 import { parseTokenFile } from './parse.js';
 import type { RawToken, RawTokenSet, TokenFileInput } from './types.js';
 

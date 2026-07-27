@@ -1,5 +1,5 @@
 import { fileURLToPath } from 'node:url';
-import type { ResolvedConfig } from '@girih/core';
+import type { ResolvedConfig } from '@faravahar/girih-core';
 
 const acmeRoot = fileURLToPath(new URL('../../../examples/acme-ds', import.meta.url));
 

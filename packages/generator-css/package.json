@@ -1,5 +1,5 @@
 {
-  "name": "@girih/generator-css",
+  "name": "@faravahar/girih-generator-css",
   "version": "0.1.0",
   "description": "girih CSS generator: token graphs in, multi-brand CSS custom properties + TokenPath types out",
   "type": "module",
@@ -19,8 +19,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@girih/core": "workspace:*",
-    "@girih/tokens": "workspace:*",
+    "@faravahar/girih-core": "workspace:*",
+    "@faravahar/girih-tokens": "workspace:*",
     "style-dictionary": "^5.0.0"
   },
   "devDependencies": {

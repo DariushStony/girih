@@ -3,8 +3,8 @@ import { dirname, join, relative } from 'node:path';
 import { transform } from 'esbuild';
 import { glob } from 'tinyglobby';
 import ts from 'typescript';
-import { emittedFile, writeEmittedFiles } from '@girih/core';
-import type { Diagnostic, EmittedFile } from '@girih/core';
+import { emittedFile, writeEmittedFiles } from '@faravahar/girih-core';
+import type { Diagnostic, EmittedFile } from '@faravahar/girih-core';
 
 export interface BuildResult {
   files: EmittedFile[];

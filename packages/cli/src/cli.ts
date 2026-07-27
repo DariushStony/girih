@@ -4,14 +4,14 @@ import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
 import { Command } from 'commander';
 import pc from 'picocolors';
-import { CONFIG_FILENAMES, emittedFile, loadConfig, verifyEmittedFiles, writeEmittedFiles } from '@girih/core';
-import type { EmittedFile, ResolvedConfig } from '@girih/core';
-import { buildTokenGraphs } from '@girih/tokens';
-import type { TokenBuildResult } from '@girih/tokens';
-import { generateCss } from '@girih/generator-css';
-import { generateReact, renderComponentSource, TEMPLATE_REGISTRY } from '@girih/generator-react';
-import { loadExtensions, loadSpecs, specToIR, validateExtensions, validateSpecs } from '@girih/spec';
-import type { ComponentIR, LoadedExtension } from '@girih/spec';
+import { CONFIG_FILENAMES, emittedFile, loadConfig, verifyEmittedFiles, writeEmittedFiles } from '@faravahar/girih-core';
+import type { EmittedFile, ResolvedConfig } from '@faravahar/girih-core';
+import { buildTokenGraphs } from '@faravahar/girih-tokens';
+import type { TokenBuildResult } from '@faravahar/girih-tokens';
+import { generateCss } from '@faravahar/girih-generator-css';
+import { generateReact, renderComponentSource, TEMPLATE_REGISTRY } from '@faravahar/girih-generator-react';
+import { loadExtensions, loadSpecs, specToIR, validateExtensions, validateSpecs } from '@faravahar/girih-spec';
+import type { ComponentIR, LoadedExtension } from '@faravahar/girih-spec';
 import { spawnSync } from 'node:child_process';
 import { buildPackage } from './build.js';
 import { readLock, writeLock } from './lock.js';
@@ -26,10 +26,10 @@ program.name('girih').description('Compile a multi-brand design system from toke
 const BRAND_NAME = /^[a-z][a-z0-9-]*$/;
 const PACKAGE_NAME = /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/;
 
-/** Can ds.config.ts's `import '@girih/cli'` resolve from this directory? */
+/** Can ds.config.ts's `import '@faravahar/girih'` resolve from this directory? */
 function hasResolvableCli(cwd: string): boolean {
   for (let dir = cwd; ; dir = dirname(dir)) {
-    if (existsSync(join(dir, 'node_modules/@girih/cli/package.json'))) return true;
+    if (existsSync(join(dir, 'node_modules/@faravahar/girih/package.json'))) return true;
     if (dir === dirname(dir)) return false;
   }
 }
@@ -113,7 +113,7 @@ async function loadEjectedSources(
     sources[name] = contents;
 
     // The fork's base is frozen; the spec/template are not. Make divergence visible.
-    const currentRender = emittedFile('x', renderComponentSource(ir, { classPrefix: config.tokens.prefix, runtimePackage: '@girih/react-runtime' }));
+    const currentRender = emittedFile('x', renderComponentSource(ir, { classPrefix: config.tokens.prefix, runtimePackage: '@faravahar/girih-react-runtime' }));
     if (currentRender.hash !== entry.baseHash) {
       build.diagnostics.push({
         code: 'GIRIH1014',
@@ -197,7 +197,7 @@ program
     for (const path of written) console.log(`${pc.green('create')}  ${path}`);
     console.log(`\n${pc.bold(name)} is ready. Next steps:`);
     if (!hasResolvableCli(cwd)) {
-      console.log(`  ${pc.cyan('npm install -D @girih/cli')}   (ds.config.ts imports it)`);
+      console.log(`  ${pc.cyan('npm install -D @faravahar/girih')}   (ds.config.ts imports it)`);
     }
     console.log(`  ${pc.cyan('girih check')}           validate tokens and contracts`);
     console.log(`  ${pc.cyan('girih generate react')}  compile the design system package`);
@@ -495,7 +495,7 @@ program
 
     // Snapshot the exact template output as the fork base. The recorded hash +
     // template version are what make a future `girih update` a 3-way merge.
-    const source = renderComponentSource(ir, { classPrefix: config.tokens.prefix, runtimePackage: '@girih/react-runtime' });
+    const source = renderComponentSource(ir, { classPrefix: config.tokens.prefix, runtimePackage: '@faravahar/girih-react-runtime' });
     const baseFile = emittedFile(`components/ejected/${componentName}.tsx`, source);
 
     // If the generated file on disk carries hand edits (drift), the fork must
@@ -718,7 +718,7 @@ program
       const current = TEMPLATE_REGISTRY[entry.template]?.version ?? entry.templateVersion;
       const ir = byName.get(name);
       const rebased = ir
-        ? emittedFile('x', renderComponentSource(ir, { classPrefix: config.tokens.prefix, runtimePackage: '@girih/react-runtime' })).hash
+        ? emittedFile('x', renderComponentSource(ir, { classPrefix: config.tokens.prefix, runtimePackage: '@faravahar/girih-react-runtime' })).hash
         : null;
       const reasons: string[] = [];
       if (current > entry.templateVersion) reasons.push(`template ${entry.template} v${entry.templateVersion}→v${current}`);

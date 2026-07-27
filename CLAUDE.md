@@ -22,7 +22,7 @@ tokens/ + brands/ + components/   ──girih generate──▶   @acme/design-s
         (source of truth)                               (build artifact, never hand-edited)
 ```
 
-Nothing here is deployed. The deliverables are npm packages (`@girih/*`, `create-girih`) plus the `girih` / `ds` CLI. `examples/acme-ds/` is a real consumer workspace used as the working demo, and `e2e/` proves the packed tarball installs and server-renders in a fresh consumer.
+Nothing here is deployed. The deliverables are npm packages (`@faravahar/girih*`, `create-girih`) plus the `girih` / `ds` CLI. `examples/acme-ds/` is a real consumer workspace used as the working demo, and `e2e/` proves the packed tarball installs and server-renders in a fresh consumer.
 
 Milestones M1–M6 are functional. Read `README.md` for what each milestone delivered; it is accurate and current.
 
@@ -49,15 +49,15 @@ core, tokens  ←  spec  ←  generator-react
 core, tokens, spec, generator-css, generator-react  ←  cli
 ```
 
-- `@girih/core` — shared kernel: workspace config loading, `Diagnostic`/`DiagnosticBag`, the `EmittedFile` model (`emittedFile`, `writeEmittedFiles`, `verifyEmittedFiles`), `cssVarName`. Depends on nothing in the workspace.
-- `@girih/tokens` — the whole token pipeline: DTCG parse → brand merge → alias resolve → tier validation. May only depend on `core`.
-- `@girih/generator-css` — token graphs → multi-brand CSS custom properties + `TokenPath` types. May depend on `core` + `tokens`.
-- `@girih/spec` — `defineSpec` / `defineVariant` contracts, `ComponentIR`, contract validation against brand token graphs. May depend on `core` + `tokens`.
-- `@girih/generator-react` — IR + templates → React package source and structure-only CSS. May depend on `core` + `spec`.
-- `@girih/cli` — the `girih` / `ds` binary. The only package that may depend on all of the above.
-- `@girih/react-runtime` — `BrandProvider`, `useBrand`, `cx`. Standalone; `react` is a **peer** dependency, never a real one.
+- `@faravahar/girih-core` — shared kernel: workspace config loading, `Diagnostic`/`DiagnosticBag`, the `EmittedFile` model (`emittedFile`, `writeEmittedFiles`, `verifyEmittedFiles`), `cssVarName`. Depends on nothing in the workspace.
+- `@faravahar/girih-tokens` — the whole token pipeline: DTCG parse → brand merge → alias resolve → tier validation. May only depend on `core`.
+- `@faravahar/girih-generator-css` — token graphs → multi-brand CSS custom properties + `TokenPath` types. May depend on `core` + `tokens`.
+- `@faravahar/girih-spec` — `defineSpec` / `defineVariant` contracts, `ComponentIR`, contract validation against brand token graphs. May depend on `core` + `tokens`.
+- `@faravahar/girih-generator-react` — IR + templates → React package source and structure-only CSS. May depend on `core` + `spec`.
+- `@faravahar/girih` — the `girih` / `ds` binary. The only package that may depend on all of the above.
+- `@faravahar/girih-react-runtime` — `BrandProvider`, `useBrand`, `cx`. Standalone; `react` is a **peer** dependency, never a real one.
 - `create-girih` — `npx` bootstrapper. Zero workspace dependencies by design (it must run before anything is installed).
-- `@girih/figma` — phase-2 stub. Consumes `ComponentIR`; do not grow it without being asked.
+- `@faravahar/girih-figma` — phase-2 stub. Consumes `ComponentIR`; do not grow it without being asked.
 
 **Non-negotiable invariants.** Breaking one of these is a design bug, not a style preference:
 
@@ -84,7 +84,7 @@ Never `throw` where a diagnostic will do. Errors that reach the user as a stack 
 
 **CLI surface** (`packages/cli/src/cli.ts`): `init`, `brand create <name>`, `check`, `generate [css|react]` (`--check`, `--force`), `eject <component>`, `build`, `publish` (`--yes`, `--tag`, `--access`), `update`.
 
-**Test layout.** `vitest.config.ts` aliases `@girih/{core,tokens,generator-css,generator-react,spec}` to `src/index.ts`, so unit tests run against source with no build. `@girih/cli` and `@girih/react-runtime` are **not** aliased — anything exercising them needs `pnpm build` first. Includes are `packages/*/test/**/*.test.ts` and `e2e/test/**/*.test.ts`.
+**Test layout.** `vitest.config.ts` aliases `@faravahar/girih-{core,tokens,generator-css,generator-react,spec}` to `src/index.ts`, so unit tests run against source with no build. `@faravahar/girih` and `@faravahar/girih-react-runtime` are **not** aliased — anything exercising them needs `pnpm build` first. Includes are `packages/*/test/**/*.test.ts` and `e2e/test/**/*.test.ts`.
 
 # Decision Priority
 
@@ -92,7 +92,7 @@ When multiple valid patterns exist, prefer in order:
 
 1. Existing implementation in the same file
 2. Existing implementation in the same package
-3. Existing implementation in `@girih/core` (the shared kernel is where cross-package agreement lives)
+3. Existing implementation in `@faravahar/girih-core` (the shared kernel is where cross-package agreement lives)
 4. New implementation in the package that owns the concern per the dependency direction above
 
 Do not introduce a new pattern when a local pattern already exists. In particular: emit through `emittedFile`/`writeEmittedFiles`, report through `Diagnostic`, name CSS variables through `cssVarName`. Three code paths that hash, report, or name things differently is exactly the class of bug this architecture exists to prevent.
@@ -166,7 +166,7 @@ Avoid `pnpm build` at the root unless you changed something that downstream pack
 # Agent Instructions
 
 - **Explore first.** Read the package's `src/index.ts` (its public surface) and its `test/` directory before editing. The tests document the intended contract more precisely than the types do.
-- **Reuse over invent.** Before adding a helper, check `@girih/core` — config, diagnostics, file emission, and CSS naming already live there and exist specifically to prevent divergence.
+- **Reuse over invent.** Before adding a helper, check `@faravahar/girih-core` — config, diagnostics, file emission, and CSS naming already live there and exist specifically to prevent divergence.
 - **Respect the dependency direction.** If a fix seems to need an upward import, the logic belongs in a lower package or in `core`. An upward import is never the answer.
 - **Diagnostics over exceptions.** New failure mode → new `GIRIH` code in your package's range, with `help`. Add a test asserting the code, not just the message text.
 - **Never hand-edit emitted files.** `examples/*/packages/`, `styles/`, `dist/`, `.ds/ir/` are outputs. `examples/acme-ds/.ds/manifest.json` and `.ds/ir/` **are** committed; `examples/*/packages/`, `.ds/cache/`, `.ds/publish/`, and demo bundles are gitignored.

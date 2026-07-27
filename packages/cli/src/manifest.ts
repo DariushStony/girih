@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import type { EmittedFile } from '@girih/core';
+import type { EmittedFile } from '@faravahar/girih-core';
 
 const MANIFEST_PATH = '.ds/manifest.json';
 

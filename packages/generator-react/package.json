@@ -1,5 +1,5 @@
 {
-  "name": "@girih/generator-react",
+  "name": "@faravahar/girih-generator-react",
   "version": "0.1.0",
   "description": "girih React generator: ComponentIR + templates → React package source",
   "type": "module",
@@ -19,8 +19,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@girih/core": "workspace:*",
-    "@girih/spec": "workspace:*"
+    "@faravahar/girih-core": "workspace:*",
+    "@faravahar/girih-spec": "workspace:*"
   },
   "devDependencies": {
     "tsup": "^8.5.1",

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { mergeTokenFiles, resolveTokenSet, validateBrandParity, validateTierDirection } from '@girih/tokens';
-import type { ResolvedTokenGraph, TokenFileInput } from '@girih/tokens';
+import { mergeTokenFiles, resolveTokenSet, validateBrandParity, validateTierDirection } from '@faravahar/girih-tokens';
+import type { ResolvedTokenGraph, TokenFileInput } from '@faravahar/girih-tokens';
 
 function graphFrom(files: TokenFileInput[]): ResolvedTokenGraph {
   const { set } = mergeTokenFiles(files);

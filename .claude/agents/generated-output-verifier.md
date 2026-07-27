@@ -32,7 +32,7 @@ pnpm exec girih generate react --check           # staleness gate for the React 
 Notes that matter:
 
 - `girih generate --check` **writes nothing**. It is always safe to run. Plain `girih generate` writes — do not run it as a "verification" step, and never pass `--force`, which is precisely the flag that discards a human's edits.
-- `pnpm build` is genuinely required before the CLI steps: `vitest.config.ts` aliases the library packages to source but **not** `@girih/cli` or `@girih/react-runtime`, so the CLI you invoke is the built one in `dist/`.
+- `pnpm build` is genuinely required before the CLI steps: `vitest.config.ts` aliases the library packages to source but **not** `@faravahar/girih` or `@faravahar/girih-react-runtime`, so the CLI you invoke is the built one in `dist/`.
 - `e2e/test/consumer.test.ts` npm-packs the workspace and installs into a scratch consumer. It is the slowest thing here and the only thing that proves the published shape works. Do not skip it when packaging or `dist/` shape changed; do skip it for a token-only change.
 
 ## Committed vs. gitignored

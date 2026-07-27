@@ -1,5 +1,5 @@
 {
-  "name": "@girih/react-runtime",
+  "name": "@faravahar/girih-react-runtime",
   "version": "0.1.0",
   "description": "girih runtime for generated code — BrandProvider, useBrand, cx (createVariant lands in M5)",
   "type": "module",

@@ -4,9 +4,9 @@
   "type": "module",
   "description": "scaffold \u2192 check \u2192 generate \u2192 drift smoke tests",
   "devDependencies": {
-    "@girih/cli": "workspace:*",
+    "@faravahar/girih": "workspace:*",
     "@base-ui-components/react": "1.0.0-rc.0",
-    "@girih/react-runtime": "workspace:*",
+    "@faravahar/girih-react-runtime": "workspace:*",
     "@types/react": "^19.0.0",
     "react": "^19.0.0",
     "typescript": "^5.9.3"

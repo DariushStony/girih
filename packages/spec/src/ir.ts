@@ -1,4 +1,4 @@
-import type { Diagnostic } from '@girih/core';
+import type { Diagnostic } from '@faravahar/girih-core';
 import type {
   ComponentIR,
   ComponentSpecInput,

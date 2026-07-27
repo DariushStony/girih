@@ -1,4 +1,4 @@
-import { defineVariant } from '@girih/cli';
+import { defineVariant } from '@faravahar/girih';
 
 export default defineVariant({
   name: 'PaymentButton',

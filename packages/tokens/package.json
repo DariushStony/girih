@@ -1,5 +1,5 @@
 {
-  "name": "@girih/tokens",
+  "name": "@faravahar/girih-tokens",
   "version": "0.1.0",
   "description": "girih token engine: DTCG parsing, brand overlays, alias resolution, tier validation",
   "type": "module",
@@ -19,7 +19,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@girih/core": "workspace:*",
+    "@faravahar/girih-core": "workspace:*",
     "style-dictionary": "^5.0.0",
     "tinyglobby": "^0.2.10"
   },

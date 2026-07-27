@@ -1,4 +1,4 @@
-import type { ComponentIR } from '@girih/spec';
+import type { ComponentIR } from '@faravahar/girih-spec';
 
 const REF_ELEMENT_TYPES: Record<string, string> = {
   a: 'HTMLAnchorElement',
