@@ -73,7 +73,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # enablement turns Pages on if it is not already, instead of failing with
+      # "Get Pages site failed … verify that the repository has Pages enabled". That
+      # error is only ever a missing one-time setting, and needing a human to click it
+      # before the workflow can ever succeed is a worse first run than doing it here.
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -30,7 +30,14 @@ function pack(packageDir: string): string {
 // The definitive distribution proof: pack the compiled package + runtime as real
 // tarballs, install them into a from-scratch consumer with only public deps, and
 // server-render every component. Networked + slow, so it lives apart from the fast e2e.
-describe('consumer install: pack → install → SSR render', () => {
+// Every test here spawns the CLI as a real process, often several times. A CI runner
+// is far slower at that than a dev machine — the eject test measured 2.5s locally and
+// 5.13s on Windows, just over vitest's 5s default — so the suite gets a timeout that
+// reflects what it actually does. Unit tests keep the strict default: a hang there is a
+// bug, not a slow machine. Per-test timeouts below still override this.
+const SUITE_TIMEOUT = 30_000;
+
+describe('consumer install: pack → install → SSR render', { timeout: SUITE_TIMEOUT }, () => {
   let installed = false;
 
   beforeAll(async () => {

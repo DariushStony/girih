@@ -17,7 +17,14 @@ function girih(...args: string[]): { status: number | null; output: string } {
   return { status: result.status, output: plainOutput(`${result.stdout}\n${result.stderr}`) };
 }
 
-describe('e2e: scaffold → check → generate → drift', () => {
+// Every test here spawns the CLI as a real process, often several times. A CI runner
+// is far slower at that than a dev machine — the eject test measured 2.5s locally and
+// 5.13s on Windows, just over vitest's 5s default — so the suite gets a timeout that
+// reflects what it actually does. Unit tests keep the strict default: a hang there is a
+// bug, not a slow machine. Per-test timeouts below still override this.
+const SUITE_TIMEOUT = 30_000;
+
+describe('e2e: scaffold → check → generate → drift', { timeout: SUITE_TIMEOUT }, () => {
   beforeAll(async () => {
     if (!existsSync(cliPath)) {
       throw new Error('packages/girih/dist/cli.js missing — run `pnpm build` before the e2e tests.');
