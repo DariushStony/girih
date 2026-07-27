@@ -3,7 +3,7 @@
 - **graphify** (`.claude/skills/graphify/SKILL.md`) — any input to knowledge graph. Trigger: `/graphify`
   When the user types `/graphify`, invoke the Skill tool with `skill: "graphify"` before doing anything else.
 
-This project has a knowledge graph at `graphify-out/` with god nodes, community structure, and cross-file relationships (1,086 nodes · 1,325 edges · 70 communities, built from 111 code files + 5 docs).
+This project has a knowledge graph at `graphify-out/` with god nodes, community structure, and cross-file relationships (1,935 nodes · 2,598 edges · 155 communities, built from 243 files).
 
 Rules:
 
