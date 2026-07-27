@@ -196,7 +196,7 @@ feat(cli): add girih doctor
 fix(tokens): reject an upward tier reference
 ```
 
-Scopes are the package directory names, plus `docs`, `e2e`, `release` and `deps`. Earlier history
+Scopes are the package directory names, plus `docs`, `e2e`, `examples`, `release`, `deps` and `ci`. A change spanning several packages omits the scope. Earlier history
 uses milestone subjects (`M6: …`); those are no longer valid. Keep the subject a summary of intent
 rather than a file list, and put the reasoning in the body.
 
