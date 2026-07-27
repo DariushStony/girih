@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { applyBump as girihApplyBump } from '../../packages/girih/src/semver.js';
 // @ts-expect-error — plain JS release tooling, deliberately not typed.
-import { BUMP_BY_TYPE, applyBump, parseCommit, renderNotes, strongest } from '../../scripts/lib/release-bump.mjs';
+import { BUMP_BY_TYPE, NON_RELEASING_SCOPES, applyBump, parseCommit, renderNotes, strongest } from '../../scripts/lib/release-bump.mjs';
 
 /**
  * The release script decides girih's own version. Nothing else checks it, and getting it
@@ -63,6 +63,38 @@ describe('BUMP_BY_TYPE', () => {
     // Not merely bump: 'none' — an unknown type is not a conventional commit at all, so
     // it stays out of the release notes too.
     expect(parseCommit('wip: something')).toBeNull();
+  });
+});
+
+describe('scope gating', () => {
+  // A commit's type says what kind of change it is; its scope says whether a consumer can
+  // see it. Both matter. Missing this would have made the first automated release publish
+  // a version identical to the one before it.
+  it('does not release for a scope girih never publishes', () => {
+    for (const scope of NON_RELEASING_SCOPES) {
+      expect(parseCommit(`fix(${scope}): something`)?.bump, scope).toBe('none');
+      expect(parseCommit(`feat(${scope}): something`)?.bump, scope).toBe('none');
+    }
+  });
+
+  it('releases for a package scope', () => {
+    expect(parseCommit('fix(girih-tokens): alias cycle')?.bump).toBe('patch');
+    expect(parseCommit('feat(girih): add watch')?.bump).toBe('minor');
+  });
+
+  it('releases for a scopeless commit, since repo-wide could mean anything', () => {
+    expect(parseCommit('fix: something')?.bump).toBe('patch');
+  });
+
+  it('releases for deps, which can change the published tree', () => {
+    // The TypeScript 6 upgrade altered what consumers install.
+    expect(parseCommit('build(deps): bump typescript')?.bump).toBe('patch');
+  });
+
+  it('applies the gate to breaking changes too', () => {
+    // A breaking CI change is not breaking for a consumer.
+    expect(parseCommit('ci!: restructure the pipeline')?.bump).toBe('none');
+    expect(parseCommit('refactor!: rename packages')?.bump).toBe('major');
   });
 });
 

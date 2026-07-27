@@ -29,6 +29,29 @@ export const BUMP_BY_TYPE = {
   refactor: 'none',
 };
 
+/**
+ * Scopes naming something girih does not publish.
+ *
+ * The type alone is not enough. `fix(ci): give the e2e suites a timeout` is a real fix to
+ * a real problem, but nothing a consumer installs changed — and without this the first
+ * automated release would have published a version whose dist was byte-identical to the
+ * one before it, which is the wasted release this automation exists to prevent.
+ *
+ * Mirrors AREA_SCOPES in commitlint.config.js minus `deps`: a dependency change can alter
+ * the published tree, so it releases. A scopeless commit releases too, because "repo-wide"
+ * could mean anything.
+ */
+export const NON_RELEASING_SCOPES = new Set(['ci', 'docs', 'e2e', 'examples', 'release']);
+
+/**
+ * Types that never reach a consumer, whatever markers a commit carries.
+ *
+ * Separate from the bump table because `!` overrides that table and must not override
+ * this. `chore` and `refactor` are absent on purpose: both touch shipped code, so
+ * `refactor!:` is a real major — the package directory rename was exactly that.
+ */
+export const NON_RELEASING_TYPES = new Set(['ci', 'test', 'style', 'docs']);
+
 const RANK = { none: 0, patch: 1, minor: 2, major: 3 };
 
 /** Highest bump wins. */
@@ -84,8 +107,14 @@ export function parseCommit(subject, body = '') {
   const [, type, scope, bang, description] = match;
   // A `!` or a BREAKING CHANGE footer outranks whatever the type would say.
   const breaking = Boolean(bang) || /^BREAKING[ -]CHANGE:/m.test(body);
-  const bump = breaking ? 'major' : (BUMP_BY_TYPE[type] ?? 'none');
-  return { type, scope: scope ?? null, breaking, description, bump };
+  // Two independent gates, because a change reaches a consumer only if both the type and
+  // the scope can. `!` outranks the bump table but not these: `ci!: restructure the
+  // pipeline` is breaking for contributors and invisible to anyone installing girih, so
+  // publishing a major over it would be wrong. `refactor!:` still is a major — refactors
+  // touch shipped code, which is why the directory rename was one.
+  const shipped = (!scope || !NON_RELEASING_SCOPES.has(scope)) && !NON_RELEASING_TYPES.has(type);
+  const bump = shipped ? (breaking ? 'major' : (BUMP_BY_TYPE[type] ?? 'none')) : 'none';
+  return { type, scope: scope ?? null, breaking, description, bump, shipped };
 }
 
 const TYPE_HEADINGS = [

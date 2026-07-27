@@ -170,14 +170,13 @@ the same rule turned on girih itself.
 
 **How it works**
 
-1. You merge normal work to `main` with conventional commit subjects.
-2. `release-pr.yml` recomputes the next version from the commits since the last `v*` tag and
-   keeps a single pull request open — `chore(release): X.Y.Z`. It contains the whole release:
-   eight `version` fields, the two version ranges that ship inside published source, the
-   changelogs, and regenerated docs.
-3. You read the computed version and the generated notes. Merging that PR publishes.
-4. `release.yml` runs `ci` → `docs` → `release` on the merge, recognises the release commit,
-   publishes all eight packages and pushes the `vX.Y.Z` tag.
+You push to `main` with conventional commit subjects. That is the whole workflow.
+
+`release.yml` runs `ci` → `docs` → `release`. If the commits since the last `v*` tag warrant
+a release, the last stage computes the version, applies every edit, publishes to npm, then
+pushes the bump commit and the `vX.Y.Z` tag. A `git pull` afterwards brings both down.
+
+If nothing warrants a release the pipeline still passes — it just stops after the plan.
 
 Locally, `pnpm release:plan` shows what the next release would be and writes nothing.
 `pnpm release:prepare` applies the edits, if you ever need to do it by hand.
@@ -192,8 +191,20 @@ Locally, `pnpm release:plan` shows what the next release would be and writes not
 | `!` or a `BREAKING CHANGE:` footer                  | major                         |
 | `docs:` `chore:` `test:` `ci:` `style:` `refactor:` | none                          |
 
-Below 1.0 those are then remapped by girih's own pre-1.0 rule — breaking moves the minor,
-a feature moves the patch — using the same logic as
+A commit also has to be able to _reach_ a consumer, which the type alone does not tell you.
+Two gates apply on top of the table:
+
+- **Scope.** `ci` `docs` `e2e` `examples` `release` name things girih does not publish, so
+  they never release. `deps` does, because a dependency change alters the published tree. A
+  scopeless commit releases, since repo-wide could mean anything.
+- **Type.** `ci` `test` `style` `docs` never reach a consumer whatever markers they carry —
+  so `ci!:` is not a major. `refactor!:` is, because refactors touch shipped code.
+
+Without those, `fix(ci): give the e2e suites a timeout` would have published a release whose
+`dist` was byte-identical to the one before it.
+
+Below 1.0 the result is then remapped by girih's own pre-1.0 rule — breaking moves the
+minor, a feature moves the patch — using the same logic as
 [`packages/girih/src/semver.ts`](packages/girih/src/semver.ts). A test asserts the two agree,
 so they cannot drift.
 
@@ -211,7 +222,11 @@ so they cannot drift.
   topological order and leaving the release half-done.
 - **`@faravahar/girih-figma` never publishes.** It is `private: true`, a phase-2 stub, and the
   tooling skips it. Its version stays `0.0.0` on purpose.
-- To hold a release back, leave the PR open. It updates itself on every push to `main`.
+- **A missing tag stops the release rather than guessing.** The version is measured from
+  the last `v*` tag; without one there is no way to know what already shipped, so
+  release-prepare refuses instead of assuming every commit is unreleased. If it complains,
+  a tag was created locally and never pushed: `git push origin --tags`.
+- To hold a release back, do not merge the releasable commit yet. There is no PR to park.
 
 ## Commits
 
