@@ -184,7 +184,7 @@ default-exported" without trusting the type system across a runtime boundary.
 
 `TEMPLATE_REGISTRY` is consulted from two places that are easy to miss:
 contract validation, so an unimplementable state is a build error rather than a missing CSS rule;
-and ejection, which records the template version so `girih update` can report a fork
+and ejection, which records the template version so `girih forks` can report a fork
 whose template has since moved.
 
 ## @faravahar/girih

@@ -289,7 +289,7 @@ ${table(
 <p>
   <code>TEMPLATE_REGISTRY</code> is consulted from two places that are easy to miss:
   contract validation, so an unimplementable state is a build error rather than a missing CSS rule;
-  and ejection, which records the template version so <code>girih update</code> can report a fork
+  and ejection, which records the template version so <code>girih forks</code> can report a fork
   whose template has since moved.
 </p>
 

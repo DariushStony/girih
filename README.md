@@ -166,14 +166,13 @@ pnpm exec girih check
 pnpm exec girih generate react --check   # staleness gate; writes nothing
 ```
 
-There is **no linter and no formatter** in this repo. Verification is `pnpm typecheck` plus
-`pnpm test`. Do not add lint tooling without asking.
+`pnpm verify` is the whole gate — build, typecheck, oxlint, Prettier, tests, then the
+example's `girih check` and drift check. It is what `pnpm release` runs first, so a green
+local run means the release will not fall over on something mechanical.
 
-> [!NOTE]
-> **Known flake.** `e2e/test/consumer.test.ts` intermittently fails with
-> `ENOENT … e2e/.tmp/consumer/app/smoke.mjs`. Cause: `workspace.test.ts` removes all of `e2e/.tmp`
-> in its `afterAll` while `consumer.test.ts` keeps its scratch under `e2e/.tmp/consumer`, and vitest
-> runs the files in parallel. Re-run, or run it alone. Not your change.
+A pre-commit hook runs oxlint and Prettier on staged files; a `commit-msg` hook runs
+commitlint. Both ignore every generated path — reformatting emitted output registers as
+drift the next `girih generate` reverts.
 
 ### House rules
 

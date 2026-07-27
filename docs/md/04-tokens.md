@@ -236,21 +236,37 @@ contains twelve declarations:
 **styles/tokens.css — real output  [girih writes this]**
 
 ```css
-[data-brand="seller"] {
-  --ds-radius-md: 2px;                                        /* overridden */
-  --ds-color-primary: var(--ds-color-green-600);              /* overridden */
-  --ds-color-primary-hover: var(--ds-color-green-700);        /* overridden */
-  --ds-radius-control: var(--ds-radius-md);                   /* dependent */
-  --ds-badge-primary-background: var(--ds-color-primary);     /* dependent */
-  --ds-button-primary-background: var(--ds-color-primary);    /* dependent */
-  --ds-button-primary-background-hover: var(--ds-color-primary-hover);
-  --ds-button-radius: var(--ds-radius-control);               /* dependent */
-  --ds-checkbox-background-checked: var(--ds-color-primary);  /* dependent */
-  --ds-checkbox-border-hover: var(--ds-color-primary);        /* dependent */
-  --ds-input-border-focus: var(--ds-color-primary);           /* dependent */
-  --ds-input-radius: var(--ds-radius-control);                /* dependent */
+@layer girih.tokens, girih.components;
+
+@layer girih.tokens {
+  [data-brand="seller"] {
+    --ds-radius-md: 2px;                                        /* overridden */
+    --ds-color-primary: var(--ds-color-green-600);              /* overridden */
+    --ds-color-primary-hover: var(--ds-color-green-700);        /* overridden */
+    --ds-radius-control: var(--ds-radius-md);                   /* dependent */
+    --ds-badge-primary-background: var(--ds-color-primary);     /* dependent */
+    --ds-button-primary-background: var(--ds-color-primary);    /* dependent */
+    --ds-button-primary-background-hover: var(--ds-color-primary-hover);
+    --ds-button-radius: var(--ds-radius-control);               /* dependent */
+    --ds-checkbox-background-checked: var(--ds-color-primary);  /* dependent */
+    --ds-checkbox-border-hover: var(--ds-color-primary);        /* dependent */
+    --ds-input-border-focus: var(--ds-color-primary);           /* dependent */
+    --ds-input-radius: var(--ds-radius-control);                /* dependent */
+  }
 }
 ```
+
+> **🟡 Watch out — Why the output is wrapped in @layer**
+>
+> Everything girih emits lands in `@layer girih.tokens` or
+> `@layer girih.components`. Unlayered CSS beats layered CSS regardless of
+> specificity, so _your_ stylesheet always wins — overriding a generated component
+> needs no `!important` and no specificity arms race.
+>
+> The order statement appears in both stylesheets, not just one. The earliest
+> `@layer` declaration establishes precedence, and a consumer may import
+> `components.css` first; repeating an identical statement is harmless, so this
+> is correct whichever order they load in.
 
 The nine extra declarations are the **dependents closure**: every token that transitively
 references an overridden one. They are there because of a specific property of CSS custom

@@ -442,7 +442,7 @@ Four things happen, and each one is doing specific work:
 > the drift gate's advice must never lose your work. The recorded `baseHash` stays
 > pristine regardless, because that hash is what a future three-way merge would rebase against.
 
-`girih update` reports forks that have drifted from their recorded base, on two axes:
+`girih forks` reports forks that have drifted from their recorded base, on two axes:
 the template version moved, or the spec changed since the eject. The three-way merge itself is not
 implemented — the command tells you honestly that it is a report, not a fix.
 

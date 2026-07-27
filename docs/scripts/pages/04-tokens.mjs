@@ -297,21 +297,41 @@ ${rule(
 </p>
 
 ${code(
-  `[data-brand="seller"] {
-  --ds-radius-md: 2px;                                        /* overridden */
-  --ds-color-primary: var(--ds-color-green-600);              /* overridden */
-  --ds-color-primary-hover: var(--ds-color-green-700);        /* overridden */
-  --ds-radius-control: var(--ds-radius-md);                   /* dependent */
-  --ds-badge-primary-background: var(--ds-color-primary);     /* dependent */
-  --ds-button-primary-background: var(--ds-color-primary);    /* dependent */
-  --ds-button-primary-background-hover: var(--ds-color-primary-hover);
-  --ds-button-radius: var(--ds-radius-control);               /* dependent */
-  --ds-checkbox-background-checked: var(--ds-color-primary);  /* dependent */
-  --ds-checkbox-border-hover: var(--ds-color-primary);        /* dependent */
-  --ds-input-border-focus: var(--ds-color-primary);           /* dependent */
-  --ds-input-radius: var(--ds-radius-control);                /* dependent */
+  `@layer girih.tokens, girih.components;
+
+@layer girih.tokens {
+  [data-brand="seller"] {
+    --ds-radius-md: 2px;                                        /* overridden */
+    --ds-color-primary: var(--ds-color-green-600);              /* overridden */
+    --ds-color-primary-hover: var(--ds-color-green-700);        /* overridden */
+    --ds-radius-control: var(--ds-radius-md);                   /* dependent */
+    --ds-badge-primary-background: var(--ds-color-primary);     /* dependent */
+    --ds-button-primary-background: var(--ds-color-primary);    /* dependent */
+    --ds-button-primary-background-hover: var(--ds-color-primary-hover);
+    --ds-button-radius: var(--ds-radius-control);               /* dependent */
+    --ds-checkbox-background-checked: var(--ds-color-primary);  /* dependent */
+    --ds-checkbox-border-hover: var(--ds-color-primary);        /* dependent */
+    --ds-input-border-focus: var(--ds-color-primary);           /* dependent */
+    --ds-input-radius: var(--ds-radius-control);                /* dependent */
+  }
 }`,
   { path: 'styles/tokens.css — real output', kind: 'generated', lang: 'css' },
+)}
+
+${gotcha(
+  'Why the output is wrapped in @layer',
+  `<p>
+    Everything girih emits lands in <code>@layer girih.tokens</code> or
+    <code>@layer girih.components</code>. Unlayered CSS beats layered CSS regardless of
+    specificity, so <em>your</em> stylesheet always wins — overriding a generated component
+    needs no <code>!important</code> and no specificity arms race.
+  </p>
+  <p>
+    The order statement appears in both stylesheets, not just one. The earliest
+    <code>@layer</code> declaration establishes precedence, and a consumer may import
+    <code>components.css</code> first; repeating an identical statement is harmless, so this
+    is correct whichever order they load in.
+  </p>`,
 )}
 
 <p>

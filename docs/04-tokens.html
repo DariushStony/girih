@@ -2493,21 +2493,41 @@ radius.pill  tier=global  type=dimension  value=&quot;999px&quot;</code></pre>
       <span class="path">styles/tokens.css — real output</span>
       <span class="badge generated">girih writes this</span>
     </figcaption>
-  <pre><code>[data-brand=<span class="tk-s">&quot;seller&quot;</span>] {
-  --ds-radius-md: 2px;                                        <span class="tk-c">/* overridden */</span>
-  --ds-color-primary: var(--ds-color-green-600);              <span class="tk-c">/* overridden */</span>
-  --ds-color-primary-hover: var(--ds-color-green-700);        <span class="tk-c">/* overridden */</span>
-  --ds-radius-control: var(--ds-radius-md);                   <span class="tk-c">/* dependent */</span>
-  --ds-badge-primary-background: var(--ds-color-primary);     <span class="tk-c">/* dependent */</span>
-  --ds-button-primary-background: var(--ds-color-primary);    <span class="tk-c">/* dependent */</span>
-  --ds-button-primary-background-hover: var(--ds-color-primary-hover);
-  --ds-button-radius: var(--ds-radius-control);               <span class="tk-c">/* dependent */</span>
-  --ds-checkbox-background-checked: var(--ds-color-primary);  <span class="tk-c">/* dependent */</span>
-  --ds-checkbox-border-hover: var(--ds-color-primary);        <span class="tk-c">/* dependent */</span>
-  --ds-input-border-focus: var(--ds-color-primary);           <span class="tk-c">/* dependent */</span>
-  --ds-input-radius: var(--ds-radius-control);                <span class="tk-c">/* dependent */</span>
+  <pre><code>@layer girih.tokens, girih.components;
+
+@layer girih.tokens {
+  [data-brand=<span class="tk-s">&quot;seller&quot;</span>] {
+    --ds-radius-md: 2px;                                        <span class="tk-c">/* overridden */</span>
+    --ds-color-primary: var(--ds-color-green-600);              <span class="tk-c">/* overridden */</span>
+    --ds-color-primary-hover: var(--ds-color-green-700);        <span class="tk-c">/* overridden */</span>
+    --ds-radius-control: var(--ds-radius-md);                   <span class="tk-c">/* dependent */</span>
+    --ds-badge-primary-background: var(--ds-color-primary);     <span class="tk-c">/* dependent */</span>
+    --ds-button-primary-background: var(--ds-color-primary);    <span class="tk-c">/* dependent */</span>
+    --ds-button-primary-background-hover: var(--ds-color-primary-hover);
+    --ds-button-radius: var(--ds-radius-control);               <span class="tk-c">/* dependent */</span>
+    --ds-checkbox-background-checked: var(--ds-color-primary);  <span class="tk-c">/* dependent */</span>
+    --ds-checkbox-border-hover: var(--ds-color-primary);        <span class="tk-c">/* dependent */</span>
+    --ds-input-border-focus: var(--ds-color-primary);           <span class="tk-c">/* dependent */</span>
+    --ds-input-radius: var(--ds-radius-control);                <span class="tk-c">/* dependent */</span>
+  }
 }</code></pre>
 </figure>
+
+<div class="callout gotcha">
+  <div class="title">Why the output is wrapped in @layer</div>
+  <p>
+    Everything girih emits lands in <code>@layer girih.tokens</code> or
+    <code>@layer girih.components</code>. Unlayered CSS beats layered CSS regardless of
+    specificity, so <em>your</em> stylesheet always wins — overriding a generated component
+    needs no <code>!important</code> and no specificity arms race.
+  </p>
+  <p>
+    The order statement appears in both stylesheets, not just one. The earliest
+    <code>@layer</code> declaration establishes precedence, and a consumer may import
+    <code>components.css</code> first; repeating an identical statement is harmless, so this
+    is correct whichever order they load in.
+  </p>
+</div>
 
 <p>
   The nine extra declarations are the <b>dependents closure</b>: every token that transitively

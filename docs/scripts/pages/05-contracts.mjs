@@ -433,7 +433,7 @@ ${gotcha(
 )}
 
 <p>
-  <code>girih update</code> reports forks that have drifted from their recorded base, on two axes:
+  <code>girih forks</code> reports forks that have drifted from their recorded base, on two axes:
   the template version moved, or the spec changed since the eject. The three-way merge itself is not
   implemented — the command tells you honestly that it is a report, not a fix.
 </p>
