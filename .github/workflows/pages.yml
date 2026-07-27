@@ -12,8 +12,14 @@ name: docs
 on:
   push:
     branches: [main]
+    # Every input the doc generators read, not just docs/. extract-tokens.mjs runs
+    # girih's own engine over examples/acme-ds and extract-diagnostics.mjs greps
+    # packages/*/src, so a change in either can make committed docs/ stale — and a
+    # docs-only filter would leave the staleness gate blind to exactly that.
     paths:
       - 'docs/**'
+      - 'packages/*/src/**'
+      - 'examples/acme-ds/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -43,25 +49,15 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # The token extractor imports the built packages, so this is required.
-      - run: pnpm build
-
-      # extract-tokens reads the example's emitted CSS, which is gitignored — so the
-      # example workspace has to be generated before the docs can be extracted.
-      - name: generate the example design system
-        working-directory: examples/acme-ds
-        run: pnpm exec girih generate react
-
-      - name: regenerate extracted data and pages
-        run: |
-          node docs/scripts/extract-diagnostics.mjs
-          node docs/scripts/extract-tokens.mjs
-          node docs/scripts/build-docs.mjs
+      # One script rather than the five steps this used to spell out, so CI and the
+      # documented local command cannot drift: build, generate the example (its emitted
+      # CSS is gitignored and the token extractor reads it), extract, then build pages.
+      - run: pnpm docs:generate
 
       - name: fail if the committed docs differ from a fresh build
         run: |
           if ! git diff --quiet -- docs/; then
-            echo "::error::docs/ is stale. Run the three doc scripts and commit the result."
+            echo "::error::docs/ is stale. Run \`pnpm docs:generate\` and commit the result."
             git diff --stat -- docs/
             exit 1
           fi

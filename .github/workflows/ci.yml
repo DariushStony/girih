@@ -1,0 +1,75 @@
+# Quality gate for every push to main and every pull request.
+#
+# Mirrors `pnpm verify` but split into jobs so a failure names its own cause instead
+# of stopping at the first script. Deliberately does NOT publish — see release.yml.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_call: # release.yml reuses this as its gate
+
+# One run per ref. Cancel superseded PR runs, but never cancel main: its result is
+# what release.yml relies on.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: lint, types, unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # action-setup must come first: setup-node's `cache: pnpm` needs pnpm on PATH.
+      # No `version:` input — packageManager (pnpm@11.8.0) decides, so this cannot
+      # silently run a different major than the lockfile was written by.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22 # style-dictionary requires >=22; so does every girih package
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm format:check
+
+      # Needs no build: vitest aliases the library packages to source.
+      - run: pnpm test:unit
+
+  packaging:
+    name: packaging and end-to-end
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # The e2e suite runs the compiled CLI from dist/ and packs real tarballs, so
+      # the build is a hard prerequisite rather than an optimisation.
+      - run: pnpm build
+
+      - run: pnpm test:e2e
+
+      # girih's central invariant: emitted output must match the declaration that
+      # produced it. Both are read-only.
+      - run: pnpm example:check
+      - run: pnpm example:drift
+
+      # Proves the eight tarballs are publishable — non-empty dist/, no surviving
+      # workspace: range, runnable bins. Catches the two mistakes that would burn a
+      # version number permanently, and costs seconds here versus a wasted release.
+      - run: pnpm pack:verify

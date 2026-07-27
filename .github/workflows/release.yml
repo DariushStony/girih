@@ -1,0 +1,124 @@
+# Publish the eight public packages to npm.
+#
+# workflow_dispatch only. Never on push: npm will not let a version be reused, so an
+# accidental publish is permanent, and a merge to main must not be able to cause one.
+#
+# One-time setup: add an npm granular access token with publish rights on the
+# `faravahar` scope as the NPM_TOKEN secret, and create a `release` environment
+# (Settings → Environments) if you want an approval step before it runs.
+#
+# Versions are lockstep. Bumping is three edits, not one — see CONTRIBUTING.md:
+#   1. the eight `version` fields
+#   2. generator-react/src/generate.ts  RUNTIME_VERSION_RANGE
+#   3. create-girih/src/versions.ts     CLI_VERSION_RANGE + RUNTIME_VERSION_RANGE
+# Tests assert 2 and 3 against the real versions, so a forgotten one fails the gate.
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version being published (must already be committed, e.g. 0.1.0)'
+        required: true
+        type: string
+      tag:
+        description: 'npm dist-tag'
+        required: true
+        default: latest
+        type: choice
+        options: [latest, next]
+      dry-run:
+        description: 'Resolve and pack everything, but do not publish'
+        required: false
+        default: true
+        type: boolean
+
+# Never two publishes at once: they would race on the same version numbers.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  # The full quality gate, reused rather than duplicated, so release and CI can never
+  # disagree about what passing means.
+  gate:
+    uses: ./.github/workflows/ci.yml
+
+  publish:
+    name: publish to npm
+    needs: gate
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          # Writes the .npmrc that pnpm reads NODE_AUTH_TOKEN through.
+          registry-url: https://registry.npmjs.org
+
+      - run: pnpm install --frozen-lockfile
+
+      # Fail before touching the registry if the requested version is not what is
+      # actually committed. Guards against dispatching with a stale input.
+      - name: check the input matches the committed versions
+        run: |
+          expected='${{ inputs.version }}'
+          fail=0
+          for manifest in packages/*/package.json; do
+            name=$(node -p "require('./$manifest').name")
+            private=$(node -p "require('./$manifest').private === true")
+            [ "$private" = "true" ] && continue
+            actual=$(node -p "require('./$manifest').version")
+            if [ "$actual" != "$expected" ]; then
+              echo "::error::$name is $actual, expected $expected"
+              fail=1
+            fi
+          done
+          [ "$fail" = "0" ] || exit 1
+          echo "All publishable packages are at $expected."
+
+      - run: pnpm build
+
+      # Exercises pnpm's real manifest rewriting — unlike `npm whoami`, which proves
+      # nothing about the path the publish actually takes.
+      - name: dry run
+        run: pnpm -r --filter "./packages/*" publish --access public --tag '${{ inputs.tag }}' --no-git-checks --dry-run
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # pnpm, never npm: five packages depend on each other by `workspace:*`, and only
+      # pnpm's packer rewrites those into real version ranges. npm ships them verbatim
+      # and every consumer install fails with EUNSUPPORTEDPROTOCOL.
+      #
+      # --no-git-checks because the runner's checkout is a detached HEAD, which pnpm's
+      # branch check rejects; the version check above is the real guard.
+      - name: publish
+        if: ${{ !inputs.dry-run }}
+        run: pnpm -r --filter "./packages/*" publish --access public --tag '${{ inputs.tag }}' --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: summary
+        run: |
+          {
+            if [ '${{ inputs.dry-run }}' = 'true' ]; then
+              echo '### Dry run — nothing published'
+            else
+              echo '### Published ${{ inputs.version }} to the `${{ inputs.tag }}` tag'
+            fi
+            echo
+            for manifest in packages/*/package.json; do
+              node -e "
+                const p = require('./$manifest');
+                if (p.private) process.exit(0);
+                console.log('- `' + p.name + '@' + p.version + '`');
+              "
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
