@@ -79,7 +79,7 @@ open demo/react/index.html    # variant matrix with a live brand toggle
 ```
 
 > [!NOTE]
-> Requires **Node 22+** — `style-dictionary` sets that floor, and girih declares it rather than
+> Requires **Node 22.22.1+** — `style-dictionary` and the toolchain set that floor, and girih declares it rather than
 > promising something its dependencies contradict. `girih doctor` tells you in one line if your
 > environment is short of anything.
 

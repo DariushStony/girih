@@ -24,26 +24,21 @@ export default function page(_data) {
 ${table(
   ['You need', 'Version', 'Check with'],
   [
-    ['Node.js', '22 or newer', '<code>node --version</code>'],
+    ['Node.js', '22.22.1 or newer', '<code>node --version</code>'],
     ['A package manager', 'npm, pnpm, yarn or bun', '<code>npm --version</code>'],
     ['git', 'any recent — Path B only', '<code>git --version</code>'],
   ],
 )}
 
 ${gotcha(
-  'Why Node 22 and not 20',
+  'Where the Node floor comes from',
   `<p>
-    girih's token pipeline builds on <code>style-dictionary</code>, which declares
-    <code>engines.node >= 22</code>. Every girih package declares the same floor rather than
-    promising something its own dependencies contradict. If you are on 20, <code>girih doctor</code>
-    will say so in one line instead of letting a dependency fail obscurely later.
+    girih's token pipeline builds on <code>style-dictionary</code>, which requires Node 22, and its
+    toolchain requires 22.22.1. Every girih package declares that same floor rather than promising
+    something its own dependencies contradict. If you are below it, <code>girih doctor</code> says so
+    in one line instead of letting a dependency fail obscurely later.
   </p>`,
 )}
-
-<p>
-  pnpm is pinned through the <code>packageManager</code> field, so if you have corepack enabled the
-  right version is used automatically. If you do not have pnpm at all:
-</p>
 
 <h2 id="scratch">Path A: start your own workspace</h2>
 
@@ -133,9 +128,9 @@ ${gotcha(
 ${code(
   `git clone https://github.com/DariushStony/girih.git
 cd girih
-corepack enable       # pnpm 11.8.0 is pinned via packageManager
+corepack enable       # pnpm 11.17.0 is pinned via packageManager
 pnpm install
-pnpm build            # tsup builds every package into dist/`,
+pnpm build            # tsup + tsc build every package into dist/`,
   { kind: 'shell', lang: 'none' },
 )}
 
@@ -367,7 +362,7 @@ ${gotcha(
 ${code(
   `$ girih doctor
 
-✔ node                 v24.11.0 (>=22 required)
+✔ node                 v24.11.0 (>=22.22.1 required)
 ✔ package manager      pnpm (/path/to/pnpm-lock.yaml)
 ✔ @faravahar/girih     resolves from /path/to/my-ds
 ✔ ds.config.ts         @acme/design-system · 2 brands · default 'marketplace'

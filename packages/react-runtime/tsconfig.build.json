@@ -1,9 +1,10 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.build.json",
   "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
     "jsx": "react-jsx",
     "lib": ["ES2022", "DOM"],
-    // Extends rather than replaces the base list — `types` does not merge.
     "types": ["node", "react"]
   },
   "include": ["src"]

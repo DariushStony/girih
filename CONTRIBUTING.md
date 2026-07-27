@@ -12,10 +12,12 @@ pnpm build        # required: several tests and all CLI usage run against dist/
 pnpm verify       # build, typecheck, lint, format, tests, and the example's drift gate
 ```
 
-You need Node 22+ and pnpm 11.8.0 (pinned via `packageManager`; `corepack enable` handles it). Node
-22 is the real floor, not a preference — `style-dictionary` requires it.
+You need Node 22.22.1+ and pnpm 11.17.0 (pinned via `packageManager`; `corepack enable` handles it).
+`.nvmrc` has the exact version and `.npmrc` sets `engine-strict`, so the wrong Node fails at install
+rather than somewhere confusing later. The floor is not a preference: `lint-staged` requires
+22.22.1 and `style-dictionary` requires 22.
 
-A pre-commit hook runs `lint-staged` (ESLint `--fix` then Prettier on staged files), and a
+A pre-commit hook runs `lint-staged` (oxlint `--fix` then Prettier on staged files), and a
 `commit-msg` hook runs commitlint. Both ignore every generated path; see below.
 
 ## The invariants
@@ -132,7 +134,7 @@ currently published. girih is spawned with `GIRIH_NO_UPDATE_CHECK=1` in the e2e 
 
 ## Never format generated output
 
-`.prettierignore` and `eslint.config.js` both exclude every emitted path —
+`.prettierignore` and `.oxlintrc.json` both exclude every emitted path —
 `examples/*/{packages,styles,.ds}/`, `docs/*.html`, `docs/md/`, `docs/data/`. This is load-bearing,
 not tidiness: `.ds/manifest.json` stores a hash per emitted file, so reformatting one registers as
 drift that the next `girih generate` reverts, and any diff under `docs/` fails the Pages workflow. If

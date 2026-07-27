@@ -1,0 +1,19 @@
+{
+  // Declaration emit for publishable packages. tsup builds the JavaScript; `tsc`
+  // emits the .d.ts, because tsup's bundled-dts pipeline hardcodes the now-deprecated
+  // `baseUrl` (its rollup.js does `baseUrl: compilerOptions.baseUrl || "."`), which
+  // TypeScript 6 errors on and 7 removes. Emitting per-file declarations is also
+  // faster than bundling them, and leaves cross-package imports as real imports
+  // rather than inlining another package's types into ours.
+  //
+  // Emit flags only. `outDir` and `rootDir` are per-package: a relative path in a
+  // shared config resolves against *this* file's directory, so declaring them here
+  // would point every package at the repo root.
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true
+  }
+}

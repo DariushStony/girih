@@ -236,10 +236,10 @@
       "helpDynamic": true,
       "package": "cli",
       "file": "packages/cli/src/cli.ts",
-      "line": 348,
+      "line": 352,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/cli.ts:348"
+        "packages/cli/src/cli.ts:352"
       ]
     },
     {
@@ -251,10 +251,10 @@
       "helpDynamic": false,
       "package": "cli",
       "file": "packages/cli/src/cli.ts",
-      "line": 406,
+      "line": 410,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/cli.ts:406"
+        "packages/cli/src/cli.ts:410"
       ]
     },
     {
@@ -266,10 +266,10 @@
       "helpDynamic": false,
       "package": "cli",
       "file": "packages/cli/src/cli.ts",
-      "line": 398,
+      "line": 402,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/cli.ts:398"
+        "packages/cli/src/cli.ts:402"
       ]
     },
     {

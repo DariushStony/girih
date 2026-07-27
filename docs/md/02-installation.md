@@ -20,19 +20,16 @@ unless you are here to change girih itself.
 
 | You need | Version | Check with |
 | --- | --- | --- |
-| Node.js | 22 or newer | `node --version` |
+| Node.js | 22.22.1 or newer | `node --version` |
 | A package manager | npm, pnpm, yarn or bun | `npm --version` |
 | git | any recent — Path B only | `git --version` |
 
-> **🟡 Watch out — Why Node 22 and not 20**
+> **🟡 Watch out — Where the Node floor comes from**
 >
-> girih's token pipeline builds on `style-dictionary`, which declares
-> `engines.node >= 22`. Every girih package declares the same floor rather than
-> promising something its own dependencies contradict. If you are on 20, `girih doctor`
-> will say so in one line instead of letting a dependency fail obscurely later.
-
-pnpm is pinned through the `packageManager` field, so if you have corepack enabled the
-right version is used automatically. If you do not have pnpm at all:
+> girih's token pipeline builds on `style-dictionary`, which requires Node 22, and its
+> toolchain requires 22.22.1. Every girih package declares that same floor rather than promising
+> something its own dependencies contradict. If you are below it, `girih doctor` says so
+> in one line instead of letting a dependency fail obscurely later.
 
 ## Path A: start your own workspace
 
@@ -113,9 +110,9 @@ include.
 ```
 git clone https://github.com/DariushStony/girih.git
 cd girih
-corepack enable       # pnpm 11.8.0 is pinned via packageManager
+corepack enable       # pnpm 11.17.0 is pinned via packageManager
 pnpm install
-pnpm build            # tsup builds every package into dist/
+pnpm build            # tsup + tsc build every package into dist/
 ```
 
 > **🟡 Watch out — Why pnpm for the repo specifically**
@@ -309,7 +306,7 @@ chance to say anything useful, and prints a fix for each:
 ```
 $ girih doctor
 
-✔ node                 v24.11.0 (>=22 required)
+✔ node                 v24.11.0 (>=22.22.1 required)
 ✔ package manager      pnpm (/path/to/pnpm-lock.yaml)
 ✔ @faravahar/girih     resolves from /path/to/my-ds
 ✔ ds.config.ts         @acme/design-system · 2 brands · default 'marketplace'

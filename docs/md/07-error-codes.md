@@ -138,7 +138,7 @@ ds.config.ts must default-export a config object (use defineConfig).
 
 GIRIH1008
 error
-packages/cli/src/cli.ts:348
+packages/cli/src/cli.ts:352
 
 Unknown brand '${options.brand}'.
 
@@ -146,7 +146,7 @@ Known brands: ${[...build.graphs.keys()].join(', ')}.
 
 GIRIH1010
 warning
-packages/cli/src/cli.ts:406
+packages/cli/src/cli.ts:410
 
 Generated file ${path} was edited by hand since the last \`girih generate\`.
 
@@ -154,7 +154,7 @@ Undo the edit or eject the component (M5); the next generate will refuse to over
 
 GIRIH1011
 warning
-packages/cli/src/cli.ts:398
+packages/cli/src/cli.ts:402
 
 .ds/manifest.json is corrupt or from an incompatible girih version — drift detection is disabled.
 

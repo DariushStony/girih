@@ -1,0 +1,29 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "oxc", "unicorn", "import", "vitest"],
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+    "prefer-const": "error",
+    "no-throw-literal": "error",
+    "no-shadow": "error",
+    "import/no-cycle": "error",
+    "no-console": "off",
+    "vitest/valid-expect": "off"
+  },
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/node_modules/**",
+    "**/.turbo/**",
+    "graphify-out/**",
+    "examples/*/packages/**",
+    "examples/*/styles/**",
+    "examples/*/.ds/**",
+    "examples/*/demo/react/bundle.js",
+    "docs/*.html",
+    "docs/md/**",
+    "docs/data/**"
+  ]
+}

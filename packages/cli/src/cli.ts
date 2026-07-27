@@ -160,8 +160,12 @@ async function composeReact(config: ResolvedConfig, build: TokenBuildResult, css
   // The package.json version mirrors the last published version (from ds.lock),
   // never a stale hand-set value — so generate/build/publish agree byte-for-byte.
   const { lock } = await readLock(config.root);
-  const version = lock?.published?.version ?? '0.0.0-dev';
-  const reactResult = generateReact(irs, { packageName: config.name, prefix: config.tokens.prefix, version }, { extensions, ejected });
+  const publishedVersion = lock?.published?.version ?? '0.0.0-dev';
+  const reactResult = generateReact(
+    irs,
+    { packageName: config.name, prefix: config.tokens.prefix, version: publishedVersion },
+    { extensions, ejected },
+  );
   build.diagnostics.push(...reactResult.diagnostics);
   return {
     files: [...cssFiles.map((f) => ({ ...f, path: join('styles', f.path) })), ...reactResult.files],
@@ -595,7 +599,7 @@ program
     await writeLock(config.root, {
       version: 1,
       ejected: {
-        ...(lock?.ejected ?? {}),
+        ...lock?.ejected,
         [componentName]: {
           template: ir.template,
           templateVersion: TEMPLATE_REGISTRY[ir.template]?.version ?? 0,
@@ -949,8 +953,8 @@ function detectPackageManager(): string {
   return 'npm';
 }
 
-function bumpPackageVersion(source: string, version: string): string {
-  return source.replace(/("version":\s*")[^"]*(")/, `$1${version}$2`);
+function bumpPackageVersion(source: string, nextVersion: string): string {
+  return source.replace(/("version":\s*")[^"]*(")/, `$1${nextVersion}$2`);
 }
 
 function formatValue(value: unknown): string {

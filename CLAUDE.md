@@ -28,18 +28,18 @@ Milestones M1–M6 are functional. Read `README.md` for what each milestone deli
 
 # Tech Stack
 
-- **Language:** TypeScript 5.9, ESM only (`"type": "module"` everywhere), Node ≥ 22
+- **Language:** TypeScript 6.0, ESM only (`"type": "module"` everywhere), Node ≥ 22.22.1 (`.nvmrc`, `engine-strict`)
 - **Structure:** pnpm workspace (`packages/*`, `examples/*`, `e2e`) + turbo for `build` / `typecheck`
 - **Package manager:** pnpm 11.8.0 (corepack-managed via `package.json#packageManager`)
-- **Bundler:** tsup per package (`--format esm --dts --sourcemap --clean`); esbuild for the React demo bundle
+- **Bundler:** tsup per package for JS (`--format esm --sourcemap --clean`), then `tsc -p tsconfig.build.json` for `.d.ts` — tsup's bundled-dts pipeline hardcodes the deprecated `baseUrl`. esbuild for the React demo bundle
 - **Tests:** vitest 4, single root config (`vitest.config.ts`), no per-package vitest config
 - **Type config:** `tsconfig.base.json` — `NodeNext` module + resolution, `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `isolatedModules`, `noEmit`
 - **CLI:** commander + picocolors; config loading via jiti; token pipeline uses style-dictionary; file globbing via tinyglobby
 - **Headless primitives:** `@base-ui-components/react` (Dialog only, behind a swappable adapter)
-- **Quality tooling:** Prettier + ESLint (flat config, `typescript-eslint`), husky + lint-staged pre-commit, commitlint. Verification is `pnpm verify` — build, typecheck, lint, format:check, tests, then the example's `girih check` and drift gate.
+- **Quality tooling:** Prettier + oxlint (`.oxlintrc.json`), husky + lint-staged pre-commit, commitlint. Verification is `pnpm verify` — build, typecheck, lint, format:check, tests, then the example's `girih check` and drift gate.
 - **Commits are conventional** (`feat(cli): …`, `fix(tokens): …`), enforced by commitlint. The older milestone subjects (`M6: …`) stay in history but are no longer valid.
 
-> **The ignore lists are load-bearing.** `.prettierignore` and `eslint.config.js` both exclude every generated path — `examples/*/{packages,styles,.ds}/`, `docs/*.html`, `docs/md/`, `docs/data/`. Formatting a generated file registers as drift that the next `girih generate` reverts, and the Pages workflow hard-fails on any `docs/` diff. If you add a generator, add its output to both.
+> **The ignore lists are load-bearing.** `.prettierignore` and `.oxlintrc.json` both exclude every generated path — `examples/*/{packages,styles,.ds}/`, `docs/*.html`, `docs/md/`, `docs/data/`. Formatting a generated file registers as drift that the next `girih generate` reverts, and the Pages workflow hard-fails on any `docs/` diff. If you add a generator, add its output to both.
 
 # Architecture
 

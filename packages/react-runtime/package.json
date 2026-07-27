@@ -24,7 +24,7 @@
   },
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.22.1"
   },
   "exports": {
     ".": {
@@ -38,16 +38,16 @@
   ],
   "scripts": {
     "prepublishOnly": "pnpm run build",
-    "build": "tsup src/index.tsx --format esm --dts --sourcemap --clean",
+    "build": "tsup src/index.tsx --format esm --sourcemap --clean && tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json"
   },
   "peerDependencies": {
     "react": ">=18"
   },
   "devDependencies": {
-    "@types/react": "^19.0.0",
-    "react": "^19.0.0",
+    "@types/react": "^19.2.17",
+    "react": "^19.2.8",
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   }
 }

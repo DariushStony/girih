@@ -4,6 +4,10 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "lib": ["ES2022"],
+    // TypeScript 6 stopped auto-discovering node_modules/@types, so every ambient
+    // type set has to be named. Declaring it explicitly is also what keeps an
+    // unrelated @types package from leaking globals into a build.
+    "types": ["node"],
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
