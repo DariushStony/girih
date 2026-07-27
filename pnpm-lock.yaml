@@ -52,10 +52,10 @@ importers:
         version: 1.0.0-rc.0(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@faravahar/girih':
         specifier: workspace:*
-        version: link:../packages/cli
+        version: link:../packages/girih
       '@faravahar/girih-react-runtime':
         specifier: workspace:*
-        version: link:../packages/react-runtime
+        version: link:../packages/girih-react-runtime
       '@types/react':
         specifier: ^19.2.17
         version: 19.2.17
@@ -73,10 +73,10 @@ importers:
         version: 1.0.0-rc.0(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@faravahar/girih':
         specifier: workspace:*
-        version: link:../../packages/cli
+        version: link:../../packages/girih
       '@faravahar/girih-react-runtime':
         specifier: workspace:*
-        version: link:../../packages/react-runtime
+        version: link:../../packages/girih-react-runtime
       '@types/react':
         specifier: ^19.2.17
         version: 19.2.17
@@ -90,23 +90,35 @@ importers:
         specifier: ^19.2.8
         version: 19.2.8(react@19.2.8)
 
-  packages/cli:
+  packages/create-girih:
+    devDependencies:
+      '@types/node':
+        specifier: ^26.1.1
+        version: 26.1.1
+      tsup:
+        specifier: ^8.5.1
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.20)(tsx@4.23.1)(typescript@6.0.3)(yaml@2.9.0)
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  packages/girih:
     dependencies:
       '@faravahar/girih-core':
         specifier: workspace:*
-        version: link:../core
+        version: link:../girih-core
       '@faravahar/girih-generator-css':
         specifier: workspace:*
-        version: link:../generator-css
+        version: link:../girih-generator-css
       '@faravahar/girih-generator-react':
         specifier: workspace:*
-        version: link:../generator-react
+        version: link:../girih-generator-react
       '@faravahar/girih-spec':
         specifier: workspace:*
-        version: link:../spec
+        version: link:../girih-spec
       '@faravahar/girih-tokens':
         specifier: workspace:*
-        version: link:../tokens
+        version: link:../girih-tokens
       commander:
         specifier: ^15.0.0
         version: 15.0.0
@@ -127,7 +139,7 @@ importers:
         specifier: ^8.5.1
         version: 8.5.1(jiti@2.7.0)(postcss@8.5.20)(tsx@4.23.1)(typescript@6.0.3)(yaml@2.9.0)
 
-  packages/core:
+  packages/girih-core:
     dependencies:
       jiti:
         specifier: ^2.7.0
@@ -143,28 +155,16 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
-  packages/create-girih:
-    devDependencies:
-      '@types/node':
-        specifier: ^26.1.1
-        version: 26.1.1
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(jiti@2.7.0)(postcss@8.5.20)(tsx@4.23.1)(typescript@6.0.3)(yaml@2.9.0)
-      typescript:
-        specifier: ^6.0.3
-        version: 6.0.3
+  packages/girih-figma: {}
 
-  packages/figma: {}
-
-  packages/generator-css:
+  packages/girih-generator-css:
     dependencies:
       '@faravahar/girih-core':
         specifier: workspace:*
-        version: link:../core
+        version: link:../girih-core
       '@faravahar/girih-tokens':
         specifier: workspace:*
-        version: link:../tokens
+        version: link:../girih-tokens
       style-dictionary:
         specifier: ^5.5.0
         version: 5.5.0(tslib@2.8.1)
@@ -179,14 +179,14 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
-  packages/generator-react:
+  packages/girih-generator-react:
     dependencies:
       '@faravahar/girih-core':
         specifier: workspace:*
-        version: link:../core
+        version: link:../girih-core
       '@faravahar/girih-spec':
         specifier: workspace:*
-        version: link:../spec
+        version: link:../girih-spec
     devDependencies:
       tsup:
         specifier: ^8.5.1
@@ -195,7 +195,7 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
-  packages/react-runtime:
+  packages/girih-react-runtime:
     devDependencies:
       '@types/react':
         specifier: ^19.2.17
@@ -210,14 +210,14 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
-  packages/spec:
+  packages/girih-spec:
     dependencies:
       '@faravahar/girih-core':
         specifier: workspace:*
-        version: link:../core
+        version: link:../girih-core
       '@faravahar/girih-tokens':
         specifier: workspace:*
-        version: link:../tokens
+        version: link:../girih-tokens
       jiti:
         specifier: ^2.7.0
         version: 2.7.0
@@ -235,11 +235,11 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
-  packages/tokens:
+  packages/girih-tokens:
     dependencies:
       '@faravahar/girih-core':
         specifier: workspace:*
-        version: link:../core
+        version: link:../girih-core
       style-dictionary:
         specifier: ^5.5.0
         version: 5.5.0(tslib@2.8.1)

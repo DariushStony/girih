@@ -270,7 +270,7 @@ properties that is easy to state and easy to forget.
 >
 > Re-declaring the chain inside the scope fixes it, because now the whole chain is computed there.
 > That is `dependentsClosure()` in
-> `packages/generator-css/src/generate.ts`, and it is about twenty lines of
+> `packages/girih-generator-css/src/generate.ts`, and it is about twenty lines of
 > reverse-graph walk.
 
 ## Which declaration wins

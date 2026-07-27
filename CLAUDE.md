@@ -69,8 +69,8 @@ core, tokens, spec, generator-css, generator-react  ←  cli
 3. **Tier references flow downward only:** component → semantic → global. Never sideways, never upward.
 4. **Every design value in emitted CSS is a `var()`.** Component CSS carries structure only. Aliases stay live `var()` references — never flattened to literals — so nested `[data-brand]` scopes rebrand at runtime with no rebuild.
 5. **Contracts are data, not code.** `defineSpec` is authored in TypeScript for editor ergonomics and validated as pure data. A spec must never execute logic, import runtime code, or branch on environment.
-6. **`generate`, `build`, and `publish` must never disagree** about what the package contains. They all route through `composeReact()` in [cli.ts](packages/cli/src/cli.ts) — extend that one function, not the three call sites.
-7. **Semver comes from the contract diff, not judgement.** Token value change = patch, new variant = minor, anything removed = major. See [semver.ts](packages/cli/src/semver.ts).
+6. **`generate`, `build`, and `publish` must never disagree** about what the package contains. They all route through `composeReact()` in [cli.ts](packages/girih/src/cli.ts) — extend that one function, not the three call sites.
+7. **Semver comes from the contract diff, not judgement.** Token value change = patch, new variant = minor, anything removed = major. See [semver.ts](packages/girih/src/semver.ts).
 
 **Diagnostics.** Every user-facing problem is a `Diagnostic` with a stable `GIRIH<n>` code, a `severity`, and — for anything actionable — a one-line `help`. Codes are partitioned by owner; stay in your range and never reuse a retired number:
 
@@ -85,16 +85,16 @@ core, tokens, spec, generator-css, generator-react  ←  cli
 
 Never `throw` where a diagnostic will do. Errors that reach the user as a stack trace are bugs.
 
-**CLI surface** (`packages/cli/src/cli.ts`): `create <directory>` (`--name`, `--brand`, `--no-install`), `init`, `brand create <name>`, `check`, `doctor` (`--offline`), `generate [css|react]` (`--check`, `--force`), `eject <component>`, `forks`, `build`, `publish` (`--yes`, `--tag`, `--access`), `update` (`--check`). Plus `-v/--version`.
+**CLI surface** (`packages/girih/src/cli.ts`): `create <directory>` (`--name`, `--brand`, `--no-install`), `init`, `brand create <name>`, `check`, `doctor` (`--offline`), `generate [css|react]` (`--check`, `--force`), `eject <component>`, `forks`, `build`, `publish` (`--yes`, `--tag`, `--access`), `update` (`--check`). Plus `-v/--version`.
 
 Two distinctions worth keeping straight, because conflating them is easy:
 
-- **`check` vs `doctor`** — `check` validates the workspace's _content_ (tokens, contracts, drift). `doctor` validates the _environment_ (node, package manager, resolution, build prerequisites, version skew). `doctor` lives in [doctor.ts](packages/cli/src/doctor.ts) and must never duplicate a `check` validation.
+- **`check` vs `doctor`** — `check` validates the workspace's _content_ (tokens, contracts, drift). `doctor` validates the _environment_ (node, package manager, resolution, build prerequisites, version skew). `doctor` lives in [doctor.ts](packages/girih/src/doctor.ts) and must never duplicate a `check` validation.
 - **`update` vs `forks`** — `update` upgrades the `@faravahar/girih-*` packages installed in the workspace. `forks` reports ejected components that drifted from their template (this was called `update` before publishing; the 3-way merge is still unbuilt).
 
 `girih publish` publishes **the consumer's** generated design system, never girih itself. girih's own release is the root `release` script.
 
-Resolution helpers live in [resolve.ts](packages/cli/src/resolve.ts) — `resolvePackageDir`, `resolvesFrom`, `installedVersion`. Use them rather than adding a fourth `node_modules` walk. Registry access goes through [registry.ts](packages/cli/src/registry.ts), which caches for 24h and honours `GIRIH_NO_UPDATE_CHECK`.
+Resolution helpers live in [resolve.ts](packages/girih/src/resolve.ts) — `resolvePackageDir`, `resolvesFrom`, `installedVersion`. Use them rather than adding a fourth `node_modules` walk. Registry access goes through [registry.ts](packages/girih/src/registry.ts), which caches for 24h and honours `GIRIH_NO_UPDATE_CHECK`.
 
 **Test layout.** `vitest.config.ts` aliases `@faravahar/girih-{core,tokens,generator-css,generator-react,spec}` to `src/index.ts`, so unit tests run against source with no build. `@faravahar/girih` and `@faravahar/girih-react-runtime` are **not** aliased — anything exercising them needs `pnpm build` first. Includes are `packages/*/test/**/*.test.ts` and `e2e/test/**/*.test.ts`.
 

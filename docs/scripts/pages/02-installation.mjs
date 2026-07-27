@@ -148,7 +148,7 @@ ${gotcha(
 
 <p>
   <code>pnpm build</code> is required before anything else, because the CLI you are about to run is
-  the compiled one in <code>packages/cli/dist/cli.js</code>. Now compile the example design system:
+  the compiled one in <code>packages/girih/dist/cli.js</code>. Now compile the example design system:
 </p>
 
 ${code(
@@ -417,7 +417,7 @@ ${table(
       '<code>girih update</code>. Current versions have no install scripts at all',
     ],
     [
-      'Path B: <code>packages/cli/dist/cli.js</code> missing',
+      'Path B: <code>packages/girih/dist/cli.js</code> missing',
       'The repo runs its own compiled CLI',
       '<code>pnpm build</code> from the repo root',
     ],

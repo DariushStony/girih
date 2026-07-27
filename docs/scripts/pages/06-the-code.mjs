@@ -124,7 +124,7 @@ export async function verifyEmittedFiles(root: string, files: EmittedFile[]): Pr
   }
   return stale;
 }`,
-  { path: 'packages/core/src/files.ts', kind: 'authored' },
+  { path: 'packages/girih-core/src/files.ts', kind: 'authored' },
 )}
 
 <p>
@@ -222,7 +222,7 @@ function dependentsClosure(roots: string[], graph: ResolvedTokenGraph): Set<stri
   }
   return closure;
 }`,
-  { path: 'packages/generator-css/src/generate.ts', kind: 'authored' },
+  { path: 'packages/girih-generator-css/src/generate.ts', kind: 'authored' },
 )}
 
 <p>
@@ -410,11 +410,11 @@ ${code(
   `resolve: {
   // Tests run against source so packages don't need a build first.
   alias: {
-    '@faravahar/girih-core': r('packages/core/src/index.ts'),
-    '@faravahar/girih-tokens': r('packages/tokens/src/index.ts'),
-    '@faravahar/girih-generator-css': r('packages/generator-css/src/index.ts'),
-    '@faravahar/girih-generator-react': r('packages/generator-react/src/index.ts'),
-    '@faravahar/girih-spec': r('packages/spec/src/index.ts'),
+    '@faravahar/girih-core': r('packages/girih-core/src/index.ts'),
+    '@faravahar/girih-tokens': r('packages/girih-tokens/src/index.ts'),
+    '@faravahar/girih-generator-css': r('packages/girih-generator-css/src/index.ts'),
+    '@faravahar/girih-generator-react': r('packages/girih-generator-react/src/index.ts'),
+    '@faravahar/girih-spec': r('packages/girih-spec/src/index.ts'),
   },
 },
 test: { include: ['packages/*/test/**/*.test.ts', 'e2e/test/**/*.test.ts'] },`,

@@ -337,7 +337,7 @@ ${gotcha(
   <p>
     Re-declaring the chain inside the scope fixes it, because now the whole chain is computed there.
     That is <code>dependentsClosure()</code> in
-    <code>packages/generator-css/src/generate.ts</code>, and it is about twenty lines of
+    <code>packages/girih-generator-css/src/generate.ts</code>, and it is about twenty lines of
     reverse-graph walk.
   </p>`,
 )}

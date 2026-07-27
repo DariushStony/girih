@@ -6,12 +6,12 @@ import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 const repoRoot = fileURLToPath(new URL('../..', import.meta.url));
-const cliPath = join(repoRoot, 'packages/cli/dist/cli.js');
+const cliPath = join(repoRoot, 'packages/girih/dist/cli.js');
 // Own scratch directory, removed on its own. Clearing all of e2e/.tmp here would
 // delete a sibling test file's live workspace — vitest runs the files in parallel.
 const scratch = join(repoRoot, 'e2e/.tmp/commands');
 
-const manifest = JSON.parse(readFileSync(join(repoRoot, 'packages/cli/package.json'), 'utf8')) as { version: string };
+const manifest = JSON.parse(readFileSync(join(repoRoot, 'packages/girih/package.json'), 'utf8')) as { version: string };
 
 function girih(cwd: string, ...args: string[]): { status: number | null; output: string } {
   const result = spawnSync('node', [cliPath, ...args], {
@@ -26,7 +26,7 @@ function girih(cwd: string, ...args: string[]): { status: number | null; output:
 
 describe('e2e: create, doctor, forks', () => {
   beforeAll(async () => {
-    if (!existsSync(cliPath)) throw new Error('packages/cli/dist/cli.js missing — run `pnpm build` before the e2e tests.');
+    if (!existsSync(cliPath)) throw new Error('packages/girih/dist/cli.js missing — run `pnpm build` before the e2e tests.');
     await rm(scratch, { recursive: true, force: true });
     await mkdir(scratch, { recursive: true });
   });
@@ -99,7 +99,7 @@ describe('e2e: create, doctor, forks', () => {
 
     it('reports the node floor and identifies the package manager', () => {
       const { output } = girih(scratch, 'doctor', '--offline');
-      expect(output).toMatch(/node\s+v\d+\.\d+\.\d+ \(>=22 required\)/);
+      expect(output).toMatch(/node\s+v\d+\.\d+\.\d+ \(>=22\.22\.1 required\)/);
       // Under a test run npm_config_user_agent is set, so that path wins; the
       // lockfile walk is the fallback and is covered by resolve.test.ts.
       expect(output).toMatch(/package manager\s+pnpm/);
@@ -112,7 +112,7 @@ describe('e2e: create, doctor, forks', () => {
       expect(output).toContain('build prerequisites');
       // Not asserting the *missing* case here: e2e/.tmp resolves up into the repo's
       // own node_modules, so react can never actually be absent from this location.
-      // That path is unit-tested in packages/cli/test/build-preflight.test.ts.
+      // That path is unit-tested in packages/girih/test/build-preflight.test.ts.
     });
 
     it('skips the registry check when asked, and never blocks on it', () => {

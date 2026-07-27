@@ -63,7 +63,7 @@ each other.
 | `files.ts` | `emittedFile`, `writeEmittedFiles`, `verifyEmittedFiles` | One hashing and writing path — drift detection and publish diffing both depend on the hash being computed the same way everywhere |
 | `naming.ts` | `cssVarName` | Emitted `tokens.css`, `tokens.d.ts` and `components.css` must agree on variable names or the output silently breaks |
 
-**packages/core/src/files.ts  [You write this]**
+**packages/girih-core/src/files.ts  [You write this]**
 
 ```ts
 export function emittedFile(path: string, contents: string): EmittedFile {
@@ -115,7 +115,7 @@ full. Three algorithms share it, and the ordering between them is load-bearing:
 
 Three files, and one function inside them matters more than the rest.
 
-**packages/generator-css/src/generate.ts  [You write this]**
+**packages/girih-generator-css/src/generate.ts  [You write this]**
 
 ```ts
 /** The given paths plus every token that (transitively) references one of them. */
@@ -263,11 +263,11 @@ source so unit tests run without a build:
 resolve: {
   // Tests run against source so packages don't need a build first.
   alias: {
-    '@faravahar/girih-core': r('packages/core/src/index.ts'),
-    '@faravahar/girih-tokens': r('packages/tokens/src/index.ts'),
-    '@faravahar/girih-generator-css': r('packages/generator-css/src/index.ts'),
-    '@faravahar/girih-generator-react': r('packages/generator-react/src/index.ts'),
-    '@faravahar/girih-spec': r('packages/spec/src/index.ts'),
+    '@faravahar/girih-core': r('packages/girih-core/src/index.ts'),
+    '@faravahar/girih-tokens': r('packages/girih-tokens/src/index.ts'),
+    '@faravahar/girih-generator-css': r('packages/girih-generator-css/src/index.ts'),
+    '@faravahar/girih-generator-react': r('packages/girih-generator-react/src/index.ts'),
+    '@faravahar/girih-spec': r('packages/girih-spec/src/index.ts'),
   },
 },
 test: { include: ['packages/*/test/**/*.test.ts', 'e2e/test/**/*.test.ts'] },

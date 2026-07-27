@@ -6,8 +6,8 @@ import { CLI_VERSION_RANGE, RUNTIME_VERSION_RANGE, scaffoldDevDependencies } fro
 const manifest = (path: string) =>
   JSON.parse(readFileSync(fileURLToPath(new URL(path, import.meta.url)), 'utf8')) as { name: string; version: string };
 
-const cli = manifest('../../cli/package.json');
-const runtime = manifest('../../react-runtime/package.json');
+const cli = manifest('../../girih/package.json');
+const runtime = manifest('../../girih-react-runtime/package.json');
 
 // create-girih writes these ranges and then runs the install itself. If one resolves
 // to nothing the scaffold dies *after* writing package.json, and a re-run refuses the

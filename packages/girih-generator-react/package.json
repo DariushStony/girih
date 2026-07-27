@@ -1,21 +1,21 @@
 {
-  "name": "@faravahar/girih-spec",
+  "name": "@faravahar/girih-generator-react",
   "version": "0.1.0",
-  "description": "girih component contracts: defineSpec, validation against brand token graphs, canonical ComponentIR",
+  "description": "girih React generator: ComponentIR + templates → React package source",
   "keywords": [
     "girih",
     "design-system",
     "design-tokens",
-    "component-contract",
-    "defineSpec",
-    "ir"
+    "react",
+    "codegen",
+    "component-generator"
   ],
   "homepage": "https://github.com/DariushStony/girih#readme",
   "bugs": "https://github.com/DariushStony/girih/issues",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DariushStony/girih.git",
-    "directory": "packages/spec"
+    "directory": "packages/girih-generator-react"
   },
   "author": "Dariush Hadipour",
   "license": "MIT",
@@ -44,12 +44,9 @@
   },
   "dependencies": {
     "@faravahar/girih-core": "workspace:*",
-    "@faravahar/girih-tokens": "workspace:*",
-    "jiti": "^2.7.0",
-    "tinyglobby": "^0.2.17"
+    "@faravahar/girih-spec": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1",
     "tsup": "^8.5.1",
     "typescript": "^6.0.3"
   }

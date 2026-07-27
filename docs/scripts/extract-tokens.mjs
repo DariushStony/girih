@@ -18,8 +18,8 @@ const repoRoot = fileURLToPath(new URL('../..', import.meta.url));
 const acme = join(repoRoot, 'examples/acme-ds');
 const outPath = join(repoRoot, 'docs/data/tokens.json');
 
-const coreDist = join(repoRoot, 'packages/core/dist/index.js');
-const tokensDist = join(repoRoot, 'packages/tokens/dist/index.js');
+const coreDist = join(repoRoot, 'packages/girih-core/dist/index.js');
+const tokensDist = join(repoRoot, 'packages/girih-tokens/dist/index.js');
 for (const dist of [coreDist, tokensDist]) {
   if (!existsSync(dist)) {
     console.error(`Missing ${relative(repoRoot, dist)} — run \`pnpm build\` first.`);

@@ -1,21 +1,21 @@
 {
-  "name": "@faravahar/girih-react-runtime",
+  "name": "@faravahar/girih-spec",
   "version": "0.1.0",
-  "description": "girih runtime for generated code — BrandProvider, useBrand, cx (createVariant lands in M5)",
+  "description": "girih component contracts: defineSpec, validation against brand token graphs, canonical ComponentIR",
   "keywords": [
     "girih",
     "design-system",
     "design-tokens",
-    "react",
-    "brand-provider",
-    "theming"
+    "component-contract",
+    "defineSpec",
+    "ir"
   ],
   "homepage": "https://github.com/DariushStony/girih#readme",
   "bugs": "https://github.com/DariushStony/girih/issues",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DariushStony/girih.git",
-    "directory": "packages/react-runtime"
+    "directory": "packages/girih-spec"
   },
   "author": "Dariush Hadipour",
   "license": "MIT",
@@ -38,15 +38,18 @@
   ],
   "scripts": {
     "prepublishOnly": "pnpm run build",
-    "build": "tsup src/index.tsx --format esm --sourcemap --clean && tsc -p tsconfig.build.json",
-    "typecheck": "tsc -p tsconfig.json"
+    "build": "tsup src/index.ts --format esm --sourcemap --clean && tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
   },
-  "peerDependencies": {
-    "react": ">=18"
+  "dependencies": {
+    "@faravahar/girih-core": "workspace:*",
+    "@faravahar/girih-tokens": "workspace:*",
+    "jiti": "^2.7.0",
+    "tinyglobby": "^0.2.17"
   },
   "devDependencies": {
-    "@types/react": "^19.2.17",
-    "react": "^19.2.8",
+    "@types/node": "^26.1.1",
     "tsup": "^8.5.1",
     "typescript": "^6.0.3"
   }

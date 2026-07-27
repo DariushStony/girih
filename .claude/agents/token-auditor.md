@@ -30,8 +30,8 @@ That table gives you `TOKEN · TIER · TYPE · RESOLVED` per brand — read it b
 1. **Locate the token.** `graphify explain "<token.path>"` or `graphify query "where is <token> defined"` if `graphify-out/graph.json` exists. Otherwise grep the three tiers under `examples/acme-ds/tokens/`.
 2. **Walk the alias chain by hand.** For `{button.radius}` → `{radius.control}` → `{radius.md}`, name every hop and the file each hop lives in. A chain that reads plausibly but skips a tier is the bug.
 3. **Diff the brands.** For each brand overlay, list exactly which paths it overrides. Then answer: does the reported symptom follow from those overrides, or is a token the user thinks is overridden actually inherited?
-4. **Check emission.** If the complaint is about runtime behavior, read the emitted `styles/tokens.css` and confirm the value is a `var()` chain, not a literal. Compare against `packages/generator-css/src/generate.ts` and `naming.ts` if the var name looks wrong.
-5. **Confirm with a test if one exists.** `packages/tokens/test/` has `resolve.test.ts`, `overlay.test.ts`, `validate.test.ts`, `composite.test.ts`, `engine.test.ts`, `parse.test.ts` — they document intended behavior more precisely than the types.
+4. **Check emission.** If the complaint is about runtime behavior, read the emitted `styles/tokens.css` and confirm the value is a `var()` chain, not a literal. Compare against `packages/girih-generator-css/src/generate.ts` and `naming.ts` if the var name looks wrong.
+5. **Confirm with a test if one exists.** `packages/girih-tokens/test/` has `resolve.test.ts`, `overlay.test.ts`, `validate.test.ts`, `composite.test.ts`, `engine.test.ts`, `parse.test.ts` — they document intended behavior more precisely than the types.
 
 ## Reporting
 

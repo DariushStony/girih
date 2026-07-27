@@ -1542,7 +1542,7 @@ pnpm build            # tsup + tsc build every package into dist/</code></pre>
 
 <p>
   <code>pnpm build</code> is required before anything else, because the CLI you are about to run is
-  the compiled one in <code>packages/cli/dist/cli.js</code>. Now compile the example design system:
+  the compiled one in <code>packages/girih/dist/cli.js</code>. Now compile the example design system:
 </p>
 
 <figure class="code" data-lang="none">
@@ -1798,7 +1798,7 @@ Preview: open demo/index.html · usage: packages/design-system/README.md</code><
       <tr><td><code>GIRIH1010</code> — file edited by hand</td><td>Someone edited generated output</td><td>Undo it, or <code>girih eject</code> the component to keep the edits</td></tr>
       <tr><td>Brand switch changes colour but not radius</td><td>A brand block is missing part of the dependents closure</td><td>Regenerate. If it persists it is a generator bug — see <a href="06-the-code.html">chapter 06</a></td></tr>
       <tr><td><code>girih build</code> fails on a plain pnpm install</td><td>Stale girih: the CLI used to depend on esbuild, whose postinstall pnpm 10+ blocks</td><td><code>girih update</code>. Current versions have no install scripts at all</td></tr>
-      <tr><td>Path B: <code>packages/cli/dist/cli.js</code> missing</td><td>The repo runs its own compiled CLI</td><td><code>pnpm build</code> from the repo root</td></tr>
+      <tr><td>Path B: <code>packages/girih/dist/cli.js</code> missing</td><td>The repo runs its own compiled CLI</td><td><code>pnpm build</code> from the repo root</td></tr>
     </tbody>
   </table>
 </div>

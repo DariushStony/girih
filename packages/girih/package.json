@@ -1,22 +1,23 @@
 {
-  "name": "@faravahar/girih-tokens",
+  "name": "@faravahar/girih",
   "version": "0.1.0",
-  "description": "girih token engine: DTCG parsing, brand overlays, alias resolution, tier validation",
+  "description": "girih CLI — compile a multi-brand design system from tokens and component contracts",
   "keywords": [
     "girih",
     "design-system",
     "design-tokens",
+    "cli",
     "dtcg",
-    "token-pipeline",
-    "brand-overlay",
-    "alias-resolution"
+    "multi-brand",
+    "codegen",
+    "theming"
   ],
   "homepage": "https://github.com/DariushStony/girih#readme",
   "bugs": "https://github.com/DariushStony/girih/issues",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DariushStony/girih.git",
-    "directory": "packages/tokens"
+    "directory": "packages/girih"
   },
   "author": "Dariush Hadipour",
   "license": "MIT",
@@ -26,6 +27,10 @@
   "type": "module",
   "engines": {
     "node": ">=22.22.1"
+  },
+  "bin": {
+    "girih": "./dist/cli.js",
+    "ds": "./dist/cli.js"
   },
   "exports": {
     ".": {
@@ -39,18 +44,22 @@
   ],
   "scripts": {
     "prepublishOnly": "pnpm run build",
-    "build": "tsup src/index.ts --format esm --sourcemap --clean && tsc -p tsconfig.build.json",
-    "typecheck": "tsc -p tsconfig.json",
-    "test": "vitest run"
+    "build": "tsup src/cli.ts src/index.ts --format esm --sourcemap --clean && tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
     "@faravahar/girih-core": "workspace:*",
-    "style-dictionary": "^5.5.0",
+    "@faravahar/girih-generator-css": "workspace:*",
+    "@faravahar/girih-tokens": "workspace:*",
+    "commander": "^15.0.0",
+    "picocolors": "^1.1.1",
+    "@faravahar/girih-spec": "workspace:*",
+    "@faravahar/girih-generator-react": "workspace:*",
+    "typescript": "^6.0.3",
     "tinyglobby": "^0.2.17"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
-    "tsup": "^8.5.1",
-    "typescript": "^6.0.3"
+    "tsup": "^8.5.1"
   }
 }

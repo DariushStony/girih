@@ -96,10 +96,10 @@ needs the resolved token graphs to check that every `{token.ref}` in a contract 
 before contracts are even read. There is no point validating a contract against a graph you know
 is wrong.
 
-**packages/cli/src/cli.ts  [You write this]**
+**packages/girih/src/cli.ts  [You write this]**
 
 ```ts
-// packages/cli/src/cli.ts — the one function generate, build and publish all route through
+// packages/girih/src/cli.ts — the one function generate, build and publish all route through
 async function composeReact(config, build, cssFiles) {
   const { irs, extensions } = await loadComponentIRs(config, build);
   const ejected = await loadEjectedSources(config, build, irs);
@@ -126,7 +126,7 @@ girih almost never throws. Problems are values: a `Diagnostic` with a stable cod
 severity, the file and token path it concerns, and — for anything actionable — a one-line
 `help`.
 
-**packages/core/src/diagnostics.ts  [You write this]**
+**packages/girih-core/src/diagnostics.ts  [You write this]**
 
 ```ts
 export interface Diagnostic {

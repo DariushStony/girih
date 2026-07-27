@@ -1575,7 +1575,7 @@ select.sel, input.txt {
 
 <figure class="code" data-lang="ts">
   <figcaption>
-      <span class="path">packages/core/src/files.ts</span>
+      <span class="path">packages/girih-core/src/files.ts</span>
       <span class="badge authored">You write this</span>
     </figcaption>
   <pre><code><span class="tk-k">export</span> <span class="tk-k">function</span> emittedFile(path: string, contents: string): EmittedFile {
@@ -1653,7 +1653,7 @@ select.sel, input.txt {
 
 <figure class="code" data-lang="ts">
   <figcaption>
-      <span class="path">packages/generator-css/src/generate.ts</span>
+      <span class="path">packages/girih-generator-css/src/generate.ts</span>
       <span class="badge authored">You write this</span>
     </figcaption>
   <pre><code><span class="tk-c">/** The given paths plus every token that (transitively) references one of them. */</span>
@@ -1859,11 +1859,11 @@ select.sel, input.txt {
   <pre><code>resolve: {
   <span class="tk-c">// Tests run against source so packages don't need a build first.</span>
   alias: {
-    <span class="tk-s">'@faravahar/girih-core'</span>: r(<span class="tk-s">'packages/core/src/index.ts'</span>),
-    <span class="tk-s">'@faravahar/girih-tokens'</span>: r(<span class="tk-s">'packages/tokens/src/index.ts'</span>),
-    <span class="tk-s">'@faravahar/girih-generator-css'</span>: r(<span class="tk-s">'packages/generator-css/src/index.ts'</span>),
-    <span class="tk-s">'@faravahar/girih-generator-react'</span>: r(<span class="tk-s">'packages/generator-react/src/index.ts'</span>),
-    <span class="tk-s">'@faravahar/girih-spec'</span>: r(<span class="tk-s">'packages/spec/src/index.ts'</span>),
+    <span class="tk-s">'@faravahar/girih-core'</span>: r(<span class="tk-s">'packages/girih-core/src/index.ts'</span>),
+    <span class="tk-s">'@faravahar/girih-tokens'</span>: r(<span class="tk-s">'packages/girih-tokens/src/index.ts'</span>),
+    <span class="tk-s">'@faravahar/girih-generator-css'</span>: r(<span class="tk-s">'packages/girih-generator-css/src/index.ts'</span>),
+    <span class="tk-s">'@faravahar/girih-generator-react'</span>: r(<span class="tk-s">'packages/girih-generator-react/src/index.ts'</span>),
+    <span class="tk-s">'@faravahar/girih-spec'</span>: r(<span class="tk-s">'packages/girih-spec/src/index.ts'</span>),
   },
 },
 test: { include: [<span class="tk-s">'packages/*/test/**/*.test.ts'</span>, <span class="tk-s">'e2e/test/**/*.test.ts'</span>] },</code></pre>

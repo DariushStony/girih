@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { buildTokenGraphs } from '@faravahar/girih-tokens';
 import { defineSpec, isSpec, specToIR, validateSpecs } from '@faravahar/girih-spec';
 import type { ComponentSpecInput } from '@faravahar/girih-spec';
-import { acmeConfig } from '../../tokens/test/fixture.js';
+import { acmeConfig } from '../../girih-tokens/test/fixture.js';
 
 const buttonSpec = (): ComponentSpecInput =>
   defineSpec({

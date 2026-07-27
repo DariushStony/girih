@@ -1,21 +1,22 @@
 {
-  "name": "@faravahar/girih-generator-react",
+  "name": "@faravahar/girih-tokens",
   "version": "0.1.0",
-  "description": "girih React generator: ComponentIR + templates → React package source",
+  "description": "girih token engine: DTCG parsing, brand overlays, alias resolution, tier validation",
   "keywords": [
     "girih",
     "design-system",
     "design-tokens",
-    "react",
-    "codegen",
-    "component-generator"
+    "dtcg",
+    "token-pipeline",
+    "brand-overlay",
+    "alias-resolution"
   ],
   "homepage": "https://github.com/DariushStony/girih#readme",
   "bugs": "https://github.com/DariushStony/girih/issues",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DariushStony/girih.git",
-    "directory": "packages/generator-react"
+    "directory": "packages/girih-tokens"
   },
   "author": "Dariush Hadipour",
   "license": "MIT",
@@ -44,9 +45,11 @@
   },
   "dependencies": {
     "@faravahar/girih-core": "workspace:*",
-    "@faravahar/girih-spec": "workspace:*"
+    "style-dictionary": "^5.5.0",
+    "tinyglobby": "^0.2.17"
   },
   "devDependencies": {
+    "@types/node": "^26.1.1",
     "tsup": "^8.5.1",
     "typescript": "^6.0.3"
   }

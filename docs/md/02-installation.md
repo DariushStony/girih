@@ -125,7 +125,7 @@ pnpm build            # tsup + tsc build every package into dist/
 > whatever you like.
 
 `pnpm build` is required before anything else, because the CLI you are about to run is
-the compiled one in `packages/cli/dist/cli.js`. Now compile the example design system:
+the compiled one in `packages/girih/dist/cli.js`. Now compile the example design system:
 
 **[Terminal]**
 
@@ -326,7 +326,7 @@ $ girih doctor
 | `GIRIH1010` — file edited by hand | Someone edited generated output | Undo it, or `girih eject` the component to keep the edits |
 | Brand switch changes colour but not radius | A brand block is missing part of the dependents closure | Regenerate. If it persists it is a generator bug — see [chapter 06](06-the-code.md) |
 | `girih build` fails on a plain pnpm install | Stale girih: the CLI used to depend on esbuild, whose postinstall pnpm 10+ blocks | `girih update`. Current versions have no install scripts at all |
-| Path B: `packages/cli/dist/cli.js` missing | The repo runs its own compiled CLI | `pnpm build` from the repo root |
+| Path B: `packages/girih/dist/cli.js` missing | The repo runs its own compiled CLI | `pnpm build` from the repo root |
 
 Every diagnostic girih can emit is listed in [chapter 07](07-error-codes.md),
 extracted directly from the source. If you got a code that is not there, the reference is stale —

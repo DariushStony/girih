@@ -4,10 +4,10 @@ import { appendFile, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { scaffoldWorkspace } from '../../packages/cli/src/scaffold.js';
+import { scaffoldWorkspace } from '../../packages/girih/src/scaffold.js';
 
 const repoRoot = fileURLToPath(new URL('../..', import.meta.url));
-const cliPath = join(repoRoot, 'packages/cli/dist/cli.js');
+const cliPath = join(repoRoot, 'packages/girih/dist/cli.js');
 const workspace = join(repoRoot, 'e2e/.tmp/e2e-ds');
 const badBrandDir = join(repoRoot, 'e2e/.tmp/bad-brand');
 
@@ -19,7 +19,7 @@ function girih(...args: string[]): { status: number | null; output: string } {
 describe('e2e: scaffold → check → generate → drift', () => {
   beforeAll(async () => {
     if (!existsSync(cliPath)) {
-      throw new Error('packages/cli/dist/cli.js missing — run `pnpm build` before the e2e tests.');
+      throw new Error('packages/girih/dist/cli.js missing — run `pnpm build` before the e2e tests.');
     }
     await rm(workspace, { recursive: true, force: true });
     await mkdir(workspace, { recursive: true });

@@ -12,7 +12,7 @@ girih's whole value proposition is that regeneration is safe. That holds only if
 
 1. **No generated file carries hand edits.** `.ds/manifest.json` records a sha256 per emitted file. A mismatch means a human edited an artifact, and the next `girih generate` would destroy their work — which is why it refuses to run (`GIRIH1010`).
 2. **No emitted file on disk is stale.** `verifyEmittedFiles` compares disk against what the generator would produce right now. Stale output means a committed artifact no longer matches its source of truth.
-3. **`generate`, `build`, and `publish` agree.** All three route through `composeReact()` in `packages/cli/src/cli.ts`. If they disagree, a publish can ship something no one reviewed.
+3. **`generate`, `build`, and `publish` agree.** All three route through `composeReact()` in `packages/girih/src/cli.ts`. If they disagree, a publish can ship something no one reviewed.
 
 ## Run order
 

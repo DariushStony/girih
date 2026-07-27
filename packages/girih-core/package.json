@@ -1,23 +1,20 @@
 {
-  "name": "@faravahar/girih",
+  "name": "@faravahar/girih-core",
   "version": "0.1.0",
-  "description": "girih CLI — compile a multi-brand design system from tokens and component contracts",
+  "description": "girih shared kernel: workspace config, diagnostics, emitted-file model",
   "keywords": [
     "girih",
     "design-system",
     "design-tokens",
-    "cli",
-    "dtcg",
-    "multi-brand",
-    "codegen",
-    "theming"
+    "diagnostics",
+    "workspace-config"
   ],
   "homepage": "https://github.com/DariushStony/girih#readme",
   "bugs": "https://github.com/DariushStony/girih/issues",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DariushStony/girih.git",
-    "directory": "packages/cli"
+    "directory": "packages/girih-core"
   },
   "author": "Dariush Hadipour",
   "license": "MIT",
@@ -27,10 +24,6 @@
   "type": "module",
   "engines": {
     "node": ">=22.22.1"
-  },
-  "bin": {
-    "girih": "./dist/cli.js",
-    "ds": "./dist/cli.js"
   },
   "exports": {
     ".": {
@@ -44,22 +37,15 @@
   ],
   "scripts": {
     "prepublishOnly": "pnpm run build",
-    "build": "tsup src/cli.ts src/index.ts --format esm --sourcemap --clean && tsc -p tsconfig.build.json",
+    "build": "tsup src/index.ts --format esm --sourcemap --clean && tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@faravahar/girih-core": "workspace:*",
-    "@faravahar/girih-generator-css": "workspace:*",
-    "@faravahar/girih-tokens": "workspace:*",
-    "commander": "^15.0.0",
-    "picocolors": "^1.1.1",
-    "@faravahar/girih-spec": "workspace:*",
-    "@faravahar/girih-generator-react": "workspace:*",
-    "typescript": "^6.0.3",
-    "tinyglobby": "^0.2.17"
+    "jiti": "^2.7.0"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
-    "tsup": "^8.5.1"
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3"
   }
 }

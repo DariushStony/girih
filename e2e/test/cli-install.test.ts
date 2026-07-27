@@ -11,12 +11,25 @@ const scratch = join(repoRoot, 'e2e/.tmp/cli-install');
 const consumer = join(scratch, 'app');
 const tarballs = join(scratch, 'tarballs');
 
+const cliManifestPath = join(repoRoot, 'packages/girih/package.json');
+const cliManifest = JSON.parse(readFileSync(cliManifestPath, 'utf8')) as {
+  name: string;
+  version: string;
+  dependencies: Record<string, string>;
+};
+
 /**
- * Every package @faravahar/girih pulls in, in dependency order. Only the CLI is
- * installed by name; the rest have to be resolvable as tarballs because they are
- * unpublished, and npm cannot fetch them from the registry during a test.
+ * Every package @faravahar/girih pulls in, plus the CLI and the runtime that generated
+ * code imports. Derived from the CLI's own dependencies rather than listed, so adding a
+ * library package cannot silently escape this test — and because directory names now
+ * match package names, the name *is* the path.
  */
-const PACKAGES = ['core', 'tokens', 'spec', 'generator-css', 'generator-react', 'cli', 'react-runtime'];
+const PACKAGE_NAMES = [
+  ...Object.keys(cliManifest.dependencies).filter((d) => d.startsWith('@faravahar/')),
+  cliManifest.name,
+  '@faravahar/girih-react-runtime',
+];
+const packageDirFor = (name: string) => join(repoRoot, 'packages', name.replace('@faravahar/', ''));
 
 const run = (cmd: string, args: string[], cwd: string) => spawnSync(cmd, args, { cwd, encoding: 'utf8' });
 
@@ -36,22 +49,23 @@ function pack(packageDir: string): { name: string; tgz: string } {
  * will, and running its binary from node_modules/.bin.
  *
  * consumer.test.ts packs the *generated* design system, but invokes the CLI as
- * `node packages/cli/dist/cli.js` straight out of the workspace — so a broken exports
+ * `node packages/girih/dist/cli.js` straight out of the workspace — so a broken exports
  * map, a missing "files" entry, or an unresolvable internal pin in any of the six
  * library packages would have shipped undetected.
  */
 describe('cli install: pack every package → install → run the binary', () => {
   let installed = false;
+  let packed: Array<{ name: string; tgz: string }> = [];
 
   beforeAll(async () => {
-    if (!existsSync(join(repoRoot, 'packages/cli/dist/cli.js'))) {
+    if (!existsSync(join(repoRoot, 'packages/girih/dist/cli.js'))) {
       throw new Error('run `pnpm build` before the cli-install e2e.');
     }
     await rm(scratch, { recursive: true, force: true });
     await mkdir(tarballs, { recursive: true });
     await mkdir(consumer, { recursive: true });
 
-    const packed = PACKAGES.map((dir) => pack(join(repoRoot, 'packages', dir)));
+    packed = PACKAGE_NAMES.map((name) => pack(packageDirFor(name)));
 
     // Overriding every internal pin with its tarball is what makes this installable
     // while unpublished; the pins themselves are asserted below, before the override
@@ -78,28 +92,20 @@ describe('cli install: pack every package → install → run the binary', () =>
   afterAll(() => rm(scratch, { recursive: true, force: true }));
 
   it('publishes no unresolved workspace protocol in any internal pin', () => {
-    // If pnpm's rewrite ever regressed, every one of these packages would install
-    // only via the file: overrides above and fail for a real consumer.
-    for (const dir of PACKAGES) {
-      const tgz = readdirSync(tarballs).find((f) => f.includes(dir === 'cli' ? 'faravahar-girih-0' : dir));
-      expect(tgz, `tarball for ${dir}`).toBeDefined();
-    }
-    const cliManifest = JSON.parse(
-      run(
-        'tar',
-        [
-          '-xzOf',
-          join(
-            tarballs,
-            readdirSync(tarballs).find((f) => f.startsWith('faravahar-girih-0'))!,
-          ),
-          'package/package.json',
-        ],
-        tarballs,
-      ).stdout,
-    ) as { dependencies: Record<string, string> };
-    for (const [name, range] of Object.entries(cliManifest.dependencies)) {
-      expect(range, `${name} in the published CLI manifest`).not.toContain('workspace:');
+    // Every library the CLI depends on got packed — derived, so a new one is covered
+    // automatically rather than quietly skipped.
+    expect(packed.map((p) => p.name).sort()).toEqual([...PACKAGE_NAMES].sort());
+
+    // If pnpm's rewrite ever regressed, these packages would install only via the
+    // file: overrides in beforeAll and fail for a real consumer. Read every packed
+    // manifest, not just the CLI's — five of them carry internal pins.
+    for (const { name, tgz } of packed) {
+      const published = JSON.parse(run('tar', ['-xzOf', tgz, 'package/package.json'], tarballs).stdout) as {
+        dependencies?: Record<string, string>;
+      };
+      for (const [dep, range] of Object.entries(published.dependencies ?? {})) {
+        expect(range, `${dep} in the published ${name} manifest`).not.toContain('workspace:');
+      }
     }
   });
 
@@ -108,7 +114,7 @@ describe('cli install: pack every package → install → run the binary', () =>
     for (const bin of ['girih', 'ds']) {
       const result = run(join(consumer, 'node_modules/.bin', bin), ['--version'], consumer);
       expect(result.status, `${bin} --version\n${result.stderr}`).toBe(0);
-      const { version } = JSON.parse(readFileSync(join(repoRoot, 'packages/cli/package.json'), 'utf8')) as { version: string };
+      const { version } = JSON.parse(readFileSync(join(repoRoot, 'packages/girih/package.json'), 'utf8')) as { version: string };
       expect(result.stdout.trim()).toBe(version);
     }
   });

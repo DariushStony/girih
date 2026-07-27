@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 const repoRoot = fileURLToPath(new URL('../..', import.meta.url));
-const cliPath = join(repoRoot, 'packages/cli/dist/cli.js');
+const cliPath = join(repoRoot, 'packages/girih/dist/cli.js');
 const acme = join(repoRoot, 'examples/acme-ds');
 const dsPackage = join(acme, 'packages/design-system');
 const scratch = join(repoRoot, 'e2e/.tmp/consumer');
@@ -43,7 +43,7 @@ describe('consumer install: pack → install → SSR render', () => {
     const build = run('node', [cliPath, 'build'], acme);
     if (build.status !== 0) throw new Error(`girih build failed:\n${build.stdout}\n${build.stderr}`);
     const dsTgz = pack(dsPackage);
-    const runtimeTgz = pack(join(repoRoot, 'packages/react-runtime'));
+    const runtimeTgz = pack(join(repoRoot, 'packages/girih-react-runtime'));
 
     await writeFile(
       join(consumer, 'package.json'),

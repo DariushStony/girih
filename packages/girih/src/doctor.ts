@@ -6,6 +6,7 @@ import { CONFIG_FILENAMES, loadConfig } from '@faravahar/girih-core';
 import { missingBuildDependencies } from './build.js';
 import { fetchLatestVersions, updateChecksDisabled } from './registry.js';
 import { installedVersion, resolvesFrom } from './resolve.js';
+import { isBelow, parseVersion } from './version.js';
 
 export type CheckStatus = 'ok' | 'warn' | 'fail';
 
@@ -24,28 +25,25 @@ const self = createRequire(import.meta.url)('../package.json') as {
   dependencies?: Record<string, string>;
 };
 
-/** Minimum major from our own engines field, so the floor has one source of truth. */
-function requiredNodeMajor(): number | null {
-  const match = /(\d+)/.exec(self.engines?.node ?? '');
-  return match ? Number(match[1]) : null;
-}
-
+/** The floor comes from our own engines field, so it has one source of truth. */
 function checkNode(): Check {
-  const required = requiredNodeMajor();
+  const declared = self.engines?.node;
   const current = process.versions.node;
-  const major = Number(current.split('.')[0]);
-  if (required === null) return { label: 'node', status: 'ok', detail: current };
-  if (major < required) {
+  const required = declared ? parseVersion(declared) : null;
+  if (!required) return { label: 'node', status: 'ok', detail: `v${current}` };
+
+  const floor = required.join('.');
+  if (isBelow(current, floor)) {
     return {
       label: 'node',
       status: 'fail',
-      detail: `v${current} — girih requires >=${required}`,
-      // Named because it is the real constraint, and the error it causes otherwise
+      detail: `v${current} — girih requires >=${floor}`,
+      // Named because it is the real constraint, and the failure it causes otherwise
       // surfaces from deep inside a dependency rather than from girih.
-      fix: `Upgrade Node to ${required} or newer (style-dictionary requires it).`,
+      fix: `Upgrade Node to ${floor} or newer.`,
     };
   }
-  return { label: 'node', status: 'ok', detail: `v${current} (>=${required} required)` };
+  return { label: 'node', status: 'ok', detail: `v${current} (>=${floor} required)` };
 }
 
 function checkPackageManager(cwd: string): Check {

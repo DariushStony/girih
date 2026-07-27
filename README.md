@@ -139,17 +139,17 @@ core, tokens, spec, generator-css, generator-react  ←  cli
 standalone:  react-runtime (react is a peer dep) · create-girih (zero workspace deps) · figma (stub)
 ```
 
-| Package                                                        | Role                                                                                          |
-| -------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| [`@faravahar/girih-core`](packages/core)                       | Config loading, diagnostics, the emitted-file model, CSS variable naming. Depends on nothing. |
-| [`@faravahar/girih-tokens`](packages/tokens)                   | DTCG parse → brand merge → alias resolve → tier validation.                                   |
-| [`@faravahar/girih-generator-css`](packages/generator-css)     | Token graphs → multi-brand CSS custom properties + `TokenPath` types.                         |
-| [`@faravahar/girih-spec`](packages/spec)                       | `defineSpec` / `defineVariant` contracts, `ComponentIR`, cross-brand validation.              |
-| [`@faravahar/girih-generator-react`](packages/generator-react) | IR + templates → React package and structure-only CSS.                                        |
-| [`@faravahar/girih`](packages/cli)                             | The `girih` / `ds` binary. The only package allowed to depend on all of the above.            |
-| [`@faravahar/girih-react-runtime`](packages/react-runtime)     | `BrandProvider`, `useBrand`, `cx`. The entire runtime.                                        |
-| [`create-girih`](packages/create-girih)                        | `npx` bootstrapper. Zero workspace deps by necessity.                                         |
-| [`@faravahar/girih-figma`](packages/figma)                     | Phase-2 stub; consumes `ComponentIR`.                                                         |
+| Package                                                              | Role                                                                                          |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| [`@faravahar/girih-core`](packages/girih-core)                       | Config loading, diagnostics, the emitted-file model, CSS variable naming. Depends on nothing. |
+| [`@faravahar/girih-tokens`](packages/girih-tokens)                   | DTCG parse → brand merge → alias resolve → tier validation.                                   |
+| [`@faravahar/girih-generator-css`](packages/girih-generator-css)     | Token graphs → multi-brand CSS custom properties + `TokenPath` types.                         |
+| [`@faravahar/girih-spec`](packages/girih-spec)                       | `defineSpec` / `defineVariant` contracts, `ComponentIR`, cross-brand validation.              |
+| [`@faravahar/girih-generator-react`](packages/girih-generator-react) | IR + templates → React package and structure-only CSS.                                        |
+| [`@faravahar/girih`](packages/girih)                                 | The `girih` / `ds` binary. The only package allowed to depend on all of the above.            |
+| [`@faravahar/girih-react-runtime`](packages/girih-react-runtime)     | `BrandProvider`, `useBrand`, `cx`. The entire runtime.                                        |
+| [`create-girih`](packages/create-girih)                              | `npx` bootstrapper. Zero workspace deps by necessity.                                         |
+| [`@faravahar/girih-figma`](packages/girih-figma)                     | Phase-2 stub; consumes `ComponentIR`.                                                         |
 
 ### Verifying a change
 

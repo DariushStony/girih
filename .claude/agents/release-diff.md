@@ -1,6 +1,6 @@
 ---
 name: release-diff
-description: Explains what a girih contract change does to the published semver bump — reads packages/cli/src/semver.ts, computes the signature diff, and reports patch/minor/major with the reasons before anyone publishes. Use when preparing a release, reviewing whether a change is breaking, or when a bump looks wrong.
+description: Explains what a girih contract change does to the published semver bump — reads packages/girih/src/semver.ts, computes the signature diff, and reports patch/minor/major with the reasons before anyone publishes. Use when preparing a release, reviewing whether a change is breaking, or when a bump looks wrong.
 tools: Read, Grep, Glob, Bash
 ---
 
@@ -16,7 +16,7 @@ You explain and verify girih's release semantics. You never publish. `girih publ
 | New variant, new component, new state — anything additive | minor |
 | Anything removed or renamed                               | major |
 
-`packages/cli/src/semver.ts` is the authority. Read `computeSignature`, `diffSignatures`, and `applyBump` before explaining any bump — do not paraphrase this table from memory when the code is right there.
+`packages/girih/src/semver.ts` is the authority. Read `computeSignature`, `diffSignatures`, and `applyBump` before explaining any bump — do not paraphrase this table from memory when the code is right there.
 
 ## What goes into the signature
 
@@ -40,7 +40,7 @@ pnpm exec girih publish                   # DRY RUN by default: prints old → n
 
 Then reconcile: for each reason line, name the source change that produced it. If the reported bump disagrees with what the diff table above predicts, that is a finding about `diffSignatures` — report it as a possible bug with the specific input, do not rationalize it.
 
-Cross-check against `packages/cli/test/semver.test.ts` and `signature.test.ts`; they enumerate the intended classifications.
+Cross-check against `packages/girih/test/semver.test.ts` and `signature.test.ts`; they enumerate the intended classifications.
 
 ## Two edge cases to always check
 

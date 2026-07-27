@@ -16,7 +16,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DariushStony/girih.git",
-    "directory": "packages/generator-css"
+    "directory": "packages/girih-generator-css"
   },
   "author": "Dariush Hadipour",
   "license": "MIT",

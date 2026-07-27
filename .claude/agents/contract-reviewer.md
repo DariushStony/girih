@@ -18,11 +18,11 @@ The second rule: **a contract must be satisfiable by every brand, not just the d
 
 ## Checklist
 
-Work through these against `packages/spec/src/validate.ts` — it is the authority, not your memory of it:
+Work through these against `packages/girih-spec/src/validate.ts` — it is the authority, not your memory of it:
 
 - **Token refs.** Every `{token.path}` in `tokens.base`, `tokens.variants.*`, and nested `states` resolves in _every_ brand graph. Unknown ref → `GIRIH4xxx` error.
 - **Variants.** Each variant group has a `default` that is a member of its own `values`. No duplicate values. Variant and value names must survive becoming data attributes and CSS selectors.
-- **States.** Every declared state is implementable by the chosen template. Check `TEMPLATE_REGISTRY` in `packages/generator-react/src/templates/registry.ts` for what the element actually supports — a `loading` state on a non-interactive element is unimplementable, not merely unused.
+- **States.** Every declared state is implementable by the chosen template. Check `TEMPLATE_REGISTRY` in `packages/girih-generator-react/src/templates/registry.ts` for what the element actually supports — a `loading` state on a non-interactive element is unimplementable, not merely unused.
 - **Reserved props.** Variant and slot names must not collide with reserved React/DOM props or with the generator's own emitted props.
 - **Slots.** `required: true` slots must be reflected in the emitted type as required. `childrenRequired` follows from `slots.children.required`.
 - **Accessibility.** `focusable` and the `aria` map must correspond to real states. An `aria` entry keyed on a state that isn't declared is dead configuration.
@@ -33,10 +33,10 @@ Work through these against `packages/spec/src/validate.ts` — it is the authori
 
 ```bash
 cd examples/acme-ds && pnpm exec girih check              # loads + cross-validates every spec and extension
-pnpm vitest run packages/spec                             # the validation suite
+pnpm vitest run packages/girih-spec                             # the validation suite
 ```
 
-Read `packages/spec/test/spec.test.ts` and `extensions.test.ts` first — they enumerate the intended failure modes with their codes, which is faster and more reliable than inferring rules from `validate.ts` alone.
+Read `packages/girih-spec/test/spec.test.ts` and `extensions.test.ts` first — they enumerate the intended failure modes with their codes, which is faster and more reliable than inferring rules from `validate.ts` alone.
 
 For a new or changed contract, compare it against the closest existing sibling in `examples/acme-ds/components/` (`button.spec.ts` is the fullest example: variants, states, nested state tokens, accessibility, extensibility). Divergence from the sibling is either a deliberate design choice worth naming or an oversight worth flagging.
 

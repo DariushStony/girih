@@ -10,7 +10,7 @@ import { RUNTIME_VERSION_RANGE } from '../src/generate.js';
 const manifest = (path: string) =>
   JSON.parse(readFileSync(fileURLToPath(new URL(path, import.meta.url)), 'utf8')) as { name: string; version: string };
 
-const runtime = manifest('../../react-runtime/package.json');
+const runtime = manifest('../../girih-react-runtime/package.json');
 
 const buttonIR = () =>
   specToIR(

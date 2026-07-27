@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildTokenGraphs } from '@faravahar/girih-tokens';
 import { cssVarName, generateCss } from '@faravahar/girih-generator-css';
-import { acmeConfig } from '../../tokens/test/fixture.js';
+import { acmeConfig } from '../../girih-tokens/test/fixture.js';
 
 const options = { prefix: 'ds', defaultBrand: 'marketplace', selector: 'data-attribute' as const };
 

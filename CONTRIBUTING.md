@@ -43,11 +43,11 @@ change the approach rather than the code.
    and validated as pure data. No function values, no runtime imports, no environment branching.
 
 6. **`generate`, `build` and `publish` must never disagree** about what the package contains. All
-   three route through `composeReact()` in [`packages/cli/src/cli.ts`](packages/cli/src/cli.ts).
+   three route through `composeReact()` in [`packages/girih/src/cli.ts`](packages/girih/src/cli.ts).
    Extend that one function, not the three call sites.
 
 7. **Semver comes from the contract diff, not judgement.** Token value = patch, new variant =
-   minor, anything removed = major. See [`packages/cli/src/semver.ts`](packages/cli/src/semver.ts).
+   minor, anything removed = major. See [`packages/girih/src/semver.ts`](packages/girih/src/semver.ts).
 
 ## The dependency direction
 

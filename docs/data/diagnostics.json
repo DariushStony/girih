@@ -129,12 +129,12 @@
       "messageDynamic": true,
       "help": "Run `girih init` to scaffold a workspace, or cd into an existing one.",
       "helpDynamic": false,
-      "package": "core",
-      "file": "packages/core/src/config.ts",
+      "package": "girih-core",
+      "file": "packages/girih-core/src/config.ts",
       "line": 92,
       "sites": 1,
       "allSites": [
-        "packages/core/src/config.ts:92"
+        "packages/girih-core/src/config.ts:92"
       ]
     },
     {
@@ -144,12 +144,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "core",
-      "file": "packages/core/src/config.ts",
+      "package": "girih-core",
+      "file": "packages/girih-core/src/config.ts",
       "line": 108,
       "sites": 1,
       "allSites": [
-        "packages/core/src/config.ts:108"
+        "packages/girih-core/src/config.ts:108"
       ]
     },
     {
@@ -159,12 +159,12 @@
       "messageDynamic": false,
       "help": null,
       "helpDynamic": false,
-      "package": "core",
-      "file": "packages/core/src/config.ts",
+      "package": "girih-core",
+      "file": "packages/girih-core/src/config.ts",
       "line": 185,
       "sites": 1,
       "allSites": [
-        "packages/core/src/config.ts:185"
+        "packages/girih-core/src/config.ts:185"
       ]
     },
     {
@@ -174,12 +174,12 @@
       "messageDynamic": true,
       "help": "Create the overlay file (an empty {} is valid) or fix brands.definitions.${brand.name}.tokens.",
       "helpDynamic": true,
-      "package": "core",
-      "file": "packages/core/src/config.ts",
+      "package": "girih-core",
+      "file": "packages/girih-core/src/config.ts",
       "line": 160,
       "sites": 1,
       "allSites": [
-        "packages/core/src/config.ts:160"
+        "packages/girih-core/src/config.ts:160"
       ]
     },
     {
@@ -189,12 +189,12 @@
       "messageDynamic": false,
       "help": null,
       "helpDynamic": false,
-      "package": "core",
-      "file": "packages/core/src/config.ts",
+      "package": "girih-core",
+      "file": "packages/girih-core/src/config.ts",
       "line": 194,
       "sites": 1,
       "allSites": [
-        "packages/core/src/config.ts:194"
+        "packages/girih-core/src/config.ts:194"
       ]
     },
     {
@@ -204,12 +204,12 @@
       "messageDynamic": true,
       "help": "Known brands: ${Object.keys(definitions).join(', ')}",
       "helpDynamic": true,
-      "package": "core",
-      "file": "packages/core/src/config.ts",
+      "package": "girih-core",
+      "file": "packages/girih-core/src/config.ts",
       "line": 201,
       "sites": 1,
       "allSites": [
-        "packages/core/src/config.ts:201"
+        "packages/girih-core/src/config.ts:201"
       ]
     },
     {
@@ -219,12 +219,12 @@
       "messageDynamic": false,
       "help": null,
       "helpDynamic": false,
-      "package": "core",
-      "file": "packages/core/src/config.ts",
+      "package": "girih-core",
+      "file": "packages/girih-core/src/config.ts",
       "line": 176,
       "sites": 1,
       "allSites": [
-        "packages/core/src/config.ts:176"
+        "packages/girih-core/src/config.ts:176"
       ]
     },
     {
@@ -234,12 +234,12 @@
       "messageDynamic": true,
       "help": "Known brands: ${[...build.graphs.keys()].join(', ')}.",
       "helpDynamic": true,
-      "package": "cli",
-      "file": "packages/cli/src/cli.ts",
+      "package": "girih",
+      "file": "packages/girih/src/cli.ts",
       "line": 352,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/cli.ts:352"
+        "packages/girih/src/cli.ts:352"
       ]
     },
     {
@@ -249,12 +249,12 @@
       "messageDynamic": true,
       "help": "Undo the edit or eject the component (M5); the next generate will refuse to overwrite it.",
       "helpDynamic": false,
-      "package": "cli",
-      "file": "packages/cli/src/cli.ts",
+      "package": "girih",
+      "file": "packages/girih/src/cli.ts",
       "line": 410,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/cli.ts:410"
+        "packages/girih/src/cli.ts:410"
       ]
     },
     {
@@ -264,12 +264,12 @@
       "messageDynamic": false,
       "help": "Delete .ds/manifest.json and regenerate.",
       "helpDynamic": false,
-      "package": "cli",
-      "file": "packages/cli/src/cli.ts",
+      "package": "girih",
+      "file": "packages/girih/src/cli.ts",
       "line": 402,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/cli.ts:402"
+        "packages/girih/src/cli.ts:402"
       ]
     },
     {
@@ -279,12 +279,12 @@
       "messageDynamic": true,
       "help": "Restore the file, or remove the '${name}' entry from ds.lock to return to generation.",
       "helpDynamic": true,
-      "package": "cli",
-      "file": "packages/cli/src/cli.ts",
+      "package": "girih",
+      "file": "packages/girih/src/cli.ts",
       "line": 115,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/cli.ts:115"
+        "packages/girih/src/cli.ts:115"
       ]
     },
     {
@@ -294,12 +294,12 @@
       "messageDynamic": false,
       "help": "ds.lock is machine-managed and committed — restore it from git history.",
       "helpDynamic": false,
-      "package": "cli",
-      "file": "packages/cli/src/cli.ts",
+      "package": "girih",
+      "file": "packages/girih/src/cli.ts",
       "line": 89,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/cli.ts:89"
+        "packages/girih/src/cli.ts:89"
       ]
     },
     {
@@ -309,12 +309,12 @@
       "messageDynamic": true,
       "help": "Review the fork against the current spec, or re-eject after removing the ds.lock entry (`girih forks` reports this; the 3-way merge is not built yet).",
       "helpDynamic": false,
-      "package": "cli",
-      "file": "packages/cli/src/cli.ts",
+      "package": "girih",
+      "file": "packages/girih/src/cli.ts",
       "line": 132,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/cli.ts:132"
+        "packages/girih/src/cli.ts:132"
       ]
     },
     {
@@ -324,12 +324,12 @@
       "messageDynamic": true,
       "help": "Restore components/${name.charAt(0).toLowerCase()}${name.slice(1)}.spec.ts, or remove the entry and components/ejected/${name}.tsx.",
       "helpDynamic": true,
-      "package": "cli",
-      "file": "packages/cli/src/cli.ts",
+      "package": "girih",
+      "file": "packages/girih/src/cli.ts",
       "line": 103,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/cli.ts:103"
+        "packages/girih/src/cli.ts:103"
       ]
     },
     {
@@ -339,12 +339,12 @@
       "messageDynamic": false,
       "help": null,
       "helpDynamic": false,
-      "package": "tokens",
-      "file": "packages/tokens/src/parse.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/parse.ts",
       "line": 26,
       "sites": 1,
       "allSites": [
-        "packages/tokens/src/parse.ts:26"
+        "packages/girih-tokens/src/parse.ts:26"
       ]
     },
     {
@@ -354,12 +354,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "tokens",
-      "file": "packages/tokens/src/parse.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/parse.ts",
       "line": 79,
       "sites": 1,
       "allSites": [
-        "packages/tokens/src/parse.ts:79"
+        "packages/girih-tokens/src/parse.ts:79"
       ]
     },
     {
@@ -369,12 +369,12 @@
       "messageDynamic": true,
       "help": "Write it as { \"$value\": ${JSON.stringify(child)} }.",
       "helpDynamic": true,
-      "package": "tokens",
-      "file": "packages/tokens/src/parse.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/parse.ts",
       "line": 99,
       "sites": 1,
       "allSites": [
-        "packages/tokens/src/parse.ts:99"
+        "packages/girih-tokens/src/parse.ts:99"
       ]
     },
     {
@@ -384,12 +384,12 @@
       "messageDynamic": true,
       "help": "Name token files global*.tokens.json / semantic*.tokens.json, or put component tokens under tokens/components/.",
       "helpDynamic": false,
-      "package": "tokens",
-      "file": "packages/tokens/src/engine.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/engine.ts",
       "line": 67,
       "sites": 1,
       "allSites": [
-        "packages/tokens/src/engine.ts:67"
+        "packages/girih-tokens/src/engine.ts:67"
       ]
     },
     {
@@ -399,12 +399,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "tokens",
-      "file": "packages/tokens/src/engine.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/engine.ts",
       "line": 39,
       "sites": 1,
       "allSites": [
-        "packages/tokens/src/engine.ts:39"
+        "packages/girih-tokens/src/engine.ts:39"
       ]
     },
     {
@@ -414,12 +414,12 @@
       "messageDynamic": true,
       "help": "Create tokens/global.tokens.json to get started.",
       "helpDynamic": false,
-      "package": "tokens",
-      "file": "packages/tokens/src/engine.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/engine.ts",
       "line": 55,
       "sites": 1,
       "allSites": [
-        "packages/tokens/src/engine.ts:55"
+        "packages/girih-tokens/src/engine.ts:55"
       ]
     },
     {
@@ -429,12 +429,12 @@
       "messageDynamic": true,
       "help": "Stick to lowercase letters, digits, \"-\" and \"_\" so generated names stay predictable.",
       "helpDynamic": false,
-      "package": "tokens",
-      "file": "packages/tokens/src/parse.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/parse.ts",
       "line": 89,
       "sites": 1,
       "allSites": [
-        "packages/tokens/src/parse.ts:89"
+        "packages/girih-tokens/src/parse.ts:89"
       ]
     },
     {
@@ -444,12 +444,12 @@
       "messageDynamic": true,
       "help": "Known properties: ${[...KNOWN_DOLLAR_PROPS].join(', ')}. Rename the key if it was meant to be a group.",
       "helpDynamic": true,
-      "package": "tokens",
-      "file": "packages/tokens/src/parse.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/parse.ts",
       "line": 67,
       "sites": 1,
       "allSites": [
-        "packages/tokens/src/parse.ts:67"
+        "packages/girih-tokens/src/parse.ts:67"
       ]
     },
     {
@@ -459,12 +459,12 @@
       "messageDynamic": true,
       "help": "Move '${key}' out to a sibling group, e.g. '${path}-${key}'.",
       "helpDynamic": true,
-      "package": "tokens",
-      "file": "packages/tokens/src/parse.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/parse.ts",
       "line": 42,
       "sites": 1,
       "allSites": [
-        "packages/tokens/src/parse.ts:42"
+        "packages/girih-tokens/src/parse.ts:42"
       ]
     },
     {
@@ -474,12 +474,12 @@
       "messageDynamic": true,
       "help": "Every token path must have exactly one definition; brand overlays are the only sanctioned override.",
       "helpDynamic": false,
-      "package": "tokens",
-      "file": "packages/tokens/src/merge.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/merge.ts",
       "line": 27,
       "sites": 1,
       "allSites": [
-        "packages/tokens/src/merge.ts:27"
+        "packages/girih-tokens/src/merge.ts:27"
       ]
     },
     {
@@ -489,13 +489,13 @@
       "messageDynamic": true,
       "help": "A path must be either a token or a group, never both — rename one of them.",
       "helpDynamic": false,
-      "package": "tokens",
-      "file": "packages/tokens/src/merge.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/merge.ts",
       "line": 44,
       "sites": 2,
       "allSites": [
-        "packages/tokens/src/merge.ts:44",
-        "packages/tokens/src/merge.ts:55"
+        "packages/girih-tokens/src/merge.ts:44",
+        "packages/girih-tokens/src/merge.ts:55"
       ]
     },
     {
@@ -505,12 +505,12 @@
       "messageDynamic": true,
       "help": "Overlays may only override existing tokens. Define the token in tokens/ first, then override its value here.",
       "helpDynamic": false,
-      "package": "tokens",
-      "file": "packages/tokens/src/merge.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/merge.ts",
       "line": 97,
       "sites": 1,
       "allSites": [
-        "packages/tokens/src/merge.ts:97"
+        "packages/girih-tokens/src/merge.ts:97"
       ]
     },
     {
@@ -520,12 +520,12 @@
       "messageDynamic": true,
       "help": "A brand may change a token value, never its type — types are part of the shared contract.",
       "helpDynamic": false,
-      "package": "tokens",
-      "file": "packages/tokens/src/merge.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/merge.ts",
       "line": 108,
       "sites": 1,
       "allSites": [
-        "packages/tokens/src/merge.ts:108"
+        "packages/girih-tokens/src/merge.ts:108"
       ]
     },
     {
@@ -535,12 +535,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "tokens",
-      "file": "packages/tokens/src/resolve.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/resolve.ts",
       "line": 45,
       "sites": 1,
       "allSites": [
-        "packages/tokens/src/resolve.ts:45"
+        "packages/girih-tokens/src/resolve.ts:45"
       ]
     },
     {
@@ -550,12 +550,12 @@
       "messageDynamic": true,
       "help": "Break the cycle by pointing one of these tokens at a raw value.",
       "helpDynamic": false,
-      "package": "tokens",
-      "file": "packages/tokens/src/resolve.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/resolve.ts",
       "line": 79,
       "sites": 1,
       "allSites": [
-        "packages/tokens/src/resolve.ts:79"
+        "packages/girih-tokens/src/resolve.ts:79"
       ]
     },
     {
@@ -565,12 +565,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "tokens",
-      "file": "packages/tokens/src/resolve.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/resolve.ts",
       "line": 145,
       "sites": 1,
       "allSites": [
-        "packages/tokens/src/resolve.ts:145"
+        "packages/girih-tokens/src/resolve.ts:145"
       ]
     },
     {
@@ -580,12 +580,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "tokens",
-      "file": "packages/tokens/src/validate.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/validate.ts",
       "line": 19,
       "sites": 1,
       "allSites": [
-        "packages/tokens/src/validate.ts:19"
+        "packages/girih-tokens/src/validate.ts:19"
       ]
     },
     {
@@ -595,12 +595,12 @@
       "messageDynamic": true,
       "help": "Introduce a semantic alias for '{${ref}}' so brands can re-theme it without touching component tokens.",
       "helpDynamic": true,
-      "package": "tokens",
-      "file": "packages/tokens/src/validate.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/validate.ts",
       "line": 27,
       "sites": 1,
       "allSites": [
-        "packages/tokens/src/validate.ts:27"
+        "packages/girih-tokens/src/validate.ts:27"
       ]
     },
     {
@@ -610,12 +610,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "tokens",
-      "file": "packages/tokens/src/validate.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/validate.ts",
       "line": 39,
       "sites": 1,
       "allSites": [
-        "packages/tokens/src/validate.ts:39"
+        "packages/girih-tokens/src/validate.ts:39"
       ]
     },
     {
@@ -625,12 +625,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "tokens",
-      "file": "packages/tokens/src/validate.ts",
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/validate.ts",
       "line": 69,
       "sites": 1,
       "allSites": [
-        "packages/tokens/src/validate.ts:69"
+        "packages/girih-tokens/src/validate.ts:69"
       ]
     },
     {
@@ -640,12 +640,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "generator-css",
-      "file": "packages/generator-css/src/generate.ts",
+      "package": "girih-generator-css",
+      "file": "packages/girih-generator-css/src/generate.ts",
       "line": 125,
       "sites": 1,
       "allSites": [
-        "packages/generator-css/src/generate.ts:125"
+        "packages/girih-generator-css/src/generate.ts:125"
       ]
     },
     {
@@ -655,12 +655,12 @@
       "messageDynamic": true,
       "help": "Give the token a supported $type (shadow, typography, border, transition, cubicBezier, fontFamily) or split it into scalar tokens.",
       "helpDynamic": false,
-      "package": "generator-css",
-      "file": "packages/generator-css/src/generate.ts",
+      "package": "girih-generator-css",
+      "file": "packages/girih-generator-css/src/generate.ts",
       "line": 220,
       "sites": 1,
       "allSites": [
-        "packages/generator-css/src/generate.ts:220"
+        "packages/girih-generator-css/src/generate.ts:220"
       ]
     },
     {
@@ -670,12 +670,12 @@
       "messageDynamic": true,
       "help": "Rename one of them — CSS variable names are case-insensitive here and join segments with \"-\".",
       "helpDynamic": false,
-      "package": "generator-css",
-      "file": "packages/generator-css/src/generate.ts",
+      "package": "girih-generator-css",
+      "file": "packages/girih-generator-css/src/generate.ts",
       "line": 176,
       "sites": 1,
       "allSites": [
-        "packages/generator-css/src/generate.ts:176"
+        "packages/girih-generator-css/src/generate.ts:176"
       ]
     },
     {
@@ -685,12 +685,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/validate.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/validate.ts",
       "line": 142,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:142"
+        "packages/girih-spec/src/validate.ts:142"
       ]
     },
     {
@@ -700,13 +700,13 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/extensions.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/extensions.ts",
       "line": 162,
       "sites": 2,
       "allSites": [
-        "packages/spec/src/extensions.ts:162",
-        "packages/spec/src/validate.ts:379"
+        "packages/girih-spec/src/extensions.ts:162",
+        "packages/girih-spec/src/validate.ts:379"
       ]
     },
     {
@@ -716,13 +716,13 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/extensions.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/extensions.ts",
       "line": 179,
       "sites": 2,
       "allSites": [
-        "packages/spec/src/extensions.ts:179",
-        "packages/spec/src/validate.ts:392"
+        "packages/girih-spec/src/extensions.ts:179",
+        "packages/girih-spec/src/validate.ts:392"
       ]
     },
     {
@@ -732,12 +732,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/validate.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/validate.ts",
       "line": 150,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:150"
+        "packages/girih-spec/src/validate.ts:150"
       ]
     },
     {
@@ -747,12 +747,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/validate.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/validate.ts",
       "line": 250,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:250"
+        "packages/girih-spec/src/validate.ts:250"
       ]
     },
     {
@@ -762,12 +762,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/validate.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/validate.ts",
       "line": 271,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:271"
+        "packages/girih-spec/src/validate.ts:271"
       ]
     },
     {
@@ -777,12 +777,12 @@
       "messageDynamic": true,
       "help": "States of '${ir.template}': ${implementableStates.join(', ') || '(none)'}. States are template capability flags, not arbitrary behavior.",
       "helpDynamic": true,
-      "package": "spec",
-      "file": "packages/spec/src/validate.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/validate.ts",
       "line": 284,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:284"
+        "packages/girih-spec/src/validate.ts:284"
       ]
     },
     {
@@ -792,12 +792,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/validate.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/validate.ts",
       "line": 321,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:321"
+        "packages/girih-spec/src/validate.ts:321"
       ]
     },
     {
@@ -807,12 +807,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/validate.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/validate.ts",
       "line": 331,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:331"
+        "packages/girih-spec/src/validate.ts:331"
       ]
     },
     {
@@ -822,13 +822,13 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/validate.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/validate.ts",
       "line": 308,
       "sites": 2,
       "allSites": [
-        "packages/spec/src/validate.ts:308",
-        "packages/spec/src/validate.ts:341"
+        "packages/girih-spec/src/validate.ts:308",
+        "packages/girih-spec/src/validate.ts:341"
       ]
     },
     {
@@ -838,13 +838,13 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/extensions.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/extensions.ts",
       "line": 150,
       "sites": 2,
       "allSites": [
-        "packages/spec/src/extensions.ts:150",
-        "packages/spec/src/validate.ts:367"
+        "packages/girih-spec/src/extensions.ts:150",
+        "packages/girih-spec/src/validate.ts:367"
       ]
     },
     {
@@ -854,15 +854,15 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/validate.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/validate.ts",
       "line": 204,
       "sites": 4,
       "allSites": [
-        "packages/spec/src/validate.ts:204",
-        "packages/spec/src/validate.ts:212",
-        "packages/spec/src/validate.ts:220",
-        "packages/spec/src/validate.ts:261"
+        "packages/girih-spec/src/validate.ts:204",
+        "packages/girih-spec/src/validate.ts:212",
+        "packages/girih-spec/src/validate.ts:220",
+        "packages/girih-spec/src/validate.ts:261"
       ]
     },
     {
@@ -872,12 +872,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/ir.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/ir.ts",
       "line": 28,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/ir.ts:28"
+        "packages/girih-spec/src/ir.ts:28"
       ]
     },
     {
@@ -887,12 +887,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/validate.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/validate.ts",
       "line": 356,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:356"
+        "packages/girih-spec/src/validate.ts:356"
       ]
     },
     {
@@ -902,12 +902,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/validate.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/validate.ts",
       "line": 296,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:296"
+        "packages/girih-spec/src/validate.ts:296"
       ]
     },
     {
@@ -917,12 +917,12 @@
       "messageDynamic": true,
       "help": "Known elements: ${[...KNOWN_ELEMENTS].join(', ')}.",
       "helpDynamic": true,
-      "package": "spec",
-      "file": "packages/spec/src/validate.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/validate.ts",
       "line": 172,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:172"
+        "packages/girih-spec/src/validate.ts:172"
       ]
     },
     {
@@ -932,12 +932,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/load.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/load.ts",
       "line": 38,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/load.ts:38"
+        "packages/girih-spec/src/load.ts:38"
       ]
     },
     {
@@ -947,12 +947,12 @@
       "messageDynamic": true,
       "help": "Export the result of defineSpec({...}) from '@faravahar/girih'.",
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/load.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/load.ts",
       "line": 48,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/load.ts:48"
+        "packages/girih-spec/src/load.ts:48"
       ]
     },
     {
@@ -962,12 +962,12 @@
       "messageDynamic": true,
       "help": "Remove functions, dates, class instances, and symbols; a spec is a contract, not a program.",
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/load.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/load.ts",
       "line": 60,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/load.ts:60"
+        "packages/girih-spec/src/load.ts:60"
       ]
     },
     {
@@ -977,12 +977,12 @@
       "messageDynamic": true,
       "help": "Export the result of defineVariant({ name, extends, tokens }) from '@faravahar/girih'.",
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/extensions.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/extensions.ts",
       "line": 46,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/extensions.ts:46"
+        "packages/girih-spec/src/extensions.ts:46"
       ]
     },
     {
@@ -992,12 +992,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/extensions.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/extensions.ts",
       "line": 57,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/extensions.ts:57"
+        "packages/girih-spec/src/extensions.ts:57"
       ]
     },
     {
@@ -1007,12 +1007,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/extensions.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/extensions.ts",
       "line": 85,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/extensions.ts:85"
+        "packages/girih-spec/src/extensions.ts:85"
       ]
     },
     {
@@ -1022,12 +1022,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/extensions.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/extensions.ts",
       "line": 94,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/extensions.ts:94"
+        "packages/girih-spec/src/extensions.ts:94"
       ]
     },
     {
@@ -1037,12 +1037,12 @@
       "messageDynamic": true,
       "help": "Known components: ${[...byName.keys()].join(', ') || '(none)'}.",
       "helpDynamic": true,
-      "package": "spec",
-      "file": "packages/spec/src/extensions.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/extensions.ts",
       "line": 106,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/extensions.ts:106"
+        "packages/girih-spec/src/extensions.ts:106"
       ]
     },
     {
@@ -1052,12 +1052,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/extensions.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/extensions.ts",
       "line": 116,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/extensions.ts:116"
+        "packages/girih-spec/src/extensions.ts:116"
       ]
     },
     {
@@ -1067,12 +1067,12 @@
       "messageDynamic": true,
       "help": "Overridable: ${base.extensibility.overridableTokens.join(', ') || '(none)'}.",
       "helpDynamic": true,
-      "package": "spec",
-      "file": "packages/spec/src/extensions.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/extensions.ts",
       "line": 138,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/extensions.ts:138"
+        "packages/girih-spec/src/extensions.ts:138"
       ]
     },
     {
@@ -1082,12 +1082,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/extensions.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/extensions.ts",
       "line": 125,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/extensions.ts:125"
+        "packages/girih-spec/src/extensions.ts:125"
       ]
     },
     {
@@ -1097,12 +1097,12 @@
       "messageDynamic": true,
       "help": "Use semantic tokens or '${componentNamespace(extension.extends)}.*' tokens so the extension survives refactors of unrelated components.",
       "helpDynamic": true,
-      "package": "spec",
-      "file": "packages/spec/src/extensions.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/extensions.ts",
       "line": 187,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/extensions.ts:187"
+        "packages/girih-spec/src/extensions.ts:187"
       ]
     },
     {
@@ -1112,12 +1112,12 @@
       "messageDynamic": true,
       "help": "Available templates: ${Object.keys(templates).join(', ')}.",
       "helpDynamic": true,
-      "package": "spec",
-      "file": "packages/spec/src/validate.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/validate.ts",
       "line": 161,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:161"
+        "packages/girih-spec/src/validate.ts:161"
       ]
     },
     {
@@ -1127,12 +1127,12 @@
       "messageDynamic": true,
       "help": "declaredParts.size > 0\n              ? `Parts of '${ir.template}': ${[...declaredParts].join(', ')}.`\n              : `The '${ir.template}' template has no parts — use tokens.base.`",
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/validate.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/validate.ts",
       "line": 184,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:184"
+        "packages/girih-spec/src/validate.ts:184"
       ]
     },
     {
@@ -1142,12 +1142,12 @@
       "messageDynamic": true,
       "help": "A silently-ignored axis would validate and then do nothing — declare only axes the template implements.",
       "helpDynamic": false,
-      "package": "spec",
-      "file": "packages/spec/src/validate.ts",
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/validate.ts",
       "line": 236,
       "sites": 1,
       "allSites": [
-        "packages/spec/src/validate.ts:236"
+        "packages/girih-spec/src/validate.ts:236"
       ]
     },
     {
@@ -1157,12 +1157,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "generator-react",
-      "file": "packages/generator-react/src/generate.ts",
+      "package": "girih-generator-react",
+      "file": "packages/girih-generator-react/src/generate.ts",
       "line": 103,
       "sites": 1,
       "allSites": [
-        "packages/generator-react/src/generate.ts:103"
+        "packages/girih-generator-react/src/generate.ts:103"
       ]
     },
     {
@@ -1172,12 +1172,12 @@
       "messageDynamic": true,
       "help": null,
       "helpDynamic": false,
-      "package": "cli",
-      "file": "packages/cli/src/build.ts",
+      "package": "girih",
+      "file": "packages/girih/src/build.ts",
       "line": 60,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/build.ts:60"
+        "packages/girih/src/build.ts:60"
       ]
     },
     {
@@ -1187,12 +1187,12 @@
       "messageDynamic": true,
       "help": "Install the build prerequisites: npm install -D ${missing.join(' ')}",
       "helpDynamic": true,
-      "package": "cli",
-      "file": "packages/cli/src/build.ts",
+      "package": "girih",
+      "file": "packages/girih/src/build.ts",
       "line": 75,
       "sites": 1,
       "allSites": [
-        "packages/cli/src/build.ts:75"
+        "packages/girih/src/build.ts:75"
       ]
     }
   ]

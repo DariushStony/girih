@@ -136,7 +136,7 @@ ${pkgMap([
 </p>
 
 ${code(
-  `// packages/cli/src/cli.ts — the one function generate, build and publish all route through
+  `// packages/girih/src/cli.ts — the one function generate, build and publish all route through
 async function composeReact(config, build, cssFiles) {
   const { irs, extensions } = await loadComponentIRs(config, build);
   const ejected = await loadEjectedSources(config, build, irs);
@@ -145,7 +145,7 @@ async function composeReact(config, build, cssFiles) {
   const reactResult = generateReact(irs, { packageName: config.name, ... }, { extensions, ejected });
   return { files: [...cssFiles, ...reactResult.files], irFiles: ..., irs, extensions, ejected };
 }`,
-  { path: 'packages/cli/src/cli.ts', kind: 'authored' },
+  { path: 'packages/girih/src/cli.ts', kind: 'authored' },
 )}
 
 ${rule(
@@ -182,7 +182,7 @@ ${code(
   /** One-line suggestion for fixing the problem. */
   help?: string;
 }`,
-  { path: 'packages/core/src/diagnostics.ts', kind: 'authored' },
+  { path: 'packages/girih-core/src/diagnostics.ts', kind: 'authored' },
 )}
 
 <p>
