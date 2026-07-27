@@ -18,6 +18,7 @@
     "dist"
   ],
   "scripts": {
+    "prepublishOnly": "pnpm run build",
     "build": "tsup src/cli.ts src/index.ts --format esm --dts --sourcemap --clean",
     "typecheck": "tsc -p tsconfig.json"
   },

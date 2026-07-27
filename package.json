@@ -10,7 +10,18 @@
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:unit": "vitest run packages",
+    "test:e2e": "vitest run e2e",
+    "example:check": "pnpm --filter acme-ds-example exec girih check",
+    "example:drift": "pnpm --filter acme-ds-example exec girih generate react --check",
+    "docs": "pnpm build && pnpm --filter acme-ds-example exec girih generate react && pnpm docs:data && pnpm docs:build",
+    "docs:data": "node docs/scripts/extract-diagnostics.mjs && node docs/scripts/extract-tokens.mjs",
+    "docs:build": "node docs/scripts/build-docs.mjs",
+    "docs:verify": "node docs/scripts/verify-docs.mjs",
+    "verify": "pnpm build && pnpm typecheck && pnpm test && pnpm example:check && pnpm example:drift",
+    "pack:verify": "node scripts/verify-tarballs.mjs",
+    "release": "pnpm verify && pnpm pack:verify && pnpm -r --filter \"./packages/*\" publish --access public --publish-branch main"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

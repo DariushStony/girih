@@ -3,6 +3,11 @@ dist/
 .turbo/
 *.log
 .DS_Store
+.vscode/
+
+# `pnpm publish` refuses to run on a dirty tree, so stray pack output must never
+# be able to make it dirty. Tarballs belong in a temp dir — see scripts/verify-tarballs.mjs.
+*.tgz
 
 # generated output inside example workspaces (manifest + IR under .ds/ are committed)
 examples/*/packages/

@@ -9,6 +9,7 @@ import { scaffoldWorkspace } from '../../packages/cli/src/scaffold.js';
 const repoRoot = fileURLToPath(new URL('../..', import.meta.url));
 const cliPath = join(repoRoot, 'packages/cli/dist/cli.js');
 const workspace = join(repoRoot, 'e2e/.tmp/e2e-ds');
+const badBrandDir = join(repoRoot, 'e2e/.tmp/bad-brand');
 
 function girih(...args: string[]): { status: number | null; output: string } {
   const result = spawnSync('node', [cliPath, ...args], { cwd: workspace, encoding: 'utf8' });
@@ -25,7 +26,12 @@ describe('e2e: scaffold → check → generate → drift', () => {
     await scaffoldWorkspace(workspace, { name: '@e2e/design-system', brand: 'main' });
   });
 
-  afterAll(() => rm(join(repoRoot, 'e2e/.tmp'), { recursive: true, force: true }));
+  // Remove only the directories this file creates. vitest runs test files in
+  // parallel and consumer.test.ts keeps its scratch under e2e/.tmp/consumer, so
+  // clearing all of e2e/.tmp here deletes a live sibling's workspace mid-run.
+  afterAll(async () => {
+    for (const dir of [workspace, badBrandDir]) await rm(dir, { recursive: true, force: true });
+  });
 
   it('checks a fresh workspace clean', () => {
     const { status, output } = girih('check', '--no-table');
@@ -90,7 +96,6 @@ describe('e2e: scaffold → check → generate → drift', () => {
   });
 
   it('refuses invalid brand and package names at init time', async () => {
-    const badBrandDir = join(repoRoot, 'e2e/.tmp/bad-brand');
     await mkdir(badBrandDir, { recursive: true });
     const result = spawnSync('node', [cliPath, 'init', '--brand', 'My Brand'], { cwd: badBrandDir, encoding: 'utf8' });
     expect(result.status).toBe(1);

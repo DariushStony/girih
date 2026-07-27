@@ -8,6 +8,7 @@
     "create-girih": "./dist/cli.js"
   },
   "scripts": {
+    "prepublishOnly": "pnpm run build",
     "build": "tsup src/cli.ts --format esm --sourcemap --clean",
     "typecheck": "tsc -p tsconfig.json"
   },
@@ -15,5 +16,8 @@
     "@types/node": "^26.1.1",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }
