@@ -69,7 +69,7 @@ core, tokens, spec, generator-css, generator-react  ←  cli
 3. **Tier references flow downward only:** component → semantic → global. Never sideways, never upward.
 4. **Every design value in emitted CSS is a `var()`.** Component CSS carries structure only. Aliases stay live `var()` references — never flattened to literals — so nested `[data-brand]` scopes rebrand at runtime with no rebuild.
 5. **Contracts are data, not code.** `defineSpec` is authored in TypeScript for editor ergonomics and validated as pure data. A spec must never execute logic, import runtime code, or branch on environment.
-6. **`generate`, `build`, and `publish` must never disagree** about what the package contains. They all route through `composeReact()` in [cli.ts](packages/girih/src/cli.ts) — extend that one function, not the three call sites.
+6. **`generate`, `build`, and `publish` must never disagree** about what the package contains. They all route through `composeReact()` in [workspace.ts](packages/girih/src/workspace.ts) — extend that one function, not the three call sites.
 7. **Semver comes from the contract diff, not judgement.** Token value change = patch, new variant = minor, anything removed = major. See [semver.ts](packages/girih/src/semver.ts).
 
 **Diagnostics.** Every user-facing problem is a `Diagnostic` with a stable `GIRIH<n>` code, a `severity`, and — for anything actionable — a one-line `help`. Codes are partitioned by owner; stay in your range and never reuse a retired number:
@@ -85,7 +85,7 @@ core, tokens, spec, generator-css, generator-react  ←  cli
 
 Never `throw` where a diagnostic will do. Errors that reach the user as a stack trace are bugs.
 
-**CLI surface** (`packages/girih/src/cli.ts`): `create <directory>` (`--name`, `--brand`, `--no-install`), `init`, `brand create <name>`, `check`, `doctor` (`--offline`), `generate [css|react]` (`--check`, `--force`), `eject <component>`, `forks`, `build`, `publish` (`--yes`, `--tag`, `--access`), `update` (`--check`). Plus `-v/--version`.
+**CLI surface** — one module per command in [commands/](packages/girih/src/commands/), wired in [cli.ts](packages/girih/src/cli.ts); shared loading and composition in [workspace.ts](packages/girih/src/workspace.ts): `create <directory>` (`--name`, `--brand`, `--no-install`), `init`, `brand create <name>`, `check`, `doctor` (`--offline`), `generate [css|react]` (`--check`, `--force`), `eject <component>`, `forks`, `build`, `publish` (`--yes`, `--tag`, `--access`), `update` (`--check`). Plus `-v/--version`.
 
 Two distinctions worth keeping straight, because conflating them is easy:
 
