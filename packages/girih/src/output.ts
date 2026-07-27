@@ -1,6 +1,23 @@
 import pc from 'picocolors';
 import type { Diagnostic } from '@faravahar/girih-core';
 
+/**
+ * A path as girih prints it: always forward slashes.
+ *
+ * Only for display — never for touching the filesystem. Without it Windows output mixes
+ * separators inside a single block, because paths built with `join()` come out native
+ * while the ones written as literals (`.ds/ir/`, `demo/index.html`) do not:
+ *
+ *   write  packages\design-system\styles\tokens.css
+ *   write  .ds/ir/ (1 component IR file)
+ *
+ * Forward slashes also match what `.ds/manifest.json` records, so a drift message and
+ * the manifest entry it refers to are the same string.
+ */
+export function displayPath(path: string): string {
+  return path.replaceAll('\\', '/');
+}
+
 export function printDiagnostics(diagnostics: readonly Diagnostic[]): void {
   for (const d of diagnostics) {
     const badge =

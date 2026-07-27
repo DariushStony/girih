@@ -4,6 +4,7 @@ import { mkdir, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { plainOutput } from './helpers.js';
 
 const repoRoot = fileURLToPath(new URL('../..', import.meta.url));
 const cliPath = join(repoRoot, 'packages/girih/dist/cli.js');
@@ -21,7 +22,7 @@ function girih(cwd: string, ...args: string[]): { status: number | null; output:
     // currently published. `doctor --offline` covers its own case; this covers `update`.
     env: { ...process.env, GIRIH_NO_UPDATE_CHECK: '1' },
   });
-  return { status: result.status, output: `${result.stdout}\n${result.stderr}` };
+  return { status: result.status, output: plainOutput(`${result.stdout}\n${result.stderr}`) };
 }
 
 describe('e2e: create, doctor, forks', () => {

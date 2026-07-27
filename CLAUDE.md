@@ -155,7 +155,7 @@ Comments in this codebase carry **rationale**, not description — they explain 
 # Goal-Driven Execution
 
 - Before finishing, run the smallest verification that proves the change: `pnpm typecheck` and `pnpm test`. Both must pass.
-- If you touched a generator, also regenerate and check the example: `cd examples/acme-ds && pnpm exec girih check && pnpm exec girih generate react --check`.
+- If you touched a generator, also check the example: `pnpm example:check && pnpm example:drift`.
 - For multi-step work, write a short TODO list and tick items as you go.
 - A change is not done until typecheck and tests pass. `exactOptionalPropertyTypes` and `noUncheckedIndexedAccess` are on — they will reject code that looks fine.
 
@@ -166,8 +166,8 @@ Prefer the smallest verification scope possible:
 | Change                                        | Verification                                                                                                   |
 | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | One package's internals                       | `pnpm vitest run packages/<pkg>` then `pnpm typecheck`                                                         |
-| Token engine or CSS generator                 | above + `cd examples/acme-ds && pnpm exec girih check`                                                         |
-| Contract, spec validation, or React templates | above + `pnpm exec girih generate react --check` in `examples/acme-ds`                                         |
+| Token engine or CSS generator                 | above + `pnpm example:check`                                                                                   |
+| Contract, spec validation, or React templates | above + `pnpm example:drift`                                                                                   |
 | CLI behavior                                  | `pnpm build` first (cli is not source-aliased in vitest), then exercise the command in `examples/acme-ds`      |
 | Packaging, `dist/` shape, or publish flow     | `pnpm test` including `e2e/test/consumer.test.ts` — it packs tarballs and SSRs every component, and it is slow |
 

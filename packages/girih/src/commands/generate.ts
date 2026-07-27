@@ -5,7 +5,7 @@ import pc from 'picocolors';
 import { verifyEmittedFiles, writeEmittedFiles } from '@faravahar/girih-core';
 import { generateCss } from '@faravahar/girih-generator-css';
 import { detectDrift, planManifestUpdate, readManifest, writeManifest } from '../manifest.js';
-import { printDiagnostics, printSummaryLine } from '../output.js';
+import { displayPath, printDiagnostics, printSummaryLine } from '../output.js';
 import { composeReact, loadWorkspace } from '../workspace.js';
 import type { Command } from 'commander';
 import type { EmittedFile } from '@faravahar/girih-core';
@@ -73,7 +73,7 @@ export function registerGenerate(program: Command): void {
       const outDir = join(config.root, outputBase);
       if (options.check) {
         const stale = await verifyEmittedFiles(outDir, files);
-        for (const path of stale) console.log(`${pc.red('stale')}  ${join(outputBase, path)}`);
+        for (const path of stale) console.log(`${pc.red('stale')}  ${displayPath(join(outputBase, path))}`);
         if (stale.length > 0) {
           console.error(pc.red(`\n${stale.length} file(s) out of date — run \`girih generate ${target}\`.`));
           process.exitCode = 1;
@@ -113,13 +113,13 @@ export function registerGenerate(program: Command): void {
         }
         await writeManifest(config.root, next);
         for (const file of files) {
-          console.log(`${pc.green('write')}  ${join(outputBase, file.path)} ${pc.dim(`(${file.contents.length} bytes)`)}`);
+          console.log(`${pc.green('write')}  ${displayPath(join(outputBase, file.path))} ${pc.dim(`(${file.contents.length} bytes)`)}`);
         }
         if (irFiles.length > 0) {
           console.log(`${pc.green('write')}  .ds/ir/ ${pc.dim(`(${irFiles.length} component IR file${irFiles.length === 1 ? '' : 's'})`)}`);
         }
         if (target === 'react' && existsSync(join(config.root, 'demo/index.html'))) {
-          console.log(`\nPreview: ${pc.cyan('open demo/index.html')} · usage: ${pc.cyan(join(outputBase, 'README.md'))}`);
+          console.log(`\nPreview: ${pc.cyan('open demo/index.html')} · usage: ${pc.cyan(displayPath(join(outputBase, 'README.md')))}`);
         }
       }
 

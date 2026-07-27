@@ -111,8 +111,8 @@ Smallest scope that proves it:
 | Change                                   | Verification                                                                               |
 | ---------------------------------------- | ------------------------------------------------------------------------------------------ |
 | One package's internals                  | `pnpm vitest run packages/<pkg>` then `pnpm typecheck`                                     |
-| Token engine or CSS generator            | above, plus `cd examples/acme-ds && pnpm exec girih check`                                 |
-| Contract, validation, or React templates | above, plus `pnpm exec girih generate react --check`                                       |
+| Token engine or CSS generator            | above, plus `pnpm example:check`                                                           |
+| Contract, validation, or React templates | above, plus `pnpm example:drift`                                                           |
 | CLI behaviour                            | `pnpm build` first — `cli` is **not** source-aliased in vitest — then exercise the command |
 | Packaging or `dist/` shape               | `pnpm test` including `e2e/test/consumer.test.ts` (slow; packs real tarballs)              |
 

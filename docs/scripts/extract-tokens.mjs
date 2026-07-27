@@ -140,7 +140,9 @@ if (missing.length > 0) {
   console.error("Missing generated artifacts — the docs need girih's real output:");
   for (const name of missing) console.error(`  examples/acme-ds/packages/design-system/${name}`);
   console.error('\nRun this first:');
-  console.error('  cd examples/acme-ds && pnpm exec girih generate react');
+  console.error(
+    '  pnpm docs:generate   (or just: pnpm --filter acme-ds-example exec node ../../packages/girih/dist/cli.js generate react)',
+  );
   process.exit(1);
 }
 

@@ -3,6 +3,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { basename, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import pc from 'picocolors';
+import { displayPath } from '../output.js';
 import { detectPackageManager } from '../package-manager.js';
 import { scaffoldWorkspace, workspacePackageJson } from '../scaffold.js';
 import { BRAND_NAME, PACKAGE_NAME, PACKAGE_SELF, RUNTIME_PACKAGE, SELF_VERSION } from '../self.js';
@@ -43,9 +44,9 @@ export function registerCreate(program: Command): void {
         workspacePackageJson({ workspaceName, cliPackage: PACKAGE_SELF, runtimePackage: RUNTIME_PACKAGE, version: SELF_VERSION }),
         'utf8',
       );
-      console.log(`${pc.green('create')}  ${join(directory, 'package.json')}`);
+      console.log(`${pc.green('create')}  ${displayPath(join(directory, 'package.json'))}`);
       const { written } = await scaffoldWorkspace(dir, { name, brand: options.brand });
-      for (const path of written) console.log(`${pc.green('create')}  ${join(directory, path)}`);
+      for (const path of written) console.log(`${pc.green('create')}  ${displayPath(join(directory, path))}`);
 
       const packageManager = detectPackageManager();
       if (!options.install) {

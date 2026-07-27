@@ -73,7 +73,7 @@ git clone https://github.com/DariushStony/girih.git && cd girih
 pnpm install && pnpm build
 
 cd examples/acme-ds
-pnpm check                    # resolved token table + contract validation
+pnpm run check                # resolved token table + contract validation
 pnpm run demo:react           # generate the React package, bundle the demo
 open demo/react/index.html    # variant matrix with a live brand toggle
 ```
@@ -162,8 +162,8 @@ pnpm test                         # everything, including the slow consumer e2e
 pnpm build                        # required before exercising the CLI (cli is not source-aliased)
 
 cd examples/acme-ds
-pnpm exec girih check
-pnpm exec girih generate react --check   # staleness gate; writes nothing
+pnpm example:check                       # tokens + contracts in examples/acme-ds
+pnpm example:drift                       # staleness gate; writes nothing
 ```
 
 `pnpm verify` is the whole gate — build, typecheck, oxlint, Prettier, tests, then the

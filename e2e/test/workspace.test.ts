@@ -4,6 +4,7 @@ import { appendFile, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { plainOutput } from './helpers.js';
 import { scaffoldWorkspace } from '../../packages/girih/src/scaffold.js';
 
 const repoRoot = fileURLToPath(new URL('../..', import.meta.url));
@@ -13,7 +14,7 @@ const badBrandDir = join(repoRoot, 'e2e/.tmp/bad-brand');
 
 function girih(...args: string[]): { status: number | null; output: string } {
   const result = spawnSync('node', [cliPath, ...args], { cwd: workspace, encoding: 'utf8' });
-  return { status: result.status, output: `${result.stdout}\n${result.stderr}` };
+  return { status: result.status, output: plainOutput(`${result.stdout}\n${result.stderr}`) };
 }
 
 describe('e2e: scaffold → check → generate → drift', () => {
@@ -99,7 +100,7 @@ describe('e2e: scaffold → check → generate → drift', () => {
     await mkdir(badBrandDir, { recursive: true });
     const result = spawnSync('node', [cliPath, 'init', '--brand', 'My Brand'], { cwd: badBrandDir, encoding: 'utf8' });
     expect(result.status).toBe(1);
-    expect(`${result.stdout}${result.stderr}`).toContain('kebab-case');
+    expect(plainOutput(`${result.stdout}${result.stderr}`)).toContain('kebab-case');
     expect(existsSync(join(badBrandDir, 'ds.config.ts'))).toBe(false);
   });
 

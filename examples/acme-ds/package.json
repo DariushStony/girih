@@ -3,11 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "girih check",
-    "generate": "girih generate css",
-    "generate:check": "girih generate css --check",
-    "generate:react": "girih generate react",
-    "demo:react": "girih generate react && esbuild demo/react/main.tsx --bundle --outfile=demo/react/bundle.js --jsx=automatic"
+    "check": "node ../../packages/girih/dist/cli.js check",
+    "generate": "node ../../packages/girih/dist/cli.js generate css",
+    "generate:check": "node ../../packages/girih/dist/cli.js generate css --check",
+    "generate:react": "node ../../packages/girih/dist/cli.js generate react",
+    "demo:react": "node ../../packages/girih/dist/cli.js generate react && esbuild demo/react/main.tsx --bundle --outfile=demo/react/bundle.js --jsx=automatic"
   },
   "devDependencies": {
     "@faravahar/girih": "workspace:*",
