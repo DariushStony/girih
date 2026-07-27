@@ -36,7 +36,7 @@ ${table(
   right version is used automatically. If you do not have pnpm at all:
 </p>
 
-${code(`corepack enable          # ships with Node 20+, easiest route
+${code(`corepack enable          # ships with Node 22+, easiest route
 # or:
 npm install -g pnpm@11.8.0`, { kind: 'shell', lang: 'none' })}
 

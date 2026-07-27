@@ -13,6 +13,7 @@ import { generateReact, renderComponentSource, TEMPLATE_REGISTRY } from '@farava
 import { loadExtensions, loadSpecs, specToIR, validateExtensions, validateSpecs } from '@faravahar/girih-spec';
 import type { ComponentIR, LoadedExtension } from '@faravahar/girih-spec';
 import { spawnSync } from 'node:child_process';
+import { createRequire } from 'node:module';
 import { buildPackage } from './build.js';
 import { readLock, writeLock } from './lock.js';
 import { detectDrift, planManifestUpdate, readManifest, writeManifest } from './manifest.js';
@@ -20,8 +21,15 @@ import { printDiagnostics, printSummaryLine, table } from './output.js';
 import { scaffoldWorkspace } from './scaffold.js';
 import { applyBump, computeSignature, diffSignatures } from './semver.js';
 
+// Read at runtime rather than with an import attribute: the bundler inlines a JSON
+// import wholesale, which would ship this package's devDependency list inside dist/.
+const { version } = createRequire(import.meta.url)('../package.json') as { version: string };
+
 const program = new Command();
-program.name('girih').description('Compile a multi-brand design system from tokens and component contracts.');
+program
+  .name('girih')
+  .description('Compile a multi-brand design system from tokens and component contracts.')
+  .version(version, '-v, --version');
 
 const BRAND_NAME = /^[a-z][a-z0-9-]*$/;
 const PACKAGE_NAME = /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/;

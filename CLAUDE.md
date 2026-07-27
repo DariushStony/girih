@@ -28,7 +28,7 @@ Milestones M1–M6 are functional. Read `README.md` for what each milestone deli
 
 # Tech Stack
 
-- **Language:** TypeScript 5.9, ESM only (`"type": "module"` everywhere), Node ≥ 20
+- **Language:** TypeScript 5.9, ESM only (`"type": "module"` everywhere), Node ≥ 22
 - **Structure:** pnpm workspace (`packages/*`, `examples/*`, `e2e`) + turbo for `build` / `typecheck`
 - **Package manager:** pnpm 11.8.0 (corepack-managed via `package.json#packageManager`)
 - **Bundler:** tsup per package (`--format esm --dts --sourcemap --clean`); esbuild for the React demo bundle

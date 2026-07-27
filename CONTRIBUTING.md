@@ -12,7 +12,7 @@ pnpm build        # required: several tests and all CLI usage run against dist/
 pnpm test
 ```
 
-You need Node 20+ and pnpm 11.8.0 (pinned via `packageManager`; `corepack enable` handles it).
+You need Node 22+ and pnpm 11.8.0 (pinned via `packageManager`; `corepack enable` handles it).
 
 ## The invariants
 

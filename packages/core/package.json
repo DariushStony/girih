@@ -2,8 +2,29 @@
   "name": "@faravahar/girih-core",
   "version": "0.1.0",
   "description": "girih shared kernel: workspace config, diagnostics, emitted-file model",
-  "type": "module",
+  "keywords": [
+    "girih",
+    "design-system",
+    "design-tokens",
+    "diagnostics",
+    "workspace-config"
+  ],
+  "homepage": "https://github.com/DariushStony/girih#readme",
+  "bugs": "https://github.com/DariushStony/girih/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DariushStony/girih.git",
+    "directory": "packages/core"
+  },
+  "author": "Dariush Hadipour",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -11,7 +32,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "prepublishOnly": "pnpm run build",

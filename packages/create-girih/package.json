@@ -2,11 +2,38 @@
   "name": "create-girih",
   "version": "0.1.0",
   "description": "Scaffold a girih design-system workspace: npx create-girih my-ds",
-  "type": "module",
+  "keywords": [
+    "girih",
+    "design-system",
+    "design-tokens",
+    "scaffold",
+    "starter",
+    "create",
+    "npm-init"
+  ],
+  "homepage": "https://github.com/DariushStony/girih#readme",
+  "bugs": "https://github.com/DariushStony/girih/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DariushStony/girih.git",
+    "directory": "packages/create-girih"
+  },
+  "author": "Dariush Hadipour",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "bin": {
     "create-girih": "./dist/cli.js"
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "prepublishOnly": "pnpm run build",
     "build": "tsup src/cli.ts --format esm --sourcemap --clean",
@@ -16,8 +43,5 @@
     "@types/node": "^26.1.1",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3"
-  },
-  "files": [
-    "dist"
-  ]
+  }
 }

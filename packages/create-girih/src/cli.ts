@@ -2,6 +2,7 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
 import { basename, join, resolve } from 'node:path';
 import process from 'node:process';
 import { scaffoldDevDependencies } from './versions.js';
@@ -11,7 +12,17 @@ import { scaffoldDevDependencies } from './versions.js';
  * @faravahar/girih, then delegates to the installed `girih init`. The workspace
  * template lives in @faravahar/girih so bootstrapper and CLI can never drift apart.
  */
-const USAGE = 'Usage: create-girih <directory> [--name @scope/design-system] [--brand main] [--workspace] [--no-install]';
+const USAGE = `Usage: create-girih <directory> [--name @scope/design-system] [--brand main] [--workspace] [--no-install]
+
+  <directory>   folder to create; its basename becomes the workspace name
+  --name        published package name (default: @<directory>/design-system)
+  --brand       default brand, lowercase kebab-case (default: main)
+  --workspace   link the girih packages by workspace protocol (monorepo development)
+  --no-install  scaffold only; print the install and init commands to run yourself
+  -v, --version print the create-girih version
+  -h, --help    show this message
+
+Example: npx create-girih my-ds --name @acme/design-system`;
 const BRAND_NAME = /^[a-z][a-z0-9-]*$/;
 const PACKAGE_NAME = /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/;
 
@@ -27,8 +38,15 @@ function parseArgs(argv: string[]): Args | { error: string } {
   const args: Args = { brand: 'main', workspace: false, install: true };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
-    if (arg === '--help') {
+    if (arg === '--help' || arg === '-h') {
       console.log(USAGE);
+      process.exit(0);
+    }
+    if (arg === '--version' || arg === '-v') {
+      // Read at runtime, not via an import attribute: the bundler would inline the
+      // whole manifest and ship this package's devDependency list inside dist/.
+      const { version } = createRequire(import.meta.url)('../package.json') as { version: string };
+      console.log(version);
       process.exit(0);
     }
     switch (arg) {
@@ -47,7 +65,8 @@ function parseArgs(argv: string[]): Args | { error: string } {
         args.install = false;
         break;
       default:
-        if (arg.startsWith('--')) return { error: `unknown flag ${arg}` };
+        // Any leading dash, not just '--': otherwise '-x' is taken as the directory name.
+        if (arg.startsWith('-')) return { error: `unknown flag ${arg}` };
         if (args.dir) return { error: `unexpected argument '${arg}' (directory already set to '${args.dir}')` };
         args.dir = arg;
     }

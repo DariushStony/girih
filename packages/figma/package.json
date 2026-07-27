@@ -2,9 +2,26 @@
   "name": "@faravahar/girih-figma",
   "version": "0.0.0",
   "description": "girih Figma target — consumes ComponentIR + token graphs, never React output (phase 2)",
-  "type": "module",
+  "keywords": [
+    "girih",
+    "design-system",
+    "design-tokens",
+    "figma"
+  ],
+  "homepage": "https://github.com/DariushStony/girih#readme",
+  "bugs": "https://github.com/DariushStony/girih/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DariushStony/girih.git",
+    "directory": "packages/figma"
+  },
+  "author": "Dariush Hadipour",
   "license": "MIT",
   "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

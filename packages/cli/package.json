@@ -2,8 +2,32 @@
   "name": "@faravahar/girih",
   "version": "0.1.0",
   "description": "girih CLI — compile a multi-brand design system from tokens and component contracts",
-  "type": "module",
+  "keywords": [
+    "girih",
+    "design-system",
+    "design-tokens",
+    "cli",
+    "dtcg",
+    "multi-brand",
+    "codegen",
+    "theming"
+  ],
+  "homepage": "https://github.com/DariushStony/girih#readme",
+  "bugs": "https://github.com/DariushStony/girih/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DariushStony/girih.git",
+    "directory": "packages/cli"
+  },
+  "author": "Dariush Hadipour",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "bin": {
     "girih": "./dist/cli.js",
     "ds": "./dist/cli.js"
@@ -15,7 +39,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "prepublishOnly": "pnpm run build",
