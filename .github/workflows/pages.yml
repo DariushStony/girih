@@ -73,13 +73,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # enablement turns Pages on if it is not already, instead of failing with
-      # "Get Pages site failed … verify that the repository has Pages enabled". That
-      # error is only ever a missing one-time setting, and needing a human to click it
-      # before the workflow can ever succeed is a worse first run than doing it here.
+      # No `enablement: true` here, deliberately. It looks like the fix for "Get Pages
+      # site failed", but the action documents that it "requires a token other than
+      # GITHUB_TOKEN" — creating a Pages site needs administration:write, which the
+      # workflow token cannot be granted. Setting it turns a clear "Pages is not
+      # enabled" into a misleading "Resource not accessible by integration", and the
+      # only way to make it work is storing a PAT with `repo` scope as a secret, which
+      # is far too much standing access to save one click.
+      #
+      # Enabling Pages is a genuine one-time manual step:
+      #   Settings → Pages → Build and deployment → Source: GitHub Actions
+      # Until it is done this job fails, which is the honest outcome — the deploy
+      # really is not configured. The `verify` job above still gates docs staleness.
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
