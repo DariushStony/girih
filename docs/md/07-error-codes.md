@@ -362,7 +362,7 @@ CSS generation failed for brand '${brand}': ${(error as Error).message}
 
 GIRIH3002
 error
-packages/girih-generator-css/src/generate.ts:220
+packages/girih-generator-css/src/generate.ts:223
 
 '${variable}' (brand '${brand}') has a composite value no CSS transform could flatten.
 
@@ -370,7 +370,7 @@ Give the token a supported $type (shadow, typography, border, transition, cubicB
 
 GIRIH3003
 error
-packages/girih-generator-css/src/generate.ts:176
+packages/girih-generator-css/src/generate.ts:179
 
 Tokens ${paths.map((p) => `'${p}'`).join(' and ')} both map to the CSS variable '${varName}'.
 

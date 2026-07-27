@@ -657,10 +657,10 @@
       "helpDynamic": false,
       "package": "girih-generator-css",
       "file": "packages/girih-generator-css/src/generate.ts",
-      "line": 220,
+      "line": 223,
       "sites": 1,
       "allSites": [
-        "packages/girih-generator-css/src/generate.ts:220"
+        "packages/girih-generator-css/src/generate.ts:223"
       ]
     },
     {
@@ -672,10 +672,10 @@
       "helpDynamic": false,
       "package": "girih-generator-css",
       "file": "packages/girih-generator-css/src/generate.ts",
-      "line": 176,
+      "line": 179,
       "sites": 1,
       "allSites": [
-        "packages/girih-generator-css/src/generate.ts:176"
+        "packages/girih-generator-css/src/generate.ts:179"
       ]
     },
     {

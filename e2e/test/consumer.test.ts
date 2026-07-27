@@ -1,9 +1,10 @@
 import { spawnSync } from 'node:child_process';
-import { existsSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { build as esbuild } from 'esbuild';
 
 const repoRoot = fileURLToPath(new URL('../..', import.meta.url));
 const cliPath = join(repoRoot, 'packages/girih/dist/cli.js');
@@ -116,7 +117,7 @@ const html = renderToStaticMarkup(
       h(Button, { variant: 'primary' }, 'Save'),
       h(PaymentButton, null, 'Pay'),
       h(Badge, { tone: 'danger' }, 'New'),
-      h(Input, { size: 'md', placeholder: 'Email' }),
+      h(Input, { size: 'md', placeholder: 'Email', invalid: true }),
       h(Checkbox, { defaultChecked: true }),
       h(Dialog.Root, null, h(Dialog.Trigger, null, 'Open')),
     ),
@@ -140,5 +141,45 @@ process.stdout.write(html);
     expect(html).toContain('data-tone="danger"'); // Badge
     expect(html).toContain('type="checkbox"'); // Checkbox
     expect(html).toContain('type="button"'); // Button default
+    // The invalid state drives both attributes from one prop, through a real install.
+    expect(html).toContain('data-invalid="true"');
+    expect(html).toContain('aria-invalid="true"');
   }, 60_000);
+
+  // The generated package declares sideEffects: ["**/*.css"] and index.ts is nothing
+  // but re-exports, which *should* make it tree-shakeable. Declaring that is not the
+  // same as it being true: one accidental side effect at module scope, or a barrel that
+  // pulls a sibling in, and a consumer importing Button ships all seven components plus
+  // the headless layer. So bundle it for real and look at what survives.
+  it('tree-shakes: importing one component drops the other six and the headless layer', async () => {
+    expect(installed).toBe(true);
+    const entry = join(consumer, 'shake.mjs');
+    await writeFile(entry, `import { Button } from '@acme/design-system';\nconsole.log(Button);\n`);
+
+    const out = join(consumer, 'shaken.js');
+    // esbuild's JS API, not its binary: the binary is native (so `node <bin>` fails)
+    // and its .bin shim is a .cmd on Windows. The API is portable.
+    await esbuild({
+      entryPoints: [entry],
+      bundle: true,
+      format: 'esm',
+      minify: true,
+      platform: 'browser',
+      outfile: out,
+      // React stays external — it is the consumer's, and bundling it would swamp the
+      // signal being measured.
+      external: ['react', 'react-dom'],
+      absWorkingDir: consumer,
+    });
+
+    const bundle = readFileSync(out, 'utf8');
+    // Class names are the reliable marker: minification renames identifiers but these
+    // are string literals the components emit.
+    expect(bundle).toContain('ds-button');
+    for (const dropped of ['ds-badge', 'ds-card', 'ds-checkbox', 'ds-dialog', 'ds-input', 'ds-x-payment-button']) {
+      expect(bundle, `${dropped} should have been tree-shaken away`).not.toContain(dropped);
+    }
+    // Only Dialog needs Base UI, so importing Button must not drag it in.
+    expect(bundle).not.toContain('@base-ui-components');
+  }, 120_000);
 });
