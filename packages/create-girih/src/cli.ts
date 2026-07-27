@@ -4,6 +4,7 @@ import { existsSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { basename, join, resolve } from 'node:path';
 import process from 'node:process';
+import { CLI_VERSION_RANGE } from './versions.js';
 
 /**
  * npx create-girih <dir> — creates the directory and package.json, installs
@@ -83,7 +84,7 @@ if (existsSync(join(dir, 'package.json'))) {
 
 // --workspace links @faravahar/girih via the pnpm workspace protocol (for development
 // inside the girih monorepo); the default targets the published package.
-const cliVersion = parsed.workspace ? 'workspace:*' : '^0.1.0';
+const cliVersion = parsed.workspace ? 'workspace:*' : CLI_VERSION_RANGE;
 
 await mkdir(dir, { recursive: true });
 await writeFile(

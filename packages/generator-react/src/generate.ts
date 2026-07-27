@@ -9,6 +9,14 @@ import { renderElementComponent } from './templates/element.js';
 /** Pinned by the tool: the headless layer is a template implementation detail. */
 const BASE_UI_VERSION = '1.0.0-rc.0';
 
+/**
+ * Range for the runtime in every generated package.json. This lands in a package
+ * the *consumer* publishes, so an unsatisfiable range breaks their install, not
+ * ours — and `^0.x` admits only that one minor. test/runtime-range.test.ts pins it
+ * to the runtime's real version so a lockstep bump cannot leave it behind.
+ */
+export const RUNTIME_VERSION_RANGE = '^0.1.0';
+
 export interface GenerateReactOptions {
   /** Published package name, e.g. '@acme/design-system'. */
   packageName: string;
@@ -179,7 +187,7 @@ export function generateReact(
           files: ['dist', 'styles', 'README.md'],
           peerDependencies: { react: '>=18' },
           dependencies: {
-            [runtimePackage]: '^0.1.0',
+            [runtimePackage]: RUNTIME_VERSION_RANGE,
             ...(needsHeadless ? { '@base-ui-components/react': BASE_UI_VERSION } : {}),
           },
         },
