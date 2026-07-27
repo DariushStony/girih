@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { readFile, rm, writeFile } from 'node:fs/promises';
 import { dirname, join, relative } from 'node:path';
 import { transform } from 'esbuild';
@@ -25,6 +26,34 @@ function addJsExtensions(code: string): string {
 }
 
 /**
+ * Is `name` installed anywhere above `dir`? Mirrors Node's own upward walk without
+ * requiring the package to export './package.json', which many do not.
+ */
+function resolvesFrom(dir: string, name: string): boolean {
+  for (let current = dir; ; current = dirname(current)) {
+    if (existsSync(join(current, 'node_modules', name, 'package.json'))) return true;
+    if (current === dirname(current)) return false;
+  }
+}
+
+/**
+ * What the generated source imports, read from the emitted package.json rather than
+ * hardcoded — so it stays correct when a dialog contract pulls in the headless layer,
+ * and when the runtime package is ever renamed.
+ */
+async function missingBuildDependencies(packageDir: string): Promise<string[]> {
+  const manifest = JSON.parse(await readFile(join(packageDir, 'package.json'), 'utf8')) as {
+    dependencies?: Record<string, string>;
+    peerDependencies?: Record<string, string>;
+  };
+  const required = [...Object.keys(manifest.dependencies ?? {}), ...Object.keys(manifest.peerDependencies ?? {})];
+  // React ships no types of its own, and the emitted TSX is compiled here, not by
+  // the consumer — so @types/react is a build requirement the manifest cannot state.
+  if (required.includes('react')) required.push('@types/react');
+  return required.filter((name) => !resolvesFrom(packageDir, name));
+}
+
+/**
  * Compile a generated package's TypeScript source into publishable `dist/`:
  * per-file ESM JavaScript (esbuild) and bundled-free type declarations
  * (TypeScript compiler API). Dependencies (react, the runtime, the headless
@@ -40,6 +69,26 @@ export async function buildPackage(packageDir: string): Promise<BuildResult> {
     return {
       files: [],
       diagnostics: [{ code: 'GIRIH6001', severity: 'error', message: `No TypeScript sources in ${srcDir} — run \`girih generate react\` first.` }],
+    };
+  }
+
+  // Preflight before tsc: without these the compiler emits a wall of TS2307/TS2875
+  // naming files the user never wrote, which reads as a girih bug rather than a
+  // missing install. `girih init` scaffolds no package.json at all, so this is the
+  // only gate that catches it for that path.
+  const missing = await missingBuildDependencies(packageDir);
+  if (missing.length > 0) {
+    return {
+      files: [],
+      diagnostics: [
+        {
+          code: 'GIRIH6002',
+          severity: 'error',
+          message: `The generated package imports ${missing.map((m) => `'${m}'`).join(', ')}, which ${missing.length === 1 ? 'is' : 'are'} not installed.`,
+          file: join(relative(dirname(packageDir), packageDir), 'package.json'),
+          help: `Install the build prerequisites: npm install -D ${missing.join(' ')}`,
+        },
+      ],
     };
   }
 

@@ -4,7 +4,7 @@ import { existsSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { basename, join, resolve } from 'node:path';
 import process from 'node:process';
-import { CLI_VERSION_RANGE } from './versions.js';
+import { scaffoldDevDependencies } from './versions.js';
 
 /**
  * npx create-girih <dir> — creates the directory and package.json, installs
@@ -82,10 +82,6 @@ if (existsSync(join(dir, 'package.json'))) {
   process.exit(1);
 }
 
-// --workspace links @faravahar/girih via the pnpm workspace protocol (for development
-// inside the girih monorepo); the default targets the published package.
-const cliVersion = parsed.workspace ? 'workspace:*' : CLI_VERSION_RANGE;
-
 await mkdir(dir, { recursive: true });
 await writeFile(
   join(dir, 'package.json'),
@@ -99,7 +95,7 @@ await writeFile(
         generate: 'girih generate react',
         'generate:check': 'girih generate react --check',
       },
-      devDependencies: { '@faravahar/girih': cliVersion },
+      devDependencies: scaffoldDevDependencies(parsed.workspace),
     },
     null,
     2,
