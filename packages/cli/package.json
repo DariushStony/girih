@@ -30,13 +30,11 @@
     "picocolors": "^1.1.1",
     "@faravahar/girih-spec": "workspace:*",
     "@faravahar/girih-generator-react": "workspace:*",
-    "esbuild": "^0.25.0",
     "typescript": "^5.9.3",
     "tinyglobby": "^0.2.10"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
-    "tsup": "^8.5.1",
-    "typescript": "^5.9.3"
+    "tsup": "^8.5.1"
   }
 }

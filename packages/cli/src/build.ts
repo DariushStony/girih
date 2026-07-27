@@ -1,7 +1,6 @@
 import { existsSync } from 'node:fs';
 import { readFile, rm, writeFile } from 'node:fs/promises';
 import { dirname, join, relative } from 'node:path';
-import { transform } from 'esbuild';
 import { glob } from 'tinyglobby';
 import ts from 'typescript';
 import { emittedFile, writeEmittedFiles } from '@faravahar/girih-core';
@@ -55,9 +54,9 @@ async function missingBuildDependencies(packageDir: string): Promise<string[]> {
 
 /**
  * Compile a generated package's TypeScript source into publishable `dist/`:
- * per-file ESM JavaScript (esbuild) and bundled-free type declarations
- * (TypeScript compiler API). Dependencies (react, the runtime, the headless
- * layer) stay external — they are the consumer's to resolve.
+ * per-file ESM JavaScript and bundle-free type declarations, both via the
+ * TypeScript compiler. Dependencies (react, the runtime, the headless layer)
+ * stay external — they are the consumer's to resolve.
  */
 export async function buildPackage(packageDir: string): Promise<BuildResult> {
   const diagnostics: Diagnostic[] = [];
@@ -95,18 +94,24 @@ export async function buildPackage(packageDir: string): Promise<BuildResult> {
   await rm(distDir, { recursive: true, force: true });
 
   // 1) JavaScript — transpile each file, preserving module structure.
+  // Syntax-only, via the same TypeScript the declarations use. esbuild did this job
+  // identically, but it is a runtime dependency with a postinstall that pnpm 10+
+  // blocks by default in a consumer's tree — which the workspace's own allowBuilds
+  // does not fix for them — so `girih build` would fail on a plain install.
   const jsFiles: EmittedFile[] = [];
   for (const rel of sourcePaths) {
     const source = await readFile(join(srcDir, rel), 'utf8');
-    const result = await transform(source, {
-      loader: rel.endsWith('.tsx') ? 'tsx' : 'ts',
-      format: 'esm',
-      target: 'es2022',
-      jsx: 'automatic',
-      sourcefile: rel,
+    const { outputText } = ts.transpileModule(source, {
+      // The extension drives TSX handling, so the real filename matters.
+      fileName: rel,
+      compilerOptions: {
+        target: ts.ScriptTarget.ES2022,
+        module: ts.ModuleKind.ESNext,
+        jsx: ts.JsxEmit.ReactJSX,
+      },
     });
     const outRel = rel.replace(/\.tsx?$/, '.js');
-    jsFiles.push(emittedFile(join('dist', outRel), addJsExtensions(result.code)));
+    jsFiles.push(emittedFile(join('dist', outRel), addJsExtensions(outputText)));
   }
 
   // 2) Declarations — emit via the TypeScript compiler API, then rewrite specifiers.
