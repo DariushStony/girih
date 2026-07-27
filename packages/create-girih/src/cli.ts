@@ -5,6 +5,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { basename, join, resolve } from 'node:path';
 import process from 'node:process';
+import { ask, confirm, isInteractive } from './prompt.js';
 import { scaffoldDevDependencies } from './versions.js';
 
 /**
@@ -12,9 +13,9 @@ import { scaffoldDevDependencies } from './versions.js';
  * @faravahar/girih, then delegates to the installed `girih init`. The workspace
  * template lives in @faravahar/girih so bootstrapper and CLI can never drift apart.
  */
-const USAGE = `Usage: create-girih <directory> [--name @scope/design-system] [--brand main] [--workspace] [--no-install]
+const USAGE = `Usage: create-girih [directory] [--name @scope/design-system] [--brand main] [--workspace] [--no-install]
 
-  <directory>   folder to create; its basename becomes the workspace name
+  [directory]   folder to create; prompted for when omitted and a terminal is attached
   --name        published package name (default: @<directory>/design-system)
   --brand       default brand, lowercase kebab-case (default: main)
   --workspace   link the girih packages by workspace protocol (monorepo development)
@@ -71,7 +72,8 @@ function parseArgs(argv: string[]): Args | { error: string } {
         args.dir = arg;
     }
   }
-  if (!args.dir) return { error: 'missing <directory>' };
+  // The directory is filled in by prompting when a human is present; only a
+  // non-interactive run needs it up front.
   return args;
 }
 
@@ -79,6 +81,41 @@ const parsed = parseArgs(process.argv.slice(2));
 if ('error' in parsed) {
   console.error(`create-girih: ${parsed.error}\n${USAGE}`);
   process.exit(1);
+}
+
+if (!parsed.dir && !isInteractive()) {
+  console.error(`create-girih: missing <directory>\n${USAGE}`);
+  process.exit(1);
+}
+
+/**
+ * Ask only for what was not passed, so `npx create-girih` is conversational while
+ * `npx create-girih my-ds --name @acme/ds` stays a one-liner. A flag always wins over
+ * a prompt — otherwise scripting it would mean answering questions.
+ */
+if (isInteractive()) {
+  if (!parsed.dir) {
+    console.log('\nCreating a girih design system.\n');
+    parsed.dir = await ask('Directory', {
+      default: 'my-ds',
+      validate: (value) =>
+        existsSync(join(resolve(process.cwd(), value), 'package.json')) ? 'that directory already has a package.json' : null,
+    });
+  }
+  if (!parsed.name) {
+    parsed.name = await ask('Published package name', {
+      default: `@${basename(resolve(process.cwd(), parsed.dir))}/design-system`,
+      validate: (value) => (PACKAGE_NAME.test(value) ? null : 'not a valid npm package name'),
+    });
+  }
+  // 'main' is the parser default, so an explicit --brand main is indistinguishable from
+  // none — asking anyway costs one keypress and makes the default visible.
+  parsed.brand = await ask('Default brand', {
+    default: parsed.brand,
+    validate: (value) => (BRAND_NAME.test(value) ? null : 'must be lowercase kebab-case (it becomes a [data-brand] selector)'),
+  });
+  if (parsed.install) parsed.install = await confirm('Install dependencies now?', true);
+  console.log('');
 }
 
 const dir = resolve(process.cwd(), parsed.dir!);
