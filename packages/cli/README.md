@@ -11,8 +11,9 @@ Provides two identical binaries: `girih` and `ds`.
 ## Starting a workspace
 
 ```bash
-npx create-girih my-ds     # scaffolds a new directory, installs, initialises
-girih init                 # scaffold into the current directory
+npx create-girih my-ds     # no CLI needed — scaffolds, installs, initialises
+girih create my-ds         # same, if you already have the CLI
+girih init                 # add girih to a project that already has a package.json
 ```
 
 ## Commands
@@ -20,12 +21,17 @@ girih init                 # scaffold into the current directory
 | Command | What it does |
 | --- | --- |
 | `girih check` | Validate tokens, brands, contracts and extensions; print the resolved token table |
+| `girih doctor` | Diagnose the *environment*: node, package manager, resolution, build prerequisites, version skew |
 | `girih generate [css\|react]` | Compile the design system. `--check` verifies, `--force` overrides the drift gate |
 | `girih brand create <name>` | Add a brand overlay and register it |
 | `girih eject <component>` | Convert one generated component into a tracked fork |
-| `girih update` | Report ejected forks that drifted from the current templates |
+| `girih forks` | Report ejected forks that drifted from the current templates |
 | `girih build` | Compile the generated package to publishable `dist/` |
 | `girih publish` | Version **your** design system from its contract diff and publish it |
+| `girih update` | Upgrade the `@faravahar/girih-*` packages in this workspace |
+
+`girih check` validates what your workspace *contains*; `girih doctor` validates the
+environment it runs *in*. Between them they answer "it worked on my machine".
 
 `girih publish` publishes the design system *you* generated — not girih itself. It is a
 dry run unless you pass `--yes`.

@@ -1,8 +1,8 @@
-import { existsSync } from 'node:fs';
 import { readFile, rm, writeFile } from 'node:fs/promises';
 import { dirname, join, relative } from 'node:path';
 import { glob } from 'tinyglobby';
 import ts from 'typescript';
+import { resolvesFrom } from './resolve.js';
 import { emittedFile, writeEmittedFiles } from '@faravahar/girih-core';
 import type { Diagnostic, EmittedFile } from '@faravahar/girih-core';
 
@@ -25,22 +25,11 @@ function addJsExtensions(code: string): string {
 }
 
 /**
- * Is `name` installed anywhere above `dir`? Mirrors Node's own upward walk without
- * requiring the package to export './package.json', which many do not.
- */
-function resolvesFrom(dir: string, name: string): boolean {
-  for (let current = dir; ; current = dirname(current)) {
-    if (existsSync(join(current, 'node_modules', name, 'package.json'))) return true;
-    if (current === dirname(current)) return false;
-  }
-}
-
-/**
  * What the generated source imports, read from the emitted package.json rather than
  * hardcoded — so it stays correct when a dialog contract pulls in the headless layer,
  * and when the runtime package is ever renamed.
  */
-async function missingBuildDependencies(packageDir: string): Promise<string[]> {
+export async function missingBuildDependencies(packageDir: string): Promise<string[]> {
   const manifest = JSON.parse(await readFile(join(packageDir, 'package.json'), 'utf8')) as {
     dependencies?: Record<string, string>;
     peerDependencies?: Record<string, string>;

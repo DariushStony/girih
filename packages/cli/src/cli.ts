@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { existsSync } from 'node:fs';
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
-import { basename, dirname, join } from 'node:path';
+import { basename, dirname, join, resolve } from 'node:path';
 import { Command } from 'commander';
 import pc from 'picocolors';
 import { CONFIG_FILENAMES, emittedFile, loadConfig, verifyEmittedFiles, writeEmittedFiles } from '@faravahar/girih-core';
@@ -18,12 +18,21 @@ import { buildPackage } from './build.js';
 import { readLock, writeLock } from './lock.js';
 import { detectDrift, planManifestUpdate, readManifest, writeManifest } from './manifest.js';
 import { printDiagnostics, printSummaryLine, table } from './output.js';
-import { scaffoldWorkspace } from './scaffold.js';
+import { runDoctor, workspaceGirihDependencies } from './doctor.js';
+import { fetchLatestVersions, updateChecksDisabled } from './registry.js';
+import { installedVersion, resolvesFrom } from './resolve.js';
+import { scaffoldWorkspace, workspacePackageJson } from './scaffold.js';
 import { applyBump, computeSignature, diffSignatures } from './semver.js';
 
 // Read at runtime rather than with an import attribute: the bundler inlines a JSON
 // import wholesale, which would ship this package's devDependency list inside dist/.
-const { version } = createRequire(import.meta.url)('../package.json') as { version: string };
+const { name: PACKAGE_SELF, version } = createRequire(import.meta.url)('../package.json') as {
+  name: string;
+  version: string;
+};
+
+/** Published alongside the CLI at the same version — the workspace is lockstep. */
+const RUNTIME_PACKAGE = '@faravahar/girih-react-runtime';
 
 const program = new Command();
 program
@@ -36,10 +45,7 @@ const PACKAGE_NAME = /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/;
 
 /** Can ds.config.ts's `import '@faravahar/girih'` resolve from this directory? */
 function hasResolvableCli(cwd: string): boolean {
-  for (let dir = cwd; ; dir = dirname(dir)) {
-    if (existsSync(join(dir, 'node_modules/@faravahar/girih/package.json'))) return true;
-    if (dir === dirname(dir)) return false;
-  }
+  return resolvesFrom(cwd, PACKAGE_SELF);
 }
 
 async function loadWorkspace(): Promise<{ config: ResolvedConfig; build: TokenBuildResult } | null> {
@@ -121,14 +127,14 @@ async function loadEjectedSources(
     sources[name] = contents;
 
     // The fork's base is frozen; the spec/template are not. Make divergence visible.
-    const currentRender = emittedFile('x', renderComponentSource(ir, { classPrefix: config.tokens.prefix, runtimePackage: '@faravahar/girih-react-runtime' }));
+    const currentRender = emittedFile('x', renderComponentSource(ir, { classPrefix: config.tokens.prefix, runtimePackage: RUNTIME_PACKAGE }));
     if (currentRender.hash !== entry.baseHash) {
       build.diagnostics.push({
         code: 'GIRIH1014',
         severity: 'warning',
         message: `'${name}' was ejected from a different spec/template than the current one — the fork may not honor the contract anymore.`,
         file: path,
-        help: 'Review the fork against the current spec, or re-eject after removing the ds.lock entry (girih update will automate this in M6).',
+        help: 'Review the fork against the current spec, or re-eject after removing the ds.lock entry (`girih forks` reports this; the 3-way merge is not built yet).',
       });
     }
   }
@@ -169,8 +175,68 @@ async function composeReact(config: ResolvedConfig, build: TokenBuildResult, css
 }
 
 program
+  .command('create <directory>')
+  .description('Create a new girih workspace in a new directory, then install and initialise it.')
+  .option('--name <package>', 'published package name (default: @<directory>/design-system)')
+  .option('--brand <name>', 'default brand name', 'main')
+  .option('--no-install', 'scaffold only; print the install command instead of running it')
+  .action(async (directory: string, options: { name?: string; brand: string; install: boolean }) => {
+    const dir = resolve(process.cwd(), directory);
+    const workspaceName = basename(dir);
+
+    if (existsSync(join(dir, 'package.json'))) {
+      console.error(pc.red(`${dir} already has a package.json — refusing to scaffold over it.`));
+      process.exitCode = 1;
+      return;
+    }
+    if (!BRAND_NAME.test(options.brand)) {
+      console.error(pc.red(`Brand name '${options.brand}' must be lowercase kebab-case (it becomes a [data-brand] selector).`));
+      process.exitCode = 1;
+      return;
+    }
+    const name = options.name ?? `@${workspaceName}/design-system`;
+    if (!PACKAGE_NAME.test(name)) {
+      console.error(pc.red(`'${name}' is not a valid npm package name.`));
+      if (!options.name) console.error(pc.dim(`(derived from the directory name — pass --name @scope/design-system explicitly)`));
+      process.exitCode = 1;
+      return;
+    }
+
+    await mkdir(dir, { recursive: true });
+    await writeFile(
+      join(dir, 'package.json'),
+      workspacePackageJson({ workspaceName, cliPackage: PACKAGE_SELF, runtimePackage: RUNTIME_PACKAGE, version }),
+      'utf8',
+    );
+    console.log(`${pc.green('create')}  ${join(directory, 'package.json')}`);
+    const { written } = await scaffoldWorkspace(dir, { name, brand: options.brand });
+    for (const path of written) console.log(`${pc.green('create')}  ${join(directory, path)}`);
+
+    const packageManager = detectPackageManager();
+    if (!options.install) {
+      console.log(`\n${pc.bold(name)} scaffolded. Finish with:`);
+      console.log(`  ${pc.cyan(`cd ${directory} && ${packageManager} install`)}`);
+      return;
+    }
+
+    console.log(`\ninstall (${packageManager})…`);
+    const install = spawnSync(packageManager, ['install'], { cwd: dir, stdio: 'inherit', shell: process.platform === 'win32' });
+    if (install.status !== 0) {
+      console.error(pc.red(`\n${packageManager} install failed — run it yourself in ${directory}.`));
+      process.exitCode = install.status ?? 1;
+      return;
+    }
+
+    console.log(`\n${pc.bold(name)} is ready:`);
+    console.log(`  ${pc.cyan(`cd ${directory}`)}`);
+    console.log(`  ${pc.cyan('girih check')}           validate tokens and contracts`);
+    console.log(`  ${pc.cyan('girih generate react')}  compile the design system package`);
+    console.log(`  ${pc.cyan('open demo/index.html')}  see every variant, size, and brand`);
+  });
+
+program
   .command('init')
-  .description('Scaffold a girih workspace in the current directory.')
+  .description('Scaffold a girih workspace in the current directory (for a project that already has a package.json).')
   .option('--name <package>', 'published package name (default: @<dir>/design-system)')
   .option('--brand <name>', 'default brand name', 'main')
   .action(async (options: { name?: string; brand: string }) => {
@@ -502,8 +568,8 @@ program
     }
 
     // Snapshot the exact template output as the fork base. The recorded hash +
-    // template version are what make a future `girih update` a 3-way merge.
-    const source = renderComponentSource(ir, { classPrefix: config.tokens.prefix, runtimePackage: '@faravahar/girih-react-runtime' });
+    // template version are what would make a future `girih forks` 3-way merge.
+    const source = renderComponentSource(ir, { classPrefix: config.tokens.prefix, runtimePackage: RUNTIME_PACKAGE });
     const baseFile = emittedFile(`components/ejected/${componentName}.tsx`, source);
 
     // If the generated file on disk carries hand edits (drift), the fork must
@@ -700,7 +766,106 @@ program
   });
 
 program
+  .command('doctor')
+  .description('Check the environment girih runs in: node, package manager, resolution, build prerequisites.')
+  .option('--offline', 'skip the npm registry update check')
+  .action(async (options: { offline?: boolean }) => {
+    const checks = await runDoctor(process.cwd(), { offline: options.offline ?? false });
+    const mark = { ok: pc.green('✔'), warn: pc.yellow('!'), fail: pc.red('✗') };
+    const width = Math.max(...checks.map((c) => c.label.length));
+    for (const check of checks) {
+      console.log(`${mark[check.status]} ${check.label.padEnd(width)}  ${check.status === 'ok' ? pc.dim(check.detail) : check.detail}`);
+      if (check.fix) console.log(`  ${' '.repeat(width)}  ${pc.green('fix:')} ${check.fix}`);
+    }
+
+    const failed = checks.filter((c) => c.status === 'fail').length;
+    const warned = checks.filter((c) => c.status === 'warn').length;
+    if (failed > 0) {
+      console.log(pc.red(`\n✖ ${failed} problem${failed === 1 ? '' : 's'} will stop girih working here.`));
+      process.exitCode = 1;
+    } else if (warned > 0) {
+      console.log(pc.yellow(`\n⚠ ${warned} thing${warned === 1 ? '' : 's'} worth knowing; nothing blocking.`));
+    } else {
+      console.log(pc.green('\n✔ environment looks right'));
+    }
+    // `check` validates the workspace's content; this validates its surroundings.
+    console.log(pc.dim('Run `girih check` to validate tokens and contracts.'));
+  });
+
+program
   .command('update')
+  .description('Upgrade the girih packages in this workspace to their latest published versions.')
+  .option('--check', 'report what is outdated without installing')
+  .action(async (options: { check?: boolean }) => {
+    const cwd = process.cwd();
+    if (!existsSync(join(cwd, 'package.json'))) {
+      console.error(pc.red('No package.json here — run this from the root of your workspace.'));
+      process.exitCode = 1;
+      return;
+    }
+
+    const declared = await workspaceGirihDependencies(cwd);
+    const names = Object.keys(declared);
+    if (names.length === 0) {
+      console.log(pc.green('No girih packages declared here — nothing to update.'));
+      console.log(pc.dim('(Inside the girih monorepo the ranges are `workspace:*`, which this command leaves alone.)'));
+      return;
+    }
+
+    const latest = await fetchLatestVersions(names, { force: true });
+    if (Object.keys(latest).length === 0) {
+      // Every name failing looks the same whether the network is down or none of
+      // them are published, so name both rather than guessing.
+      console.error(pc.red(`No versions found for any of: ${names.join(', ')}.`));
+      console.error(pc.dim('The registry may be unreachable, or these packages may not be published.'));
+      if (updateChecksDisabled()) console.error(pc.dim('GIRIH_NO_UPDATE_CHECK is set — unset it for this command.'));
+      process.exitCode = 1;
+      return;
+    }
+
+    const rows: string[][] = [];
+    const outdated: string[] = [];
+    for (const name of names) {
+      const current = installedVersion(cwd, name);
+      const newest = latest[name];
+      const stale = newest !== undefined && current !== null && current !== newest;
+      if (stale || (newest !== undefined && current === null)) outdated.push(`${name}@${newest}`);
+      rows.push([
+        pc.cyan(name),
+        current ?? pc.red('not installed'),
+        newest ?? pc.dim('unknown'),
+        stale ? pc.yellow('outdated') : current === null ? pc.red('missing') : pc.green('current'),
+      ]);
+    }
+    console.log(table(rows, ['PACKAGE', 'INSTALLED', 'LATEST', '']));
+
+    if (outdated.length === 0) {
+      console.log(pc.green('\n✔ every girih package is current.'));
+      return;
+    }
+    if (options.check) {
+      console.log(pc.yellow(`\n${outdated.length} package(s) outdated — run \`girih update\` to upgrade.`));
+      process.exitCode = 1;
+      return;
+    }
+
+    const packageManager = detectPackageManager();
+    // `add` (not `install`) so the declared ranges are rewritten too — otherwise the
+    // next clean install would silently pull the old versions back.
+    const args = packageManager === 'npm' ? ['install', '--save-dev', ...outdated] : ['add', '--save-dev', ...outdated];
+    console.log(pc.dim(`\n$ ${packageManager} ${args.join(' ')}`));
+    const result = spawnSync(packageManager, args, { cwd, stdio: 'inherit', shell: process.platform === 'win32' });
+    if (result.status !== 0) {
+      console.error(pc.red(`\n${packageManager} failed (exit ${result.status}).`));
+      process.exitCode = result.status ?? 1;
+      return;
+    }
+    console.log(pc.green(`\n✔ upgraded ${outdated.length} package(s).`));
+    console.log(pc.dim('Run `girih check` and `girih generate react --check` to confirm nothing drifted.'));
+  });
+
+program
+  .command('forks')
   .description('Report ejected forks that have drifted from the current templates.')
   .action(async () => {
     const workspace = await loadWorkspace();
@@ -726,7 +891,7 @@ program
       const current = TEMPLATE_REGISTRY[entry.template]?.version ?? entry.templateVersion;
       const ir = byName.get(name);
       const rebased = ir
-        ? emittedFile('x', renderComponentSource(ir, { classPrefix: config.tokens.prefix, runtimePackage: '@faravahar/girih-react-runtime' })).hash
+        ? emittedFile('x', renderComponentSource(ir, { classPrefix: config.tokens.prefix, runtimePackage: RUNTIME_PACKAGE })).hash
         : null;
       const reasons: string[] = [];
       if (current > entry.templateVersion) reasons.push(`template ${entry.template} v${entry.templateVersion}→v${current}`);
@@ -746,6 +911,26 @@ program
       );
     }
   });
+
+/**
+ * Which package manager invoked us. The user-agent is set by npm/pnpm/yarn/bun when
+ * running through them; a lockfile is the fallback for a global install.
+ */
+function detectPackageManager(): string {
+  const userAgent = process.env['npm_config_user_agent'] ?? '';
+  for (const manager of ['pnpm', 'yarn', 'bun'] as const) {
+    if (userAgent.startsWith(manager)) return manager;
+  }
+  if (userAgent.startsWith('npm')) return 'npm';
+  for (const [file, manager] of [
+    ['pnpm-lock.yaml', 'pnpm'],
+    ['yarn.lock', 'yarn'],
+    ['bun.lockb', 'bun'],
+  ] as const) {
+    if (existsSync(join(process.cwd(), file))) return manager;
+  }
+  return 'npm';
+}
 
 function bumpPackageVersion(source: string, version: string): string {
   return source.replace(/("version":\s*")[^"]*(")/, `$1${version}$2`);

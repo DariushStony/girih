@@ -15,6 +15,48 @@ export interface ScaffoldResult {
 }
 
 /**
+ * The workspace package.json `girih create` writes. `girih init` deliberately does not
+ * write one — it adds girih to a project that already has its own.
+ *
+ * The girih packages are pinned to the running CLI's version rather than to a range,
+ * because internal deps publish as exact pins: a workspace whose CLI and runtime
+ * disagree fails in confusing ways, and `girih doctor` reports exactly that skew.
+ * react is a devDependency because the emitted TSX is compiled here, not by the
+ * consumer; react-dom is absent because the scaffolded demo needs no renderer.
+ */
+export function workspacePackageJson(options: {
+  workspaceName: string;
+  cliPackage: string;
+  runtimePackage: string;
+  version: string;
+}): string {
+  const { workspaceName, cliPackage, runtimePackage, version } = options;
+  return (
+    JSON.stringify(
+      {
+        name: workspaceName,
+        private: true,
+        type: 'module',
+        scripts: {
+          check: 'girih check',
+          generate: 'girih generate react',
+          'generate:check': 'girih generate react --check',
+          build: 'girih build',
+        },
+        devDependencies: {
+          [cliPackage]: `^${version}`,
+          [runtimePackage]: `^${version}`,
+          '@types/react': '^19.0.0',
+          react: '^19.0.0',
+        },
+      },
+      null,
+      2,
+    ) + '\n'
+  );
+}
+
+/**
  * The starter workspace `girih init` and `create-girih` write. Three token
  * tiers, one brand, one component contract — small enough to read in one
  * sitting, real enough that `girih generate react` produces a working Button.

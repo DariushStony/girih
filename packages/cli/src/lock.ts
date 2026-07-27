@@ -6,7 +6,7 @@ const LOCK_PATH = 'ds.lock';
 /**
  * The committed record of tracked forks. Recording {template, templateVersion,
  * baseHash} at eject time is nearly free and cannot be retrofitted — it is what
- * makes a future `girih update` a 3-way merge instead of shadcn's lossy diff.
+ * makes a future `girih forks` 3-way merge instead of shadcn's lossy diff.
  */
 export interface DsLock {
   version: 1;
