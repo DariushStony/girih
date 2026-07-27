@@ -99,12 +99,18 @@ export async function loadConfig(cwd: string): Promise<LoadConfigResult> {
 
   let raw: GirihConfig;
   try {
-    // fsCache off deliberately. jiti otherwise caches transpiled config into a
+    // fsCache off deliberately, and measured: it costs ~70ms per invocation
+    // (`girih check` goes ~390ms -> ~460ms). Worth it. jiti otherwise caches into a
     // *shared* directory under the system temp dir, keyed by the parent directory
     // name — so two girih processes running at once (turbo across workspaces, or a
     // parallel test suite) can read a half-written entry and fail with a syntax
     // error in a file the user never wrote. A ds.config.ts is a few lines; there is
     // nothing here worth the shared mutable state.
+    //
+    // A per-workspace directory (fsCache accepts a path) would win the 70ms back with a
+    // much smaller collision window, but not a zero one — two commands in the same
+    // workspace would still share a file. A few tens of milliseconds is not worth
+    // reasoning about that every time this is read.
     const jiti = createJiti(import.meta.url, { fsCache: false });
     const mod = await jiti.import<{ default?: GirihConfig } | GirihConfig>(configPath);
     raw = (mod as { default?: GirihConfig }).default ?? (mod as GirihConfig);
