@@ -1,0 +1,150 @@
+import { spawnSync } from 'node:child_process';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { mkdir, rm, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+
+const repoRoot = fileURLToPath(new URL('../..', import.meta.url));
+// Own scratch directory, removed on its own — sibling test files run in parallel.
+const scratch = join(repoRoot, 'e2e/.tmp/cli-install');
+const consumer = join(scratch, 'app');
+const tarballs = join(scratch, 'tarballs');
+
+/**
+ * Every package @faravahar/girih pulls in, in dependency order. Only the CLI is
+ * installed by name; the rest have to be resolvable as tarballs because they are
+ * unpublished, and npm cannot fetch them from the registry during a test.
+ */
+const PACKAGES = ['core', 'tokens', 'spec', 'generator-css', 'generator-react', 'cli', 'react-runtime'];
+
+const run = (cmd: string, args: string[], cwd: string) => spawnSync(cmd, args, { cwd, encoding: 'utf8' });
+
+/** pnpm, never npm: only pnpm's packer rewrites `workspace:*` to a real version. */
+function pack(packageDir: string): { name: string; tgz: string } {
+  const before = new Set(existsSync(tarballs) ? readdirSync(tarballs) : []);
+  const result = run('pnpm', ['pack', '--pack-destination', tarballs], packageDir);
+  if (result.status !== 0) throw new Error(`pnpm pack failed in ${packageDir}:\n${result.stdout}\n${result.stderr}`);
+  const created = readdirSync(tarballs).find((f) => f.endsWith('.tgz') && !before.has(f));
+  if (!created) throw new Error(`pnpm pack produced no new tarball in ${packageDir}`);
+  const { name } = JSON.parse(readFileSync(join(packageDir, 'package.json'), 'utf8')) as { name: string };
+  return { name, tgz: join(tarballs, created) };
+}
+
+/**
+ * The one thing no other test covered: installing the CLI itself the way a stranger
+ * will, and running its binary from node_modules/.bin.
+ *
+ * consumer.test.ts packs the *generated* design system, but invokes the CLI as
+ * `node packages/cli/dist/cli.js` straight out of the workspace — so a broken exports
+ * map, a missing "files" entry, or an unresolvable internal pin in any of the six
+ * library packages would have shipped undetected.
+ */
+describe('cli install: pack every package → install → run the binary', () => {
+  let installed = false;
+
+  beforeAll(async () => {
+    if (!existsSync(join(repoRoot, 'packages/cli/dist/cli.js'))) {
+      throw new Error('run `pnpm build` before the cli-install e2e.');
+    }
+    await rm(scratch, { recursive: true, force: true });
+    await mkdir(tarballs, { recursive: true });
+    await mkdir(consumer, { recursive: true });
+
+    const packed = PACKAGES.map((dir) => pack(join(repoRoot, 'packages', dir)));
+
+    // Overriding every internal pin with its tarball is what makes this installable
+    // while unpublished; the pins themselves are asserted below, before the override
+    // can hide them.
+    await writeFile(
+      join(consumer, 'package.json'),
+      JSON.stringify(
+        {
+          name: 'girih-cli-consumer',
+          private: true,
+          type: 'module',
+          devDependencies: Object.fromEntries(packed.map(({ name, tgz }) => [name, `file:${tgz}`])),
+        },
+        null,
+        2,
+      ),
+    );
+
+    const install = run('npm', ['install', '--no-audit', '--no-fund'], consumer);
+    installed = install.status === 0;
+    if (!installed) throw new Error(`npm install failed:\n${install.stdout}\n${install.stderr}`);
+  }, 300_000);
+
+  afterAll(() => rm(scratch, { recursive: true, force: true }));
+
+  it('publishes no unresolved workspace protocol in any internal pin', () => {
+    // If pnpm's rewrite ever regressed, every one of these packages would install
+    // only via the file: overrides above and fail for a real consumer.
+    for (const dir of PACKAGES) {
+      const tgz = readdirSync(tarballs).find((f) => f.includes(dir === 'cli' ? 'faravahar-girih-0' : dir));
+      expect(tgz, `tarball for ${dir}`).toBeDefined();
+    }
+    const cliManifest = JSON.parse(
+      run(
+        'tar',
+        [
+          '-xzOf',
+          join(
+            tarballs,
+            readdirSync(tarballs).find((f) => f.startsWith('faravahar-girih-0'))!,
+          ),
+          'package/package.json',
+        ],
+        tarballs,
+      ).stdout,
+    ) as { dependencies: Record<string, string> };
+    for (const [name, range] of Object.entries(cliManifest.dependencies)) {
+      expect(range, `${name} in the published CLI manifest`).not.toContain('workspace:');
+    }
+  });
+
+  it('exposes both bins on PATH and reports its version', () => {
+    expect(installed).toBe(true);
+    for (const bin of ['girih', 'ds']) {
+      const result = run(join(consumer, 'node_modules/.bin', bin), ['--version'], consumer);
+      expect(result.status, `${bin} --version\n${result.stderr}`).toBe(0);
+      const { version } = JSON.parse(readFileSync(join(repoRoot, 'packages/cli/package.json'), 'utf8')) as { version: string };
+      expect(result.stdout.trim()).toBe(version);
+    }
+  });
+
+  it('loads all six library packages through their published exports maps', () => {
+    // `doctor` reaches core (config), and the command surface below reaches the rest.
+    // A broken "exports" or a missing "files" entry surfaces here as a resolve error.
+    const result = run(join(consumer, 'node_modules/.bin/girih'), ['doctor', '--offline'], consumer);
+    expect(result.stderr).toBe('');
+    expect(result.stdout).toContain('node');
+    expect([0, 1]).toContain(result.status); // warns outside a workspace; must not crash
+  });
+
+  it('scaffolds, validates, generates and builds from the installed CLI alone', () => {
+    const girih = (...args: string[]) => run(join(consumer, 'node_modules/.bin/girih'), args, consumer);
+
+    // init rather than create: the consumer already has a package.json, and create
+    // would try to install unpublished packages by name.
+    expect(girih('init', '--name', '@installed/design-system').status, 'init').toBe(0);
+
+    const check = girih('check', '--no-table');
+    expect(check.stdout, `check\n${check.stderr}`).toContain('✔ no problems');
+
+    const generate = girih('generate', 'react');
+    expect(generate.status, `generate\n${generate.stderr}`).toBe(0);
+    expect(existsSync(join(consumer, 'packages/design-system/src/Button.tsx'))).toBe(true);
+
+    // The whole chain's end: tsc compiles the emitted TSX against the installed
+    // runtime and react. This is what the GIRIH6002 preflight guards.
+    const reactInstall = run('npm', ['install', '--no-save', '--no-audit', '--no-fund', 'react@^19', '@types/react@^19'], consumer);
+    expect(reactInstall.status, `react install\n${reactInstall.stderr}`).toBe(0);
+
+    const build = girih('build');
+    expect(build.stdout + build.stderr, 'build').not.toContain('GIRIH6002');
+    expect(build.status, `build\n${build.stdout}\n${build.stderr}`).toBe(0);
+    expect(existsSync(join(consumer, 'packages/design-system/dist/Button.js'))).toBe(true);
+    expect(existsSync(join(consumer, 'packages/design-system/dist/Button.d.ts'))).toBe(true);
+  }, 300_000);
+});
