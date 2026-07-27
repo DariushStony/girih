@@ -1,0 +1,57 @@
+name: Bug report
+description: Something girih does that it should not, or does not do that it should.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing: run `girih doctor`. It checks node, the package manager, whether the
+        CLI resolves, the build prerequisites and version skew — which is most of what
+        goes wrong, and its output answers half the questions below.
+
+  - type: textarea
+    id: doctor
+    attributes:
+      label: girih doctor
+      description: Paste the full output.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected, and what happened instead
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce
+      description: |
+        The tokens, contract or command that triggers it. A contract is data — pasting the
+        `defineSpec` is usually enough, and is far more useful than a description of it.
+      render: typescript
+    validations:
+      required: true
+
+  - type: input
+    id: diagnostic
+    attributes:
+      label: Diagnostic code
+      description: The `GIRIH****` code, if there was one.
+      placeholder: GIRIH2004
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part
+      options:
+        - tokens / brands (GIRIH2xxx)
+        - CSS output (GIRIH3xxx)
+        - contracts / validation (GIRIH4xxx)
+        - React output (GIRIH5xxx)
+        - build / publish (GIRIH6xxx)
+        - config / workspace / drift (GIRIH1xxx)
+        - not sure

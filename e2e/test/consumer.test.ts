@@ -14,7 +14,10 @@ const scratch = join(repoRoot, 'e2e/.tmp/consumer');
 const consumer = join(scratch, 'app');
 const tarballs = join(scratch, 'tarballs');
 
-const run = (cmd: string, args: string[], cwd: string) => spawnSync(cmd, args, { cwd, encoding: 'utf8' });
+// npm/pnpm/yarn are .cmd shims on Windows, so spawning them there needs a shell —
+// the same reason the CLI's own spawnSync calls do this.
+const run = (cmd: string, args: string[], cwd: string) =>
+  spawnSync(cmd, args, { cwd, encoding: 'utf8', shell: process.platform === 'win32' });
 
 function pack(packageDir: string): string {
   const result = run('npm', ['pack', '--pack-destination', tarballs], packageDir);

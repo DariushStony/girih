@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    // vitest transpiles without checking, so without this script the packaging proofs
+    // — the most consequential tests in the repo — were never typechecked at all.
+    "types": ["node"]
+  },
+  "include": ["test"]
+}

@@ -31,7 +31,10 @@ const PACKAGE_NAMES = [
 ];
 const packageDirFor = (name: string) => join(repoRoot, 'packages', name.replace('@faravahar/', ''));
 
-const run = (cmd: string, args: string[], cwd: string) => spawnSync(cmd, args, { cwd, encoding: 'utf8' });
+// npm/pnpm/yarn are .cmd shims on Windows, so spawning them there needs a shell —
+// the same reason the CLI's own spawnSync calls do this.
+const run = (cmd: string, args: string[], cwd: string) =>
+  spawnSync(cmd, args, { cwd, encoding: 'utf8', shell: process.platform === 'win32' });
 
 /** pnpm, never npm: only pnpm's packer rewrites `workspace:*` to a real version. */
 function pack(packageDir: string): { name: string; tgz: string } {
@@ -97,14 +100,18 @@ describe('cli install: pack every package → install → run the binary', () =>
     expect(packed.map((p) => p.name).sort()).toEqual([...PACKAGE_NAMES].sort());
 
     // If pnpm's rewrite ever regressed, these packages would install only via the
-    // file: overrides in beforeAll and fail for a real consumer. Read every packed
+    // file: overrides in beforeAll and fail for a real consumer. Read every installed
     // manifest, not just the CLI's — five of them carry internal pins.
-    for (const { name, tgz } of packed) {
-      const published = JSON.parse(run('tar', ['-xzOf', tgz, 'package/package.json'], tarballs).stdout) as {
-        dependencies?: Record<string, string>;
-      };
+    //
+    // Read from node_modules rather than by shelling out to `tar`: the installed copy
+    // is what a consumer actually resolves against, and `tar` flags differ under the
+    // bsdtar that ships with Windows.
+    for (const { name } of packed) {
+      const installedManifest = join(consumer, 'node_modules', ...name.split('/'), 'package.json');
+      expect(existsSync(installedManifest), `${name} did not install`).toBe(true);
+      const published = JSON.parse(readFileSync(installedManifest, 'utf8')) as { dependencies?: Record<string, string> };
       for (const [dep, range] of Object.entries(published.dependencies ?? {})) {
-        expect(range, `${dep} in the published ${name} manifest`).not.toContain('workspace:');
+        expect(range, `${dep} in the installed ${name} manifest`).not.toContain('workspace:');
       }
     }
   });

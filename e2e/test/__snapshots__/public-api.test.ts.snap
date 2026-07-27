@@ -1,0 +1,133 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`published API surface > @faravahar/girih exports a stable set of names 1`] = `
+[
+  "ComponentSpecInput",
+  "ComponentState",
+  "GirihConfig",
+  "ScaffoldOptions",
+  "ScaffoldResult",
+  "VariantExtensionInput",
+  "defineConfig",
+  "defineSpec",
+  "defineVariant",
+  "scaffoldWorkspace",
+  "workspaceTemplate",
+]
+`;
+
+exports[`published API surface > @faravahar/girih-core exports a stable set of names 1`] = `
+[
+  "CONFIG_FILENAMES",
+  "CSS_LAYERS",
+  "Diagnostic",
+  "DiagnosticBag",
+  "EmittedFile",
+  "GirihConfig",
+  "LoadConfigResult",
+  "ResolvedBrand",
+  "ResolvedConfig",
+  "Severity",
+  "cssLayer",
+  "cssVarName",
+  "defineConfig",
+  "emittedFile",
+  "formatDiagnostic",
+  "loadConfig",
+  "verifyEmittedFiles",
+  "writeEmittedFiles",
+]
+`;
+
+exports[`published API surface > @faravahar/girih-generator-css exports a stable set of names 1`] = `
+[
+  "GenerateCssOptions",
+  "GenerateCssResult",
+  "cssVarName",
+  "generateCss",
+  "generateTokenTypes",
+]
+`;
+
+exports[`published API surface > @faravahar/girih-generator-react exports a stable set of names 1`] = `
+[
+  "GenerateReactExtras",
+  "GenerateReactOptions",
+  "GenerateReactResult",
+  "TEMPLATE_REGISTRY",
+  "TemplateOptions",
+  "generateReact",
+  "renderCheckboxComponent",
+  "renderComponentCss",
+  "renderComponentSource",
+  "renderDialogComponent",
+  "renderElementComponent",
+  "renderExtensionCss",
+]
+`;
+
+exports[`published API surface > @faravahar/girih-react-runtime exports a stable set of names 1`] = `
+[
+  "BrandProvider",
+  "BrandProviderProps",
+  "cx",
+  "useBrand",
+]
+`;
+
+exports[`published API surface > @faravahar/girih-spec exports a stable set of names 1`] = `
+[
+  "ComponentIR",
+  "ComponentSpecInput",
+  "ComponentState",
+  "LoadSpecsResult",
+  "LoadedExtension",
+  "LoadedSpec",
+  "SUPPORTED_STATES",
+  "SpecToIRResult",
+  "StyleRuleIR",
+  "TemplateCapabilities",
+  "TokenRef",
+  "VariantAxisIR",
+  "VariantAxisInput",
+  "VariantBlockIR",
+  "VariantExtensionInput",
+  "VariantTokenBlockInput",
+  "defineSpec",
+  "defineVariant",
+  "irTokenRefs",
+  "isSpec",
+  "isVariantExtension",
+  "kebabCase",
+  "loadExtensions",
+  "loadSpecs",
+  "specToIR",
+  "validateExtensions",
+  "validateSpecs",
+]
+`;
+
+exports[`published API surface > @faravahar/girih-tokens exports a stable set of names 1`] = `
+[
+  "MergeResult",
+  "OverlayResult",
+  "RawToken",
+  "RawTokenSet",
+  "ResolveResult",
+  "ResolvedToken",
+  "ResolvedTokenGraph",
+  "TokenBuildResult",
+  "TokenFileInput",
+  "TokenTier",
+  "applyBrandOverlay",
+  "buildTokenGraphs",
+  "findReferences",
+  "inferTier",
+  "mergeTokenFiles",
+  "parseTokenFile",
+  "resolveTokenSet",
+  "toNestedDtcg",
+  "validateBrandParity",
+  "validateTierDirection",
+]
+`;
