@@ -43,7 +43,7 @@ change the approach rather than the code.
    and validated as pure data. No function values, no runtime imports, no environment branching.
 
 6. **`generate`, `build` and `publish` must never disagree** about what the package contains. All
-   three route through `composeReact()` in [`packages/girih/src/cli.ts`](packages/girih/src/cli.ts).
+   three route through `composeReact()` in [`packages/girih/src/workspace.ts`](packages/girih/src/workspace.ts).
    Extend that one function, not the three call sites.
 
 7. **Semver comes from the contract diff, not judgement.** Token value = patch, new variant =

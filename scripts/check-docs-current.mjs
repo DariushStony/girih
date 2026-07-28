@@ -2,7 +2,7 @@
 /**
  * Fail if the committed docs/ differs from a fresh build.
  *
- * Same gate as the `verify` job in .github/workflows/pages.yml, run locally so that a
+ * Same gate as the `verify` job in .github/workflows/docs.yml, run locally so that a
  * green `pnpm verify` means a green CI. Without it the two disagreed: docs go stale on
  * any source edit that shifts a line number, because the diagnostics reference is
  * extracted as `file:line` for all 68 codes — and `verify` never noticed.
