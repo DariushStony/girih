@@ -79,6 +79,28 @@ export function registerPublish(program: Command): void {
         return;
       }
 
+      // A scoped package's FIRST publish is private-by-default and fails without
+      // --access public — and `--dry-run` never surfaces that, so make it deliberate.
+      //
+      // What this must NOT do is insist on 'public'. `access` resolves to 'restricted' by
+      // default, so requiring 'public' here refused every private design system its first
+      // publish — the common case inside a company, and one girih has no business
+      // overruling. An explicit --access is the deliberate choice the gate is asking for,
+      // whichever value it names; only the silent default is refused.
+      //
+      // Checked before the staging directory is written, so an early return cannot leave a
+      // staged tree behind for a version that was never published.
+      const access = options.access ?? config.publish.access;
+      const scoped = config.name.startsWith('@');
+      if (scoped && !previous && options.access === undefined && access !== 'public') {
+        console.error(pc.red(`\n'${config.name}' is scoped and has never been published, so npm needs to be told who may see it.`));
+        console.error(pc.dim('  --access public      an open-source design system, readable by anyone'));
+        console.error(pc.dim('  --access restricted  private to your org (npm requires a paid plan for this)'));
+        console.error(pc.dim('\nOr set publish.access in ds.config.ts and pass the flag once to confirm it.'));
+        process.exitCode = 1;
+        return;
+      }
+
       // Stage the exact publishable tree in .ds/publish so the tracked workspace
       // never goes dirty (no manifest drift) — only staged package.json carries the
       // computed version. npm publishes the staging directory.
@@ -93,19 +115,6 @@ export function registerPublish(program: Command): void {
         bumpPackageVersion(await readFile(join(outDir, 'package.json'), 'utf8'), nextVersion),
         'utf8',
       );
-
-      // A scoped package's FIRST publish is private-by-default and fails without
-      // --access public — and `--dry-run` never surfaces that, so make it explicit.
-      const access = options.access ?? config.publish.access;
-      const scoped = config.name.startsWith('@');
-      if (scoped && !previous && access !== 'public') {
-        console.error(
-          pc.red(`\n'${config.name}' is scoped and has never been published — npm defaults it to restricted, which needs a paid plan.`),
-        );
-        console.error(pc.dim("Pass --access public (or set publish.access: 'public' in ds.config.ts) for an open-source design system."));
-        process.exitCode = 1;
-        return;
-      }
 
       const npmArgs = [
         'publish',
