@@ -16,6 +16,21 @@ A contract describes a component: its variants, its states, which tokens it uses
 for assistive technology, and how far a consumer may extend it. You write it in TypeScript for the
 autocomplete. girih treats it as data.
 
+This is the longest chapter here, and most people arrive at it holding one specific question rather
+than wanting to read ten sections. If that is you:
+
+| You want to | Go to |
+| --- | --- |
+| Add a variant, size or state to a component | [Anatomy](#anatomy) — every field, and what each one does to the output |
+| Work out why a token reference fails to validate | [Cross-validation](#validation) — especially if it only fails for one brand |
+| Vary a component without forking it | [Extensions](#extensions) — `defineVariant` and its limits |
+| Hand-write the markup for one component | [Ejection](#eject) — forking as a recorded operation |
+| Understand a version bump you did not expect | [Versioning](#semver) — what feeds the signature |
+| Know why `.ds/ir/` is committed to your repo | [The IR](#ir) — and why it is deleted on every generate |
+
+Read start to finish and it goes: what a contract is, what girih turns it into, then what you can do
+to one after it exists.
+
 ## What a contract is
 
 `defineSpec()` looks like a function call and is really a declaration. It does not run
@@ -326,11 +341,14 @@ for _all_ brands. That plural is the whole point.
 | Variant default | `GIRIH4005`+ | A default that is not one of the declared values |
 | Extension overreach | `GIRIH4040`+ | An extension overriding a token outside `overridableTokens` |
 
-There are 31 codes in the `GIRIH4xxx` range — more than any other family — because a
-contract has the largest surface area of anything a user writes. The full list with messages is in
-[chapter 07](07-error-codes.md).
+There are 32 codes in the `GIRIH4xxx` range — more than
+any other family — because a contract has the largest surface area of anything a user writes. The
+full list with messages is in [chapter 07](07-error-codes.md).
 
 ---
+
+Everything above is what a contract _is_ and what girih makes of it. The rest of this chapter
+is what you do to one that already exists: extend it, fork it, and ship the result.
 
 ## Extensions
 

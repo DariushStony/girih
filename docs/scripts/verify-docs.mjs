@@ -251,6 +251,38 @@ for (const file of mdFiles) {
   );
 }
 
+/* ---------------------------------------------------- embedded snippets are real */
+
+/**
+ * No rendered code block may be empty.
+ *
+ * The chapters embed real files from the example workspace by key —
+ * `data.generated['src/button.tsx']` — each with a `?? ''` fallback. When a key stops
+ * matching, `code()` still renders its frame and caption, so the page shows a captioned
+ * empty box claiming "girih writes this" and every other check passes.
+ *
+ * That is not hypothetical: the design/ restructure renamed all nine source keys and the
+ * kebab-case rename renamed the generated ones. Any one of those missed in the extractor
+ * would have blanked a chapter's central exhibit silently.
+ *
+ * A `<code>` carrying attributes is a widget template that JavaScript fills at view time
+ * (the pipeline stepper's `data-s-data`), so it is empty on purpose and skipped. Matching
+ * the attributes explicitly rather than treating a failed match as empty content is the
+ * difference between this check and one that fails on every page with a widget.
+ */
+{
+  for (const file of htmlFiles) {
+    const html = readFileSync(join(docsDir, file), 'utf8');
+    for (const m of html.matchAll(/<figure class="code"[^>]*>([\s\S]*?)<\/figure>/g)) {
+      const figure = m[1];
+      const block = figure.match(/<pre><code([^>]*)>([\s\S]*?)<\/code><\/pre>/);
+      if (!block || block[1].trim().length > 0) continue;
+      const caption = figure.match(/<span class="path"[^>]*>([^<]*)<\/span>/)?.[1] ?? '(uncaptioned)';
+      check(block[2].trim().length > 0, file, `code block '${caption}' rendered empty — its extracted key probably stopped matching`);
+    }
+  }
+}
+
 /* ------------------------------------------------------------- source integrity */
 
 /**

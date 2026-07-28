@@ -1,8 +1,12 @@
 import { code, eli5, rule, gotcha, aside, table, pkgMap, strap } from '../lib/ui.mjs';
 import { packageGraph } from '../lib/viz.mjs';
 
-export default function page(_data) {
+export default function page(data) {
   const pkggraph = packageGraph({ id: 'w-pkggraph' });
+
+  // Counted from the extracted catalog rather than written down: a per-file diagnostic count
+  // is exactly the kind of number that is right the day it is typed and wrong a month later.
+  const specDiagnostics = (file) => data.diagnostics.codes.filter((c) => c.file.endsWith(`girih-spec/src/${file}`)).length;
 
   const sections = [
     { id: 'direction', title: 'The dependency direction' },
@@ -265,7 +269,7 @@ ${table(
     ['<code>types.ts</code>', 'The contract shape — the most useful file to read first'],
     ['<code>ir.ts</code>', '<code>specToIR()</code> — canonicalisation'],
     ['<code>load.ts</code>', '<code>loadSpecs()</code>, <code>loadComponentIRs()</code> — jiti-based TS import'],
-    ['<code>validate.ts</code>', '<code>validateSpecs()</code> — 15 diagnostics'],
+    ['<code>validate.ts</code>', `<code>validateSpecs()</code> — ${specDiagnostics('validate.ts')} diagnostics`],
     ['<code>extensions.ts</code>', '<code>defineVariant()</code>, <code>loadExtensions()</code>, <code>validateExtensions()</code>'],
     ['<code>token-ref.ts</code>', '<code>resolveTokenRef()</code> — the one rule both validators apply to a token reference'],
   ],

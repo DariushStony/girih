@@ -1396,6 +1396,30 @@ select.sel, input.txt {
   autocomplete. girih treats it as data.
 </p>
 
+<p>
+  This is the longest chapter here, and most people arrive at it holding one specific question rather
+  than wanting to read ten sections. If that is you:
+</p>
+
+<div class="tablewrap">
+  <table>
+    <thead><tr><th>You want to</th><th>Go to</th></tr></thead>
+    <tbody>
+      <tr><td>Add a variant, size or state to a component</td><td><a href="#anatomy">Anatomy</a> — every field, and what each one does to the output</td></tr>
+      <tr><td>Work out why a token reference fails to validate</td><td><a href="#validation">Cross-validation</a> — especially if it only fails for one brand</td></tr>
+      <tr><td>Vary a component without forking it</td><td><a href="#extensions">Extensions</a> — <code>defineVariant</code> and its limits</td></tr>
+      <tr><td>Hand-write the markup for one component</td><td><a href="#eject">Ejection</a> — forking as a recorded operation</td></tr>
+      <tr><td>Understand a version bump you did not expect</td><td><a href="#semver">Versioning</a> — what feeds the signature</td></tr>
+      <tr><td>Know why <code>.ds/ir/</code> is committed to your repo</td><td><a href="#ir">The IR</a> — and why it is deleted on every generate</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p>
+  Read start to finish and it goes: what a contract is, what girih turns it into, then what you can do
+  to one after it exists.
+</p>
+
 <h2 id="what">What a contract is</h2>
 
 <p>
@@ -1813,12 +1837,17 @@ select.sel, input.txt {
 </div>
 
 <p>
-  There are 31 codes in the <code>GIRIH4xxx</code> range — more than any other family — because a
-  contract has the largest surface area of anything a user writes. The full list with messages is in
-  <a href="07-error-codes.html">chapter 07</a>.
+  There are 32 codes in the <code>GIRIH4xxx</code> range — more than
+  any other family — because a contract has the largest surface area of anything a user writes. The
+  full list with messages is in <a href="07-error-codes.html">chapter 07</a>.
 </p>
 
 <hr class="strap">
+
+<p class="lede">
+  Everything above is what a contract <em>is</em> and what girih makes of it. The rest of this chapter
+  is what you do to one that already exists: extend it, fork it, and ship the result.
+</p>
 
 <h2 id="extensions">Extensions</h2>
 
