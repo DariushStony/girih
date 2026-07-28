@@ -57,7 +57,12 @@ export async function buildPackage(packageDir: string): Promise<BuildResult> {
     return {
       files: [],
       diagnostics: [
-        { code: 'GIRIH6001', severity: 'error', message: `No TypeScript sources in ${srcDir} — run \`girih generate react\` first.` },
+        {
+          code: 'GIRIH6001',
+          severity: 'error',
+          message: `No TypeScript sources in ${srcDir} — run \`girih generate react\` first.`,
+          help: 'The build compiles generated source, so there is nothing to compile until `girih generate react` has written it.',
+        },
       ],
     };
   }

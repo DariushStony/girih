@@ -39,6 +39,7 @@ export async function loadSpecs(config: ResolvedConfig): Promise<LoadSpecsResult
         severity: 'error',
         message: `Failed to load spec: ${(error as Error).message}`,
         file,
+        help: 'The spec is evaluated as real TypeScript, so a syntax error, an unresolved import, or a throw at module scope all land here.',
       });
       continue;
     }

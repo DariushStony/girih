@@ -103,6 +103,7 @@ export function generateReact(irs: ComponentIR[], options: GenerateReactOptions,
           message: `'${ir.name}' maps aria attributes to state '${aria.state}', which the '${ir.template}' template only expresses in CSS — the attributes are not wired.`,
           ...(ir.sourceFile ? { file: ir.sourceFile } : {}),
           path: `accessibility.aria.${aria.state}`,
+          help: 'Move the aria mapping to a component whose template wires attributes, or drop it — leaving it in place would imply accessibility support that is not emitted.',
         });
       }
     }

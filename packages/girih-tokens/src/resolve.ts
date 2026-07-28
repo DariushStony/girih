@@ -47,6 +47,10 @@ export function resolveTokenSet(brand: string, set: RawTokenSet): ResolveResult 
           message: `'${token.path}' references '{${ref}}', which does not exist.`,
           file: token.file,
           path: token.path,
+          // Order matters: the generic guidance is the fallback, and `suggestion` overwrites
+          // it with a concrete "did you mean" whenever it finds a near match. Spreading it
+          // first would let the generic text bury the useful answer.
+          help: 'Check the spelling and the tier. A reference is the full dotted path from the top of the token set, not a path relative to the current group.',
           ...suggestion(ref, set),
         });
       }
@@ -147,6 +151,7 @@ export function resolveTokenSet(brand: string, set: RawTokenSet): ResolveResult 
           message: `Failed to resolve '${token.path}': ${(error as Error).message}`,
           file: token.file,
           path: token.path,
+          help: 'Usually a malformed $value. Aliases must be a single reference in braces; anything else is treated as a literal.',
         });
       }
     }

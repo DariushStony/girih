@@ -27,6 +27,7 @@ export function parseTokenFile(input: TokenFileInput): ParseResult {
       severity: 'error',
       message: 'Token file must be a JSON object at the top level.',
       file: input.file,
+      help: 'A DTCG token file is an object of groups and tokens. An array or a bare value at the top level cannot be merged with the others.',
     });
     return { tokens, diagnostics };
   }
@@ -81,6 +82,7 @@ export function parseTokenFile(input: TokenFileInput): ParseResult {
           message: `Token or group name '${key}' contains a character forbidden by DTCG ('.', '{', '}').`,
           file: input.file,
           path: [...segments, key].join('.'),
+          help: 'Those three characters delimit token paths and references, so a name containing one could never be referenced. Rename the token or group.',
         });
         continue;
       }

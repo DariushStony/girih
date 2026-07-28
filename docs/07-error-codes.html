@@ -1631,29 +1631,29 @@ select.sel, input.txt {
       a token instead of overriding one, or two brands ended up with different token sets. Most of the
       time the message names the exact path, and <code>GIRIH2030</code> also guesses what you meant.</p>
   <div class="codelist">
-      <div class="codecard" data-sev="error" data-code="GIRIH2001" data-search="girih2001 token file must be a json object at the top level.  girih-tokens">
+      <div class="codecard" data-sev="error" data-code="GIRIH2001" data-search="girih2001 token file must be a json object at the top level. a dtcg token file is an object of groups and tokens. an array or a bare value at the top level cannot be merged with the others. girih-tokens">
         <div class="top">
           <span class="cid">GIRIH2001</span>
           <span class="sev">error</span>
           <span class="src">packages/girih-tokens/src/parse.ts:26</span>
         </div>
         <p class="msg">Token file must be a JSON object at the top level.</p>
-        
+        <p class="help">A DTCG token file is an object of groups and tokens. An array or a bare value at the top level cannot be merged with the others.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH2002" data-search="girih2002 token or group name '${key}' contains a character forbidden by dtcg ('.', '{', '}').  girih-tokens">
+      <div class="codecard" data-sev="error" data-code="GIRIH2002" data-search="girih2002 token or group name '${key}' contains a character forbidden by dtcg ('.', '{', '}'). those three characters delimit token paths and references, so a name containing one could never be referenced. rename the token or group. girih-tokens">
         <div class="top">
           <span class="cid">GIRIH2002</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-tokens/src/parse.ts:79</span>
+          <span class="src">packages/girih-tokens/src/parse.ts:80</span>
         </div>
         <p class="msg">Token or group name '<i class="ph">${key}</i>' contains a character forbidden by DTCG ('.', '{', '}').</p>
-        
+        <p class="help">Those three characters delimit token paths and references, so a name containing one could never be referenced. Rename the token or group.</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH2003" data-search="girih2003 '${[...segments, key].join('.')}' is a bare ${typeof child}; tokens must be objects with a $value. write it as { &quot;$value&quot;: ${json.stringify(child)} }. girih-tokens">
         <div class="top">
           <span class="cid">GIRIH2003</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-tokens/src/parse.ts:99</span>
+          <span class="src">packages/girih-tokens/src/parse.ts:101</span>
         </div>
         <p class="msg">'<i class="ph">${[...segments, key].join('.')}</i>' is a bare <i class="ph">${typeof child}</i>; tokens must be objects with a $value.</p>
         <p class="help">Write it as { &quot;$value&quot;: <i class="ph">${JSON.stringify(child)}</i> }.</p>
@@ -1662,25 +1662,25 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH2004</span>
           <span class="sev">warning</span>
-          <span class="src">packages/girih-tokens/src/engine.ts:67</span>
+          <span class="src">packages/girih-tokens/src/engine.ts:68</span>
         </div>
         <p class="msg">Cannot infer the tier of '<i class="ph">${file}</i>' from its name — assuming 'semantic'.</p>
         <p class="help">Name token files global*.tokens.json / semantic*.tokens.json, or put component tokens under tokens/components/.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH2005" data-search="girih2005 cannot read token file: ${(error as error).message}  girih-tokens">
+      <div class="codecard" data-sev="error" data-code="GIRIH2005" data-search="girih2005 cannot read token file: ${(error as error).message} check the path and that the file is readable. a token file glob that matches a directory or a broken symlink lands here too. girih-tokens">
         <div class="top">
           <span class="cid">GIRIH2005</span>
           <span class="sev">error</span>
           <span class="src">packages/girih-tokens/src/engine.ts:39</span>
         </div>
         <p class="msg">Cannot read token file: <i class="ph">${(error as Error).message}</i></p>
-        
+        <p class="help">Check the path and that the file is readable. A token file glob that matches a directory or a broken symlink lands here too.</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH2006" data-search="girih2006 no token files matched ${config.tokens.source.join(', ')} under ${config.root}. create tokens/global.tokens.json to get started. girih-tokens">
         <div class="top">
           <span class="cid">GIRIH2006</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-tokens/src/engine.ts:55</span>
+          <span class="src">packages/girih-tokens/src/engine.ts:56</span>
         </div>
         <p class="msg">No token files matched <i class="ph">${config.tokens.source.join(', ')}</i> under <i class="ph">${config.root}</i>.</p>
         <p class="help">Create tokens/global.tokens.json to get started.</p>
@@ -1689,7 +1689,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH2007</span>
           <span class="sev">warning</span>
-          <span class="src">packages/girih-tokens/src/parse.ts:89</span>
+          <span class="src">packages/girih-tokens/src/parse.ts:91</span>
         </div>
         <p class="msg">Token or group name '<i class="ph">${key}</i>' contains characters that do not translate cleanly to CSS variable names.</p>
         <p class="help">Stick to lowercase letters, digits, &quot;-&quot; and &quot;_&quot; so generated names stay predictable.</p>
@@ -1698,7 +1698,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH2008</span>
           <span class="sev">warning</span>
-          <span class="src">packages/girih-tokens/src/parse.ts:67</span>
+          <span class="src">packages/girih-tokens/src/parse.ts:68</span>
         </div>
         <p class="msg">Unknown '$'-prefixed property '<i class="ph">${key}</i>' is ignored (the '$' prefix is reserved by DTCG).</p>
         <p class="help">Known properties: <i class="ph">${[...KNOWN_DOLLAR_PROPS].join(', ')}</i>. Rename the key if it was meant to be a group.</p>
@@ -1707,7 +1707,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH2009</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-tokens/src/parse.ts:42</span>
+          <span class="src">packages/girih-tokens/src/parse.ts:43</span>
         </div>
         <p class="msg">'<i class="ph">${path}</i>' is a token (it has a $value) but also contains '<i class="ph">${key}</i>' — tokens cannot nest groups or other tokens.</p>
         <p class="help">Move '<i class="ph">${key}</i>' out to a sibling group, e.g. '<i class="ph">${path}</i>-<i class="ph">${key}</i>'.</p>
@@ -1761,55 +1761,55 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH2031</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-tokens/src/resolve.ts:79</span>
+          <span class="src">packages/girih-tokens/src/resolve.ts:83</span>
         </div>
         <p class="msg">Circular token reference: <i class="ph">${cycle.map((p) =&gt; `'${p}</i>'`).join(' → ')}.</p>
         <p class="help">Break the cycle by pointing one of these tokens at a raw value.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH2032" data-search="girih2032 failed to resolve '${token.path}': ${(error as error).message}  girih-tokens">
+      <div class="codecard" data-sev="error" data-code="GIRIH2032" data-search="girih2032 failed to resolve '${token.path}': ${(error as error).message} usually a malformed $value. aliases must be a single reference in braces; anything else is treated as a literal. girih-tokens">
         <div class="top">
           <span class="cid">GIRIH2032</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-tokens/src/resolve.ts:145</span>
+          <span class="src">packages/girih-tokens/src/resolve.ts:149</span>
         </div>
         <p class="msg">Failed to resolve '<i class="ph">${token.path}</i>': <i class="ph">${(error as Error).message}</i></p>
-        
+        <p class="help">Usually a malformed $value. Aliases must be a single reference in braces; anything else is treated as a literal.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH2040" data-search="girih2040 ${token.tier} token '${token.path}' references ${target.tier} token '{${ref}}' — references must flow component → semantic → global, never upward.  girih-tokens">
+      <div class="codecard" data-sev="error" data-code="GIRIH2040" data-search="girih2040 ${token.tier} token '${token.path}' references ${target.tier} token '{${ref}}' — references must flow component → semantic → global, never upward. tier references only ever flow downward: component to semantic to global. move the value down a tier, or point at something lower. girih-tokens">
         <div class="top">
           <span class="cid">GIRIH2040</span>
           <span class="sev">error</span>
           <span class="src">packages/girih-tokens/src/validate.ts:19</span>
         </div>
         <p class="msg"><i class="ph">${token.tier}</i> token '<i class="ph">${token.path}</i>' references <i class="ph">${target.tier}</i> token '{<i class="ph">${ref}</i>}' — references must flow component → semantic → global, never upward.</p>
-        
+        <p class="help">Tier references only ever flow downward: component to semantic to global. Move the value down a tier, or point at something lower.</p>
       </div>
       <div class="codecard" data-sev="warning" data-code="GIRIH2041" data-search="girih2041 component token '${token.path}' references global token '{${ref}}' directly, skipping the semantic tier. introduce a semantic alias for '{${ref}}' so brands can re-theme it without touching component tokens. girih-tokens">
         <div class="top">
           <span class="cid">GIRIH2041</span>
           <span class="sev">warning</span>
-          <span class="src">packages/girih-tokens/src/validate.ts:27</span>
+          <span class="src">packages/girih-tokens/src/validate.ts:28</span>
         </div>
         <p class="msg">component token '<i class="ph">${token.path}</i>' references global token '{<i class="ph">${ref}</i>}' directly, skipping the semantic tier.</p>
         <p class="help">Introduce a semantic alias for '{<i class="ph">${ref}</i>}' so brands can re-theme it without touching component tokens.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH2042" data-search="girih2042 '${token.path}' ($type '${token.type}') aliases '{${ref}}' which has $type '${target.type}'.  girih-tokens">
+      <div class="codecard" data-sev="error" data-code="GIRIH2042" data-search="girih2042 '${token.path}' ($type '${token.type}') aliases '{${ref}}' which has $type '${target.type}'. give both tokens the same $type, or drop $type from the alias so it inherits from its target. girih-tokens">
         <div class="top">
           <span class="cid">GIRIH2042</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-tokens/src/validate.ts:39</span>
+          <span class="src">packages/girih-tokens/src/validate.ts:40</span>
         </div>
         <p class="msg">'<i class="ph">${token.path}</i>' ($type '<i class="ph">${token.type}</i>') aliases '{<i class="ph">${ref}</i>}' which has $type '<i class="ph">${target.type}</i>'.</p>
-        
+        <p class="help">Give both tokens the same $type, or drop $type from the alias so it inherits from its target.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH2050" data-search="girih2050 brand '${brand}' does not resolve the same token set as '${brands[0]}':   girih-tokens">
+      <div class="codecard" data-sev="error" data-code="GIRIH2050" data-search="girih2050 brand '${brand}' does not resolve the same token set as '${brands[0]}':  a brand overlay may override an existing path but never add or remove one, so every brand has to be structurally identical. move an extra token into the base set, or add the missing one there. girih-tokens">
         <div class="top">
           <span class="cid">GIRIH2050</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-tokens/src/validate.ts:69</span>
+          <span class="src">packages/girih-tokens/src/validate.ts:71</span>
         </div>
         <p class="msg">Brand '<i class="ph">${brand}</i>' does not resolve the same token set as '<i class="ph">${brands[0]}</i>': </p>
-        
+        <p class="help">A brand overlay may override an existing path but never add or remove one, so every brand has to be structurally identical. Move an extra token into the base set, or add the missing one there.</p>
       </div>
   </div>
 </section>
@@ -1824,20 +1824,20 @@ select.sel, input.txt {
       string, or two different token paths collapse to the same CSS variable name. The last one would
       be a silent last-one-wins if girih did not stop for it.</p>
   <div class="codelist">
-      <div class="codecard" data-sev="error" data-code="GIRIH3001" data-search="girih3001 css generation failed for brand '${brand}': ${(error as error).message}  girih-generator-css">
+      <div class="codecard" data-sev="error" data-code="GIRIH3001" data-search="girih3001 css generation failed for brand '${brand}': ${(error as error).message} usually a token value style-dictionary cannot serialise. girih3002 names the specific variable when it can identify one. girih-generator-css">
         <div class="top">
           <span class="cid">GIRIH3001</span>
           <span class="sev">error</span>
           <span class="src">packages/girih-generator-css/src/generate.ts:125</span>
         </div>
         <p class="msg">CSS generation failed for brand '<i class="ph">${brand}</i>': <i class="ph">${(error as Error).message}</i></p>
-        
+        <p class="help">Usually a token value style-dictionary cannot serialise. GIRIH3002 names the specific variable when it can identify one.</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH3002" data-search="girih3002 '${variable}' (brand '${brand}') has a composite value no css transform could flatten. give the token a supported $type (shadow, typography, border, transition, cubicbezier, fontfamily) or split it into scalar tokens. girih-generator-css">
         <div class="top">
           <span class="cid">GIRIH3002</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-generator-css/src/generate.ts:223</span>
+          <span class="src">packages/girih-generator-css/src/generate.ts:224</span>
         </div>
         <p class="msg">'<i class="ph">${variable}</i>' (brand '<i class="ph">${brand}</i>') has a composite value no CSS transform could flatten.</p>
         <p class="help">Give the token a supported $type (shadow, typography, border, transition, cubicBezier, fontFamily) or split it into scalar tokens.</p>
@@ -1846,7 +1846,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH3003</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-generator-css/src/generate.ts:179</span>
+          <span class="src">packages/girih-generator-css/src/generate.ts:180</span>
         </div>
         <p class="msg">Tokens <i class="ph">${paths.map((p) =&gt; `'${p}</i>'`).join(' and ')} both map to the CSS variable '<i class="ph">${varName}</i>'.</p>
         <p class="help">Rename one of them — CSS variable names are case-insensitive here and join segments with &quot;-&quot;.</p>
@@ -1864,117 +1864,117 @@ select.sel, input.txt {
       references that do not resolve for every brand, and extensions reaching past
       <code>overridableTokens</code>. If you are writing contracts, this is your range.</p>
   <div class="codelist">
-      <div class="codecard" data-sev="error" data-code="GIRIH4001" data-search="girih4001 component name '${ir.name}' must be pascalcase (it becomes an exported react identifier).  girih-spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4001" data-search="girih4001 component name '${ir.name}' must be pascalcase (it becomes an exported react identifier). the name becomes the exported react identifier, so it has to start with a capital: `name: 'button'`. the spec file itself stays kebab-case. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4001</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/validate.ts:142</span>
+          <span class="src">packages/girih-spec/src/validate.ts:145</span>
         </div>
         <p class="msg">Component name '<i class="ph">${ir.name}</i>' must be PascalCase (it becomes an exported React identifier).</p>
-        
+        <p class="help">The name becomes the exported React identifier, so it has to start with a capital: `name: 'Button'`. The spec file itself stays kebab-case.</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH4002" data-search="girih4002 extension '${extension.name}' references '{${path}}', which ${
             missing.length === graphs.size ? 'no brand resolves' : `brand(s) ${missing.join(', ')} do not resolve`
-          }.  girih-spec">
+          }. every brand must resolve the same token set, so the token has to exist in the base tokens — a brand overlay may override paths but never introduce them. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4002</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/extensions.ts:162 (+1 more)</span>
+          <span class="src">packages/girih-spec/src/extensions.ts:168 (+1 more)</span>
         </div>
         <p class="msg">Extension '<i class="ph">${extension.name}</i>' references '{<i class="ph">${path}</i>}', which <i class="ph">${
             missing.length === graphs.size ? 'no brand resolves' : `brand(s) ${missing.join(', ')}</i> do not resolve`
           }.</p>
-        
+        <p class="help">Every brand must resolve the same token set, so the token has to exist in the base tokens — a brand overlay may override paths but never introduce them.</p>
       </div>
-      <div class="codecard" data-sev="warning" data-code="GIRIH4003" data-search="girih4003 extension '${extension.name}' references global token '{${path}}' — extensions should consume semantic or component tokens.  girih-spec">
+      <div class="codecard" data-sev="warning" data-code="GIRIH4003" data-search="girih4003 extension '${extension.name}' references global token '{${path}}' — extensions should consume semantic or component tokens. add a semantic token that aliases this global one and reference that instead. an extension bound straight to a global value cannot be re-themed per brand. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4003</span>
           <span class="sev">warning</span>
-          <span class="src">packages/girih-spec/src/extensions.ts:179 (+1 more)</span>
+          <span class="src">packages/girih-spec/src/extensions.ts:186 (+1 more)</span>
         </div>
         <p class="msg">Extension '<i class="ph">${extension.name}</i>' references global token '{<i class="ph">${path}</i>}' — extensions should consume semantic or component tokens.</p>
-        
+        <p class="help">Add a semantic token that aliases this global one and reference that instead. An extension bound straight to a global value cannot be re-themed per brand.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4005" data-search="girih4005 component '${ir.name}' is defined more than once (${seen.get(ir.name)} and ${file}).  girih-spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4005" data-search="girih4005 component '${ir.name}' is defined more than once (${seen.get(ir.name)} and ${file}). two spec files declare the same name, and the name decides the emitted component — so one would overwrite the other. rename one or delete the duplicate. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4005</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/validate.ts:150</span>
+          <span class="src">packages/girih-spec/src/validate.ts:154</span>
         </div>
         <p class="msg">Component '<i class="ph">${ir.name}</i>' is defined more than once (<i class="ph">${seen.get(ir.name)}</i> and <i class="ph">${file}</i>).</p>
-        
+        <p class="help">Two spec files declare the same name, and the name decides the emitted component — so one would overwrite the other. Rename one or delete the duplicate.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4006" data-search="girih4006 variant axis '${axis.axis}' of '${ir.name}' has no values.  girih-spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4006" data-search="girih4006 variant axis '${axis.axis}' of '${ir.name}' has no values. give the axis at least one value, or remove it — an axis with no values emits a prop that can never be set. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4006</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/validate.ts:250</span>
+          <span class="src">packages/girih-spec/src/validate.ts:258</span>
         </div>
         <p class="msg">Variant axis '<i class="ph">${axis.axis}</i>' of '<i class="ph">${ir.name}</i>' has no values.</p>
-        
+        <p class="help">Give the axis at least one value, or remove it — an axis with no values emits a prop that can never be set.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4007" data-search="girih4007 variant axis '${axis.axis}' of '${ir.name}' defaults to '${axis.default}', which is not one of [${axis.values.join(', ')}].  girih-spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4007" data-search="girih4007 variant axis '${axis.axis}' of '${ir.name}' defaults to '${axis.default}', which is not one of [${axis.values.join(', ')}]. set default to one of the listed values, or add the missing value to values. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4007</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/validate.ts:271</span>
+          <span class="src">packages/girih-spec/src/validate.ts:281</span>
         </div>
         <p class="msg">Variant axis '<i class="ph">${axis.axis}</i>' of '<i class="ph">${ir.name}</i>' defaults to '<i class="ph">${axis.default}</i>', which is not one of [<i class="ph">${axis.values.join(', ')}</i>].</p>
-        
+        <p class="help">Set default to one of the listed values, or add the missing value to values.</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH4008" data-search="girih4008 '${ir.name}' declares state '${state}', which the '${ir.template}' template does not implement. states of '${ir.template}': ${implementablestates.join(', ') || '(none)'}. states are template capability flags, not arbitrary behavior. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4008</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/validate.ts:284</span>
+          <span class="src">packages/girih-spec/src/validate.ts:295</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' declares state '<i class="ph">${state}</i>', which the '<i class="ph">${ir.template}</i>' template does not implement.</p>
         <p class="help">States of '<i class="ph">${ir.template}</i>': <i class="ph">${implementableStates.join(', ') || '(none)'}</i>. States are template capability flags, not arbitrary behavior.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4009" data-search="girih4009 '${ir.name}' styles variant axis '${block.axis}', which is not declared under variants.  girih-spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4009" data-search="girih4009 '${ir.name}' styles variant axis '${block.axis}', which is not declared under variants. declare the axis under variants first, or remove the style block — this css would never match anything. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4009</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/validate.ts:321</span>
+          <span class="src">packages/girih-spec/src/validate.ts:334</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' styles variant axis '<i class="ph">${block.axis}</i>', which is not declared under variants.</p>
-        
+        <p class="help">Declare the axis under variants first, or remove the style block — this CSS would never match anything.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4010" data-search="girih4010 '${ir.name}' styles '${block.axis}.${block.value}', but '${block.value}' is not a declared value of that axis.  girih-spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4010" data-search="girih4010 '${ir.name}' styles '${block.axis}.${block.value}', but '${block.value}' is not a declared value of that axis. add it to that axis's values, or correct the spelling. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4010</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/validate.ts:331</span>
+          <span class="src">packages/girih-spec/src/validate.ts:345</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' styles '<i class="ph">${block.axis}</i>.<i class="ph">${block.value}</i>', but '<i class="ph">${block.value}</i>' is not a declared value of that axis.</p>
-        
+        <p class="help">Add it to that axis's values, or correct the spelling.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4011" data-search="girih4011 '${ir.name}' styles state '${state.state}' under tokens.states, but does not declare that state.  girih-spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4011" data-search="girih4011 '${ir.name}' styles state '${state.state}' under tokens.states, but does not declare that state. declare it under states first. declaring a state is what makes the template wire it up, so styling alone would emit css that nothing ever matches. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4011</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/validate.ts:308 (+1 more)</span>
+          <span class="src">packages/girih-spec/src/validate.ts:320 (+1 more)</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' styles state '<i class="ph">${state.state}</i>' under tokens.states, but does not declare that state.</p>
-        
+        <p class="help">Declare it under states first. Declaring a state is what makes the template wire it up, so styling alone would emit CSS that nothing ever matches.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4012" data-search="girih4012 extension '${extension.name}' has a malformed token reference '${ref}' at ${property} — expected '{token.path}'.  girih-spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4012" data-search="girih4012 extension '${extension.name}' has a malformed token reference '${ref}' at ${property} — expected '{token.path}'. a reference is one token path in braces: `{color.action}`. no nesting, no fallback value, no spaces. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4012</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/extensions.ts:150 (+1 more)</span>
+          <span class="src">packages/girih-spec/src/extensions.ts:155 (+1 more)</span>
         </div>
         <p class="msg">Extension '<i class="ph">${extension.name}</i>' has a malformed token reference '<i class="ph">${ref}</i>' at <i class="ph">${property}</i> — expected '{token.path}'.</p>
-        
+        <p class="help">A reference is one token path in braces: `{color.action}`. No nesting, no fallback value, no spaces.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4013" data-search="girih4013 '${ir.name}' ${what} '${name}' is not a valid camelcase identifier — it becomes a react prop.  girih-spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4013" data-search="girih4013 '${ir.name}' ${what} '${name}' is not a valid camelcase identifier — it becomes a react prop. it is destructured by name in the generated component, so it must be a plain camelcase identifier — no dashes, no spaces, not starting with a digit. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4013</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/validate.ts:204 (+3 more)</span>
+          <span class="src">packages/girih-spec/src/validate.ts:209 (+3 more)</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' <i class="ph">${what}</i> '<i class="ph">${name}</i>' is not a valid camelCase identifier — it becomes a React prop.</p>
-        
+        <p class="help">It is destructured by name in the generated component, so it must be a plain camelCase identifier — no dashes, no spaces, not starting with a digit.</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH4014" data-search="girih4014 '${spec.name}' has a non-string declaration for '${property}' at ${where} — every styled value must be a '{token.path}' reference.  girih-spec">
         <div class="top">
@@ -1985,47 +1985,47 @@ select.sel, input.txt {
         <p class="msg">'<i class="ph">${spec.name}</i>' has a non-string declaration for '<i class="ph">${property}</i>' at <i class="ph">${where}</i> — every styled value must be a '{token.path}' reference.</p>
         
       </div>
-      <div class="codecard" data-sev="warning" data-code="GIRIH4015" data-search="girih4015 '${ir.name}' styles unknown css property '${property}' at ${where} — it will be emitted verbatim.  girih-spec">
+      <div class="codecard" data-sev="warning" data-code="GIRIH4015" data-search="girih4015 '${ir.name}' styles unknown css property '${property}' at ${where} — it will be emitted verbatim. check the spelling. if it really is a custom or very new property, this warning is expected — the declaration is emitted exactly as written. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4015</span>
           <span class="sev">warning</span>
-          <span class="src">packages/girih-spec/src/validate.ts:356</span>
+          <span class="src">packages/girih-spec/src/validate.ts:372</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' styles unknown CSS property '<i class="ph">${property}</i>' at <i class="ph">${where}</i> — it will be emitted verbatim.</p>
-        
+        <p class="help">Check the spelling. If it really is a custom or very new property, this warning is expected — the declaration is emitted exactly as written.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4016" data-search="girih4016 '${ir.name}' maps aria attributes to state '${aria.state}', which it does not declare under states.  girih-spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4016" data-search="girih4016 '${ir.name}' maps aria attributes to state '${aria.state}', which it does not declare under states. add the state to states, or drop the aria mapping. girih only wires aria for states the component declares. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4016</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/validate.ts:296</span>
+          <span class="src">packages/girih-spec/src/validate.ts:307</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' maps aria attributes to state '<i class="ph">${aria.state}</i>', which it does not declare under states.</p>
-        
+        <p class="help">Add the state to states, or drop the aria mapping. girih only wires aria for states the component declares.</p>
       </div>
       <div class="codecard" data-sev="warning" data-code="GIRIH4018" data-search="girih4018 '${ir.name}' renders '&lt;${ir.element}&gt;', which is not a known host element. known elements: ${[...known_elements].join(', ')}. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4018</span>
           <span class="sev">warning</span>
-          <span class="src">packages/girih-spec/src/validate.ts:172</span>
+          <span class="src">packages/girih-spec/src/validate.ts:177</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' renders '&lt;<i class="ph">${ir.element}</i>&gt;', which is not a known host element.</p>
         <p class="help">Known elements: <i class="ph">${[...KNOWN_ELEMENTS].join(', ')}</i>.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4020" data-search="girih4020 failed to load spec: ${(error as error).message}  girih-spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4020" data-search="girih4020 failed to load spec: ${(error as error).message} the spec is evaluated as real typescript, so a syntax error, an unresolved import, or a throw at module scope all land here. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4020</span>
           <span class="sev">error</span>
           <span class="src">packages/girih-spec/src/load.ts:38</span>
         </div>
         <p class="msg">Failed to load spec: <i class="ph">${(error as Error).message}</i></p>
-        
+        <p class="help">The spec is evaluated as real TypeScript, so a syntax error, an unresolved import, or a throw at module scope all land here.</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH4021" data-search="girih4021 ${file} does not default-export a component spec. export the result of definespec({...}) from '@faravahar/girih'. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4021</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/load.ts:48</span>
+          <span class="src">packages/girih-spec/src/load.ts:49</span>
         </div>
         <p class="msg"><i class="ph">${file}</i> does not default-export a component spec.</p>
         <p class="help">Export the result of defineSpec({...}) from '@faravahar/girih'.</p>
@@ -2034,7 +2034,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4022</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/load.ts:60</span>
+          <span class="src">packages/girih-spec/src/load.ts:61</span>
         </div>
         <p class="msg"><i class="ph">${file}</i> contains a non-serializable value at '<i class="ph">${impure}</i>' — specs must be pure data.</p>
         <p class="help">Remove functions, dates, class instances, and symbols; a spec is a contract, not a program.</p>
@@ -2048,74 +2048,74 @@ select.sel, input.txt {
         <p class="msg"><i class="ph">${file}</i> does not default-export a variant extension.</p>
         <p class="help">Export the result of defineVariant({ name, extends, tokens }) from '@faravahar/girih'.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4031" data-search="girih4031 failed to load extension: ${(error as error).message}  girih-spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4031" data-search="girih4031 failed to load extension: ${(error as error).message} the extension is evaluated as real typescript, so a syntax error, an unresolved import, or a throw at module scope all land here. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4031</span>
           <span class="sev">error</span>
           <span class="src">packages/girih-spec/src/extensions.ts:57</span>
         </div>
         <p class="msg">Failed to load extension: <i class="ph">${(error as Error).message}</i></p>
-        
+        <p class="help">The extension is evaluated as real TypeScript, so a syntax error, an unresolved import, or a throw at module scope all land here.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4032" data-search="girih4032 extension name '${extension.name}' must be pascalcase (it becomes an exported react identifier).  girih-spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4032" data-search="girih4032 extension name '${extension.name}' must be pascalcase (it becomes an exported react identifier). the name becomes the exported react identifier, so it has to start with a capital. the .ext.ts file itself stays kebab-case. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4032</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/extensions.ts:85</span>
+          <span class="src">packages/girih-spec/src/extensions.ts:86</span>
         </div>
         <p class="msg">Extension name '<i class="ph">${extension.name}</i>' must be PascalCase (it becomes an exported React identifier).</p>
-        
+        <p class="help">The name becomes the exported React identifier, so it has to start with a capital. The .ext.ts file itself stays kebab-case.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4033" data-search="girih4033 extension '${extension.name}' collides with an existing component or extension.  girih-spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4033" data-search="girih4033 extension '${extension.name}' collides with an existing component or extension. every component and extension shares one export namespace, because they all become named exports of the same package. rename this one. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4033</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/extensions.ts:94</span>
+          <span class="src">packages/girih-spec/src/extensions.ts:96</span>
         </div>
         <p class="msg">Extension '<i class="ph">${extension.name}</i>' collides with an existing component or extension.</p>
-        
+        <p class="help">Every component and extension shares one export namespace, because they all become named exports of the same package. Rename this one.</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH4034" data-search="girih4034 extension '${extension.name}' extends '${extension.extends}', which is not in the component catalog. known components: ${[...byname.keys()].join(', ') || '(none)'}. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4034</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/extensions.ts:106</span>
+          <span class="src">packages/girih-spec/src/extensions.ts:109</span>
         </div>
         <p class="msg">Extension '<i class="ph">${extension.name}</i>' extends '<i class="ph">${extension.extends}</i>', which is not in the component catalog.</p>
         <p class="help">Known components: <i class="ph">${[...byName.keys()].join(', ') || '(none)'}</i>.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4035" data-search="girih4035 '${extension.extends}' does not allow extensions (extensibility.allowextends is false).  girih-spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4035" data-search="girih4035 '${extension.extends}' does not allow extensions (extensibility.allowextends is false). set extensibility.allowextends: true on the base contract, if extending it is genuinely intended. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4035</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/extensions.ts:116</span>
+          <span class="src">packages/girih-spec/src/extensions.ts:119</span>
         </div>
         <p class="msg">'<i class="ph">${extension.extends}</i>' does not allow extensions (extensibility.allowExtends is false).</p>
-        
+        <p class="help">Set extensibility.allowExtends: true on the base contract, if extending it is genuinely intended.</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH4036" data-search="girih4036 extension '${extension.name}' overrides '${property}', which '${extension.extends}' does not list under extensibility.overridabletokens. overridable: ${base.extensibility.overridabletokens.join(', ') || '(none)'}. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4036</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/extensions.ts:138</span>
+          <span class="src">packages/girih-spec/src/extensions.ts:143</span>
         </div>
         <p class="msg">Extension '<i class="ph">${extension.name}</i>' overrides '<i class="ph">${property}</i>', which '<i class="ph">${extension.extends}</i>' does not list under extensibility.overridableTokens.</p>
         <p class="help">Overridable: <i class="ph">${base.extensibility.overridableTokens.join(', ') || '(none)'}</i>.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4037" data-search="girih4037 '${extension.extends}' is a compound (dialog) component — extensions can only build on single-element components.  girih-spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4037" data-search="girih4037 '${extension.extends}' is a compound (dialog) component — extensions can only build on single-element components. a compound component emits several parts, so there is no single element for a wrapper to forward props to. extend one of the single-element components instead. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4037</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/extensions.ts:125</span>
+          <span class="src">packages/girih-spec/src/extensions.ts:129</span>
         </div>
         <p class="msg">'<i class="ph">${extension.extends}</i>' is a compound (dialog) component — extensions can only build on single-element components.</p>
-        
+        <p class="help">A compound component emits several parts, so there is no single element for a wrapper to forward props to. Extend one of the single-element components instead.</p>
       </div>
       <div class="codecard" data-sev="warning" data-code="GIRIH4038" data-search="girih4038 extension '${extension.name}' reaches into '{${path}}', another component's token namespace. use semantic tokens or '${componentnamespace(extension.extends)}.*' tokens so the extension survives refactors of unrelated components. girih-spec">
         <div class="top">
           <span class="cid">GIRIH4038</span>
           <span class="sev">warning</span>
-          <span class="src">packages/girih-spec/src/extensions.ts:187</span>
+          <span class="src">packages/girih-spec/src/extensions.ts:195</span>
         </div>
         <p class="msg">Extension '<i class="ph">${extension.name}</i>' reaches into '{<i class="ph">${path}</i>}', another component's token namespace.</p>
         <p class="help">Use semantic tokens or '<i class="ph">${componentNamespace(extension.extends)}</i>.*' tokens so the extension survives refactors of unrelated components.</p>
@@ -2124,7 +2124,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4040</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/validate.ts:161</span>
+          <span class="src">packages/girih-spec/src/validate.ts:166</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' uses template '<i class="ph">${ir.template}</i>', which this girih version does not ship.</p>
         <p class="help">Available templates: <i class="ph">${Object.keys(templates).join(', ')}</i>.</p>
@@ -2135,7 +2135,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4041</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/validate.ts:184</span>
+          <span class="src">packages/girih-spec/src/validate.ts:189</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' styles part '<i class="ph">${part.part}</i>', which the '<i class="ph">${ir.template}</i>' template does not have.</p>
         <p class="help">declaredParts.size &gt; 0
@@ -2146,7 +2146,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4042</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/validate.ts:236</span>
+          <span class="src">packages/girih-spec/src/validate.ts:244</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' declares variant axis '<i class="ph">${axis.axis}</i>', but the '<i class="ph">${ir.template}</i>' template only wires up: <i class="ph">${template.variantAxes.join(', ')}</i>.</p>
         <p class="help">A silently-ignored axis would validate and then do nothing — declare only axes the template implements.</p>
@@ -2163,14 +2163,14 @@ select.sel, input.txt {
       only expresses in CSS — so the attributes would not actually be wired up. A warning rather than an
       error, because the component still works; it is just less accessible than the contract claims.</p>
   <div class="codelist">
-      <div class="codecard" data-sev="warning" data-code="GIRIH5001" data-search="girih5001 '${ir.name}' maps aria attributes to state '${aria.state}', which the '${ir.template}' template only expresses in css — the attributes are not wired.  girih-generator-react">
+      <div class="codecard" data-sev="warning" data-code="GIRIH5001" data-search="girih5001 '${ir.name}' maps aria attributes to state '${aria.state}', which the '${ir.template}' template only expresses in css — the attributes are not wired. move the aria mapping to a component whose template wires attributes, or drop it — leaving it in place would imply accessibility support that is not emitted. girih-generator-react">
         <div class="top">
           <span class="cid">GIRIH5001</span>
           <span class="sev">warning</span>
           <span class="src">packages/girih-generator-react/src/generate.ts:101</span>
         </div>
         <p class="msg">'<i class="ph">${ir.name}</i>' maps aria attributes to state '<i class="ph">${aria.state}</i>', which the '<i class="ph">${ir.template}</i>' template only expresses in CSS — the attributes are not wired.</p>
-        
+        <p class="help">Move the aria mapping to a component whose template wires attributes, or drop it — leaving it in place would imply accessibility support that is not emitted.</p>
       </div>
   </div>
 </section>
@@ -2183,20 +2183,20 @@ select.sel, input.txt {
   <p>One code, guarding the packaging step: there are no TypeScript sources to compile, which
       means <code>girih generate react</code> has not run yet.</p>
   <div class="codelist">
-      <div class="codecard" data-sev="error" data-code="GIRIH6001" data-search="girih6001 no typescript sources in ${srcdir} — run \`girih generate react\` first.  girih">
+      <div class="codecard" data-sev="error" data-code="GIRIH6001" data-search="girih6001 no typescript sources in ${srcdir} — run \`girih generate react\` first. the build compiles generated source, so there is nothing to compile until `girih generate react` has written it. girih">
         <div class="top">
           <span class="cid">GIRIH6001</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih/src/build.ts:60</span>
+          <span class="src">packages/girih/src/build.ts:61</span>
         </div>
         <p class="msg">No TypeScript sources in <i class="ph">${srcDir}</i> — run \`girih generate react\` first.</p>
-        
+        <p class="help">The build compiles generated source, so there is nothing to compile until `girih generate react` has written it.</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH6002" data-search="girih6002 the generated package imports ${missing.map((m) =&gt; `'${m}'`).join(', ')}, which ${missing.length === 1 ? 'is' : 'are'} not installed. install the build prerequisites: npm install -d ${missing.join(' ')} girih">
         <div class="top">
           <span class="cid">GIRIH6002</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih/src/build.ts:75</span>
+          <span class="src">packages/girih/src/build.ts:80</span>
         </div>
         <p class="msg">The generated package imports <i class="ph">${missing.map((m) =&gt; `'${m}</i>'`).join(', ')}, which <i class="ph">${missing.length === 1 ? 'is' : 'are'}</i> not installed.</p>
         <p class="help">Install the build prerequisites: npm install -D <i class="ph">${missing.join(' ')}</i></p>
@@ -2211,7 +2211,7 @@ select.sel, input.txt {
 <h2 id="gaps">An honest note on coverage</h2>
 
 <p>
-  33 of the 71 diagnostics have no
+  4 of the 71 diagnostics have no
   <code>help</code> line. The project's own convention is that anything actionable should carry a
   one-line suggestion, so that number is a real gap rather than a deliberate choice — most of the
   missing ones are in the <code>GIRIH4xxx</code> contract family, where the message is often

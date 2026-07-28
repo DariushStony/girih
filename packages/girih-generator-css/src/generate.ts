@@ -125,6 +125,7 @@ export async function generateCss(build: TokenBuildResult, options: GenerateCssO
           code: 'GIRIH3001',
           severity: 'error',
           message: `CSS generation failed for brand '${brand}': ${(error as Error).message}`,
+          help: 'Usually a token value style-dictionary cannot serialise. GIRIH3002 names the specific variable when it can identify one.',
         });
       }
     }

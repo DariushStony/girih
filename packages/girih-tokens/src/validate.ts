@@ -21,6 +21,7 @@ export function validateTierDirection(graph: ResolvedTokenGraph): Diagnostic[] {
           message: `${token.tier} token '${token.path}' references ${target.tier} token '{${ref}}' — references must flow component → semantic → global, never upward.`,
           file: token.file,
           path: token.path,
+          help: 'Tier references only ever flow downward: component to semantic to global. Move the value down a tier, or point at something lower.',
         });
       } else if (token.tier === 'component' && target.tier === 'global') {
         diagnostics.push({
@@ -41,6 +42,7 @@ export function validateTierDirection(graph: ResolvedTokenGraph): Diagnostic[] {
           message: `'${token.path}' ($type '${token.type}') aliases '{${ref}}' which has $type '${target.type}'.`,
           file: token.file,
           path: token.path,
+          help: 'Give both tokens the same $type, or drop $type from the alias so it inherits from its target.',
         });
       }
     }
@@ -77,6 +79,7 @@ export function validateBrandParity(graphs: Map<string, ResolvedTokenGraph>): Di
             .filter(Boolean)
             .join('; ') +
           '.',
+        help: 'A brand overlay may override an existing path but never add or remove one, so every brand has to be structurally identical. Move an extra token into the base set, or add the missing one there.',
       });
     }
   }

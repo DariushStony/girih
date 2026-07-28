@@ -58,6 +58,7 @@ export async function loadExtensions(config: ResolvedConfig): Promise<{ extensio
         severity: 'error',
         message: `Failed to load extension: ${(error as Error).message}`,
         file,
+        help: 'The extension is evaluated as real TypeScript, so a syntax error, an unresolved import, or a throw at module scope all land here.',
       });
     }
   }
@@ -86,6 +87,7 @@ export function validateExtensions(
         severity: 'error',
         message: `Extension name '${extension.name}' must be PascalCase (it becomes an exported React identifier).`,
         file,
+        help: 'The name becomes the exported React identifier, so it has to start with a capital. The .ext.ts file itself stays kebab-case.',
       });
       continue;
     }
@@ -95,6 +97,7 @@ export function validateExtensions(
         severity: 'error',
         message: `Extension '${extension.name}' collides with an existing component or extension.`,
         file,
+        help: 'Every component and extension shares one export namespace, because they all become named exports of the same package. Rename this one.',
       });
       continue;
     }
@@ -117,6 +120,7 @@ export function validateExtensions(
         severity: 'error',
         message: `'${extension.extends}' does not allow extensions (extensibility.allowExtends is false).`,
         file,
+        help: 'Set extensibility.allowExtends: true on the base contract, if extending it is genuinely intended.',
       });
       continue;
     }
@@ -126,6 +130,7 @@ export function validateExtensions(
         severity: 'error',
         message: `'${extension.extends}' is a compound (dialog) component — extensions can only build on single-element components.`,
         file,
+        help: 'A compound component emits several parts, so there is no single element for a wrapper to forward props to. Extend one of the single-element components instead.',
       });
       continue;
     }
@@ -152,6 +157,7 @@ export function validateExtensions(
           message: `Extension '${extension.name}' has a malformed token reference '${ref}' at ${property} — expected '{token.path}'.`,
           file,
           path: property,
+          help: 'A reference is one token path in braces: `{color.action}`. No nesting, no fallback value, no spaces.',
         });
         continue;
       }
@@ -166,6 +172,7 @@ export function validateExtensions(
           }.`,
           file,
           path: property,
+          help: 'Every brand must resolve the same token set, so the token has to exist in the base tokens — a brand overlay may override paths but never introduce them.',
         });
         continue;
       }
@@ -181,6 +188,7 @@ export function validateExtensions(
           message: `Extension '${extension.name}' references global token '{${path}}' — extensions should consume semantic or component tokens.`,
           file,
           path: property,
+          help: 'Add a semantic token that aliases this global one and reference that instead. An extension bound straight to a global value cannot be re-themed per brand.',
         });
       } else if (token?.tier === 'component' && path.split('.')[0] !== componentNamespace(extension.extends)) {
         diagnostics.push({

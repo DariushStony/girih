@@ -1,3 +1,4 @@
+import { kebabName } from '@faravahar/girih-core';
 import type { Diagnostic } from '@faravahar/girih-core';
 import type { ResolvedTokenGraph } from '@faravahar/girih-tokens';
 import { irTokenRefs } from './ir.js';
@@ -135,7 +136,9 @@ export function validateSpecs(
   const seen = new Map<string, string>();
 
   for (const ir of irs) {
-    const file = ir.sourceFile ?? `components/${ir.name.charAt(0).toLowerCase()}${ir.name.slice(1)}.spec.ts`;
+    // Spec files are kebab-case. Lowercasing only the first letter attributed a
+    // PaymentButton diagnostic to `paymentButton.spec.ts`, a file that cannot exist.
+    const file = ir.sourceFile ?? `components/${kebabName(ir.name)}.spec.ts`;
 
     if (!PASCAL_CASE.test(ir.name)) {
       diagnostics.push({
@@ -143,6 +146,7 @@ export function validateSpecs(
         severity: 'error',
         message: `Component name '${ir.name}' must be PascalCase (it becomes an exported React identifier).`,
         file,
+        help: "The name becomes the exported React identifier, so it has to start with a capital: `name: 'Button'`. The spec file itself stays kebab-case.",
       });
     }
     if (seen.has(ir.name)) {
@@ -151,6 +155,7 @@ export function validateSpecs(
         severity: 'error',
         message: `Component '${ir.name}' is defined more than once (${seen.get(ir.name)} and ${file}).`,
         file,
+        help: 'Two spec files declare the same name, and the name decides the emitted component — so one would overwrite the other. Rename one or delete the duplicate.',
       });
     }
     seen.set(ir.name, file);
@@ -206,6 +211,7 @@ export function validateSpecs(
           message: `'${ir.name}' ${what} '${name}' is not a valid camelCase identifier — it becomes a React prop.`,
           file,
           path: name,
+          help: 'It is destructured by name in the generated component, so it must be a plain camelCase identifier — no dashes, no spaces, not starting with a digit.',
         });
       } else if (RESERVED_PROP_NAMES.has(name)) {
         diagnostics.push({
@@ -214,6 +220,7 @@ export function validateSpecs(
           message: `'${ir.name}' ${what} '${name}' collides with a name the generated component reserves (${[...RESERVED_PROP_NAMES].join(', ')}).`,
           file,
           path: name,
+          help: 'The generated component already destructures that name, so reusing it would shadow it. Pick another.',
         });
       } else if (claimed.has(name)) {
         diagnostics.push({
@@ -222,6 +229,7 @@ export function validateSpecs(
           message: `'${ir.name}' declares '${name}' as both ${claimed.get(name)} and ${what} — prop names must be unique.`,
           file,
           path: name,
+          help: 'Variant axes and props share one namespace, because both become props on the same component. Rename whichever is less load-bearing.',
         });
       }
       claimed.set(name, what);
@@ -252,6 +260,7 @@ export function validateSpecs(
           message: `Variant axis '${axis.axis}' of '${ir.name}' has no values.`,
           file,
           path: axis.axis,
+          help: 'Give the axis at least one value, or remove it — an axis with no values emits a prop that can never be set.',
         });
         continue;
       }
@@ -263,6 +272,7 @@ export function validateSpecs(
             message: `Variant value '${axis.axis}.${value}' of '${ir.name}' must be lowercase kebab-case (it becomes a data attribute and a CSS selector).`,
             file,
             path: `${axis.axis}.${value}`,
+            help: 'Lowercase with dashes: `size-lg`, not `sizeLg` or `Size_LG`. The value is written into a data attribute and matched by a CSS selector.',
           });
         }
       }
@@ -273,6 +283,7 @@ export function validateSpecs(
           message: `Variant axis '${axis.axis}' of '${ir.name}' defaults to '${axis.default}', which is not one of [${axis.values.join(', ')}].`,
           file,
           path: axis.axis,
+          help: 'Set default to one of the listed values, or add the missing value to values.',
         });
       }
     }
@@ -298,6 +309,7 @@ export function validateSpecs(
           message: `'${ir.name}' maps aria attributes to state '${aria.state}', which it does not declare under states.`,
           file,
           path: `accessibility.aria.${aria.state}`,
+          help: 'Add the state to states, or drop the aria mapping. girih only wires aria for states the component declares.',
         });
       }
     }
@@ -310,6 +322,7 @@ export function validateSpecs(
           message: `'${ir.name}' styles state '${state.state}' under tokens.states, but does not declare that state.`,
           file,
           path: `states.${state.state}`,
+          help: 'Declare it under states first. Declaring a state is what makes the template wire it up, so styling alone would emit CSS that nothing ever matches.',
         });
       }
     }
@@ -323,6 +336,7 @@ export function validateSpecs(
           message: `'${ir.name}' styles variant axis '${block.axis}', which is not declared under variants.`,
           file,
           path: block.axis,
+          help: 'Declare the axis under variants first, or remove the style block — this CSS would never match anything.',
         });
         continue;
       }
@@ -333,6 +347,7 @@ export function validateSpecs(
           message: `'${ir.name}' styles '${block.axis}.${block.value}', but '${block.value}' is not a declared value of that axis.`,
           file,
           path: `${block.axis}.${block.value}`,
+          help: "Add it to that axis's values, or correct the spelling.",
         });
       }
       for (const state of block.states) {
@@ -343,6 +358,7 @@ export function validateSpecs(
             message: `'${ir.name}' styles state '${state.state}' under '${block.axis}.${block.value}', but does not declare that state.`,
             file,
             path: `${block.axis}.${block.value}.${state.state}`,
+            help: 'Declare it under states first — a state styled but not declared is never wired up, so the CSS cannot match.',
           });
         }
       }
@@ -358,6 +374,7 @@ export function validateSpecs(
           message: `'${ir.name}' styles unknown CSS property '${property}' at ${where} — it will be emitted verbatim.`,
           file,
           path: where,
+          help: 'Check the spelling. If it really is a custom or very new property, this warning is expected — the declaration is emitted exactly as written.',
         });
       }
 
@@ -369,6 +386,7 @@ export function validateSpecs(
           message: `'${ir.name}' has a malformed token reference '${ref}' at ${where} — expected '{token.path}'.`,
           file,
           path: where,
+          help: 'A reference is one token path in braces: `{color.action}`. No nesting, no fallback value, no spaces.',
         });
         continue;
       }
@@ -383,6 +401,7 @@ export function validateSpecs(
           }.`,
           file,
           path,
+          help: "Every brand must resolve the same token set, so the token has to exist in the base tokens — a path that only one brand's overlay defines is not valid, because a brand may override paths but never introduce them.",
         });
         continue;
       }
@@ -394,6 +413,7 @@ export function validateSpecs(
           message: `'${ir.name}' references global token '{${path}}' at ${where} — specs should consume semantic or component tokens.`,
           file,
           path,
+          help: 'Add a semantic token that aliases this global one and reference that instead. A component bound straight to a global value cannot be re-themed per brand.',
         });
       }
     }
