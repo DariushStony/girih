@@ -9,7 +9,7 @@
 girih (گره, Persian for _knot_) is design system **infrastructure**, not a component library.
 You describe your design language once as data; girih compiles it into a versioned npm package.
 
-[Quickstart](#quickstart) · [Documentation](docs/md/index.md) · [How it works](docs/md/03-how-it-works.md) · [Error codes](docs/md/07-error-codes.md)
+[Quickstart](#quickstart) · [Read the docs](https://dariushstony.github.io/girih/) · [How it works](docs/md/03-how-it-works.md) · [Error codes](docs/md/07-error-codes.md)
 
 </div>
 
@@ -135,17 +135,18 @@ New to design tokens? Chapter 01 opens with a collapsible primer that assumes no
 
 ### Interactive version
 
-The same chapters exist as self-contained HTML with four live widgets — a **brand switch**
-running on the real generated CSS, an **alias-chain walker**, a **pipeline stepper**, and a
-**scored quiz**. No server, no build, no network requests.
+**→ [dariushstony.github.io/girih](https://dariushstony.github.io/girih/)**
+
+The same chapters as self-contained HTML with four live widgets — a **brand switch** running on
+the real generated CSS, an **alias-chain walker**, a **pipeline stepper**, and a **scored quiz**.
+No server, no build, no network requests, so the local copy works just as well offline:
 
 ```bash
 open docs/index.html
 ```
 
-To publish them, set **Settings → Pages → Build and deployment → Source** to **GitHub
-Actions**. The site then serves at `https://<owner>.github.io/<repo>/`, deployed by
-[`.github/workflows/docs.yml`](.github/workflows/docs.yml) on every push to `main`.
+[`.github/workflows/docs.yml`](.github/workflows/docs.yml) redeploys it on every push to `main`,
+and refuses to deploy if the committed `docs/` differs from a fresh build.
 
 ---
 

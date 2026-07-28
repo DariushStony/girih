@@ -286,29 +286,34 @@ for (const file of mdFiles) {
 /* --------------------------------------------------- attributed files still exist */
 
 /**
- * A code block captioned with a `packages/...` path must be captioned with a path that
- * exists. Chapter 03 showed `composeReact()` attributed to `packages/girih/src/cli.ts` long
- * after it moved to `workspace.ts` — the snippet was accurate, the file it named was not,
- * and a reader following the caption finds command registration instead.
+ * A repo path the docs name must be a repo path that exists. Two of these were live:
+ * chapter 03 attributed `composeReact()` to `packages/girih/src/cli.ts` long after it moved
+ * to `workspace.ts` — the snippet was accurate, the file it named was not, and a reader
+ * following the caption finds command registration instead. And the generated docs/README.md
+ * pointed at a `pages.yml` workflow, which has never existed under that name — the docs
+ * deploy has always lived in `docs.yml`.
  *
- * Only paths whose first segment is a real workspace package are checked. A consumer's
- * generated package is also called `packages/design-system/...`, and it is gitignored here,
- * so those captions describe a workspace that legitimately does not exist in this repo.
- * Deriving the package list from disk rather than listing it keeps that distinction true as
- * packages come and go.
+ * Two path shapes are unambiguous enough to check: a `packages/<pkg>/...` path whose first
+ * segment is a real workspace package, and anything under `.github/`. Everything else is
+ * skipped on purpose — a consumer's generated package is also `packages/design-system/...`
+ * and is gitignored here, `ds.config.ts` and `styles/components.css` describe a workspace
+ * that does not exist in this repo, and `tokens/src/resolve.ts` is shorthand for a package
+ * without its prefix. Deriving the package list from disk keeps that line in the right place
+ * as packages come and go.
  */
 {
   const workspacePackages = new Set(readdirSync(join(repoRoot, 'packages')));
-  for (const dir of [join(docsDir, 'scripts/pages'), join(docsDir, 'scripts/lib')]) {
+  const scanned = [join(docsDir, 'scripts'), join(docsDir, 'scripts/pages'), join(docsDir, 'scripts/lib')];
+  for (const dir of scanned) {
     if (!existsSync(dir)) continue;
     for (const name of readdirSync(dir).filter((f) => f.endsWith('.mjs'))) {
       const rel = relative(repoRoot, join(dir, name));
       readFileSync(join(dir, name), 'utf8')
         .split('\n')
         .forEach((line, index) => {
-          for (const m of line.matchAll(/['"`](packages\/([\w.-]+)\/[\w./-]+\.\w+)\b/g)) {
-            if (!workspacePackages.has(m[2])) continue;
-            check(existsSync(join(repoRoot, m[1])), `${rel}:${index + 1}`, `attributes a snippet to '${m[1]}', which does not exist`);
+          for (const m of line.matchAll(/['"`](?:.*?)?((?:packages\/([\w.-]+)|\.github)\/[\w./-]+\.\w+)\b/g)) {
+            if (m[2] !== undefined && !workspacePackages.has(m[2])) continue;
+            check(existsSync(join(repoRoot, m[1])), `${rel}:${index + 1}`, `names '${m[1]}', which does not exist`);
           }
         });
     }

@@ -40,6 +40,11 @@ function loadJson(name, hint) {
 const tokens = loadJson('tokens.json', 'node docs/scripts/extract-tokens.mjs');
 const diagnostics = loadJson('diagnostics.json', 'node docs/scripts/extract-diagnostics.mjs');
 
+// Written by build-icons.mjs --site-url. Read softly rather than through loadJson: the pages
+// build must not require icons to have been generated first, and an empty URL is the honest
+// state of a repository whose Pages site is not up.
+const siteUrl = existsSync(join(dataDir, 'site.json')) ? (JSON.parse(readFileSync(join(dataDir, 'site.json'), 'utf8')).siteUrl ?? '') : '';
+
 // One data object handed to every page module.
 const data = {
   ...tokens,
@@ -183,11 +188,14 @@ Two flavours of the same content:
 
 - **[Markdown](md/index.md)** — renders right here on GitHub. Start with [md/index.md](md/index.md).
 - **Interactive HTML** — the same text plus four live widgets. GitHub will not render these files
-  inline; to read them, either clone the repository and open \`docs/index.html\` in a browser, or
-  enable GitHub Pages for this repository (Settings → Pages → Source: GitHub Actions) and the
-  workflow at \`.github/workflows/pages.yml\` will deploy them to
-  \`https://<owner>.github.io/<repo>/\`. Opening the local file works with no server, no build
-  step, and no network request.
+  inline, so read them ${
+    siteUrl
+      ? `at **[${siteUrl.replace(/^https?:\/\//, '')}](${siteUrl}/)**, redeployed by
+  \`.github/workflows/docs.yml\` on every push to \`main\`. Or clone and open \`docs/index.html\`:`
+      : `by cloning the repository and opening \`docs/index.html\` in a browser. To publish them,
+  enable GitHub Pages (Settings → Pages → Source: GitHub Actions) and
+  \`.github/workflows/docs.yml\` will deploy them. Either way:`
+  } no server, no build step, and no network request.
 
 ## Contents
 

@@ -10,11 +10,8 @@ Two flavours of the same content:
 
 - **[Markdown](md/index.md)** — renders right here on GitHub. Start with [md/index.md](md/index.md).
 - **Interactive HTML** — the same text plus four live widgets. GitHub will not render these files
-  inline; to read them, either clone the repository and open `docs/index.html` in a browser, or
-  enable GitHub Pages for this repository (Settings → Pages → Source: GitHub Actions) and the
-  workflow at `.github/workflows/pages.yml` will deploy them to
-  `https://<owner>.github.io/<repo>/`. Opening the local file works with no server, no build
-  step, and no network request.
+  inline, so read them at **[dariushstony.github.io/girih](https://dariushstony.github.io/girih/)**, redeployed by
+  `.github/workflows/docs.yml` on every push to `main`. Or clone and open `docs/index.html`: no server, no build step, and no network request.
 
 ## Contents
 
