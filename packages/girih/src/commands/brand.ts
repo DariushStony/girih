@@ -31,7 +31,7 @@ export function registerBrand(program: Command): void {
         return;
       }
 
-      const overlayPath = `brands/${name}/tokens.json`;
+      const overlayPath = `design/brands/${name}.json`;
       if (existsSync(join(config.root, overlayPath))) {
         console.log(`${pc.yellow('keep')}    ${overlayPath} ${pc.dim('(already exists — not overwritten)')}`);
       } else {

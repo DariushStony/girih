@@ -10,7 +10,7 @@ export interface GirihConfig {
   name: string;
 
   tokens?: {
-    /** Globs relative to the workspace root. Default: ['tokens/**\/*.tokens.json'] */
+    /** Globs relative to the workspace root. Default: ['design/**\/*.tokens.json'] */
     source?: string[];
     /** CSS variable prefix. Default 'ds' → --ds-color-primary. */
     prefix?: string;
@@ -30,11 +30,11 @@ export interface GirihConfig {
   };
 
   components?: {
-    /** Glob for component specs. Default 'components/*.contract.ts'. */
+    /** Glob for component contracts. Default 'design/components/**\/*.contract.ts'. */
     specs?: string;
     /** Components the generator must skip because they were ejected. */
     ejected?: string[];
-    /** Glob for defineVariant extension declarations. Default 'extensions/*.ext.ts'. */
+    /** Glob for defineVariant extension declarations. Default 'design/components/**\/*.ext.ts'. */
     extensions?: string;
   };
 
@@ -149,14 +149,17 @@ export async function loadConfig(cwd: string): Promise<LoadConfigResult> {
     root,
     name: raw.name,
     tokens: {
-      source: raw.tokens?.source ?? ['tokens/**/*.tokens.json'],
+      // One glob covers all three tiers: inferTier reads '/components/' anywhere in the
+      // path, so design/components/button/button.tokens.json is a component token while
+      // design/tokens/global.tokens.json is a global one.
+      source: raw.tokens?.source ?? ['design/**/*.tokens.json'],
       prefix: raw.tokens?.prefix ?? 'ds',
     },
     brands: { default: raw.brands.default, all: brands },
     components: {
-      specs: raw.components?.specs ?? 'components/*.contract.ts',
+      specs: raw.components?.specs ?? 'design/components/**/*.contract.ts',
       ejected: raw.components?.ejected ?? [],
-      extensions: raw.components?.extensions ?? 'extensions/*.ext.ts',
+      extensions: raw.components?.extensions ?? 'design/components/**/*.ext.ts',
     },
     targets: {
       react: { output: raw.targets?.react?.output ?? 'packages/design-system' },

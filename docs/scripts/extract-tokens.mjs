@@ -104,14 +104,14 @@ function readIfPresent(rel) {
 
 const sources = {
   'ds.config.ts': readIfPresent('ds.config.ts'),
-  'tokens/global.tokens.json': readIfPresent('tokens/global.tokens.json'),
-  'tokens/semantic.tokens.json': readIfPresent('tokens/semantic.tokens.json'),
-  'tokens/components/button.tokens.json': readIfPresent('tokens/components/button.tokens.json'),
-  'brands/marketplace/tokens.json': readIfPresent('brands/marketplace/tokens.json'),
-  'brands/seller/tokens.json': readIfPresent('brands/seller/tokens.json'),
-  'components/button.contract.ts': readIfPresent('components/button.contract.ts'),
-  'components/badge.contract.ts': readIfPresent('components/badge.contract.ts'),
-  'extensions/payment-button.ext.ts': readIfPresent('extensions/payment-button.ext.ts'),
+  'design/tokens/global.tokens.json': readIfPresent('design/tokens/global.tokens.json'),
+  'design/tokens/semantic.tokens.json': readIfPresent('design/tokens/semantic.tokens.json'),
+  'design/components/button/button.tokens.json': readIfPresent('design/components/button/button.tokens.json'),
+  'design/brands/marketplace.json': readIfPresent('design/brands/marketplace.json'),
+  'design/brands/seller.json': readIfPresent('design/brands/seller.json'),
+  'design/components/button/button.contract.ts': readIfPresent('design/components/button/button.contract.ts'),
+  'design/components/badge/badge.contract.ts': readIfPresent('design/components/badge/badge.contract.ts'),
+  'design/components/button/payment-button.ext.ts': readIfPresent('design/components/button/payment-button.ext.ts'),
 };
 
 /** The generated artifacts, verbatim — what girih emitted from the sources above. */

@@ -162,10 +162,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 203,
+      "line": 206,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:203"
+        "packages/girih-core/src/config.ts:206"
       ]
     },
     {
@@ -177,10 +177,10 @@
       "helpDynamic": true,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 177,
+      "line": 180,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:177"
+        "packages/girih-core/src/config.ts:180"
       ]
     },
     {
@@ -192,10 +192,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 213,
+      "line": 216,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:213"
+        "packages/girih-core/src/config.ts:216"
       ]
     },
     {
@@ -207,10 +207,10 @@
       "helpDynamic": true,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 221,
+      "line": 224,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:221"
+        "packages/girih-core/src/config.ts:224"
       ]
     },
     {
@@ -222,10 +222,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 193,
+      "line": 196,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:193"
+        "packages/girih-core/src/config.ts:196"
       ]
     },
     {
@@ -282,10 +282,10 @@
       "helpDynamic": true,
       "package": "girih",
       "file": "packages/girih/src/workspace.ts",
-      "line": 89,
+      "line": 90,
       "sites": 1,
       "allSites": [
-        "packages/girih/src/workspace.ts:89"
+        "packages/girih/src/workspace.ts:90"
       ]
     },
     {
@@ -312,10 +312,10 @@
       "helpDynamic": false,
       "package": "girih",
       "file": "packages/girih/src/workspace.ts",
-      "line": 106,
+      "line": 107,
       "sites": 1,
       "allSites": [
-        "packages/girih/src/workspace.ts:106"
+        "packages/girih/src/workspace.ts:107"
       ]
     },
     {
@@ -323,7 +323,7 @@
       "severity": "warning",
       "message": "ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated.",
       "messageDynamic": true,
-      "help": "Restore components/${kebabName(name)}.contract.ts, or remove the entry and components/ejected/${kebabName(name)}.tsx.",
+      "help": "Restore design/components/${kebabName(name)}/${kebabName(name)}.contract.ts, or remove the ds.lock entry.",
       "helpDynamic": true,
       "package": "girih",
       "file": "packages/girih/src/workspace.ts",
@@ -383,14 +383,14 @@
       "severity": "warning",
       "message": "Cannot infer the tier of '${file}' from its name — assuming 'semantic'.",
       "messageDynamic": true,
-      "help": "Name token files global*.tokens.json / semantic*.tokens.json, or put component tokens under tokens/components/.",
+      "help": "Name token files global*.tokens.json / semantic*.tokens.json, or put component tokens under a components/ directory — design/components/<name>/<name>.tokens.json in the default layout.",
       "helpDynamic": false,
       "package": "girih-tokens",
       "file": "packages/girih-tokens/src/engine.ts",
-      "line": 68,
+      "line": 95,
       "sites": 1,
       "allSites": [
-        "packages/girih-tokens/src/engine.ts:68"
+        "packages/girih-tokens/src/engine.ts:95"
       ]
     },
     {
@@ -402,10 +402,10 @@
       "helpDynamic": false,
       "package": "girih-tokens",
       "file": "packages/girih-tokens/src/engine.ts",
-      "line": 39,
+      "line": 63,
       "sites": 1,
       "allSites": [
-        "packages/girih-tokens/src/engine.ts:39"
+        "packages/girih-tokens/src/engine.ts:63"
       ]
     },
     {
@@ -413,14 +413,14 @@
       "severity": "error",
       "message": "No token files matched ${config.tokens.source.join(', ')} under ${config.root}.",
       "messageDynamic": true,
-      "help": "Create tokens/global.tokens.json to get started.",
+      "help": "legacyTokenLayoutHint(config) ?? 'Create design/tokens/global.tokens.json to get started.'",
       "helpDynamic": false,
       "package": "girih-tokens",
       "file": "packages/girih-tokens/src/engine.ts",
-      "line": 56,
+      "line": 80,
       "sites": 1,
       "allSites": [
-        "packages/girih-tokens/src/engine.ts:56"
+        "packages/girih-tokens/src/engine.ts:80"
       ]
     },
     {
@@ -935,10 +935,10 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/load.ts",
-      "line": 61,
+      "line": 84,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/load.ts:61"
+        "packages/girih-spec/src/load.ts:84"
       ]
     },
     {
@@ -950,10 +950,10 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/load.ts",
-      "line": 72,
+      "line": 95,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/load.ts:72"
+        "packages/girih-spec/src/load.ts:95"
       ]
     },
     {
@@ -965,25 +965,25 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/load.ts",
-      "line": 84,
+      "line": 107,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/load.ts:84"
+        "packages/girih-spec/src/load.ts:107"
       ]
     },
     {
       "code": "GIRIH4023",
       "severity": "error",
-      "message": "No contracts matched '${config.components.specs}', but ${legacy.length} '${legacyGlob}' file${plural} ${legacy.length === 1 ? 'is' : 'are'} present (${legacy.slice(0, 3).join(', ')}${legacy.length > 3 ? ', …' : ''}).",
+      "message": "No contracts matched '${config.components.specs}', but ${found.length} '${legacyGlob}' file${plural} ${found.length === 1 ? 'is' : 'are'} present (${found.slice(0, 3).join(', ')}${found.length > 3 ? ', …' : ''}).",
       "messageDynamic": true,
-      "help": "Contracts are now `*.contract.ts`, because `*.spec.ts` is collected as a test file by vitest and jest. Rename them: `for f in components/*.spec.ts; do git mv \"$f\" \"${f%.spec.ts}.contract.ts\"; done`",
+      "help": "advice",
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/load.ts",
-      "line": 43,
+      "line": 65,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/load.ts:43"
+        "packages/girih-spec/src/load.ts:65"
       ]
     },
     {

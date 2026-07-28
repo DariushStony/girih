@@ -12,15 +12,15 @@ const acmeRoot = fileURLToPath(new URL('../../../examples/acme-ds', import.meta.
 const acmeConfig = {
   root: acmeRoot,
   name: '@acme/design-system',
-  tokens: { source: ['tokens/**/*.tokens.json'], prefix: 'ds' },
+  tokens: { source: ['design/**/*.tokens.json'], prefix: 'ds' },
   brands: {
     default: 'marketplace',
     all: [
-      { name: 'marketplace', label: 'Marketplace', tokensFile: `${acmeRoot}/brands/marketplace/tokens.json` },
-      { name: 'seller', label: 'Seller', tokensFile: `${acmeRoot}/brands/seller/tokens.json` },
+      { name: 'marketplace', label: 'Marketplace', tokensFile: `${acmeRoot}/design/brands/marketplace.json` },
+      { name: 'seller', label: 'Seller', tokensFile: `${acmeRoot}/design/brands/seller.json` },
     ],
   },
-  components: { specs: 'components/*.contract.ts', ejected: [], extensions: 'extensions/*.ext.ts' },
+  components: { specs: 'design/components/**/*.contract.ts', ejected: [], extensions: 'design/components/**/*.ext.ts' },
   targets: {
     react: { output: 'packages/design-system' },
     css: { output: 'packages/design-system/styles', selector: 'data-attribute' as const },

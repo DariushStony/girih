@@ -55,7 +55,8 @@ export function registerEject(program: Command): void {
       // Snapshot the exact template output as the fork base. The recorded hash +
       // template version are what would make a future `girih forks` 3-way merge.
       const source = renderComponentSource(ir, { classPrefix: config.tokens.prefix, runtimePackage: RUNTIME_PACKAGE });
-      const baseFile = emittedFile(`components/ejected/${kebabName(componentName)}.tsx`, source);
+      const slug = kebabName(componentName);
+      const baseFile = emittedFile(`design/components/${slug}/${slug}.ejected.tsx`, source);
 
       // If the generated file on disk carries hand edits (drift), the fork must
       // start from THOSE — ejecting is the drift gate's own remedy, and following

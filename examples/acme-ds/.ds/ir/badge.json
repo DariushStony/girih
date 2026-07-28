@@ -98,5 +98,5 @@
     "allowExtends": false,
     "overridableTokens": []
   },
-  "sourceFile": "components/badge.contract.ts"
+  "sourceFile": "design/components/badge/badge.contract.ts"
 }

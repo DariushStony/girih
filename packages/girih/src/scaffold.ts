@@ -7,6 +7,12 @@ export interface ScaffoldOptions {
   name: string;
   /** Default brand name. */
   brand: string;
+  /**
+   * npm visibility written into ds.config.ts. Defaults to 'restricted' because an
+   * accidental public publish cannot be undone, and the first-publish gate refuses to
+   * guess either way.
+   */
+  access?: 'public' | 'restricted';
 }
 
 export interface ScaffoldResult {
@@ -62,7 +68,7 @@ export function workspacePackageJson(options: {
  * sitting, real enough that `girih generate react` produces a working Button.
  */
 export function workspaceTemplate(options: ScaffoldOptions): Record<string, string> {
-  const { name, brand } = options;
+  const { name, brand, access = 'restricted' } = options;
   return {
     'ds.config.ts': `import { defineConfig } from '@faravahar/girih';
 
@@ -71,12 +77,13 @@ export default defineConfig({
   brands: {
     default: '${brand}',
     definitions: {
-      '${brand}': { tokens: 'brands/${brand}/tokens.json' },
+      '${brand}': { tokens: 'design/brands/${brand}.json' },
     },
   },
+  publish: { access: '${access}' },
 });
 `,
-    'tokens/global.tokens.json': `${JSON.stringify(
+    'design/tokens/global.tokens.json': `${JSON.stringify(
       {
         color: {
           $type: 'color',
@@ -103,7 +110,7 @@ export default defineConfig({
       null,
       2,
     )}\n`,
-    'tokens/semantic.tokens.json': `${JSON.stringify(
+    'design/tokens/semantic.tokens.json': `${JSON.stringify(
       {
         color: {
           $type: 'color',
@@ -136,7 +143,7 @@ export default defineConfig({
       null,
       2,
     )}\n`,
-    'tokens/components/button.tokens.json': `${JSON.stringify(
+    'design/components/button/button.tokens.json': `${JSON.stringify(
       {
         button: {
           primary: {
@@ -170,8 +177,8 @@ export default defineConfig({
       null,
       2,
     )}\n`,
-    [`brands/${brand}/tokens.json`]: '{}\n',
-    'components/button.contract.ts': `import { defineSpec } from '@faravahar/girih';
+    [`design/brands/${brand}.json`]: '{}\n',
+    'design/components/button/button.contract.ts': `import { defineSpec } from '@faravahar/girih';
 
 export default defineSpec({
   name: 'Button',

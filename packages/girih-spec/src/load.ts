@@ -15,36 +15,59 @@ export interface LoadSpecsResult {
   diagnostics: Diagnostic[];
 }
 
+const DEFAULT_SPEC_GLOB = 'design/components/**/*.contract.ts';
+
 /**
- * Load components/*.contract.ts files. Specs execute as TypeScript (via jiti) but must
- * stay pure data: the default export has to come from defineSpec() and must be
- * JSON-serializable — functions or class instances anywhere inside are rejected,
- * because generation must be a pure function of (tokens, specs, config).
+ * Legacy layouts, most-recent first, with the move each one needs. Ordered so a workspace
+ * that is one step behind is told about that step, not about both at once.
+ */
+const LEGACY_SPEC_LAYOUTS: readonly (readonly [string, string])[] = [
+  [
+    'design/components/**/*.spec.ts',
+    'Contracts are now `*.contract.ts`, because `*.spec.ts` is collected as a test file by vitest and jest. Rename them: `for f in design/components/*/*.spec.ts; do git mv "$f" "${f%.spec.ts}.contract.ts"; done`',
+  ],
+  [
+    'components/*.contract.ts',
+    "The input moved under design/, with each component's contract, tokens and extensions together: components/<name>.contract.ts becomes design/components/<name>/<name>.contract.ts. Or keep the old paths by setting components.specs in ds.config.ts.",
+  ],
+  [
+    'components/*.spec.ts',
+    'These need both renames: *.spec.ts became *.contract.ts, and the input moved under design/ — components/button.spec.ts becomes design/components/button/button.contract.ts.',
+  ],
+];
+
+/**
+ * Load the component contracts. They execute as TypeScript (via jiti) but must stay pure
+ * data: the default export has to come from defineSpec() and must be JSON-serializable —
+ * functions or class instances anywhere inside are rejected, because generation must be a
+ * pure function of (tokens, contracts, config).
  */
 export async function loadSpecs(config: ResolvedConfig): Promise<LoadSpecsResult> {
   const diagnostics: Diagnostic[] = [];
   const specs: LoadedSpec[] = [];
   const files = (await glob([config.components.specs], { cwd: config.root })).sort();
 
-  // A clean break still has to be legible. Contracts moved from `*.spec.ts` to
-  // `*.contract.ts` because `**/*.spec.ts` is in the default test-match of both vitest and
-  // jest, so a consumer running plain `vitest run` collected every contract as a failing
-  // test suite. Without this diagnostic the upgrade surfaces as an *empty catalog* instead:
-  // GIRIH4034 blaming an extension for a component that "does not exist", or — with no
-  // extensions — a silently empty generated package. Both send you looking in the wrong
-  // place. Only probed when the glob still ends in `.contract.ts`; a custom pattern is the
-  // author's business.
-  if (files.length === 0 && config.components.specs.endsWith('.contract.ts')) {
-    const legacyGlob = config.components.specs.replace(/\.contract\.ts$/, '.spec.ts');
-    const legacy = (await glob([legacyGlob], { cwd: config.root })).sort();
-    if (legacy.length > 0) {
-      const plural = legacy.length === 1 ? '' : 's';
+  // A clean break still has to be legible. Two renames landed in quick succession:
+  // `*.spec.ts` became `*.contract.ts` (because `**/*.spec.ts` is in vitest's and jest's
+  // default test-match, so contracts were collected as broken test suites), and the input
+  // folders moved under `design/` with each component's files together. A workspace that has
+  // done neither matches nothing, and the visible failure is GIRIH4034 blaming an extension
+  // for a component that "does not exist" — or, with no extensions, a silently empty package.
+  // Both send you looking in the wrong place.
+  //
+  // Only probed while the glob is still the default; a custom pattern is the author's.
+  if (files.length === 0 && config.components.specs === DEFAULT_SPEC_GLOB) {
+    for (const [legacyGlob, advice] of LEGACY_SPEC_LAYOUTS) {
+      const found = (await glob([legacyGlob], { cwd: config.root })).sort();
+      if (found.length === 0) continue;
+      const plural = found.length === 1 ? '' : 's';
       diagnostics.push({
         code: 'GIRIH4023',
         severity: 'error',
-        message: `No contracts matched '${config.components.specs}', but ${legacy.length} '${legacyGlob}' file${plural} ${legacy.length === 1 ? 'is' : 'are'} present (${legacy.slice(0, 3).join(', ')}${legacy.length > 3 ? ', …' : ''}).`,
-        help: 'Contracts are now `*.contract.ts`, because `*.spec.ts` is collected as a test file by vitest and jest. Rename them: `for f in components/*.spec.ts; do git mv "$f" "${f%.spec.ts}.contract.ts"; done`',
+        message: `No contracts matched '${config.components.specs}', but ${found.length} '${legacyGlob}' file${plural} ${found.length === 1 ? 'is' : 'are'} present (${found.slice(0, 3).join(', ')}${found.length > 3 ? ', …' : ''}).`,
+        help: advice,
       });
+      break;
     }
   }
 

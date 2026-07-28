@@ -11,7 +11,7 @@ afterAll(() => Promise.all(dirs.map((d) => rm(d, { recursive: true, force: true 
 async function workspace(files: Record<string, string>): Promise<string> {
   const root = await mkdtemp(join(tmpdir(), 'girih-load-'));
   dirs.push(root);
-  await mkdir(join(root, 'components'), { recursive: true });
+  for (const d of ['design/components/button', 'components']) await mkdir(join(root, d), { recursive: true });
   for (const [path, contents] of Object.entries(files)) await writeFile(join(root, path), contents, 'utf8');
   return root;
 }
@@ -39,7 +39,7 @@ describe('loadSpecs', () => {
   // upgrading consumer and a mystery is this diagnostic: without it the catalog is simply
   // empty, and the visible error blames an extension for a component that "does not exist".
   it('reports GIRIH4023 when only legacy *.spec.ts files are present', async () => {
-    const root = await workspace({ 'components/button.spec.ts': CONTRACT });
+    const root = await workspace({ 'design/components/button/button.spec.ts': CONTRACT });
     const { specs, diagnostics } = await loadSpecs({ ...acmeConfig, root });
     expect(specs).toEqual([]);
     const legacy = diagnostics.find((d) => d.code === 'GIRIH4023');
@@ -57,10 +57,26 @@ describe('loadSpecs', () => {
     expect(diagnostics).toEqual([]);
   });
 
+  // Upgrading from 0.2 means both renames at once — the extension *and* the move under
+  // design/. Being told only about the extension would leave the second one to discover.
+  it('reports the pre-0.4 location, and says both renames are needed', async () => {
+    const root = await workspace({ 'components/button.spec.ts': CONTRACT });
+    const legacy = (await loadSpecs({ ...acmeConfig, root })).diagnostics.find((d) => d.code === 'GIRIH4023');
+    expect(legacy, 'expected GIRIH4023').toBeDefined();
+    expect(legacy!.help).toContain('design/components/button/button.contract.ts');
+  });
+
+  it('reports the location move alone when the extension is already current', async () => {
+    const root = await workspace({ 'components/button.contract.ts': CONTRACT });
+    const legacy = (await loadSpecs({ ...acmeConfig, root })).diagnostics.find((d) => d.code === 'GIRIH4023');
+    expect(legacy, 'expected GIRIH4023').toBeDefined();
+    expect(legacy!.help).toContain('The input moved under design/');
+  });
+
   // Someone who deliberately configures a different pattern owns it; probing for a legacy
   // name they never used would be noise.
   it('does not probe for legacy names under a custom glob', async () => {
-    const root = await workspace({ 'components/button.spec.ts': CONTRACT });
+    const root = await workspace({ 'design/components/button/button.spec.ts': CONTRACT });
     const { diagnostics } = await loadSpecs({
       ...acmeConfig,
       root,

@@ -50,7 +50,7 @@ ${code(
     "pill": { "$value": "999px" }
   }
 }`,
-  { path: 'tokens/global.tokens.json (excerpt)', kind: 'authored', lang: 'json' },
+  { path: 'design/tokens/global.tokens.json (excerpt)', kind: 'authored', lang: 'json' },
 )}
 
 <p>
@@ -81,7 +81,7 @@ ${eli5(`
 <p>
   girih requires tokens to live in one of three tiers. The tier is inferred from the filename —
   <code>global*.tokens.json</code>, <code>semantic*.tokens.json</code>, and anything under
-  <code>tokens/components/</code> — and a file girih cannot classify gets a
+  <code>design/components/&lt;name&gt;/</code> — and a file girih cannot classify gets a
   <code>GIRIH2004</code> warning and is treated as semantic.
 </p>
 
@@ -239,12 +239,12 @@ ${graph.html}
   nothing at all, so its file is literally empty:
 </p>
 
-${code(`{}`, { path: 'brands/marketplace/tokens.json', kind: 'authored', lang: 'json' })}
+${code(`{}`, { path: 'design/brands/marketplace.json', kind: 'authored', lang: 'json' })}
 
 <p>The <code>seller</code> brand overrides exactly three values:</p>
 
-${code(data.sources['brands/seller/tokens.json'] ?? '{}', {
-  path: 'brands/seller/tokens.json',
+${code(data.sources['design/brands/seller.json'] ?? '{}', {
+  path: 'design/brands/seller.json',
   kind: 'authored',
   lang: 'json',
 })}
@@ -252,7 +252,7 @@ ${code(data.sources['brands/seller/tokens.json'] ?? '{}', {
 ${danger(
   'An overlay may only override. Never add.',
   `<p>
-    If <code>brands/seller/tokens.json</code> introduced a path that does not exist in the base
+    If <code>design/brands/seller.json</code> introduced a path that does not exist in the base
     token set, that is an error — not a merge. The reason is structural: if brands could add tokens,
     a component contract could reference a token that exists for one brand and not another, and
     there would be no such thing as "one component set that serves every brand". Every brand must
@@ -430,7 +430,7 @@ ${strap()}
 <ol>
   <li>
     <strong>Name the tier in the filename.</strong> <code>global*.tokens.json</code>,
-    <code>semantic*.tokens.json</code>, or under <code>tokens/components/</code>. Otherwise you get
+    <code>semantic*.tokens.json</code>, or under <code>design/components/&lt;name&gt;/</code>. Otherwise you get
     a warning and a possibly wrong tier.
   </li>
   <li>

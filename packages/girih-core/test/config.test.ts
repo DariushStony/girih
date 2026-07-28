@@ -13,7 +13,7 @@ describe('loadConfig', () => {
     expect(diagnostics).toEqual([]);
     expect(config).not.toBeNull();
     expect(config!.name).toBe('@test/design-system');
-    expect(config!.tokens).toEqual({ source: ['tokens/**/*.tokens.json'], prefix: 'ds' });
+    expect(config!.tokens).toEqual({ source: ['design/**/*.tokens.json'], prefix: 'ds' });
     expect(config!.brands.default).toBe('main');
     expect(config!.brands.all[0]!.tokensFile).toBe(join(fixture('valid'), 'brands/main/tokens.json'));
     expect(config!.targets.css).toEqual({ output: 'packages/design-system/styles', selector: 'data-attribute' });

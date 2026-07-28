@@ -1,22 +1,29 @@
 #!/usr/bin/env node
+import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { basename, join, resolve } from 'node:path';
 import process from 'node:process';
-import { ask, isInteractive } from './prompt.js';
+import { ask, confirm, isInteractive } from './prompt.js';
 import { scaffoldWorkspace } from '@faravahar/girih/scaffold';
 import { scaffoldDevDependencies } from './versions.js';
 
 /**
- * npx create-girih <dir> — writes a complete workspace and installs nothing.
+ * npx create-girih <dir> — writes a complete workspace, then installs it with whichever
+ * package manager invoked us.
  *
- * It used to install @faravahar/girih and delegate to `girih init`, which meant choosing a
- * package manager on the user's behalf and running it before they had said anything. The
- * templates come from @faravahar/girih/scaffold, the same module `girih init` uses, so the
- * bootstrapper and the CLI cannot drift apart — and tsup inlines that subpath at build time,
- * which is why this package still publishes with zero runtime dependencies. Importing the
- * package's barrel instead would drag in jiti and ~280KB.
+ * Installing matters because the scaffolded package.json's scripts call `girih`: leave the
+ * install out and `pnpm run generate` fails on a missing binary, the same way it would in a
+ * create-next-app project with no `next`. The manager is never hardcoded — `pnpm create
+ * girih` installs with pnpm — and `--no-install` opts out entirely.
+ *
+ * Scaffolding happens before the install and no longer delegates to `girih init`, so a
+ * failed or skipped install still leaves a complete, readable project. The templates come
+ * from @faravahar/girih/scaffold, the same module `girih init` uses, so a workspace created
+ * either way is byte-identical. tsup inlines that subpath at build time, which is why this
+ * package still publishes with zero runtime dependencies; importing the package's barrel
+ * instead drags in jiti and takes the bundle from 16KB to 280KB.
  */
 const USAGE = `Usage: create-girih [directory] [--name @scope/design-system] [--brand main] [--workspace]
 
@@ -24,10 +31,12 @@ const USAGE = `Usage: create-girih [directory] [--name @scope/design-system] [--
   --name        published package name (default: @<directory>/design-system)
   --brand       default brand, lowercase kebab-case (default: main)
   --workspace   link the girih packages by workspace protocol (monorepo development)
+  --public      publish the design system publicly (default: private to your org)
+  --no-install  scaffold only; print the commands to finish yourself
   -v, --version print the create-girih version
   -h, --help    show this message
 
-Nothing is installed — finish with your own package manager.
+Installs with whichever package manager ran this — pnpm, yarn, bun or npm.
 
 Example: npx create-girih my-ds --name @acme/design-system`;
 const BRAND_NAME = /^[a-z][a-z0-9-]*$/;
@@ -38,10 +47,13 @@ interface Args {
   name?: string;
   brand: string;
   workspace: boolean;
+  install: boolean;
+  /** undefined until chosen, so a prompt can tell "not asked" from "asked and declined". */
+  access?: 'public' | 'restricted';
 }
 
 function parseArgs(argv: string[]): Args | { error: string } {
-  const args: Args = { brand: 'main', workspace: false };
+  const args: Args = { brand: 'main', workspace: false, install: true };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
     if (arg === '--help' || arg === '-h') {
@@ -68,7 +80,13 @@ function parseArgs(argv: string[]): Args | { error: string } {
         args.workspace = true;
         break;
       case '--no-install':
-        // Now the only behaviour. Accepted so an existing script keeps working.
+        args.install = false;
+        break;
+      case '--public':
+        args.access = 'public';
+        break;
+      case '--private':
+        args.access = 'restricted';
         break;
       default:
         // Any leading dash, not just '--': otherwise '-x' is taken as the directory name.
@@ -119,6 +137,11 @@ if (isInteractive()) {
     default: parsed.brand,
     validate: (value) => (BRAND_NAME.test(value) ? null : 'must be lowercase kebab-case (it becomes a [data-brand] selector)'),
   });
+  // Defaults to no. A public publish cannot be taken back, and npm's own default for a
+  // scoped package is restricted — so the safe answer is also the unsurprising one.
+  if (parsed.access === undefined) {
+    parsed.access = (await confirm('Publish this design system publicly?', false)) ? 'public' : 'restricted';
+  }
   console.log('');
 }
 
@@ -182,12 +205,41 @@ function detectPackageManager(): string {
 
 // The same templates `girih init` writes, from the same module — so a scaffold produced
 // here and one produced there are byte-identical.
-const { written } = await scaffoldWorkspace(dir, { name: resolvedPackageName, brand: parsed.brand });
+const { written } = await scaffoldWorkspace(dir, {
+  name: resolvedPackageName,
+  brand: parsed.brand,
+  access: parsed.access ?? 'restricted',
+});
 for (const path of written) console.log(`create  ${workspaceName}/${path}`);
 
 const packageManager = detectPackageManager();
-console.log(`\n${resolvedPackageName} is ready — nothing was installed.`);
+
+if (!parsed.install) {
+  console.log(`\n${resolvedPackageName} is scaffolded. The scripts call \`girih\`, so install before running them:`);
+  console.log(`\n  cd ${parsed.dir}`);
+  console.log(`  ${packageManager} install`);
+  console.log(`  ${packageManager} run generate      compile the design system package`);
+  console.log(`\n  open demo/index.html  see every variant, size and brand`);
+  process.exit(0);
+}
+
+// Package managers are .cmd shims on Windows, so spawning them needs a shell there.
+console.log(`\ninstall (${packageManager})…`);
+const install = spawnSync(packageManager, ['install'], {
+  cwd: dir,
+  stdio: 'inherit',
+  shell: process.platform === 'win32',
+});
+if (install.status !== 0) {
+  // The workspace is already complete, so this is recoverable — say so rather than
+  // implying the scaffold failed too.
+  console.error(`\n${packageManager} install failed. ${resolvedPackageName} is scaffolded; finish with:`);
+  console.error(`  cd ${parsed.dir} && ${packageManager} install`);
+  process.exit(install.status ?? 1);
+}
+
+console.log(`\n${resolvedPackageName} is ready.`);
 console.log(`\n  cd ${parsed.dir}`);
-console.log(`  ${packageManager} install`);
 console.log(`  ${packageManager} run generate      compile the design system package`);
+console.log(`  ${packageManager} run check         validate tokens and contracts`);
 console.log(`\n  open demo/index.html  see every variant, size and brand`);

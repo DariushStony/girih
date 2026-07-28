@@ -134,5 +134,5 @@
     "allowExtends": false,
     "overridableTokens": []
   },
-  "sourceFile": "components/input.contract.ts"
+  "sourceFile": "design/components/input/input.contract.ts"
 }

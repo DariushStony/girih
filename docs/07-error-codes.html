@@ -1514,7 +1514,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1003</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:203</span>
+          <span class="src">packages/girih-core/src/config.ts:206</span>
         </div>
         <p class="msg">Config is missing 'name' (the published package name, e.g. '@acme/design-system').</p>
         <p class="help">Add `name: '@scope/design-system'`. It is the name the generated package is published under, so it has to be one you own.</p>
@@ -1523,7 +1523,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1004</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:177</span>
+          <span class="src">packages/girih-core/src/config.ts:180</span>
         </div>
         <p class="msg">Brand '<i class="ph">${brand.name}</i>' points at a missing token file: <i class="ph">${brand.tokensFile}</i></p>
         <p class="help">Create the overlay file (an empty {} is valid) or fix brands.definitions.<i class="ph">${brand.name}</i>.tokens.</p>
@@ -1532,7 +1532,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1005</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:213</span>
+          <span class="src">packages/girih-core/src/config.ts:216</span>
         </div>
         <p class="msg">Config must define at least one brand under brands.definitions.</p>
         <p class="help">Add one: `brands: { default: 'base', definitions: { base: { tokens: 'brands/base/tokens.json' } } }`. An empty {} overlay is valid, so the default brand can override nothing.</p>
@@ -1541,7 +1541,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1006</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:221</span>
+          <span class="src">packages/girih-core/src/config.ts:224</span>
         </div>
         <p class="msg">brands.default ('<i class="ph">${raw.brands?.default}</i>') is not a key of brands.definitions.</p>
         <p class="help">Known brands: <i class="ph">${Object.keys(definitions).join(', ')}</i></p>
@@ -1550,7 +1550,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1007</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:193</span>
+          <span class="src">packages/girih-core/src/config.ts:196</span>
         </div>
         <p class="msg">ds.config.ts must default-export a config object (use defineConfig).</p>
         <p class="help">Write `export default defineConfig({ … })`. A named export is not read, and neither is a default that is not an object.</p>
@@ -1586,7 +1586,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1012</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih/src/workspace.ts:89</span>
+          <span class="src">packages/girih/src/workspace.ts:90</span>
         </div>
         <p class="msg">'<i class="ph">${name}</i>' is recorded as ejected in ds.lock, but <i class="ph">${path}</i> is missing.</p>
         <p class="help">Restore the file, or remove the '<i class="ph">${name}</i>' entry from ds.lock to return to generation.</p>
@@ -1604,19 +1604,19 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1014</span>
           <span class="sev">warning</span>
-          <span class="src">packages/girih/src/workspace.ts:106</span>
+          <span class="src">packages/girih/src/workspace.ts:107</span>
         </div>
         <p class="msg">'<i class="ph">${name}</i>' was ejected from a different spec/template than the current one — the fork may not honor the contract anymore.</p>
         <p class="help">Review the fork against the current spec, or re-eject after removing the ds.lock entry (`girih forks` reports this; the 3-way merge is not built yet).</p>
       </div>
-      <div class="codecard" data-sev="warning" data-code="GIRIH1015" data-search="girih1015 ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated. restore components/${kebabname(name)}.contract.ts, or remove the entry and components/ejected/${kebabname(name)}.tsx. girih">
+      <div class="codecard" data-sev="warning" data-code="GIRIH1015" data-search="girih1015 ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated. restore design/components/${kebabname(name)}/${kebabname(name)}.contract.ts, or remove the ds.lock entry. girih">
         <div class="top">
           <span class="cid">GIRIH1015</span>
           <span class="sev">warning</span>
           <span class="src">packages/girih/src/workspace.ts:75</span>
         </div>
         <p class="msg">ds.lock records '<i class="ph">${name}</i>' as ejected, but no spec with that name exists — the fork is not generated.</p>
-        <p class="help">Restore components/<i class="ph">${kebabName(name)}</i>.contract.ts, or remove the entry and components/ejected/<i class="ph">${kebabName(name)}</i>.tsx.</p>
+        <p class="help">Restore design/components/<i class="ph">${kebabName(name)}</i>/<i class="ph">${kebabName(name)}</i>.contract.ts, or remove the ds.lock entry.</p>
       </div>
   </div>
 </section>
@@ -1658,32 +1658,32 @@ select.sel, input.txt {
         <p class="msg">'<i class="ph">${[...segments, key].join('.')}</i>' is a bare <i class="ph">${typeof child}</i>; tokens must be objects with a $value.</p>
         <p class="help">Write it as { &quot;$value&quot;: <i class="ph">${JSON.stringify(child)}</i> }.</p>
       </div>
-      <div class="codecard" data-sev="warning" data-code="GIRIH2004" data-search="girih2004 cannot infer the tier of '${file}' from its name — assuming 'semantic'. name token files global*.tokens.json / semantic*.tokens.json, or put component tokens under tokens/components/. girih-tokens">
+      <div class="codecard" data-sev="warning" data-code="GIRIH2004" data-search="girih2004 cannot infer the tier of '${file}' from its name — assuming 'semantic'. name token files global*.tokens.json / semantic*.tokens.json, or put component tokens under a components/ directory — design/components/&lt;name&gt;/&lt;name&gt;.tokens.json in the default layout. girih-tokens">
         <div class="top">
           <span class="cid">GIRIH2004</span>
           <span class="sev">warning</span>
-          <span class="src">packages/girih-tokens/src/engine.ts:68</span>
+          <span class="src">packages/girih-tokens/src/engine.ts:95</span>
         </div>
         <p class="msg">Cannot infer the tier of '<i class="ph">${file}</i>' from its name — assuming 'semantic'.</p>
-        <p class="help">Name token files global*.tokens.json / semantic*.tokens.json, or put component tokens under tokens/components/.</p>
+        <p class="help">Name token files global*.tokens.json / semantic*.tokens.json, or put component tokens under a components/ directory — design/components/&lt;name&gt;/&lt;name&gt;.tokens.json in the default layout.</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH2005" data-search="girih2005 cannot read token file: ${(error as error).message} check the path and that the file is readable. a token file glob that matches a directory or a broken symlink lands here too. girih-tokens">
         <div class="top">
           <span class="cid">GIRIH2005</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-tokens/src/engine.ts:39</span>
+          <span class="src">packages/girih-tokens/src/engine.ts:63</span>
         </div>
         <p class="msg">Cannot read token file: <i class="ph">${(error as Error).message}</i></p>
         <p class="help">Check the path and that the file is readable. A token file glob that matches a directory or a broken symlink lands here too.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH2006" data-search="girih2006 no token files matched ${config.tokens.source.join(', ')} under ${config.root}. create tokens/global.tokens.json to get started. girih-tokens">
+      <div class="codecard" data-sev="error" data-code="GIRIH2006" data-search="girih2006 no token files matched ${config.tokens.source.join(', ')} under ${config.root}. legacytokenlayouthint(config) ?? 'create design/tokens/global.tokens.json to get started.' girih-tokens">
         <div class="top">
           <span class="cid">GIRIH2006</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-tokens/src/engine.ts:56</span>
+          <span class="src">packages/girih-tokens/src/engine.ts:80</span>
         </div>
         <p class="msg">No token files matched <i class="ph">${config.tokens.source.join(', ')}</i> under <i class="ph">${config.root}</i>.</p>
-        <p class="help">Create tokens/global.tokens.json to get started.</p>
+        <p class="help">legacyTokenLayoutHint(config) ?? 'Create design/tokens/global.tokens.json to get started.'</p>
       </div>
       <div class="codecard" data-sev="warning" data-code="GIRIH2007" data-search="girih2007 token or group name '${key}' contains characters that do not translate cleanly to css variable names. stick to lowercase letters, digits, &quot;-&quot; and &quot;_&quot; so generated names stay predictable. girih-tokens">
         <div class="top">
@@ -2016,7 +2016,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4020</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/load.ts:61</span>
+          <span class="src">packages/girih-spec/src/load.ts:84</span>
         </div>
         <p class="msg">Failed to load spec: <i class="ph">${(error as Error).message}</i></p>
         <p class="help">The spec is evaluated as real TypeScript, so a syntax error, an unresolved import, or a throw at module scope all land here.</p>
@@ -2025,7 +2025,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4021</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/load.ts:72</span>
+          <span class="src">packages/girih-spec/src/load.ts:95</span>
         </div>
         <p class="msg"><i class="ph">${file}</i> does not default-export a component spec.</p>
         <p class="help">Export the result of defineSpec({...}) from '@faravahar/girih'.</p>
@@ -2034,19 +2034,19 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4022</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/load.ts:84</span>
+          <span class="src">packages/girih-spec/src/load.ts:107</span>
         </div>
         <p class="msg"><i class="ph">${file}</i> contains a non-serializable value at '<i class="ph">${impure}</i>' — specs must be pure data.</p>
         <p class="help">Remove functions, dates, class instances, and symbols; a spec is a contract, not a program.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4023" data-search="girih4023 no contracts matched '${config.components.specs}', but ${legacy.length} '${legacyglob}' file${plural} ${legacy.length === 1 ? 'is' : 'are'} present (${legacy.slice(0, 3).join(', ')}${legacy.length &gt; 3 ? ', …' : ''}). contracts are now `*.contract.ts`, because `*.spec.ts` is collected as a test file by vitest and jest. rename them: `for f in components/*.spec.ts; do git mv &quot;$f&quot; &quot;${f%.spec.ts}.contract.ts&quot;; done` girih-spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4023" data-search="girih4023 no contracts matched '${config.components.specs}', but ${found.length} '${legacyglob}' file${plural} ${found.length === 1 ? 'is' : 'are'} present (${found.slice(0, 3).join(', ')}${found.length &gt; 3 ? ', …' : ''}). advice girih-spec">
         <div class="top">
           <span class="cid">GIRIH4023</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/load.ts:43</span>
+          <span class="src">packages/girih-spec/src/load.ts:65</span>
         </div>
-        <p class="msg">No contracts matched '<i class="ph">${config.components.specs}</i>', but <i class="ph">${legacy.length}</i> '<i class="ph">${legacyGlob}</i>' file<i class="ph">${plural}</i> <i class="ph">${legacy.length === 1 ? 'is' : 'are'}</i> present (<i class="ph">${legacy.slice(0, 3).join(', ')}</i><i class="ph">${legacy.length &gt; 3 ? ', …' : ''}</i>).</p>
-        <p class="help">Contracts are now `*.contract.ts`, because `*.spec.ts` is collected as a test file by vitest and jest. Rename them: `for f in components/*.spec.ts; do git mv &quot;$f&quot; &quot;<i class="ph">${f%.spec.ts}</i>.contract.ts&quot;; done`</p>
+        <p class="msg">No contracts matched '<i class="ph">${config.components.specs}</i>', but <i class="ph">${found.length}</i> '<i class="ph">${legacyGlob}</i>' file<i class="ph">${plural}</i> <i class="ph">${found.length === 1 ? 'is' : 'are'}</i> present (<i class="ph">${found.slice(0, 3).join(', ')}</i><i class="ph">${found.length &gt; 3 ? ', …' : ''}</i>).</p>
+        <p class="help">advice</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH4030" data-search="girih4030 ${file} does not default-export a variant extension. export the result of definevariant({ name, extends, tokens }) from '@faravahar/girih'. girih-spec">
         <div class="top">

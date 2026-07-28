@@ -399,7 +399,7 @@ ${table(
     [
       '<code>GIRIH2006</code> — no token files matched',
       'Empty or misnamed <code>tokens/</code>',
-      'Create <code>tokens/global.tokens.json</code>; the tier comes from the filename',
+      'Create <code>design/tokens/global.tokens.json</code>; the tier comes from the filename',
     ],
     [
       '<code>GIRIH1010</code> — file edited by hand',

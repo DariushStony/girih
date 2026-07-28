@@ -11,7 +11,7 @@
     "packages/design-system/src/index.ts": "c558182555029d5cb3a28ff7f53719a1265fcec26d72ebb1ec9e51a6691613fb",
     "packages/design-system/src/input.tsx": "31e3933aa432cd0f59594fb90ba98d11a9f19908512272f4370e8199fb8954a7",
     "packages/design-system/src/internal/headless.ts": "9a30c951b55b8342defb5aa8873a4053367f98a85306d22cc05d2d59fca26b6d",
-    "packages/design-system/src/payment-button.tsx": "3ce841ff1237aad5673778885571976bfecb04bb259c6b37b8398bad4710851d",
+    "packages/design-system/src/payment-button.tsx": "c7459c992ce94125f90be407a69ef0e801265944ad7e6928a22a21995642c4fe",
     "packages/design-system/styles/components.css": "1f7f1e8fbb496209e925343da4f9652af6b4453f36b2b9daa943622d057af7c6",
     "packages/design-system/styles/tokens.css": "57ff0951599a7d646c434d460c3ef803f121cc6a733a98c77f949819a37640fc",
     "packages/design-system/styles/tokens.d.ts": "1d68cd1644d8851681fa07221b6dbb207def0b5347d4f1765f5a567eae54a77c"

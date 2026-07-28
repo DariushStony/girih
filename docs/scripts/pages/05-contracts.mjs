@@ -55,8 +55,8 @@ ${eli5(`
 
 <p>Here is the real Button contract from the example workspace, in full:</p>
 
-${code(data.sources['components/button.contract.ts'] ?? '', {
-  path: 'components/button.contract.ts',
+${code(data.sources['design/components/button/button.contract.ts'] ?? '', {
+  path: 'design/components/button/button.contract.ts',
   kind: 'authored',
 })}
 
@@ -151,7 +151,7 @@ ${code(
   },
   "accessibility": { "focusable": true, "aria": [{ "state": "loading", "attributes": { "aria-busy": "true" } }] },
   "extensibility": { "allowExtends": true, "overridableTokens": ["background", "color", "borderColor"] },
-  "sourceFile": "components/button.contract.ts"
+  "sourceFile": "design/components/button/button.contract.ts"
 }`,
   { path: '.ds/ir/button.json (excerpt of the real file)', kind: 'generated', lang: 'json' },
 )}
@@ -321,8 +321,8 @@ ${strap()}
   component within limits the base contract set.
 </p>
 
-${code(data.sources['extensions/payment-button.ext.ts'] ?? '', {
-  path: 'extensions/payment-button.ext.ts',
+${code(data.sources['design/components/button/payment-button.ext.ts'] ?? '', {
+  path: 'design/components/button/payment-button.ext.ts',
   kind: 'authored',
 })}
 

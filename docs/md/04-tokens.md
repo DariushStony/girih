@@ -21,7 +21,7 @@ extracted by running girih's own engine over `examples/acme-ds`.
 A token is a named design decision written in DTCG JSON. Two keys carry the weight:
 `$value` and `$type`.
 
-**tokens/global.tokens.json (excerpt)  [You write this]**
+**design/tokens/global.tokens.json (excerpt)  [You write this]**
 
 ```json
 {
@@ -59,7 +59,7 @@ radius.pill  tier=global  type=dimension  value="999px"
 
 girih requires tokens to live in one of three tiers. The tier is inferred from the filename —
 `global*.tokens.json`, `semantic*.tokens.json`, and anything under
-`tokens/components/` — and a file girih cannot classify gets a
+`design/components//` — and a file girih cannot classify gets a
 `GIRIH2004` warning and is treated as semantic.
 
 | Tier | Holds | Examples |
@@ -172,7 +172,7 @@ most. Hover it and count the lit edges.
 A brand is a folder with one file. The `marketplace` brand is the default and overrides
 nothing at all, so its file is literally empty:
 
-**brands/marketplace/tokens.json  [You write this]**
+**design/brands/marketplace.json  [You write this]**
 
 ```json
 {}
@@ -180,7 +180,7 @@ nothing at all, so its file is literally empty:
 
 The `seller` brand overrides exactly three values:
 
-**brands/seller/tokens.json  [You write this]**
+**design/brands/seller.json  [You write this]**
 
 ```json
 {
@@ -197,7 +197,7 @@ The `seller` brand overrides exactly three values:
 
 > **🔴 Important — An overlay may only override. Never add.**
 >
-> If `brands/seller/tokens.json` introduced a path that does not exist in the base
+> If `design/brands/seller.json` introduced a path that does not exist in the base
 > token set, that is an error — not a merge. The reason is structural: if brands could add tokens,
 > a component contract could reference a token that exists for one brand and not another, and
 > there would be no such thing as "one component set that serves every brand". Every brand must
@@ -344,7 +344,7 @@ one widget on one page looking wrong.
 
 Practical guidance, in rough order of how often it matters:
 
-1. **Name the tier in the filename.** `global*.tokens.json`,  `semantic*.tokens.json`, or under `tokens/components/`. Otherwise you get  a warning and a possibly wrong tier.
+1. **Name the tier in the filename.** `global*.tokens.json`,  `semantic*.tokens.json`, or under `design/components//`. Otherwise you get  a warning and a possibly wrong tier.
 2. **Override at the lowest tier that expresses your intent.** Overriding  `radius.md` says "this brand is squarer". Overriding  `button.radius` says "this brand's buttons are squarer, and I accept that inputs and  checkboxes will not match". Both are legitimate; only one is usually meant.
 3. **Keep names lowercase and kebab-case.** They become CSS custom property names.  Mixed case invites the collision above.
 4. **Declare `$type` on the group, not per token.** Less repetition and it  inherits correctly.

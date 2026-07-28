@@ -92,9 +92,9 @@ describe('e2e: scaffold → check → generate → drift', { timeout: SUITE_TIME
   it('adds a hyphenated brand with `girih brand create` and stays valid', async () => {
     const { status, output } = girih('brand', 'create', 'dark-mode');
     expect(status).toBe(0);
-    expect(output).toContain('brands/dark-mode/tokens.json');
+    expect(output).toContain('design/brands/dark-mode.json');
     // Keys are quoted — a hyphenated name must never corrupt the config.
-    expect(await readFile(join(workspace, 'ds.config.ts'), 'utf8')).toContain("'dark-mode': { tokens: 'brands/dark-mode/tokens.json' },");
+    expect(await readFile(join(workspace, 'ds.config.ts'), 'utf8')).toContain("'dark-mode': { tokens: 'design/brands/dark-mode.json' }");
 
     const check = girih('check', '--no-table');
     expect(check.output).toContain('2 brands');
@@ -118,7 +118,7 @@ describe('e2e: scaffold → check → generate → drift', { timeout: SUITE_TIME
   it('ejects Button into a tracked fork and stitches user edits back in', async () => {
     const eject = girih('eject', 'Button');
     expect(eject.status).toBe(0);
-    expect(eject.output).toContain('components/ejected/button.tsx');
+    expect(eject.output).toContain('design/components/button/button.ejected.tsx');
 
     const lock = JSON.parse(await readFile(join(workspace, 'ds.lock'), 'utf8'));
     expect(lock.ejected.Button.template).toBe('element');
@@ -129,7 +129,7 @@ describe('e2e: scaffold → check → generate → drift', { timeout: SUITE_TIME
     expect(girih('eject', 'Button').status).toBe(1);
 
     // Fork the markup — this file is user-owned now.
-    const ejectedPath = join(workspace, 'components/ejected/button.tsx');
+    const ejectedPath = join(workspace, 'design/components/button/button.ejected.tsx');
     const forked = (await readFile(ejectedPath, 'utf8')).replace("cx('ds-button'", "cx('ds-button forked'");
     await writeFile(ejectedPath, forked);
 

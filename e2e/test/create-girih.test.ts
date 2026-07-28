@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { mkdir, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -13,12 +13,19 @@ const cliPath = join(repoRoot, 'packages/create-girih/dist/cli.js');
 const scratch = join(repoRoot, 'e2e/.tmp/create-girih');
 
 /**
- * Runs the real bootstrapper. `npm_config_user_agent` is what a package manager sets when
- * it runs `<pm> create girih`, so setting it here is exactly how the invocation is
- * distinguished — there is no other signal at that moment.
+ * Runs the real bootstrapper with `--no-install`.
+ *
+ * The install path is deliberately untested here: it reaches the registry, and nothing in
+ * this suite may depend on the network being up. What actually needs proving is that the
+ * scaffold is complete and that the manifest declares girih — `cli-install.test.ts` already
+ * covers packing and installing for real.
+ *
+ * `npm_config_user_agent` is what a package manager sets when it runs `<pm> create girih`,
+ * so setting it here is exactly how the invocation is distinguished; there is no other
+ * signal at that moment.
  */
 function create(dir: string, userAgent: string, ...args: string[]): { status: number | null; output: string } {
-  const result = spawnSync('node', [cliPath, dir, ...args], {
+  const result = spawnSync('node', [cliPath, dir, '--no-install', ...args], {
     cwd: scratch,
     encoding: 'utf8',
     env: { ...process.env, npm_config_user_agent: userAgent },
@@ -26,9 +33,9 @@ function create(dir: string, userAgent: string, ...args: string[]): { status: nu
   return { status: result.status, output: plainOutput(`${result.stdout}\n${result.stderr}`) };
 }
 
-// No network and no install, so this suite is fast and offline — which is the point of the
-// change it covers. It still spawns a real process per case, so it keeps a modest timeout.
-describe('create-girih: scaffold only, install nothing', { timeout: 30_000 }, () => {
+const PNPM = 'pnpm/11.17.0 npm/? node/v22';
+
+describe('create-girih', { timeout: 30_000 }, () => {
   beforeAll(async () => {
     if (!existsSync(cliPath)) throw new Error('run `pnpm build` before the create-girih e2e.');
     await rm(scratch, { recursive: true, force: true });
@@ -36,59 +43,67 @@ describe('create-girih: scaffold only, install nothing', { timeout: 30_000 }, ()
   });
   afterAll(() => rm(scratch, { recursive: true, force: true }));
 
-  it('writes a complete workspace and installs nothing', () => {
-    const { status, output } = create('full', 'pnpm/11.17.0 npm/? node/v22', '--name', '@acme/ds');
+  it('writes a complete workspace under design/', () => {
+    const { status, output } = create('full', PNPM, '--name', '@acme/ds');
     expect(status, output).toBe(0);
 
-    // Every file girih needs to run `check` and `generate` — not just a package.json.
+    // Everything girih needs to run check and generate — and every component's contract, tokens
+    // and extension live together, which is the point of the layout.
     for (const path of [
       'package.json',
       'ds.config.ts',
-      'tokens/global.tokens.json',
-      'tokens/semantic.tokens.json',
-      'tokens/components/button.tokens.json',
-      'brands/main/tokens.json',
-      'components/button.contract.ts',
+      'design/tokens/global.tokens.json',
+      'design/tokens/semantic.tokens.json',
+      'design/brands/main.json',
+      'design/components/button/button.contract.ts',
+      'design/components/button/button.tokens.json',
       'demo/index.html',
       '.gitignore',
     ]) {
       expect(existsSync(join(scratch, 'full', path)), `missing ${path}`).toBe(true);
     }
+  });
 
-    // The whole point: no package manager was run on the user's behalf.
-    expect(existsSync(join(scratch, 'full', 'node_modules')), 'nothing should have been installed').toBe(false);
-    expect(output).toContain('nothing was installed');
+  // The scripts call `girih`, so the manifest has to bring it — otherwise `run generate`
+  // fails on a missing binary the way a create-next-app project would with no `next`.
+  it('declares girih so the generated scripts can run once installed', () => {
+    const manifest = JSON.parse(readFileSync(join(scratch, 'full/package.json'), 'utf8')) as {
+      scripts: Record<string, string>;
+      devDependencies: Record<string, string>;
+    };
+    expect(Object.values(manifest.scripts).join(' ')).toContain('girih');
+    expect(manifest.devDependencies).toHaveProperty('@faravahar/girih');
   });
 
   it('names the invoking package manager in its next steps', () => {
     const cases: [string, string][] = [
-      ['pnpm/11.17.0 npm/? node/v22', 'pnpm install'],
+      [PNPM, 'pnpm install'],
       ['yarn/1.22.22 npm/? node/v22', 'yarn install'],
       ['bun/1.1.0 npm/? node/v22', 'bun install'],
       ['npm/10.9.8 node/v22', 'npm install'],
+      // Unset means girih was not launched through a manager at all.
+      ['', 'npm install'],
     ];
     for (const [index, [userAgent, expected]] of cases.entries()) {
       const { status, output } = create(`pm-${index}`, userAgent, '--name', '@acme/ds');
       expect(status, output).toBe(0);
-      expect(output, `user agent ${userAgent}`).toContain(expected);
+      expect(output, `user agent '${userAgent}'`).toContain(expected);
     }
   });
 
-  // An unset user agent means girih was not launched through a manager at all.
-  it('falls back to npm when no user agent is set', () => {
-    const { status, output } = create('no-ua', '', '--name', '@acme/ds');
-    expect(status, output).toBe(0);
-    expect(output).toContain('npm install');
+  // Private is the default because a public publish cannot be undone, and it matches npm's
+  // own default for a scoped package.
+  it.each([
+    [[], "access: 'restricted'"],
+    [['--private'], "access: 'restricted'"],
+    [['--public'], "access: 'public'"],
+  ])('records publish access for %s', (flags, expected) => {
+    const dir = `access-${flags.join('') || 'default'}`;
+    expect(create(dir, PNPM, '--name', '@acme/ds', ...flags).status).toBe(0);
+    expect(readFileSync(join(scratch, dir, 'ds.config.ts'), 'utf8')).toContain(expected);
   });
 
   it('refuses to scaffold over an existing package.json', () => {
-    expect(create('full', 'npm/10.9.8 node/v22', '--name', '@acme/ds').status).toBe(1);
-  });
-
-  // The flag is now the only behaviour; a script that still passes it must not break.
-  it('accepts --no-install as a no-op', () => {
-    const { status } = create('legacy-flag', 'npm/10.9.8 node/v22', '--name', '@acme/ds', '--no-install');
-    expect(status).toBe(0);
-    expect(existsSync(join(scratch, 'legacy-flag', 'ds.config.ts'))).toBe(true);
+    expect(create('full', PNPM, '--name', '@acme/ds').status).toBe(1);
   });
 });

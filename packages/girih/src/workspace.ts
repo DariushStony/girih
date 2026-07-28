@@ -78,11 +78,12 @@ export async function loadEjectedSources(
         file: 'ds.lock',
         // Both paths are kebab-case. Lowercasing only the first letter named
         // `paymentButton.contract.ts` for a PaymentButton, which never existed.
-        help: `Restore components/${kebabName(name)}.contract.ts, or remove the entry and components/ejected/${kebabName(name)}.tsx.`,
+        help: `Restore design/components/${kebabName(name)}/${kebabName(name)}.contract.ts, or remove the ds.lock entry.`,
       });
       continue;
     }
-    const path = `components/ejected/${kebabName(name)}.tsx`;
+    const slug = kebabName(name);
+    const path = `design/components/${slug}/${slug}.ejected.tsx`;
     const contents = await readFile(join(config.root, path), 'utf8').catch(() => null);
     if (contents === null) {
       build.diagnostics.push({

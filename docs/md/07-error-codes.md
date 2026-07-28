@@ -106,7 +106,7 @@ The error comes from ds.config.ts itself. It is evaluated as real TypeScript, so
 
 GIRIH1003
 error
-packages/girih-core/src/config.ts:203
+packages/girih-core/src/config.ts:206
 
 Config is missing 'name' (the published package name, e.g. '@acme/design-system').
 
@@ -114,7 +114,7 @@ Add `name: '@scope/design-system'`. It is the name the generated package is publ
 
 GIRIH1004
 error
-packages/girih-core/src/config.ts:177
+packages/girih-core/src/config.ts:180
 
 Brand '${brand.name}' points at a missing token file: ${brand.tokensFile}
 
@@ -122,7 +122,7 @@ Create the overlay file (an empty {} is valid) or fix brands.definitions.${brand
 
 GIRIH1005
 error
-packages/girih-core/src/config.ts:213
+packages/girih-core/src/config.ts:216
 
 Config must define at least one brand under brands.definitions.
 
@@ -130,7 +130,7 @@ Add one: `brands: { default: 'base', definitions: { base: { tokens: 'brands/base
 
 GIRIH1006
 error
-packages/girih-core/src/config.ts:221
+packages/girih-core/src/config.ts:224
 
 brands.default ('${raw.brands?.default}') is not a key of brands.definitions.
 
@@ -138,7 +138,7 @@ Known brands: ${Object.keys(definitions).join(', ')}
 
 GIRIH1007
 error
-packages/girih-core/src/config.ts:193
+packages/girih-core/src/config.ts:196
 
 ds.config.ts must default-export a config object (use defineConfig).
 
@@ -170,7 +170,7 @@ Delete .ds/manifest.json and regenerate.
 
 GIRIH1012
 error
-packages/girih/src/workspace.ts:89
+packages/girih/src/workspace.ts:90
 
 '${name}' is recorded as ejected in ds.lock, but ${path} is missing.
 
@@ -186,7 +186,7 @@ ds.lock is machine-managed and committed — restore it from git history.
 
 GIRIH1014
 warning
-packages/girih/src/workspace.ts:106
+packages/girih/src/workspace.ts:107
 
 '${name}' was ejected from a different spec/template than the current one — the fork may not honor the contract anymore.
 
@@ -198,7 +198,7 @@ packages/girih/src/workspace.ts:75
 
 ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated.
 
-Restore components/${kebabName(name)}.contract.ts, or remove the entry and components/ejected/${kebabName(name)}.tsx.
+Restore design/components/${kebabName(name)}/${kebabName(name)}.contract.ts, or remove the ds.lock entry.
 
 ### `GIRIH2xxx` — Tokens
 
@@ -235,15 +235,15 @@ Write it as { "$value": ${JSON.stringify(child)} }.
 
 GIRIH2004
 warning
-packages/girih-tokens/src/engine.ts:68
+packages/girih-tokens/src/engine.ts:95
 
 Cannot infer the tier of '${file}' from its name — assuming 'semantic'.
 
-Name token files global*.tokens.json / semantic*.tokens.json, or put component tokens under tokens/components/.
+Name token files global*.tokens.json / semantic*.tokens.json, or put component tokens under a components/ directory — design/components//.tokens.json in the default layout.
 
 GIRIH2005
 error
-packages/girih-tokens/src/engine.ts:39
+packages/girih-tokens/src/engine.ts:63
 
 Cannot read token file: ${(error as Error).message}
 
@@ -251,11 +251,11 @@ Check the path and that the file is readable. A token file glob that matches a d
 
 GIRIH2006
 error
-packages/girih-tokens/src/engine.ts:56
+packages/girih-tokens/src/engine.ts:80
 
 No token files matched ${config.tokens.source.join(', ')} under ${config.root}.
 
-Create tokens/global.tokens.json to get started.
+legacyTokenLayoutHint(config) ?? 'Create design/tokens/global.tokens.json to get started.'
 
 GIRIH2007
 warning
@@ -543,7 +543,7 @@ Known elements: ${[...KNOWN_ELEMENTS].join(', ')}.
 
 GIRIH4020
 error
-packages/girih-spec/src/load.ts:61
+packages/girih-spec/src/load.ts:84
 
 Failed to load spec: ${(error as Error).message}
 
@@ -551,7 +551,7 @@ The spec is evaluated as real TypeScript, so a syntax error, an unresolved impor
 
 GIRIH4021
 error
-packages/girih-spec/src/load.ts:72
+packages/girih-spec/src/load.ts:95
 
 ${file} does not default-export a component spec.
 
@@ -559,7 +559,7 @@ Export the result of defineSpec({...}) from '@faravahar/girih'.
 
 GIRIH4022
 error
-packages/girih-spec/src/load.ts:84
+packages/girih-spec/src/load.ts:107
 
 ${file} contains a non-serializable value at '${impure}' — specs must be pure data.
 
@@ -567,11 +567,11 @@ Remove functions, dates, class instances, and symbols; a spec is a contract, not
 
 GIRIH4023
 error
-packages/girih-spec/src/load.ts:43
+packages/girih-spec/src/load.ts:65
 
-No contracts matched '${config.components.specs}', but ${legacy.length} '${legacyGlob}' file${plural} ${legacy.length === 1 ? 'is' : 'are'} present (${legacy.slice(0, 3).join(', ')}${legacy.length > 3 ? ', …' : ''}).
+No contracts matched '${config.components.specs}', but ${found.length} '${legacyGlob}' file${plural} ${found.length === 1 ? 'is' : 'are'} present (${found.slice(0, 3).join(', ')}${found.length > 3 ? ', …' : ''}).
 
-Contracts are now `*.contract.ts`, because `*.spec.ts` is collected as a test file by vitest and jest. Rename them: `for f in components/*.spec.ts; do git mv "$f" "${f%.spec.ts}.contract.ts"; done`
+advice
 
 GIRIH4030
 error

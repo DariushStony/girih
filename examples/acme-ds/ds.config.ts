@@ -5,8 +5,8 @@ export default defineConfig({
   brands: {
     default: 'marketplace',
     definitions: {
-      marketplace: { tokens: 'brands/marketplace/tokens.json', label: 'Marketplace' },
-      seller: { tokens: 'brands/seller/tokens.json', label: 'Seller Platform' },
+      marketplace: { tokens: 'design/brands/marketplace.json', label: 'Marketplace' },
+      seller: { tokens: 'design/brands/seller.json', label: 'Seller Platform' },
     },
   },
 });

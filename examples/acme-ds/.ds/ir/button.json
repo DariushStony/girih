@@ -192,5 +192,5 @@
       "borderColor"
     ]
   },
-  "sourceFile": "components/button.contract.ts"
+  "sourceFile": "design/components/button/button.contract.ts"
 }
