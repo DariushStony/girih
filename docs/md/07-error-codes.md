@@ -706,15 +706,14 @@ No diagnostics match that filter.
 
 ## An honest note on coverage
 
-0 of the 71 diagnostics have no
-`help` line. The project's own convention is that anything actionable should carry a
-one-line suggestion, so that number is a real gap rather than a deliberate choice — most of the
-missing ones are in the `GIRIH4xxx` contract family, where the message is often
-self-explanatory but a pointer to the right field would still save time.
+Every one of the 71 diagnostics carries a `help` line. For a long
+time roughly half did not — the convention was stated but nothing enforced it, so each new
+diagnostic was free to ship without one. `e2e/test/diagnostics-help.test.ts` now fails
+if any code lacks help, which is what turned the convention into a guarantee.
 
-It is recorded here rather than smoothed over, because a reference that quietly implies full
-coverage is worse than one that names its gaps. If you are adding a diagnostic, add the
-`help`.
+It asserts that help _exists_, never what it says, so the wording stays free to improve
+without a test to update. This section is generated from the same extraction as the table above,
+so if the number ever slips it will say so here rather than quietly implying full coverage.
 
 **[Terminal]**
 

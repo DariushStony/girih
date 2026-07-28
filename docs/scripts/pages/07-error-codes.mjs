@@ -193,19 +193,32 @@ ${familyBlocks}
 
 <h2 id="gaps">An honest note on coverage</h2>
 
+${
+  diagnostics.codes.filter((c) => !c.help).length === 0
+    ? `<p>
+  Every one of the ${diagnostics.total} diagnostics carries a <code>help</code> line. For a long
+  time roughly half did not — the convention was stated but nothing enforced it, so each new
+  diagnostic was free to ship without one. <code>e2e/test/diagnostics-help.test.ts</code> now fails
+  if any code lacks help, which is what turned the convention into a guarantee.
+</p>
+
 <p>
+  It asserts that help <em>exists</em>, never what it says, so the wording stays free to improve
+  without a test to update. This section is generated from the same extraction as the table above,
+  so if the number ever slips it will say so here rather than quietly implying full coverage.
+</p>`
+    : `<p>
   ${diagnostics.codes.filter((c) => !c.help).length} of the ${diagnostics.total} diagnostics have no
   <code>help</code> line. The project's own convention is that anything actionable should carry a
-  one-line suggestion, so that number is a real gap rather than a deliberate choice — most of the
-  missing ones are in the <code>GIRIH4xxx</code> contract family, where the message is often
-  self-explanatory but a pointer to the right field would still save time.
+  one-line suggestion, so that number is a real gap rather than a deliberate choice.
 </p>
 
 <p>
   It is recorded here rather than smoothed over, because a reference that quietly implies full
   coverage is worse than one that names its gaps. If you are adding a diagnostic, add the
   <code>help</code>.
-</p>
+</p>`
+}
 
 ${code(
   `# regenerate after changing any diagnostic

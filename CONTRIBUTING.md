@@ -86,8 +86,9 @@ somebody's CI filter or runbook is still matching the old meaning. Gaps are free
 When you add a diagnostic:
 
 - Put it in your package's range.
-- Include a `help` line. Roughly half the existing codes lack one — that is a known gap, not a
-  precedent.
+- Include a `help` line. All 79 sites have one, and
+  [`e2e/test/diagnostics-help.test.ts`](e2e/test/diagnostics-help.test.ts) fails if a new
+  diagnostic ships without. It asserts presence, never wording, so the text stays free to improve.
 - Add a test asserting the **code**, not the message text. Messages should be free to improve.
 - Regenerate the reference: `node docs/scripts/extract-diagnostics.mjs`.
 
@@ -118,13 +119,34 @@ Smallest scope that proves it:
 
 `pnpm verify` is the whole gate — build, typecheck, lint, `format:check`, tests, then the example's
 `girih check` and drift check, plus the docs gate. It is the same set `ci` runs, so a green verify
-means a green pipeline.
+means a green pipeline — with one exception, below.
+
+### The exception: renaming a file on macOS
+
+macOS is case-insensitive, CI is not, and the gap is invisible locally in two ways at once.
+`git status` stays clean after a case-only rename when the contents match, so the old name is what
+gets committed; and `existsSync('dist/Button.js')` returns true when the file is `dist/button.js`,
+so assertions naming the old path keep passing. A rename can therefore be green on every local
+check and red on CI.
+
+If you rename an emitted file:
+
+- Stage it with `git mv` through a temporary name — a case-only `git mv` is refused outright here.
+- Grep for the **file names**, not the directories you expect to hold them. Scoping a search to
+  `src/` and `.ds/ir/` is what left two `dist/Button.js` assertions behind and turned the pipeline
+  red.
+- To actually run the suite under CI's filesystem semantics, use a case-sensitive volume — a fresh
+  clone is not enough, because it still resolves paths case-insensitively. `CLAUDE.md` has the
+  four-line recipe.
+
+[`e2e/test/tracked-paths.test.ts`](e2e/test/tracked-paths.test.ts) catches the committed-name half
+of this before you push.
 
 `exactOptionalPropertyTypes` and `noUncheckedIndexedAccess` are on and will reject code that looks
 fine.
 
 Never run `girih publish --yes` — that publishes a _consumer's_ design system, not girih. girih's
-own release is a merged release PR; see below.
+own release is a push to `main`; see below. There is no release PR.
 
 ### Tests must not depend on the network
 
