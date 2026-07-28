@@ -8,6 +8,12 @@ All eight published packages move in lockstep. Internal dependencies publish as 
 pins, so a change in `girih-core` cannot reach consumers without republishing everything
 above it — the version is a property of the release, not of one package.
 
+## 0.4.1 — 2026-07-28
+
+### Bug fixes
+
+- **girih-core:** point the no-brands help at the current layout (7e91118)
+
 ## 0.4.0 — 2026-07-28
 
 ### Breaking changes
