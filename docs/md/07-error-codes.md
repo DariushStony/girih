@@ -90,7 +90,7 @@ hit on day one and then rarely again — with one exception,
 
 GIRIH1001
 error
-packages/girih-core/src/config.ts:92
+packages/girih-core/src/config.ts:93
 
 No ds.config.ts found in ${root}
 
@@ -98,7 +98,7 @@ Run `girih init` to scaffold a workspace, or cd into an existing one.
 
 GIRIH1002
 error
-packages/girih-core/src/config.ts:120
+packages/girih-core/src/config.ts:121
 
 Failed to load ${configPath}: ${message.split('\n')[0]}
 
@@ -106,7 +106,7 @@ The error comes from ds.config.ts itself. It is evaluated as real TypeScript, so
 
 GIRIH1003
 error
-packages/girih-core/src/config.ts:202
+packages/girih-core/src/config.ts:203
 
 Config is missing 'name' (the published package name, e.g. '@acme/design-system').
 
@@ -114,7 +114,7 @@ Add `name: '@scope/design-system'`. It is the name the generated package is publ
 
 GIRIH1004
 error
-packages/girih-core/src/config.ts:176
+packages/girih-core/src/config.ts:177
 
 Brand '${brand.name}' points at a missing token file: ${brand.tokensFile}
 
@@ -122,7 +122,7 @@ Create the overlay file (an empty {} is valid) or fix brands.definitions.${brand
 
 GIRIH1005
 error
-packages/girih-core/src/config.ts:212
+packages/girih-core/src/config.ts:213
 
 Config must define at least one brand under brands.definitions.
 
@@ -130,7 +130,7 @@ Add one: `brands: { default: 'base', definitions: { base: { tokens: 'brands/base
 
 GIRIH1006
 error
-packages/girih-core/src/config.ts:220
+packages/girih-core/src/config.ts:221
 
 brands.default ('${raw.brands?.default}') is not a key of brands.definitions.
 
@@ -138,7 +138,7 @@ Known brands: ${Object.keys(definitions).join(', ')}
 
 GIRIH1007
 error
-packages/girih-core/src/config.ts:192
+packages/girih-core/src/config.ts:193
 
 ds.config.ts must default-export a config object (use defineConfig).
 
@@ -708,7 +708,7 @@ packages/girih/src/build.ts:80
 
 The generated package imports ${missing.map((m) => `'${m}'`).join(', ')}, which ${missing.length === 1 ? 'is' : 'are'} not installed.
 
-Install the build prerequisites: npm install -D ${missing.join(' ')}
+Install the build prerequisites: ${addDevCommand(detectPackageManager(), missing)}
 
 No diagnostics match that filter.
 

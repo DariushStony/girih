@@ -1496,7 +1496,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1001</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:92</span>
+          <span class="src">packages/girih-core/src/config.ts:93</span>
         </div>
         <p class="msg">No ds.config.ts found in <i class="ph">${root}</i></p>
         <p class="help">Run `girih init` to scaffold a workspace, or cd into an existing one.</p>
@@ -1505,7 +1505,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1002</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:120</span>
+          <span class="src">packages/girih-core/src/config.ts:121</span>
         </div>
         <p class="msg">Failed to load <i class="ph">${configPath}</i>: <i class="ph">${message.split('\n')[0]}</i></p>
         <p class="help">The error comes from ds.config.ts itself. It is evaluated as real TypeScript, so a syntax error, an unresolved import, or a throw at module scope all land here.</p>
@@ -1514,7 +1514,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1003</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:202</span>
+          <span class="src">packages/girih-core/src/config.ts:203</span>
         </div>
         <p class="msg">Config is missing 'name' (the published package name, e.g. '@acme/design-system').</p>
         <p class="help">Add `name: '@scope/design-system'`. It is the name the generated package is published under, so it has to be one you own.</p>
@@ -1523,7 +1523,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1004</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:176</span>
+          <span class="src">packages/girih-core/src/config.ts:177</span>
         </div>
         <p class="msg">Brand '<i class="ph">${brand.name}</i>' points at a missing token file: <i class="ph">${brand.tokensFile}</i></p>
         <p class="help">Create the overlay file (an empty {} is valid) or fix brands.definitions.<i class="ph">${brand.name}</i>.tokens.</p>
@@ -1532,7 +1532,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1005</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:212</span>
+          <span class="src">packages/girih-core/src/config.ts:213</span>
         </div>
         <p class="msg">Config must define at least one brand under brands.definitions.</p>
         <p class="help">Add one: `brands: { default: 'base', definitions: { base: { tokens: 'brands/base/tokens.json' } } }`. An empty {} overlay is valid, so the default brand can override nothing.</p>
@@ -1541,7 +1541,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1006</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:220</span>
+          <span class="src">packages/girih-core/src/config.ts:221</span>
         </div>
         <p class="msg">brands.default ('<i class="ph">${raw.brands?.default}</i>') is not a key of brands.definitions.</p>
         <p class="help">Known brands: <i class="ph">${Object.keys(definitions).join(', ')}</i></p>
@@ -1550,7 +1550,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1007</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:192</span>
+          <span class="src">packages/girih-core/src/config.ts:193</span>
         </div>
         <p class="msg">ds.config.ts must default-export a config object (use defineConfig).</p>
         <p class="help">Write `export default defineConfig({ … })`. A named export is not read, and neither is a default that is not an object.</p>
@@ -2201,14 +2201,14 @@ select.sel, input.txt {
         <p class="msg">No TypeScript sources in <i class="ph">${srcDir}</i> — run \`girih generate react\` first.</p>
         <p class="help">The build compiles generated source, so there is nothing to compile until `girih generate react` has written it.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH6002" data-search="girih6002 the generated package imports ${missing.map((m) =&gt; `'${m}'`).join(', ')}, which ${missing.length === 1 ? 'is' : 'are'} not installed. install the build prerequisites: npm install -d ${missing.join(' ')} girih">
+      <div class="codecard" data-sev="error" data-code="GIRIH6002" data-search="girih6002 the generated package imports ${missing.map((m) =&gt; `'${m}'`).join(', ')}, which ${missing.length === 1 ? 'is' : 'are'} not installed. install the build prerequisites: ${adddevcommand(detectpackagemanager(), missing)} girih">
         <div class="top">
           <span class="cid">GIRIH6002</span>
           <span class="sev">error</span>
           <span class="src">packages/girih/src/build.ts:80</span>
         </div>
         <p class="msg">The generated package imports <i class="ph">${missing.map((m) =&gt; `'${m}</i>'`).join(', ')}, which <i class="ph">${missing.length === 1 ? 'is' : 'are'}</i> not installed.</p>
-        <p class="help">Install the build prerequisites: npm install -D <i class="ph">${missing.join(' ')}</i></p>
+        <p class="help">Install the build prerequisites: <i class="ph">${addDevCommand(detectPackageManager(), missing)}</i></p>
       </div>
   </div>
 </section>

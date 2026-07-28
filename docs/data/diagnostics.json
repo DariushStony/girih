@@ -132,10 +132,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 92,
+      "line": 93,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:92"
+        "packages/girih-core/src/config.ts:93"
       ]
     },
     {
@@ -147,10 +147,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 120,
+      "line": 121,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:120"
+        "packages/girih-core/src/config.ts:121"
       ]
     },
     {
@@ -162,10 +162,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 202,
+      "line": 203,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:202"
+        "packages/girih-core/src/config.ts:203"
       ]
     },
     {
@@ -177,10 +177,10 @@
       "helpDynamic": true,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 176,
+      "line": 177,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:176"
+        "packages/girih-core/src/config.ts:177"
       ]
     },
     {
@@ -192,10 +192,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 212,
+      "line": 213,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:212"
+        "packages/girih-core/src/config.ts:213"
       ]
     },
     {
@@ -207,10 +207,10 @@
       "helpDynamic": true,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 220,
+      "line": 221,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:220"
+        "packages/girih-core/src/config.ts:221"
       ]
     },
     {
@@ -222,10 +222,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 192,
+      "line": 193,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:192"
+        "packages/girih-core/src/config.ts:193"
       ]
     },
     {
@@ -1201,7 +1201,7 @@
       "severity": "error",
       "message": "The generated package imports ${missing.map((m) => `'${m}'`).join(', ')}, which ${missing.length === 1 ? 'is' : 'are'} not installed.",
       "messageDynamic": true,
-      "help": "Install the build prerequisites: npm install -D ${missing.join(' ')}",
+      "help": "Install the build prerequisites: ${addDevCommand(detectPackageManager(), missing)}",
       "helpDynamic": true,
       "package": "girih",
       "file": "packages/girih/src/build.ts",

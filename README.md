@@ -136,7 +136,7 @@ core, tokens  ←  spec  ←  generator-react
                                      ↖ core
 core, tokens, spec, generator-css, generator-react  ←  cli
 
-standalone:  react-runtime (react is a peer dep) · create-girih (zero workspace deps) · figma (stub)
+standalone:  react-runtime (react is a peer dep) · create-girih (zero runtime deps) · figma (stub)
 ```
 
 | Package                                                              | Role                                                                                          |
@@ -148,7 +148,7 @@ standalone:  react-runtime (react is a peer dep) · create-girih (zero workspace
 | [`@faravahar/girih-generator-react`](packages/girih-generator-react) | IR + templates → React package and structure-only CSS.                                        |
 | [`@faravahar/girih`](packages/girih)                                 | The `girih` / `ds` binary. The only package allowed to depend on all of the above.            |
 | [`@faravahar/girih-react-runtime`](packages/girih-react-runtime)     | `BrandProvider`, `useBrand`, `cx`. The entire runtime.                                        |
-| [`create-girih`](packages/create-girih)                              | `npx` bootstrapper. Zero workspace deps by necessity.                                         |
+| [`create-girih`](packages/create-girih)                              | `npx` bootstrapper. Zero runtime deps by nece.                                                |
 | [`@faravahar/girih-figma`](packages/girih-figma)                     | Phase-2 stub; consumes `ComponentIR`.                                                         |
 
 ### Verifying a change

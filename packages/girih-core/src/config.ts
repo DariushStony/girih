@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { isAbsolute, join, resolve } from 'node:path';
 import { createJiti } from 'jiti';
 import type { Diagnostic } from './diagnostics.js';
+import { addDevCommand, detectPackageManager } from './package-manager.js';
 
 /** User-authored workspace configuration (ds.config.ts). */
 export interface GirihConfig {
@@ -127,7 +128,7 @@ export async function loadConfig(cwd: string): Promise<LoadConfigResult> {
       help: 'The error comes from ds.config.ts itself. It is evaluated as real TypeScript, so a syntax error, an unresolved import, or a throw at module scope all land here.',
     };
     if (message.includes('@faravahar/girih')) {
-      diagnostic.help = "ds.config.ts imports '@faravahar/girih' — install it first: npm install -D @faravahar/girih";
+      diagnostic.help = `ds.config.ts imports '@faravahar/girih' — install it first: ${addDevCommand(detectPackageManager(root), ['@faravahar/girih'])}`;
     }
     diagnostics.push(diagnostic);
     return { config: null, diagnostics };

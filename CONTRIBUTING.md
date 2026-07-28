@@ -59,7 +59,7 @@ core, tokens, spec, generator-css, generator-react  ←  cli
 ```
 
 `react-runtime`, `create-girih` and `figma` are standalone. `react` is a **peer** dependency of
-`react-runtime`, never a real one. `create-girih` has zero workspace dependencies because it must
+`react-runtime`, never a real one. `create-girih` has zero _runtime_ dependencies because it must
 run before anything is installed.
 
 Nothing enforces this mechanically — no lint rule, no dependency-cruiser config. If a fix seems to

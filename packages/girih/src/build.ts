@@ -3,7 +3,7 @@ import { dirname, join, relative } from 'node:path';
 import { glob } from 'tinyglobby';
 import ts from 'typescript';
 import { resolvesFrom } from './resolve.js';
-import { emittedFile, writeEmittedFiles } from '@faravahar/girih-core';
+import { addDevCommand, detectPackageManager, emittedFile, writeEmittedFiles } from '@faravahar/girih-core';
 import type { Diagnostic, EmittedFile } from '@faravahar/girih-core';
 
 export interface BuildResult {
@@ -81,7 +81,7 @@ export async function buildPackage(packageDir: string): Promise<BuildResult> {
           severity: 'error',
           message: `The generated package imports ${missing.map((m) => `'${m}'`).join(', ')}, which ${missing.length === 1 ? 'is' : 'are'} not installed.`,
           file: join(relative(dirname(packageDir), packageDir), 'package.json'),
-          help: `Install the build prerequisites: npm install -D ${missing.join(' ')}`,
+          help: `Install the build prerequisites: ${addDevCommand(detectPackageManager(), missing)}`,
         },
       ],
     };

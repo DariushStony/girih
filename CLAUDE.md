@@ -59,7 +59,7 @@ core, tokens, spec, generator-css, generator-react  ←  cli
 - `@faravahar/girih-generator-react` — IR + templates → React package source and structure-only CSS. May depend on `core` + `spec`.
 - `@faravahar/girih` — the `girih` / `ds` binary. The only package that may depend on all of the above.
 - `@faravahar/girih-react-runtime` — `BrandProvider`, `useBrand`, `cx`. Standalone; `react` is a **peer** dependency, never a real one.
-- `create-girih` — `npx` bootstrapper. Zero workspace dependencies by design (it must run before anything is installed).
+- `create-girih` — `npx` bootstrapper. Zero **runtime** dependencies by design: it must run before anything is installed. It does devDepend on `@faravahar/girih` and imports `@faravahar/girih/scaffold`, which tsup inlines at build time, so the templates have exactly one home while the published tarball still installs nothing. Import the package's barrel instead and the bundle goes from 16KB to 280KB by dragging in jiti.
 - `@faravahar/girih-figma` — phase-2 stub. Consumes `ComponentIR`; do not grow it without being asked.
 
 **Non-negotiable invariants.** Breaking one of these is a design bug, not a style preference:

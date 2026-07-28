@@ -1,9 +1,9 @@
 import { existsSync } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
 import pc from 'picocolors';
-import { CONFIG_FILENAMES } from '@faravahar/girih-core';
+import { CONFIG_FILENAMES, addDevCommand, detectPackageManager } from '@faravahar/girih-core';
 import { scaffoldWorkspace } from '../scaffold.js';
-import { BRAND_NAME, PACKAGE_NAME } from '../self.js';
+import { BRAND_NAME, PACKAGE_NAME, PACKAGE_SELF } from '../self.js';
 import { hasResolvableCli } from '../workspace.js';
 import type { Command } from 'commander';
 
@@ -45,7 +45,7 @@ export function registerInit(program: Command): void {
       for (const path of written) console.log(`${pc.green('create')}  ${path}`);
       console.log(`\n${pc.bold(name)} is ready. Next steps:`);
       if (!hasResolvableCli(cwd)) {
-        console.log(`  ${pc.cyan('npm install -D @faravahar/girih')}   (ds.config.ts imports it)`);
+        console.log(`  ${pc.cyan(addDevCommand(detectPackageManager(cwd), [PACKAGE_SELF]))}   (ds.config.ts imports it)`);
       }
       console.log(`  ${pc.cyan('girih check')}           validate tokens and contracts`);
       console.log(`  ${pc.cyan('girih generate react')}  compile the design system package`);

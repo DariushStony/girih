@@ -1,10 +1,10 @@
+import { detectPackageManager } from '@faravahar/girih-core';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import pc from 'picocolors';
 import { workspaceGirihDependencies } from '../doctor.js';
 import { table } from '../output.js';
-import { detectPackageManager } from '../package-manager.js';
 import { fetchLatestVersions, updateChecksDisabled } from '../registry.js';
 import { installedVersion } from '../resolve.js';
 import type { Command } from 'commander';

@@ -1,27 +1,33 @@
 #!/usr/bin/env node
-import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { basename, join, resolve } from 'node:path';
 import process from 'node:process';
-import { ask, confirm, isInteractive } from './prompt.js';
+import { ask, isInteractive } from './prompt.js';
+import { scaffoldWorkspace } from '@faravahar/girih/scaffold';
 import { scaffoldDevDependencies } from './versions.js';
 
 /**
- * npx create-girih <dir> — creates the directory and package.json, installs
- * @faravahar/girih, then delegates to the installed `girih init`. The workspace
- * template lives in @faravahar/girih so bootstrapper and CLI can never drift apart.
+ * npx create-girih <dir> — writes a complete workspace and installs nothing.
+ *
+ * It used to install @faravahar/girih and delegate to `girih init`, which meant choosing a
+ * package manager on the user's behalf and running it before they had said anything. The
+ * templates come from @faravahar/girih/scaffold, the same module `girih init` uses, so the
+ * bootstrapper and the CLI cannot drift apart — and tsup inlines that subpath at build time,
+ * which is why this package still publishes with zero runtime dependencies. Importing the
+ * package's barrel instead would drag in jiti and ~280KB.
  */
-const USAGE = `Usage: create-girih [directory] [--name @scope/design-system] [--brand main] [--workspace] [--no-install]
+const USAGE = `Usage: create-girih [directory] [--name @scope/design-system] [--brand main] [--workspace]
 
   [directory]   folder to create; prompted for when omitted and a terminal is attached
   --name        published package name (default: @<directory>/design-system)
   --brand       default brand, lowercase kebab-case (default: main)
   --workspace   link the girih packages by workspace protocol (monorepo development)
-  --no-install  scaffold only; print the install and init commands to run yourself
   -v, --version print the create-girih version
   -h, --help    show this message
+
+Nothing is installed — finish with your own package manager.
 
 Example: npx create-girih my-ds --name @acme/design-system`;
 const BRAND_NAME = /^[a-z][a-z0-9-]*$/;
@@ -32,11 +38,10 @@ interface Args {
   name?: string;
   brand: string;
   workspace: boolean;
-  install: boolean;
 }
 
 function parseArgs(argv: string[]): Args | { error: string } {
-  const args: Args = { brand: 'main', workspace: false, install: true };
+  const args: Args = { brand: 'main', workspace: false };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
     if (arg === '--help' || arg === '-h') {
@@ -63,7 +68,7 @@ function parseArgs(argv: string[]): Args | { error: string } {
         args.workspace = true;
         break;
       case '--no-install':
-        args.install = false;
+        // Now the only behaviour. Accepted so an existing script keeps working.
         break;
       default:
         // Any leading dash, not just '--': otherwise '-x' is taken as the directory name.
@@ -114,7 +119,6 @@ if (isInteractive()) {
     default: parsed.brand,
     validate: (value) => (BRAND_NAME.test(value) ? null : 'must be lowercase kebab-case (it becomes a [data-brand] selector)'),
   });
-  if (parsed.install) parsed.install = await confirm('Install dependencies now?', true);
   console.log('');
 }
 
@@ -160,6 +164,14 @@ await writeFile(
 );
 console.log(`create  ${workspaceName}/package.json`);
 
+/**
+ * Which package manager invoked us. `npm_config_user_agent` is set by every one of them
+ * when running `<pm> create girih` or `npx create-girih`, so it is reliable *here* — unlike
+ * inside an already-created workspace, where girih reads the lockfile instead.
+ *
+ * Used only to phrase the next steps. Nothing is spawned, so guessing wrong now costs a
+ * misleading sentence rather than an install with the wrong tool.
+ */
 function detectPackageManager(): string {
   const userAgent = process.env.npm_config_user_agent ?? '';
   if (userAgent.startsWith('pnpm')) return 'pnpm';
@@ -168,25 +180,14 @@ function detectPackageManager(): string {
   return 'npm';
 }
 
+// The same templates `girih init` writes, from the same module — so a scaffold produced
+// here and one produced there are byte-identical.
+const { written } = await scaffoldWorkspace(dir, { name: resolvedPackageName, brand: parsed.brand });
+for (const path of written) console.log(`create  ${workspaceName}/${path}`);
+
 const packageManager = detectPackageManager();
-// The `--` separator is load-bearing: without it `npm exec` eats --name/--brand
-// as npm config and forwards their values as positionals.
-const initArgs = ['exec', '--', 'girih', 'init', '--name', resolvedPackageName, '--brand', parsed.brand];
-// npm/pnpm/yarn are .cmd shims on Windows; spawning them needs a shell there.
-const spawnOptions = { cwd: dir, stdio: 'inherit', shell: process.platform === 'win32' } as const;
-
-if (!parsed.install) {
-  console.log(`\nScaffolded ${dir}. Finish setup with:`);
-  console.log(`  cd ${parsed.dir} && ${packageManager} install && ${packageManager} ${initArgs.join(' ')}`);
-  process.exit(0);
-}
-
-console.log(`install (${packageManager})…`);
-const install = spawnSync(packageManager, ['install'], spawnOptions);
-if (install.status !== 0) {
-  console.error(`\n${packageManager} install failed — run it yourself, then: ${packageManager} ${initArgs.join(' ')}`);
-  process.exit(install.status ?? 1);
-}
-
-const init = spawnSync(packageManager, initArgs, spawnOptions);
-process.exit(init.status ?? 0);
+console.log(`\n${resolvedPackageName} is ready — nothing was installed.`);
+console.log(`\n  cd ${parsed.dir}`);
+console.log(`  ${packageManager} install`);
+console.log(`  ${packageManager} run generate      compile the design system package`);
+console.log(`\n  open demo/index.html  see every variant, size and brand`);

@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
-import { CONFIG_FILENAMES, loadConfig } from '@faravahar/girih-core';
+import { CONFIG_FILENAMES, addDevCommand, addGlobalCommand, detectPackageManager, loadConfig } from '@faravahar/girih-core';
 import { missingBuildDependencies } from './build.js';
 import { fetchLatestVersions, updateChecksDisabled } from './registry.js';
 import { installedVersion, resolvesFrom } from './resolve.js';
@@ -80,7 +80,7 @@ function checkCliResolution(cwd: string): Check {
     label: self.name,
     status: 'warn',
     detail: 'not resolvable here — fine for `girih create`, but ds.config.ts imports it by name',
-    fix: `npm install -D ${self.name}`,
+    fix: addDevCommand(detectPackageManager(cwd), [self.name]),
   };
 }
 
@@ -130,7 +130,7 @@ async function checkWorkspace(cwd: string): Promise<Check[]> {
             label: 'build prerequisites',
             status: 'fail',
             detail: `${missing.join(', ')} missing — \`girih build\` will not compile`,
-            fix: `npm install -D ${missing.join(' ')}`,
+            fix: addDevCommand(detectPackageManager(cwd), missing),
           },
     );
   } else {
@@ -191,7 +191,7 @@ async function checkForUpdate(): Promise<Check[]> {
       label: 'updates',
       status: 'warn',
       detail: `${self.version} installed, ${latest} available`,
-      fix: `girih update  (or: npm install -g ${self.name}@latest)`,
+      fix: `girih update  (or: ${addGlobalCommand(detectPackageManager(), `${self.name}@latest`)})`,
     },
   ];
 }

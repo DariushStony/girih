@@ -1,10 +1,10 @@
+import { detectPackageManager } from '@faravahar/girih-core';
 import { existsSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { basename, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import pc from 'picocolors';
 import { displayPath } from '../output.js';
-import { detectPackageManager } from '../package-manager.js';
 import { scaffoldWorkspace, workspacePackageJson } from '../scaffold.js';
 import { BRAND_NAME, PACKAGE_NAME, PACKAGE_SELF, RUNTIME_PACKAGE, SELF_VERSION } from '../self.js';
 import type { Command } from 'commander';
