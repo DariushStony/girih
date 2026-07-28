@@ -15,7 +15,11 @@ export const acmeConfig: ResolvedConfig = {
       { name: 'seller', label: 'Seller Platform', tokensFile: `${acmeRoot}/brands/seller/tokens.json` },
     ],
   },
-  components: { specs: 'components/*.contract.ts', ejected: [], extensions: 'extensions/*.tsx' },
+  // Both globs match what the example actually contains, so a test that starts calling
+  // loadSpecs or loadExtensions with this config gets the real files. `extensions/*.tsx`
+  // matched nothing here and no test exercised it — which is exactly how a future
+  // loadExtensions test would have passed on an empty list without anyone noticing.
+  components: { specs: 'components/*.contract.ts', ejected: [], extensions: 'extensions/*.ext.ts' },
   targets: {
     react: { output: 'packages/design-system' },
     css: { output: 'packages/design-system/styles', selector: 'data-attribute' },
