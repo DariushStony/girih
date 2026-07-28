@@ -275,6 +275,81 @@ for (const file of mdFiles) {
   }
 }
 
+/* ------------------------------------------------------- symbols that still exist */
+
+/**
+ * Every girih identifier the docs name in a `<code>` tag must still be declared somewhere in
+ * packages/&#42;/src.
+ *
+ * This is the one staleness class every other check here is blind to. Links, anchors, counts
+ * and code fences can all be perfectly valid while the prose confidently describes an export
+ * that was deleted — `DiagnosticBag` and `formatDiagnostic` survived a whole refactor in
+ * core's file table exactly that way, with 708 checks passing.
+ *
+ * Declared, not exported: the chapters teach internals by name (`dependentsClosure`,
+ * `detectVarNameCollisions`), which is the useful level of detail and not something to punish.
+ * The question is only whether the name still refers to anything.
+ *
+ * Scans the page scripts rather than the built HTML or Markdown, so a failure points at the
+ * line you have to edit. The two are generated from these, so coverage is the same.
+ */
+{
+  const declared = new Set();
+  const walk = (dir) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) {
+        if (entry.name !== 'node_modules' && entry.name !== 'dist') walk(full);
+      } else if (/\.tsx?$/.test(entry.name)) {
+        const source = readFileSync(full, 'utf8');
+        for (const m of source.matchAll(/(?:function|const|let|class|interface|type|enum)\s+([A-Za-z_$][\w$]*)/g)) declared.add(m[1]);
+        // Config keys and IR fields are documented the same way functions are.
+        for (const m of source.matchAll(/^\s*([A-Za-z_$][\w$]*)\??:/gm)) declared.add(m[1]);
+      }
+    }
+  };
+  const packagesDir = join(repoRoot, 'packages');
+  for (const pkg of readdirSync(packagesDir)) {
+    const src = join(packagesDir, pkg, 'src');
+    if (existsSync(src)) walk(src);
+  }
+
+  // Not ours. Each entry is a claim that the name belongs to someone else's API, so a symbol
+  // girih deletes can never be excused by sitting here.
+  const FOREIGN = new Set([
+    'forwardRef', // react
+    'afterAll', // vitest
+    'resolveReferences', // style-dictionary
+    'usesDtcg', // style-dictionary
+    'moduleResolution', // tsconfig
+    // Emitted from the example's own contracts — they exist in generated output, not in src.
+    'ButtonProps',
+    'ButtonSize',
+    'ButtonVariant',
+    'PaymentButton',
+  ]);
+
+  const pageDirs = [join(docsDir, 'scripts/pages'), join(docsDir, 'scripts/lib')];
+  for (const dir of pageDirs) {
+    if (!existsSync(dir)) continue;
+    for (const name of readdirSync(dir).filter((f) => f.endsWith('.mjs'))) {
+      const rel = relative(repoRoot, join(dir, name));
+      const lines = readFileSync(join(dir, name), 'utf8').split('\n');
+      lines.forEach((line, index) => {
+        for (const m of line.matchAll(/<code>([A-Za-z_$][\w$]*)(?:\(\))?<\/code>/g)) {
+          const id = m[1];
+          // Needs a capital to be a plausible identifier rather than an English word or a
+          // shell word; SCREAMING_CASE is a constant or a placeholder like GIRIH4xxx, and
+          // diagnostic codes have their own check against the extracted catalog.
+          if (!/[A-Z]/.test(id) || /^[A-Z0-9_]+$/.test(id) || id.startsWith('GIRIH')) continue;
+          if (FOREIGN.has(id)) continue;
+          check(declared.has(id), `${rel}:${index + 1}`, `documents '${id}', which is not declared anywhere in packages/*/src`);
+        }
+      });
+    }
+  }
+}
+
 /* ---------------------------------------------------------------- data freshness */
 
 const diagPath = join(docsDir, 'data/diagnostics.json');

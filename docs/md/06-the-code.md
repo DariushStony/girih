@@ -164,13 +164,21 @@ merely string-shaped.
 | `types.ts` | The contract shape — the most useful file to read first |
 | `ir.ts` | `specToIR()` — canonicalisation |
 | `load.ts` | `loadSpecs()`, `loadComponentIRs()` — jiti-based TS import |
-| `validate.ts` | `validateSpecs()`, `validateExtensions()` — 31 diagnostics |
-| `extensions.ts` | `defineVariant()`, `loadExtensions()`, `componentNamespace()` |
+| `validate.ts` | `validateSpecs()` — 15 diagnostics |
+| `extensions.ts` | `defineVariant()`, `loadExtensions()`, `validateExtensions()` |
+| `token-ref.ts` | `resolveTokenRef()` — the one rule both validators apply to a token reference |
 
 `SPEC_BRAND` and `EXTENSION_BRAND` are runtime markers stamped by
 `defineSpec`/`defineVariant`. They exist because contracts are loaded from
 arbitrary user TypeScript, and girih needs to distinguish "a contract" from "some object someone
 default-exported" without trusting the type system across a runtime boundary.
+
+`token-ref.ts` is small and worth knowing about, because it exists to fix a bug rather
+than to organise code. A contract and an extension both reference tokens, and both must reject the
+same things — reaching into another component's namespace above all. When each validator carried
+its own copy of that rule they drifted, and the identical reach-through was caught through
+`defineVariant` while passing through a spec's `tokens.base`. Two validators
+agreeing by inspection is not agreement; one shared function is.
 
 ## @faravahar/girih-generator-react
 

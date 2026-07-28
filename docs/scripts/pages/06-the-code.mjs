@@ -265,8 +265,9 @@ ${table(
     ['<code>types.ts</code>', 'The contract shape — the most useful file to read first'],
     ['<code>ir.ts</code>', '<code>specToIR()</code> — canonicalisation'],
     ['<code>load.ts</code>', '<code>loadSpecs()</code>, <code>loadComponentIRs()</code> — jiti-based TS import'],
-    ['<code>validate.ts</code>', '<code>validateSpecs()</code>, <code>validateExtensions()</code> — 31 diagnostics'],
-    ['<code>extensions.ts</code>', '<code>defineVariant()</code>, <code>loadExtensions()</code>, <code>componentNamespace()</code>'],
+    ['<code>validate.ts</code>', '<code>validateSpecs()</code> — 15 diagnostics'],
+    ['<code>extensions.ts</code>', '<code>defineVariant()</code>, <code>loadExtensions()</code>, <code>validateExtensions()</code>'],
+    ['<code>token-ref.ts</code>', '<code>resolveTokenRef()</code> — the one rule both validators apply to a token reference'],
   ],
 )}
 
@@ -275,6 +276,15 @@ ${table(
   <code>defineSpec</code>/<code>defineVariant</code>. They exist because contracts are loaded from
   arbitrary user TypeScript, and girih needs to distinguish "a contract" from "some object someone
   default-exported" without trusting the type system across a runtime boundary.
+</p>
+
+<p>
+  <code>token-ref.ts</code> is small and worth knowing about, because it exists to fix a bug rather
+  than to organise code. A contract and an extension both reference tokens, and both must reject the
+  same things — reaching into another component's namespace above all. When each validator carried
+  its own copy of that rule they drifted, and the identical reach-through was caught through
+  <code>defineVariant</code> while passing through a spec's <code>tokens.base</code>. Two validators
+  agreeing by inspection is not agreement; one shared function is.
 </p>
 
 <h2 id="generator-react">@faravahar/girih-generator-react</h2>

@@ -1717,8 +1717,9 @@ select.sel, input.txt {
       <tr><td><code>types.ts</code></td><td>The contract shape — the most useful file to read first</td></tr>
       <tr><td><code>ir.ts</code></td><td><code>specToIR()</code> — canonicalisation</td></tr>
       <tr><td><code>load.ts</code></td><td><code>loadSpecs()</code>, <code>loadComponentIRs()</code> — jiti-based TS import</td></tr>
-      <tr><td><code>validate.ts</code></td><td><code>validateSpecs()</code>, <code>validateExtensions()</code> — 31 diagnostics</td></tr>
-      <tr><td><code>extensions.ts</code></td><td><code>defineVariant()</code>, <code>loadExtensions()</code>, <code>componentNamespace()</code></td></tr>
+      <tr><td><code>validate.ts</code></td><td><code>validateSpecs()</code> — 15 diagnostics</td></tr>
+      <tr><td><code>extensions.ts</code></td><td><code>defineVariant()</code>, <code>loadExtensions()</code>, <code>validateExtensions()</code></td></tr>
+      <tr><td><code>token-ref.ts</code></td><td><code>resolveTokenRef()</code> — the one rule both validators apply to a token reference</td></tr>
     </tbody>
   </table>
 </div>
@@ -1728,6 +1729,15 @@ select.sel, input.txt {
   <code>defineSpec</code>/<code>defineVariant</code>. They exist because contracts are loaded from
   arbitrary user TypeScript, and girih needs to distinguish "a contract" from "some object someone
   default-exported" without trusting the type system across a runtime boundary.
+</p>
+
+<p>
+  <code>token-ref.ts</code> is small and worth knowing about, because it exists to fix a bug rather
+  than to organise code. A contract and an extension both reference tokens, and both must reject the
+  same things — reaching into another component's namespace above all. When each validator carried
+  its own copy of that rule they drifted, and the identical reach-through was caught through
+  <code>defineVariant</code> while passing through a spec's <code>tokens.base</code>. Two validators
+  agreeing by inspection is not agreement; one shared function is.
 </p>
 
 <h2 id="generator-react">@faravahar/girih-generator-react</h2>
