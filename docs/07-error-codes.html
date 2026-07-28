@@ -1501,14 +1501,14 @@ select.sel, input.txt {
         <p class="msg">No ds.config.ts found in <i class="ph">${root}</i></p>
         <p class="help">Run `girih init` to scaffold a workspace, or cd into an existing one.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH1002" data-search="girih1002 failed to load ${configpath}: ${message.split('\n')[0]}  girih-core">
+      <div class="codecard" data-sev="error" data-code="GIRIH1002" data-search="girih1002 failed to load ${configpath}: ${message.split('\n')[0]} the error comes from ds.config.ts itself. it is evaluated as real typescript, so a syntax error, an unresolved import, or a throw at module scope all land here. girih-core">
         <div class="top">
           <span class="cid">GIRIH1002</span>
           <span class="sev">error</span>
           <span class="src">packages/girih-core/src/config.ts:120</span>
         </div>
         <p class="msg">Failed to load <i class="ph">${configPath}</i>: <i class="ph">${message.split('\n')[0]}</i></p>
-        
+        <p class="help">The error comes from ds.config.ts itself. It is evaluated as real TypeScript, so a syntax error, an unresolved import, or a throw at module scope all land here.</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH1003" data-search="girih1003 config is missing 'name' (the published package name, e.g. '@acme/design-system'). add `name: '@scope/design-system'`. it is the name the generated package is published under, so it has to be one you own. girih-core">
         <div class="top">
@@ -1609,14 +1609,14 @@ select.sel, input.txt {
         <p class="msg">'<i class="ph">${name}</i>' was ejected from a different spec/template than the current one — the fork may not honor the contract anymore.</p>
         <p class="help">Review the fork against the current spec, or re-eject after removing the ds.lock entry (`girih forks` reports this; the 3-way merge is not built yet).</p>
       </div>
-      <div class="codecard" data-sev="warning" data-code="GIRIH1015" data-search="girih1015 ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated.  girih">
+      <div class="codecard" data-sev="warning" data-code="GIRIH1015" data-search="girih1015 ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated. restore components/${kebabname(name)}.spec.ts, or remove the entry and components/ejected/${kebabname(name)}.tsx. girih">
         <div class="top">
           <span class="cid">GIRIH1015</span>
           <span class="sev">warning</span>
           <span class="src">packages/girih/src/workspace.ts:75</span>
         </div>
         <p class="msg">ds.lock records '<i class="ph">${name}</i>' as ejected, but no spec with that name exists — the fork is not generated.</p>
-        
+        <p class="help">Restore components/<i class="ph">${kebabName(name)}</i>.spec.ts, or remove the entry and components/ejected/<i class="ph">${kebabName(name)}</i>.tsx.</p>
       </div>
   </div>
 </section>
@@ -1748,14 +1748,14 @@ select.sel, input.txt {
         <p class="msg">Brand overlay changes the $type of '<i class="ph">${token.path}</i>' from '<i class="ph">${baseToken.type}</i>' to '<i class="ph">${token.type}</i>'.</p>
         <p class="help">A brand may change a token value, never its type — types are part of the shared contract.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH2030" data-search="girih2030 '${token.path}' references '{${ref}}', which does not exist.  girih-tokens">
+      <div class="codecard" data-sev="error" data-code="GIRIH2030" data-search="girih2030 '${token.path}' references '{${ref}}', which does not exist. check the spelling and the tier. a reference is the full dotted path from the top of the token set, not a path relative to the current group. girih-tokens">
         <div class="top">
           <span class="cid">GIRIH2030</span>
           <span class="sev">error</span>
           <span class="src">packages/girih-tokens/src/resolve.ts:45</span>
         </div>
         <p class="msg">'<i class="ph">${token.path}</i>' references '{<i class="ph">${ref}</i>}', which does not exist.</p>
-        
+        <p class="help">Check the spelling and the tier. A reference is the full dotted path from the top of the token set, not a path relative to the current group.</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH2031" data-search="girih2031 circular token reference: ${cycle.map((p) =&gt; `'${p}'`).join(' → ')}. break the cycle by pointing one of these tokens at a raw value. girih-tokens">
         <div class="top">
@@ -1976,14 +1976,14 @@ select.sel, input.txt {
         <p class="msg">'<i class="ph">${ir.name}</i>' <i class="ph">${what}</i> '<i class="ph">${name}</i>' is not a valid camelCase identifier — it becomes a React prop.</p>
         <p class="help">It is destructured by name in the generated component, so it must be a plain camelCase identifier — no dashes, no spaces, not starting with a digit.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH4014" data-search="girih4014 '${spec.name}' has a non-string declaration for '${property}' at ${where} — every styled value must be a '{token.path}' reference.  girih-spec">
+      <div class="codecard" data-sev="error" data-code="GIRIH4014" data-search="girih4014 '${spec.name}' has a non-string declaration for '${property}' at ${where} — every styled value must be a '{token.path}' reference. did you mean to nest '${property}' under a 'states' key? girih-spec">
         <div class="top">
           <span class="cid">GIRIH4014</span>
           <span class="sev">error</span>
           <span class="src">packages/girih-spec/src/ir.ts:28</span>
         </div>
         <p class="msg">'<i class="ph">${spec.name}</i>' has a non-string declaration for '<i class="ph">${property}</i>' at <i class="ph">${where}</i> — every styled value must be a '{token.path}' reference.</p>
-        
+        <p class="help">Did you mean to nest '<i class="ph">${property}</i>' under a 'states' key?</p>
       </div>
       <div class="codecard" data-sev="warning" data-code="GIRIH4015" data-search="girih4015 '${ir.name}' styles unknown css property '${property}' at ${where} — it will be emitted verbatim. check the spelling. if it really is a custom or very new property, this warning is expected — the declaration is emitted exactly as written. girih-spec">
         <div class="top">
@@ -2211,7 +2211,7 @@ select.sel, input.txt {
 <h2 id="gaps">An honest note on coverage</h2>
 
 <p>
-  4 of the 71 diagnostics have no
+  0 of the 71 diagnostics have no
   <code>help</code> line. The project's own convention is that anything actionable should carry a
   one-line suggestion, so that number is a real gap rather than a deliberate choice — most of the
   missing ones are in the <code>GIRIH4xxx</code> contract family, where the message is often

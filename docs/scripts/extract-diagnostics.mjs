@@ -163,8 +163,33 @@ function topLevelProps(body) {
   return props.map((p) => p.trim()).filter(Boolean);
 }
 
+/**
+ * Leading rationale comments belong to the prop that follows them, and this codebase puts
+ * them everywhere — so strip them before looking for the key. Without this, a `help:`
+ * preceded by a comment parses as a key of `"// … help"`, the field is dropped, and the
+ * reference claims the code has no help when the source plainly gives it one. That silently
+ * hid four codes.
+ */
+function stripLeadingComments(prop) {
+  let text = prop.trimStart();
+  for (;;) {
+    if (text.startsWith('//')) {
+      const nl = text.indexOf('\n');
+      text = nl === -1 ? '' : text.slice(nl + 1).trimStart();
+      continue;
+    }
+    if (text.startsWith('/*')) {
+      const end = text.indexOf('*/');
+      text = end === -1 ? '' : text.slice(end + 2).trimStart();
+      continue;
+    }
+    return text;
+  }
+}
+
 /** `message: \`foo ${bar}\`` → { key: 'message', value: 'foo ${bar}', dynamic: true } */
-function parseProp(prop) {
+function parseProp(rawProp) {
+  const prop = stripLeadingComments(rawProp);
   const colon = prop.indexOf(':');
   if (colon === -1) return null;
   const key = prop
@@ -206,6 +231,18 @@ for (const { pkg, path } of sourceFiles()) {
       }
     }
     if (fields.code?.value !== match[1]) continue; // nested object, not this diagnostic
+
+    // Some diagnostics attach help conditionally after construction rather than as a field,
+    // so the literal alone under-reports them (GIRIH4014 did). Look just past the object for
+    // an assignment onto it.
+    if (!fields.help) {
+      const trailing = text.slice(end, end + 600);
+      const assigned = /\.help\s*=\s*(?=['"`])/.exec(trailing);
+      if (assigned) {
+        const parsed = parseProp(`help: ${trailing.slice(assigned.index + assigned[0].length)}`);
+        if (parsed?.literal) fields.help = parsed;
+      }
+    }
 
     const line = text.slice(0, match.index).split('\n').length;
     const entry = {

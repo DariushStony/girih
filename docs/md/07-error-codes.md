@@ -102,6 +102,8 @@ packages/girih-core/src/config.ts:120
 
 Failed to load ${configPath}: ${message.split('\n')[0]}
 
+The error comes from ds.config.ts itself. It is evaluated as real TypeScript, so a syntax error, an unresolved import, or a throw at module scope all land here.
+
 GIRIH1003
 error
 packages/girih-core/src/config.ts:202
@@ -195,6 +197,8 @@ warning
 packages/girih/src/workspace.ts:75
 
 ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated.
+
+Restore components/${kebabName(name)}.spec.ts, or remove the entry and components/ejected/${kebabName(name)}.tsx.
 
 ### `GIRIH2xxx` — Tokens
 
@@ -314,6 +318,8 @@ error
 packages/girih-tokens/src/resolve.ts:45
 
 '${token.path}' references '{${ref}}', which does not exist.
+
+Check the spelling and the tier. A reference is the full dotted path from the top of the token set, not a path relative to the current group.
 
 GIRIH2031
 error
@@ -509,6 +515,8 @@ packages/girih-spec/src/ir.ts:28
 
 '${spec.name}' has a non-string declaration for '${property}' at ${where} — every styled value must be a '{token.path}' reference.
 
+Did you mean to nest '${property}' under a 'states' key?
+
 GIRIH4015
 warning
 packages/girih-spec/src/validate.ts:372
@@ -698,7 +706,7 @@ No diagnostics match that filter.
 
 ## An honest note on coverage
 
-4 of the 71 diagnostics have no
+0 of the 71 diagnostics have no
 `help` line. The project's own convention is that anything actionable should carry a
 one-line suggestion, so that number is a real gap rather than a deliberate choice — most of the
 missing ones are in the `GIRIH4xxx` contract family, where the message is often
