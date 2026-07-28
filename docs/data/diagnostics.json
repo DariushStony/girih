@@ -190,7 +190,7 @@
       "severity": "error",
       "message": "Config must define at least one brand under brands.definitions.",
       "messageDynamic": false,
-      "help": "Add one: `brands: { default: 'base', definitions: { base: { tokens: 'brands/base/tokens.json' } } }`. An empty {} overlay is valid, so the default brand can override nothing.",
+      "help": "Add one: `brands: { default: 'base', definitions: { base: { tokens: 'design/brands/base.json' } } }`. An empty {} overlay is valid, so the default brand can override nothing.",
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",

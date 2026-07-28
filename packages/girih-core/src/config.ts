@@ -211,7 +211,7 @@ function validateRawConfig(raw: GirihConfig): Diagnostic[] {
       severity: 'error',
       message: 'Config must define at least one brand under brands.definitions.',
       file: 'ds.config.ts',
-      help: "Add one: `brands: { default: 'base', definitions: { base: { tokens: 'brands/base/tokens.json' } } }`. An empty {} overlay is valid, so the default brand can override nothing.",
+      help: "Add one: `brands: { default: 'base', definitions: { base: { tokens: 'design/brands/base.json' } } }`. An empty {} overlay is valid, so the default brand can override nothing.",
     });
   } else if (!raw.brands.default || !definitions[raw.brands.default]) {
     diagnostics.push({
