@@ -1,4 +1,21 @@
 {
   "extends": "../../tsconfig.base.json",
-  "include": ["src"]
+  "include": ["src"],
+  "compilerOptions": {
+    // `@faravahar/girih/scaffold` resolves through that package's exports map to
+    // dist/scaffold.d.ts, which does not exist until girih is built — and CI's quality job
+    // typechecks with no build, because turbo's typecheck task deliberately has no
+    // dependsOn so every package checks in parallel. Without this mapping, typecheck passes
+    // on any machine that has run `pnpm build` and fails on a fresh checkout with TS2307.
+    //
+    // Types come from source here; the bundle still resolves the real subpath through the
+    // exports map, and turbo's build task does depend on ^build, so dist exists by then.
+    //
+    // Declared locally rather than in tsconfig.base.json: `paths` replaces the inherited map
+    // rather than merging with it, and this package imports nothing else from the workspace.
+    // If that changes, the base entries have to be repeated here too.
+    "paths": {
+      "@faravahar/girih/scaffold": ["../girih/src/scaffold.ts"]
+    }
+  }
 }

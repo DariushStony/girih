@@ -163,7 +163,10 @@ Comments in this codebase carry **rationale**, not description — they explain 
 
 Prefer the smallest verification scope possible:
 
-**A unit test that loads a workspace file needs `pnpm test:unit` on an _unbuilt_ tree before you trust it.** CI's `quality` job never builds, and `@faravahar/girih` is not source-aliased in vitest — so anything that ends up executing a `ds.config.ts` or a `*.contract.ts` (both `import` from it) passes locally on your built tree and fails there. Assert on what the code decides, not on a load succeeding, or move the case to `e2e/`.
+**CI's `quality` job never builds, so run `pnpm typecheck` and `pnpm test:unit` on an _unbuilt_ tree before you trust either.** Stash the output first — `for p in packages/*/dist; do mv "$p" "$p.stash"; done` — because anything that resolves through a package's `dist` passes on your machine and fails on a fresh checkout. Two ways this has bitten:
+
+- **A test that loads a workspace file.** `@faravahar/girih` is not source-aliased in vitest, so executing a `ds.config.ts` or a `*.contract.ts` (both import from it) needs `dist`. Assert on what the code decides, not on a load succeeding, or move the case to `e2e/`.
+- **A subpath import.** `@faravahar/girih/scaffold` resolves through the `exports` map to `dist/scaffold.d.ts`, so typecheck fails with TS2307 until girih is built. `tsconfig.base.json` maps the `girih-*` packages to source but not their subpaths — add the mapping to the importing package's own tsconfig, since turbo's `typecheck` deliberately has no `dependsOn` and adding one would serialise a full build ahead of every check.
 
 | Change                                        | Verification                                                                                                   |
 | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
