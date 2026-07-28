@@ -15,7 +15,7 @@ export const acmeConfig: ResolvedConfig = {
       { name: 'seller', label: 'Seller Platform', tokensFile: `${acmeRoot}/brands/seller/tokens.json` },
     ],
   },
-  components: { specs: 'components/*.spec.ts', ejected: [], extensions: 'extensions/*.tsx' },
+  components: { specs: 'components/*.contract.ts', ejected: [], extensions: 'extensions/*.tsx' },
   targets: {
     react: { output: 'packages/design-system' },
     css: { output: 'packages/design-system/styles', selector: 'data-attribute' },

@@ -87,7 +87,7 @@ identical token pipeline; the React path adds contract loading on top.
 
 ```
 tokens/ + brands/  (you write)  →  buildTokenGraphs()  (@faravahar/girih-tokens)  →  generateCss()  (@faravahar/girih-generator-css)  →  tokens.css + tokens.d.ts  (emitted)
-components/*.spec.ts  (you write)  →  loadSpecs() → specToIR()  (@faravahar/girih-spec)  →  generateReact()  (@faravahar/girih-generator-react)  →  src/*.tsx + components.css  (emitted)
+components/*.contract.ts  (you write)  →  loadSpecs() → specToIR()  (@faravahar/girih-spec)  →  generateReact()  (@faravahar/girih-generator-react)  →  src/*.tsx + components.css  (emitted)
 ```
 
 The contract path depends on the token path, not the other way round: `validateSpecs()`
@@ -152,7 +152,7 @@ whack-a-mole. The codes are partitioned by owning package:
 | `GIRIH1xxx` | `core + cli` | Workspace, config, manifest, ds.lock | 14 |
 | `GIRIH2xxx` | `tokens` | Parse, overlay, alias resolution, tier validation | 20 |
 | `GIRIH3xxx` | `generator-css` | CSS emission | 3 |
-| `GIRIH4xxx` | `spec` | Component contracts and extensions | 31 |
+| `GIRIH4xxx` | `spec` | Component contracts and extensions | 32 |
 | `GIRIH5xxx` | `generator-react` | React emission | 1 |
 | `GIRIH6xxx` | `cli` | Build and publish | 2 |
 
@@ -217,7 +217,7 @@ did girih? Here is the complete answer.
 | `ds.config.ts` | You | Yes | `girih brand create` also edits it, carefully |
 | `tokens/**` | You | Yes | Three tiers, tier inferred from filename |
 | `brands/*/tokens.json` | You | Yes | Overrides only — new paths are an error |
-| `components/*.spec.ts` | You | Yes | The contracts |
+| `components/*.contract.ts` | You | Yes | The contracts |
 | `extensions/*.ext.ts` | You | Yes | Constrained by `overridableTokens` |
 | `components/ejected/*.tsx` | You (after eject) | Yes | A tracked fork; CSS still generated |
 | `.ds/ir/*.json` | girih | **Yes** | Canonical contract — review it in PRs |
@@ -231,7 +231,7 @@ did girih? Here is the complete answer.
 > `.ds/ir/` and `.ds/manifest.json` are generated _and_ committed,
 > which looks like a contradiction. It is not. The IR is the reviewable form of your contract — a
 > diff of `.ds/ir/button.json` in a pull request shows exactly what changed about the
-> Button's public surface, which the `.spec.ts` diff shows less directly. And the
+> Button's public surface, which the `.contract.ts` diff shows less directly. And the
 > manifest has to be committed or drift detection cannot survive a fresh clone.
 >
 > The rule is not "generated files are not committed". It is "generated files are not

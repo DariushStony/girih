@@ -20,7 +20,7 @@ const acmeConfig = {
       { name: 'seller', label: 'Seller', tokensFile: `${acmeRoot}/brands/seller/tokens.json` },
     ],
   },
-  components: { specs: 'components/*.spec.ts', ejected: [], extensions: 'extensions/*.ext.ts' },
+  components: { specs: 'components/*.contract.ts', ejected: [], extensions: 'extensions/*.ext.ts' },
   targets: {
     react: { output: 'packages/design-system' },
     css: { output: 'packages/design-system/styles', selector: 'data-attribute' as const },

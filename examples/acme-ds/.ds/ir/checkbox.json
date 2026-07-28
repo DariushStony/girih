@@ -106,5 +106,5 @@
     "allowExtends": false,
     "overridableTokens": []
   },
-  "sourceFile": "components/checkbox.spec.ts"
+  "sourceFile": "components/checkbox.contract.ts"
 }

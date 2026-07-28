@@ -109,8 +109,8 @@ const sources = {
   'tokens/components/button.tokens.json': readIfPresent('tokens/components/button.tokens.json'),
   'brands/marketplace/tokens.json': readIfPresent('brands/marketplace/tokens.json'),
   'brands/seller/tokens.json': readIfPresent('brands/seller/tokens.json'),
-  'components/button.spec.ts': readIfPresent('components/button.spec.ts'),
-  'components/badge.spec.ts': readIfPresent('components/badge.spec.ts'),
+  'components/button.contract.ts': readIfPresent('components/button.contract.ts'),
+  'components/badge.contract.ts': readIfPresent('components/badge.contract.ts'),
   'extensions/payment-button.ext.ts': readIfPresent('extensions/payment-button.ext.ts'),
 };
 

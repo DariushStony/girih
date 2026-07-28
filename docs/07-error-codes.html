@@ -1385,7 +1385,7 @@ select.sel, input.txt {
         
 <div class="prose">
 <p class="lede">
-  All 71 diagnostics girih can emit — 58 errors and
+  All 72 diagnostics girih can emit — 59 errors and
   13 warnings — extracted straight from
   <code>packages/*/src</code> by a script. The messages below are the real strings, not paraphrases.
 </p>
@@ -1461,7 +1461,7 @@ select.sel, input.txt {
       <tr><td><a href="#family-1"><code>GIRIH1xxx</code></a></td><td><code>core + cli</code></td><td>Workspace, config, manifest, ds.lock</td><td class="num"><span class="num">14</span></td></tr>
       <tr><td><a href="#family-2"><code>GIRIH2xxx</code></a></td><td><code>tokens</code></td><td>Parse, overlay, alias resolution, tier validation</td><td class="num"><span class="num">20</span></td></tr>
       <tr><td><a href="#family-3"><code>GIRIH3xxx</code></a></td><td><code>generator-css</code></td><td>CSS emission</td><td class="num"><span class="num">3</span></td></tr>
-      <tr><td><a href="#family-4"><code>GIRIH4xxx</code></a></td><td><code>spec</code></td><td>Component contracts and extensions</td><td class="num"><span class="num">31</span></td></tr>
+      <tr><td><a href="#family-4"><code>GIRIH4xxx</code></a></td><td><code>spec</code></td><td>Component contracts and extensions</td><td class="num"><span class="num">32</span></td></tr>
       <tr><td><a href="#family-5"><code>GIRIH5xxx</code></a></td><td><code>generator-react</code></td><td>React emission</td><td class="num"><span class="num">1</span></td></tr>
       <tr><td><a href="#family-6"><code>GIRIH6xxx</code></a></td><td><code>cli</code></td><td>Build and publish</td><td class="num"><span class="num">2</span></td></tr>
     </tbody>
@@ -1609,14 +1609,14 @@ select.sel, input.txt {
         <p class="msg">'<i class="ph">${name}</i>' was ejected from a different spec/template than the current one — the fork may not honor the contract anymore.</p>
         <p class="help">Review the fork against the current spec, or re-eject after removing the ds.lock entry (`girih forks` reports this; the 3-way merge is not built yet).</p>
       </div>
-      <div class="codecard" data-sev="warning" data-code="GIRIH1015" data-search="girih1015 ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated. restore components/${kebabname(name)}.spec.ts, or remove the entry and components/ejected/${kebabname(name)}.tsx. girih">
+      <div class="codecard" data-sev="warning" data-code="GIRIH1015" data-search="girih1015 ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated. restore components/${kebabname(name)}.contract.ts, or remove the entry and components/ejected/${kebabname(name)}.tsx. girih">
         <div class="top">
           <span class="cid">GIRIH1015</span>
           <span class="sev">warning</span>
           <span class="src">packages/girih/src/workspace.ts:75</span>
         </div>
         <p class="msg">ds.lock records '<i class="ph">${name}</i>' as ejected, but no spec with that name exists — the fork is not generated.</p>
-        <p class="help">Restore components/<i class="ph">${kebabName(name)}</i>.spec.ts, or remove the entry and components/ejected/<i class="ph">${kebabName(name)}</i>.tsx.</p>
+        <p class="help">Restore components/<i class="ph">${kebabName(name)}</i>.contract.ts, or remove the entry and components/ejected/<i class="ph">${kebabName(name)}</i>.tsx.</p>
       </div>
   </div>
 </section>
@@ -1857,7 +1857,7 @@ select.sel, input.txt {
 <section data-family="4">
   <h3 id="family-4"><code>GIRIH4xxx</code> — Component contracts</h3>
   <p style="font-family:var(--util);font-size:var(--t-sm);color:var(--text-muted)">
-    Owned by <code>spec</code> · 31 codes
+    Owned by <code>spec</code> · 32 codes
   </p>
   <p>The largest family, because a contract has the largest surface a user can get wrong: names,
       variants and their defaults, states the template cannot express, prop collisions, token
@@ -2016,7 +2016,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4020</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/load.ts:38</span>
+          <span class="src">packages/girih-spec/src/load.ts:61</span>
         </div>
         <p class="msg">Failed to load spec: <i class="ph">${(error as Error).message}</i></p>
         <p class="help">The spec is evaluated as real TypeScript, so a syntax error, an unresolved import, or a throw at module scope all land here.</p>
@@ -2025,7 +2025,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4021</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/load.ts:49</span>
+          <span class="src">packages/girih-spec/src/load.ts:72</span>
         </div>
         <p class="msg"><i class="ph">${file}</i> does not default-export a component spec.</p>
         <p class="help">Export the result of defineSpec({...}) from '@faravahar/girih'.</p>
@@ -2034,10 +2034,19 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH4022</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-spec/src/load.ts:61</span>
+          <span class="src">packages/girih-spec/src/load.ts:84</span>
         </div>
         <p class="msg"><i class="ph">${file}</i> contains a non-serializable value at '<i class="ph">${impure}</i>' — specs must be pure data.</p>
         <p class="help">Remove functions, dates, class instances, and symbols; a spec is a contract, not a program.</p>
+      </div>
+      <div class="codecard" data-sev="error" data-code="GIRIH4023" data-search="girih4023 no contracts matched '${config.components.specs}', but ${legacy.length} '${legacyglob}' file${plural} ${legacy.length === 1 ? 'is' : 'are'} present (${legacy.slice(0, 3).join(', ')}${legacy.length &gt; 3 ? ', …' : ''}). contracts are now `*.contract.ts`, because `*.spec.ts` is collected as a test file by vitest and jest. rename them: `for f in components/*.spec.ts; do git mv &quot;$f&quot; &quot;${f%.spec.ts}.contract.ts&quot;; done` girih-spec">
+        <div class="top">
+          <span class="cid">GIRIH4023</span>
+          <span class="sev">error</span>
+          <span class="src">packages/girih-spec/src/load.ts:43</span>
+        </div>
+        <p class="msg">No contracts matched '<i class="ph">${config.components.specs}</i>', but <i class="ph">${legacy.length}</i> '<i class="ph">${legacyGlob}</i>' file<i class="ph">${plural}</i> <i class="ph">${legacy.length === 1 ? 'is' : 'are'}</i> present (<i class="ph">${legacy.slice(0, 3).join(', ')}</i><i class="ph">${legacy.length &gt; 3 ? ', …' : ''}</i>).</p>
+        <p class="help">Contracts are now `*.contract.ts`, because `*.spec.ts` is collected as a test file by vitest and jest. Rename them: `for f in components/*.spec.ts; do git mv &quot;$f&quot; &quot;<i class="ph">${f%.spec.ts}</i>.contract.ts&quot;; done`</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH4030" data-search="girih4030 ${file} does not default-export a variant extension. export the result of definevariant({ name, extends, tokens }) from '@faravahar/girih'. girih-spec">
         <div class="top">
@@ -2211,7 +2220,7 @@ select.sel, input.txt {
 <h2 id="gaps">An honest note on coverage</h2>
 
 <p>
-  Every one of the 71 diagnostics carries a <code>help</code> line. For a long
+  Every one of the 72 diagnostics carries a <code>help</code> line. For a long
   time roughly half did not — the convention was stated but nothing enforced it, so each new
   diagnostic was free to ship without one. <code>e2e/test/diagnostics-help.test.ts</code> now fails
   if any code lacks help, which is what turned the convention into a guarantee.

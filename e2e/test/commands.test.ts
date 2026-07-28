@@ -57,7 +57,7 @@ describe('e2e: create, doctor, forks', { timeout: SUITE_TIMEOUT }, () => {
       expect(output).toContain('fresh-ds/ds.config.ts');
 
       const dir = join(scratch, 'fresh-ds');
-      for (const file of ['package.json', 'ds.config.ts', 'components/button.spec.ts', 'demo/index.html', '.gitignore']) {
+      for (const file of ['package.json', 'ds.config.ts', 'components/button.contract.ts', 'demo/index.html', '.gitignore']) {
         expect(existsSync(join(dir, file)), file).toBe(true);
       }
 

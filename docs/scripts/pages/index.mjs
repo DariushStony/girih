@@ -64,7 +64,7 @@ ${code(
 │   ├── marketplace/tokens.json
 │   └── seller/tokens.json
 ├── components/              ← one contract per component
-│   └── button.spec.ts
+│   └── button.contract.ts
 │
 └── packages/design-system/   ← GENERATED. Do not touch.
     ├── src/*.tsx                  typed React components

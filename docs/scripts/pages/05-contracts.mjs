@@ -55,8 +55,8 @@ ${eli5(`
 
 <p>Here is the real Button contract from the example workspace, in full:</p>
 
-${code(data.sources['components/button.spec.ts'] ?? '', {
-  path: 'components/button.spec.ts',
+${code(data.sources['components/button.contract.ts'] ?? '', {
+  path: 'components/button.contract.ts',
   kind: 'authored',
 })}
 
@@ -99,7 +99,7 @@ ${gotcha(
 <h2 id="pipeline">Contract to component</h2>
 
 ${rail([
-  { title: 'Load', detail: 'jiti imports the .spec.ts', owner: 'spec' },
+  { title: 'Load', detail: 'jiti imports the .contract.ts', owner: 'spec' },
   { title: 'To IR', detail: 'specToIR() canonicalises', owner: 'spec' },
   { title: 'Validate', detail: 'against every brand graph', owner: 'spec' },
   { title: 'Template', detail: 'pick by element + capability', owner: 'generator-react' },
@@ -151,7 +151,7 @@ ${code(
   },
   "accessibility": { "focusable": true, "aria": [{ "state": "loading", "attributes": { "aria-busy": "true" } }] },
   "extensibility": { "allowExtends": true, "overridableTokens": ["background", "color", "borderColor"] },
-  "sourceFile": "components/button.spec.ts"
+  "sourceFile": "components/button.contract.ts"
 }`,
   { path: '.ds/ir/button.json (excerpt of the real file)', kind: 'generated', lang: 'json' },
 )}
@@ -161,7 +161,7 @@ ${code(
 <ol>
   <li>
     <strong>Multiple targets, one shape.</strong> A future Figma generator should consume one
-    canonical form rather than re-reading and re-interpreting <code>.spec.ts</code> files. The React
+    canonical form rather than re-reading and re-interpreting <code>.contract.ts</code> files. The React
     generator already only sees IR — it has no idea TypeScript was involved.
   </li>
   <li>

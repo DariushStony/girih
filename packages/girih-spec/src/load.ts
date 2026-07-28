@@ -16,7 +16,7 @@ export interface LoadSpecsResult {
 }
 
 /**
- * Load components/*.spec.ts files. Specs execute as TypeScript (via jiti) but must
+ * Load components/*.contract.ts files. Specs execute as TypeScript (via jiti) but must
  * stay pure data: the default export has to come from defineSpec() and must be
  * JSON-serializable — functions or class instances anywhere inside are rejected,
  * because generation must be a pure function of (tokens, specs, config).
@@ -25,6 +25,29 @@ export async function loadSpecs(config: ResolvedConfig): Promise<LoadSpecsResult
   const diagnostics: Diagnostic[] = [];
   const specs: LoadedSpec[] = [];
   const files = (await glob([config.components.specs], { cwd: config.root })).sort();
+
+  // A clean break still has to be legible. Contracts moved from `*.spec.ts` to
+  // `*.contract.ts` because `**/*.spec.ts` is in the default test-match of both vitest and
+  // jest, so a consumer running plain `vitest run` collected every contract as a failing
+  // test suite. Without this diagnostic the upgrade surfaces as an *empty catalog* instead:
+  // GIRIH4034 blaming an extension for a component that "does not exist", or — with no
+  // extensions — a silently empty generated package. Both send you looking in the wrong
+  // place. Only probed when the glob still ends in `.contract.ts`; a custom pattern is the
+  // author's business.
+  if (files.length === 0 && config.components.specs.endsWith('.contract.ts')) {
+    const legacyGlob = config.components.specs.replace(/\.contract\.ts$/, '.spec.ts');
+    const legacy = (await glob([legacyGlob], { cwd: config.root })).sort();
+    if (legacy.length > 0) {
+      const plural = legacy.length === 1 ? '' : 's';
+      diagnostics.push({
+        code: 'GIRIH4023',
+        severity: 'error',
+        message: `No contracts matched '${config.components.specs}', but ${legacy.length} '${legacyGlob}' file${plural} ${legacy.length === 1 ? 'is' : 'are'} present (${legacy.slice(0, 3).join(', ')}${legacy.length > 3 ? ', …' : ''}).`,
+        help: 'Contracts are now `*.contract.ts`, because `*.spec.ts` is collected as a test file by vitest and jest. Rename them: `for f in components/*.spec.ts; do git mv "$f" "${f%.spec.ts}.contract.ts"; done`',
+      });
+    }
+  }
+
   const jiti = createJiti(import.meta.url);
   const ejected = new Set(config.components.ejected);
 

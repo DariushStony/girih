@@ -38,5 +38,5 @@
     "allowExtends": false,
     "overridableTokens": []
   },
-  "sourceFile": "components/card.spec.ts"
+  "sourceFile": "components/card.contract.ts"
 }

@@ -54,7 +54,7 @@ my-design-system/
 │   ├── marketplace/tokens.json
 │   └── seller/tokens.json
 ├── components/              ← one contract per component
-│   └── button.spec.ts
+│   └── button.contract.ts
 │
 └── packages/design-system/   ← GENERATED. Do not touch.
     ├── src/*.tsx                  typed React components
@@ -137,7 +137,7 @@ read 02 then 04; that is the shortest path to being useful.
 - [**Tokens and brands**](04-tokens.md) — Three tiers, alias chains, and the rule that makes one stylesheet serve everyone.
 - [**Contracts**](05-contracts.md) — How data becomes a typed, accessible component you can read and review.
 - [**The code**](06-the-code.md) — All nine packages: what each owns and where to look when something breaks.
-- [**Error codes**](07-error-codes.md) — All 71 GIRIH diagnostics, extracted from source, explained.
+- [**Error codes**](07-error-codes.md) — All 72 GIRIH diagnostics, extracted from source, explained.
 - [**Check yourself**](08-quiz.md) — Ten questions that are hard to fake your way through.
 
 | Tier | Holds | Examples |

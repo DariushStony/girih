@@ -1560,7 +1560,7 @@ select.sel, input.txt {
 
 <div class="pkgmap bleed reveal">
   <div class="pkgrow"><span class="pkg" data-layer="kernel">tokens/ + brands/<span class="role">you write</span></span><span class="dep">→</span><span class="pkg" data-layer="pipeline">buildTokenGraphs()<span class="role">@faravahar/girih-tokens</span></span><span class="dep">→</span><span class="pkg" data-layer="generator">generateCss()<span class="role">@faravahar/girih-generator-css</span></span><span class="dep">→</span><span class="pkg" data-layer="surface">tokens.css + tokens.d.ts<span class="role">emitted</span></span></div>
-  <div class="pkgrow"><span class="pkg" data-layer="kernel">components/*.spec.ts<span class="role">you write</span></span><span class="dep">→</span><span class="pkg" data-layer="pipeline">loadSpecs() → specToIR()<span class="role">@faravahar/girih-spec</span></span><span class="dep">→</span><span class="pkg" data-layer="generator">generateReact()<span class="role">@faravahar/girih-generator-react</span></span><span class="dep">→</span><span class="pkg" data-layer="surface">src/*.tsx + components.css<span class="role">emitted</span></span></div>
+  <div class="pkgrow"><span class="pkg" data-layer="kernel">components/*.contract.ts<span class="role">you write</span></span><span class="dep">→</span><span class="pkg" data-layer="pipeline">loadSpecs() → specToIR()<span class="role">@faravahar/girih-spec</span></span><span class="dep">→</span><span class="pkg" data-layer="generator">generateReact()<span class="role">@faravahar/girih-generator-react</span></span><span class="dep">→</span><span class="pkg" data-layer="surface">src/*.tsx + components.css<span class="role">emitted</span></span></div>
 </div>
 
 <p>
@@ -1640,7 +1640,7 @@ select.sel, input.txt {
       <tr><td><code>GIRIH1xxx</code></td><td><code>core + cli</code></td><td>Workspace, config, manifest, ds.lock</td><td class="num"><span class="num">14</span></td></tr>
       <tr><td><code>GIRIH2xxx</code></td><td><code>tokens</code></td><td>Parse, overlay, alias resolution, tier validation</td><td class="num"><span class="num">20</span></td></tr>
       <tr><td><code>GIRIH3xxx</code></td><td><code>generator-css</code></td><td>CSS emission</td><td class="num"><span class="num">3</span></td></tr>
-      <tr><td><code>GIRIH4xxx</code></td><td><code>spec</code></td><td>Component contracts and extensions</td><td class="num"><span class="num">31</span></td></tr>
+      <tr><td><code>GIRIH4xxx</code></td><td><code>spec</code></td><td>Component contracts and extensions</td><td class="num"><span class="num">32</span></td></tr>
       <tr><td><code>GIRIH5xxx</code></td><td><code>generator-react</code></td><td>React emission</td><td class="num"><span class="num">1</span></td></tr>
       <tr><td><code>GIRIH6xxx</code></td><td><code>cli</code></td><td>Build and publish</td><td class="num"><span class="num">2</span></td></tr>
     </tbody>
@@ -1731,7 +1731,7 @@ select.sel, input.txt {
       <tr><td><code>ds.config.ts</code></td><td>You</td><td>Yes</td><td><code>girih brand create</code> also edits it, carefully</td></tr>
       <tr><td><code>tokens/**</code></td><td>You</td><td>Yes</td><td>Three tiers, tier inferred from filename</td></tr>
       <tr><td><code>brands/*/tokens.json</code></td><td>You</td><td>Yes</td><td>Overrides only — new paths are an error</td></tr>
-      <tr><td><code>components/*.spec.ts</code></td><td>You</td><td>Yes</td><td>The contracts</td></tr>
+      <tr><td><code>components/*.contract.ts</code></td><td>You</td><td>Yes</td><td>The contracts</td></tr>
       <tr><td><code>extensions/*.ext.ts</code></td><td>You</td><td>Yes</td><td>Constrained by <code>overridableTokens</code></td></tr>
       <tr><td><code>components/ejected/*.tsx</code></td><td>You (after eject)</td><td>Yes</td><td>A tracked fork; CSS still generated</td></tr>
       <tr><td><code>.ds/ir/*.json</code></td><td>girih</td><td><b>Yes</b></td><td>Canonical contract — review it in PRs</td></tr>
@@ -1749,7 +1749,7 @@ select.sel, input.txt {
     <code>.ds/ir/</code> and <code>.ds/manifest.json</code> are generated <em>and</em> committed,
     which looks like a contradiction. It is not. The IR is the reviewable form of your contract — a
     diff of <code>.ds/ir/button.json</code> in a pull request shows exactly what changed about the
-    Button's public surface, which the <code>.spec.ts</code> diff shows less directly. And the
+    Button's public surface, which the <code>.contract.ts</code> diff shows less directly. And the
     manifest has to be committed or drift detection cannot survive a fresh clone.
   </p>
   <p>

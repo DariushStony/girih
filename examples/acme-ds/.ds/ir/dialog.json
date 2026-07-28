@@ -134,5 +134,5 @@
     "allowExtends": false,
     "overridableTokens": []
   },
-  "sourceFile": "components/dialog.spec.ts"
+  "sourceFile": "components/dialog.contract.ts"
 }

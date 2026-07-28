@@ -117,7 +117,7 @@ ${pkgMap([
     { name: 'tokens.css + tokens.d.ts', role: 'emitted', layer: 'surface' },
   ],
   [
-    { name: 'components/*.spec.ts', role: 'you write', layer: 'kernel' },
+    { name: 'components/*.contract.ts', role: 'you write', layer: 'kernel' },
     '→',
     { name: 'loadSpecs() → specToIR()', role: '@faravahar/girih-spec', layer: 'pipeline' },
     '→',
@@ -297,7 +297,7 @@ ${table(
     ['<code>ds.config.ts</code>', 'You', 'Yes', '<code>girih brand create</code> also edits it, carefully'],
     ['<code>tokens/**</code>', 'You', 'Yes', 'Three tiers, tier inferred from filename'],
     ['<code>brands/*/tokens.json</code>', 'You', 'Yes', 'Overrides only — new paths are an error'],
-    ['<code>components/*.spec.ts</code>', 'You', 'Yes', 'The contracts'],
+    ['<code>components/*.contract.ts</code>', 'You', 'Yes', 'The contracts'],
     ['<code>extensions/*.ext.ts</code>', 'You', 'Yes', 'Constrained by <code>overridableTokens</code>'],
     ['<code>components/ejected/*.tsx</code>', 'You (after eject)', 'Yes', 'A tracked fork; CSS still generated'],
     ['<code>.ds/ir/*.json</code>', 'girih', '<b>Yes</b>', 'Canonical contract — review it in PRs'],
@@ -314,7 +314,7 @@ ${gotcha(
     <code>.ds/ir/</code> and <code>.ds/manifest.json</code> are generated <em>and</em> committed,
     which looks like a contradiction. It is not. The IR is the reviewable form of your contract — a
     diff of <code>.ds/ir/button.json</code> in a pull request shows exactly what changed about the
-    Button's public surface, which the <code>.spec.ts</code> diff shows less directly. And the
+    Button's public surface, which the <code>.contract.ts</code> diff shows less directly. And the
     manifest has to be committed or drift detection cannot survive a fresh clone.
   </p>
   <p>

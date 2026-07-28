@@ -29,7 +29,7 @@ export interface GirihConfig {
   };
 
   components?: {
-    /** Glob for component specs. Default 'components/*.spec.ts'. */
+    /** Glob for component specs. Default 'components/*.contract.ts'. */
     specs?: string;
     /** Components the generator must skip because they were ejected. */
     ejected?: string[];
@@ -153,7 +153,7 @@ export async function loadConfig(cwd: string): Promise<LoadConfigResult> {
     },
     brands: { default: raw.brands.default, all: brands },
     components: {
-      specs: raw.components?.specs ?? 'components/*.spec.ts',
+      specs: raw.components?.specs ?? 'components/*.contract.ts',
       ejected: raw.components?.ejected ?? [],
       extensions: raw.components?.extensions ?? 'extensions/*.ext.ts',
     },

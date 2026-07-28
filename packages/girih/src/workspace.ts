@@ -77,8 +77,8 @@ export async function loadEjectedSources(
         message: `ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated.`,
         file: 'ds.lock',
         // Both paths are kebab-case. Lowercasing only the first letter named
-        // `paymentButton.spec.ts` for a PaymentButton, which never existed.
-        help: `Restore components/${kebabName(name)}.spec.ts, or remove the entry and components/ejected/${kebabName(name)}.tsx.`,
+        // `paymentButton.contract.ts` for a PaymentButton, which never existed.
+        help: `Restore components/${kebabName(name)}.contract.ts, or remove the entry and components/ejected/${kebabName(name)}.tsx.`,
       });
       continue;
     }

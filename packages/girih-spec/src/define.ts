@@ -3,7 +3,7 @@ import type { ComponentSpecInput } from './types.js';
 const SPEC_BRAND = Symbol.for('girih.spec');
 
 /**
- * Typed identity helper for components/*.spec.ts authors. The brand symbol lets
+ * Typed identity helper for components/*.contract.ts authors. The brand symbol lets
  * the loader distinguish a real spec export from an arbitrary object.
  */
 export function defineSpec(spec: ComponentSpecInput): ComponentSpecInput {

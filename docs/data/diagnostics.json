@@ -1,9 +1,9 @@
 {
   "generatedBy": "docs/scripts/extract-diagnostics.mjs",
   "note": "Do not edit by hand. Re-run the script after changing any diagnostic in packages/*/src.",
-  "total": 71,
+  "total": 72,
   "bySeverity": {
-    "error": 58,
+    "error": 59,
     "warning": 13
   },
   "families": {
@@ -89,6 +89,7 @@
         "GIRIH4020",
         "GIRIH4021",
         "GIRIH4022",
+        "GIRIH4023",
         "GIRIH4030",
         "GIRIH4031",
         "GIRIH4032",
@@ -322,7 +323,7 @@
       "severity": "warning",
       "message": "ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated.",
       "messageDynamic": true,
-      "help": "Restore components/${kebabName(name)}.spec.ts, or remove the entry and components/ejected/${kebabName(name)}.tsx.",
+      "help": "Restore components/${kebabName(name)}.contract.ts, or remove the entry and components/ejected/${kebabName(name)}.tsx.",
       "helpDynamic": true,
       "package": "girih",
       "file": "packages/girih/src/workspace.ts",
@@ -934,10 +935,10 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/load.ts",
-      "line": 38,
+      "line": 61,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/load.ts:38"
+        "packages/girih-spec/src/load.ts:61"
       ]
     },
     {
@@ -949,10 +950,10 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/load.ts",
-      "line": 49,
+      "line": 72,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/load.ts:49"
+        "packages/girih-spec/src/load.ts:72"
       ]
     },
     {
@@ -964,10 +965,25 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/load.ts",
-      "line": 61,
+      "line": 84,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/load.ts:61"
+        "packages/girih-spec/src/load.ts:84"
+      ]
+    },
+    {
+      "code": "GIRIH4023",
+      "severity": "error",
+      "message": "No contracts matched '${config.components.specs}', but ${legacy.length} '${legacyGlob}' file${plural} ${legacy.length === 1 ? 'is' : 'are'} present (${legacy.slice(0, 3).join(', ')}${legacy.length > 3 ? ', …' : ''}).",
+      "messageDynamic": true,
+      "help": "Contracts are now `*.contract.ts`, because `*.spec.ts` is collected as a test file by vitest and jest. Rename them: `for f in components/*.spec.ts; do git mv \"$f\" \"${f%.spec.ts}.contract.ts\"; done`",
+      "helpDynamic": false,
+      "package": "girih-spec",
+      "file": "packages/girih-spec/src/load.ts",
+      "line": 43,
+      "sites": 1,
+      "allSites": [
+        "packages/girih-spec/src/load.ts:43"
       ]
     },
     {

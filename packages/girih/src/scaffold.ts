@@ -171,7 +171,7 @@ export default defineConfig({
       2,
     )}\n`,
     [`brands/${brand}/tokens.json`]: '{}\n',
-    'components/button.spec.ts': `import { defineSpec } from '@faravahar/girih';
+    'components/button.contract.ts': `import { defineSpec } from '@faravahar/girih';
 
 export default defineSpec({
   name: 'Button',

@@ -137,8 +137,8 @@ export function validateSpecs(
 
   for (const ir of irs) {
     // Spec files are kebab-case. Lowercasing only the first letter attributed a
-    // PaymentButton diagnostic to `paymentButton.spec.ts`, a file that cannot exist.
-    const file = ir.sourceFile ?? `components/${kebabName(ir.name)}.spec.ts`;
+    // PaymentButton diagnostic to `paymentButton.contract.ts`, a file that cannot exist.
+    const file = ir.sourceFile ?? `components/${kebabName(ir.name)}.contract.ts`;
 
     if (!PASCAL_CASE.test(ir.name)) {
       diagnostics.push({

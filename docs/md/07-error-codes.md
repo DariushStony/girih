@@ -12,7 +12,7 @@
 
 ---
 
-All 71 diagnostics girih can emit — 58 errors and
+All 72 diagnostics girih can emit — 59 errors and
 13 warnings — extracted straight from
 `packages/*/src` by a script. The messages below are the real strings, not paraphrases.
 
@@ -64,7 +64,7 @@ source before you have read a word of the message.
 | [`GIRIH1xxx`](#family-1) | `core + cli` | Workspace, config, manifest, ds.lock | 14 |
 | [`GIRIH2xxx`](#family-2) | `tokens` | Parse, overlay, alias resolution, tier validation | 20 |
 | [`GIRIH3xxx`](#family-3) | `generator-css` | CSS emission | 3 |
-| [`GIRIH4xxx`](#family-4) | `spec` | Component contracts and extensions | 31 |
+| [`GIRIH4xxx`](#family-4) | `spec` | Component contracts and extensions | 32 |
 | [`GIRIH5xxx`](#family-5) | `generator-react` | React emission | 1 |
 | [`GIRIH6xxx`](#family-6) | `cli` | Build and publish | 2 |
 
@@ -198,7 +198,7 @@ packages/girih/src/workspace.ts:75
 
 ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated.
 
-Restore components/${kebabName(name)}.spec.ts, or remove the entry and components/ejected/${kebabName(name)}.tsx.
+Restore components/${kebabName(name)}.contract.ts, or remove the entry and components/ejected/${kebabName(name)}.tsx.
 
 ### `GIRIH2xxx` — Tokens
 
@@ -404,7 +404,7 @@ Rename one of them — CSS variable names are case-insensitive here and join seg
 
 ### `GIRIH4xxx` — Component contracts
 
-Owned by `spec` · 31 codes
+Owned by `spec` · 32 codes
 
 The largest family, because a contract has the largest surface a user can get wrong: names,
 variants and their defaults, states the template cannot express, prop collisions, token
@@ -543,7 +543,7 @@ Known elements: ${[...KNOWN_ELEMENTS].join(', ')}.
 
 GIRIH4020
 error
-packages/girih-spec/src/load.ts:38
+packages/girih-spec/src/load.ts:61
 
 Failed to load spec: ${(error as Error).message}
 
@@ -551,7 +551,7 @@ The spec is evaluated as real TypeScript, so a syntax error, an unresolved impor
 
 GIRIH4021
 error
-packages/girih-spec/src/load.ts:49
+packages/girih-spec/src/load.ts:72
 
 ${file} does not default-export a component spec.
 
@@ -559,11 +559,19 @@ Export the result of defineSpec({...}) from '@faravahar/girih'.
 
 GIRIH4022
 error
-packages/girih-spec/src/load.ts:61
+packages/girih-spec/src/load.ts:84
 
 ${file} contains a non-serializable value at '${impure}' — specs must be pure data.
 
 Remove functions, dates, class instances, and symbols; a spec is a contract, not a program.
+
+GIRIH4023
+error
+packages/girih-spec/src/load.ts:43
+
+No contracts matched '${config.components.specs}', but ${legacy.length} '${legacyGlob}' file${plural} ${legacy.length === 1 ? 'is' : 'are'} present (${legacy.slice(0, 3).join(', ')}${legacy.length > 3 ? ', …' : ''}).
+
+Contracts are now `*.contract.ts`, because `*.spec.ts` is collected as a test file by vitest and jest. Rename them: `for f in components/*.spec.ts; do git mv "$f" "${f%.spec.ts}.contract.ts"; done`
 
 GIRIH4030
 error
@@ -706,7 +714,7 @@ No diagnostics match that filter.
 
 ## An honest note on coverage
 
-Every one of the 71 diagnostics carries a `help` line. For a long
+Every one of the 72 diagnostics carries a `help` line. For a long
 time roughly half did not — the convention was stated but nothing enforced it, so each new
 diagnostic was free to ship without one. `e2e/test/diagnostics-help.test.ts` now fails
 if any code lacks help, which is what turned the convention into a guarantee.
