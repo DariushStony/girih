@@ -173,10 +173,13 @@ await writeFile(
       name: workspaceName,
       private: true,
       type: 'module',
+      // Same set `girih create` writes, including build — the two scaffolders producing
+      // different scripts is a difference nobody could explain.
       scripts: {
         check: 'girih check',
         generate: 'girih generate react',
         'generate:check': 'girih generate react --check',
+        build: 'girih build',
       },
       devDependencies: scaffoldDevDependencies(parsed.workspace),
     },

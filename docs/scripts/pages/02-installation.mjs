@@ -57,18 +57,39 @@ yarn create girih my-ds`,
 )}
 
 <p>
-  It creates the directory, writes <code>package.json</code>, installs the toolchain, then hands off
-  to <code>girih init</code> — so the workspace template lives in the CLI and the two can never
-  drift apart. Then:
+  It writes the whole workspace, then installs it with whichever package manager you used —
+  <code>pnpm create</code> installs with pnpm, <code>yarn create</code> with yarn. The templates come
+  from the same module <code>girih init</code> uses, so the bootstrapper and the CLI cannot drift
+  apart. Then:
 </p>
 
 ${code(
   `cd my-ds
 
-girih check            # resolved token table + contract validation
-girih generate react   # compile the design system package
+npm run check          # resolved token table + contract validation
+npm run generate       # compile the design system package
 open demo/index.html   # every variant, size and brand`,
   { kind: 'shell', lang: 'none' },
+)}
+
+${gotcha(
+  'Use `npm run`, not a bare `girih`',
+  `<p>
+    girih installs as a <em>dev dependency</em>, not globally, so it is in
+    <code>node_modules/.bin</code> and not on your <code>PATH</code>. A bare
+    <code>girih check</code> will report "command not found". Both of these work:
+  </p>
+  ${code(
+    `npm run check      # the script in package.json
+npx girih check    # resolves node_modules/.bin`,
+    { kind: 'shell', lang: 'none' },
+  )}
+  <p>
+    The scaffolded <code>package.json</code> defines <code>check</code>, <code>generate</code>,
+    <code>generate:check</code> and <code>build</code>. Everything else — <code>doctor</code>,
+    <code>brand create</code>, <code>eject</code>, <code>publish</code> — goes through
+    <code>npx girih</code>.
+  </p>`,
 )}
 
 <p>

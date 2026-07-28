@@ -46,19 +46,33 @@ npm create girih my-ds
 yarn create girih my-ds
 ```
 
-It creates the directory, writes `package.json`, installs the toolchain, then hands off
-to `girih init` — so the workspace template lives in the CLI and the two can never
-drift apart. Then:
+It writes the whole workspace, then installs it with whichever package manager you used —
+`pnpm create` installs with pnpm, `yarn create` with yarn. The templates come
+from the same module `girih init` uses, so the bootstrapper and the CLI cannot drift
+apart. Then:
 
 **[Terminal]**
 
 ```
 cd my-ds
 
-girih check            # resolved token table + contract validation
-girih generate react   # compile the design system package
+npm run check          # resolved token table + contract validation
+npm run generate       # compile the design system package
 open demo/index.html   # every variant, size and brand
 ```
+
+> **🟡 Watch out — Use `npm run`, not a bare `girih`**
+>
+> girih installs as a _dev dependency_, not globally, so it is in
+> `node_modules/.bin` and not on your `PATH`. A bare
+> `girih check` will report "command not found". Both of these work:
+>
+> undefined
+>
+> The scaffolded `package.json` defines `check`, `generate`,
+> `generate:check` and `build`. Everything else — `doctor`,
+> `brand create`, `eject`, `publish` — goes through
+> `npx girih`.
 
 If you would rather install the CLI once and reuse it, `girih create` does the same job
 without a second download:
