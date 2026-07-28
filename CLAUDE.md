@@ -173,7 +173,11 @@ Prefer the smallest verification scope possible:
 
 Avoid `pnpm build` at the root unless you changed something that downstream packages consume at build time. Never run `girih publish --yes`.
 
-**Known flake — do not chase it.** `e2e/test/consumer.test.ts` intermittently fails with `ENOENT … e2e/.tmp/consumer/app/smoke.mjs`. Cause: [workspace.test.ts:28](e2e/test/workspace.test.ts#L28) removes all of `e2e/.tmp` in its `afterAll`, while [consumer.test.ts:12](e2e/test/consumer.test.ts#L12) keeps its scratch under `e2e/.tmp/consumer` — and vitest runs the two files in parallel, so the teardown can delete a live sibling's directory. Re-running usually passes, and the file passes in isolation (`pnpm vitest run e2e/test/consumer.test.ts`). If you see that ENOENT, it is this, not your change. The fix, when someone wants it, is to scope `workspace.test.ts`'s teardown to `e2e/.tmp/e2e-ds` and `e2e/.tmp/bad-brand`.
+**The old `e2e/.tmp` teardown race is fixed** — [workspace.test.ts](e2e/test/workspace.test.ts) now removes only its own two directories, and every e2e file owns a separate scratch dir under `e2e/.tmp/`. If you add one, give it its own directory and delete only that; clearing all of `e2e/.tmp` deletes a live sibling's workspace, because vitest runs these files in parallel.
+
+**`e2e/test/consumer.test.ts` is the fragile one, and it is fragile for a different reason:** it is the only suite that reaches the network, packing real tarballs and `npm install`ing them into a from-scratch consumer. A registry hiccup or a slow runner surfaces here first, and its 30s suite timeout is sized for a dev machine's process-spawn latency. Before blaming a change for a failure in this file, check whether it reproduces off CI — `pnpm vitest run e2e/test/consumer.test.ts`.
+
+**macOS hides case-only renames.** `core.ignorecase` is on, so renaming `Badge.json` to `badge.json` stages nothing when the contents match: `git status` is clean, the working tree is right, and the committed tree keeps the old name. Linux CI is case-sensitive and gets the stale one. Use `git mv` through a temporary name, and note that a local test reading the new name still passes here because the case-insensitive lookup finds the old file. [tracked-paths.test.ts](e2e/test/tracked-paths.test.ts) fails on the mismatch so it is caught before a push.
 
 # Agent Instructions
 
