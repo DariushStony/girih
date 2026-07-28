@@ -178,7 +178,7 @@ $ pnpm exec girih generate react
 
 write  packages/design-system/styles/tokens.css (6721 bytes)
 write  packages/design-system/styles/components.css (6402 bytes)
-write  packages/design-system/src/Button.tsx (1187 bytes)
+write  packages/design-system/src/button.tsx (1187 bytes)
 write  packages/design-system/src/index.ts (612 bytes)
 write  packages/design-system/package.json (694 bytes)
 write  .ds/ir/ (6 component IR files)

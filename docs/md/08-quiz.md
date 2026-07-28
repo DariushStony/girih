@@ -166,7 +166,7 @@ D. Contracts that reference tokens from more than one tier.
 
 ### Question 6
 
-A teammate edits `packages/design-system/src/Button.tsx` directly to add a class, then runs `girih generate react`. What happens, and what should they do?
+A teammate edits `packages/design-system/src/button.tsx` directly to add a class, then runs `girih generate react`. What happens, and what should they do?
 
 A. It refuses and names the file. The right move is `girih eject Button`, which carries their hand edits into a tracked fork rather than discarding them.
 B. It overwrites the file, since generated output is always authoritative.

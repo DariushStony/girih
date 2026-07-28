@@ -168,7 +168,7 @@ Delete .ds/manifest.json and regenerate.
 
 GIRIH1012
 error
-packages/girih/src/workspace.ts:87
+packages/girih/src/workspace.ts:89
 
 '${name}' is recorded as ejected in ds.lock, but ${path} is missing.
 
@@ -184,7 +184,7 @@ ds.lock is machine-managed and committed — restore it from git history.
 
 GIRIH1014
 warning
-packages/girih/src/workspace.ts:104
+packages/girih/src/workspace.ts:106
 
 '${name}' was ejected from a different spec/template than the current one — the fork may not honor the contract anymore.
 
@@ -195,8 +195,6 @@ warning
 packages/girih/src/workspace.ts:75
 
 ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated.
-
-Restore components/${name.charAt(0).toLowerCase()}${name.slice(1)}.spec.ts, or remove the entry and components/ejected/${name}.tsx.
 
 ### `GIRIH2xxx` — Tokens
 
@@ -613,7 +611,7 @@ error, because the component still works; it is just less accessible than the co
 
 GIRIH5001
 warning
-packages/girih-generator-react/src/generate.ts:103
+packages/girih-generator-react/src/generate.ts:101
 
 '${ir.name}' maps aria attributes to state '${aria.state}', which the '${ir.template}' template only expresses in CSS — the attributes are not wired.
 
@@ -642,7 +640,7 @@ No diagnostics match that filter.
 
 ## An honest note on coverage
 
-32 of the 71 diagnostics have no
+33 of the 71 diagnostics have no
 `help` line. The project's own convention is that anything actionable should carry a
 one-line suggestion, so that number is a real gap rather than a deliberate choice — most of the
 missing ones are in the `GIRIH4xxx` contract family, where the message is often

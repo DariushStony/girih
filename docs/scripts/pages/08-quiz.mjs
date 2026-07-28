@@ -121,7 +121,7 @@ const QUESTIONS = [
     answer: 0,
   },
   {
-    stem: `A teammate edits <code>packages/design-system/src/Button.tsx</code> directly to add a class, then runs <code>girih generate react</code>. What happens, and what should they do?`,
+    stem: `A teammate edits <code>packages/design-system/src/button.tsx</code> directly to add a class, then runs <code>girih generate react</code>. What happens, and what should they do?`,
     options: [
       {
         text: 'It refuses and names the file. The right move is <code>girih eject Button</code>, which carries their hand edits into a tracked fork rather than discarding them.',

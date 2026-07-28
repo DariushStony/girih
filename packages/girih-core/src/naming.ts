@@ -10,6 +10,20 @@ export function cssVarName(prefix: string, path: string | string[]): string {
 }
 
 /**
+ * A PascalCase or camelCase identifier → a kebab-case slug: `PaymentButton` →
+ * `payment-button`. Every emitted file path and CSS class name goes through this, so a
+ * component's file, its class and its source-of-truth comment cannot disagree.
+ *
+ * Deliberately NOT the same function as `kebabCase` in `@faravahar/girih-spec`, which
+ * converts CSS *properties* and gives a leading capital a leading dash so `WebkitMask`
+ * becomes `-webkit-mask`. That rule is right for properties and wrong for names — it
+ * would turn `Badge` into `-badge`. The two must never be merged.
+ */
+export function kebabName(name: string): string {
+  return name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+}
+
+/**
  * The cascade layers girih emits into, in order. Consumer CSS is unlayered and so
  * always wins, whatever its specificity — which is the point: overriding a generated
  * component should never need a specificity fight or `!important`.

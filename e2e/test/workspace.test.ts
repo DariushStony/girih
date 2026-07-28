@@ -51,21 +51,21 @@ describe('e2e: scaffold → check → generate → drift', { timeout: SUITE_TIME
   it('generates the react package, manifest, and canonical IR', async () => {
     const { status, output } = girih('generate', 'react');
     expect(status).toBe(0);
-    expect(output).toContain('src/Button.tsx');
+    expect(output).toContain('src/button.tsx');
 
     for (const path of [
-      'packages/design-system/src/Button.tsx',
+      'packages/design-system/src/button.tsx',
       'packages/design-system/src/index.ts',
       'packages/design-system/styles/tokens.css',
       'packages/design-system/styles/components.css',
       'packages/design-system/package.json',
       '.ds/manifest.json',
-      '.ds/ir/Button.json',
+      '.ds/ir/button.json',
     ]) {
       expect(existsSync(join(workspace, path)), path).toBe(true);
     }
 
-    const ir = JSON.parse(await readFile(join(workspace, '.ds/ir/Button.json'), 'utf8'));
+    const ir = JSON.parse(await readFile(join(workspace, '.ds/ir/button.json'), 'utf8'));
     expect(ir.name).toBe('Button');
     expect(ir.variants[0].values).toEqual(['primary', 'secondary', 'danger']);
 
@@ -73,7 +73,7 @@ describe('e2e: scaffold → check → generate → drift', { timeout: SUITE_TIME
   });
 
   it('refuses to overwrite hand-edited output, honors --force', async () => {
-    await appendFile(join(workspace, 'packages/design-system/src/Button.tsx'), '\n// hand edit\n');
+    await appendFile(join(workspace, 'packages/design-system/src/button.tsx'), '\n// hand edit\n');
 
     const drifted = girih('generate', 'react');
     expect(drifted.status).toBe(1);
@@ -85,7 +85,7 @@ describe('e2e: scaffold → check → generate → drift', { timeout: SUITE_TIME
 
     const forced = girih('generate', 'react', '--force');
     expect(forced.status).toBe(0);
-    const restored = await readFile(join(workspace, 'packages/design-system/src/Button.tsx'), 'utf8');
+    const restored = await readFile(join(workspace, 'packages/design-system/src/button.tsx'), 'utf8');
     expect(restored).not.toContain('// hand edit');
   });
 
@@ -118,7 +118,7 @@ describe('e2e: scaffold → check → generate → drift', { timeout: SUITE_TIME
   it('ejects Button into a tracked fork and stitches user edits back in', async () => {
     const eject = girih('eject', 'Button');
     expect(eject.status).toBe(0);
-    expect(eject.output).toContain('components/ejected/Button.tsx');
+    expect(eject.output).toContain('components/ejected/button.tsx');
 
     const lock = JSON.parse(await readFile(join(workspace, 'ds.lock'), 'utf8'));
     expect(lock.ejected.Button.template).toBe('element');
@@ -129,7 +129,7 @@ describe('e2e: scaffold → check → generate → drift', { timeout: SUITE_TIME
     expect(girih('eject', 'Button').status).toBe(1);
 
     // Fork the markup — this file is user-owned now.
-    const ejectedPath = join(workspace, 'components/ejected/Button.tsx');
+    const ejectedPath = join(workspace, 'components/ejected/button.tsx');
     const forked = (await readFile(ejectedPath, 'utf8')).replace("cx('ds-button'", "cx('ds-button forked'");
     await writeFile(ejectedPath, forked);
 
@@ -137,7 +137,7 @@ describe('e2e: scaffold → check → generate → drift', { timeout: SUITE_TIME
     expect(generate.status).toBe(0);
 
     // The fork is stitched into the package verbatim…
-    const stitched = await readFile(join(workspace, 'packages/design-system/src/Button.tsx'), 'utf8');
+    const stitched = await readFile(join(workspace, 'packages/design-system/src/button.tsx'), 'utf8');
     expect(stitched).toContain("cx('ds-button forked'");
     // …while its CSS is still generated from the spec (token plumbing never forks).
     const css = await readFile(join(workspace, 'packages/design-system/styles/components.css'), 'utf8');

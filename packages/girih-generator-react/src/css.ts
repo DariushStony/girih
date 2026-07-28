@@ -1,9 +1,7 @@
-import { cssVarName } from '@faravahar/girih-core';
+import { cssVarName, kebabName } from '@faravahar/girih-core';
 import type { ComponentIR, ComponentState, StyleRuleIR, VariantExtensionInput } from '@faravahar/girih-spec';
 import { checkboxStructuralCss } from './templates/checkbox.js';
 import { dialogStructuralCss } from './templates/dialog.js';
-
-const kebab = (s: string) => s.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 
 /** How each declarable state attaches to the base selector. */
 const STATE_SELECTORS: Record<ComponentState, string[]> = {
@@ -88,7 +86,7 @@ ${base}[data-loading="true"] {
  * var() reference into the token layer, so brand switching never touches this file.
  */
 export function renderComponentCss(ir: ComponentIR, options: { prefix: string; classPrefix: string }): string {
-  const base = `.${options.classPrefix}-${kebab(ir.name)}`;
+  const base = `.${options.classPrefix}-${kebabName(ir.name)}`;
   const blocks: string[] = [];
 
   if (ir.template === 'checkbox') blocks.push(...checkboxStructuralCss(base));
@@ -116,7 +114,7 @@ export function renderComponentCss(ir: ComponentIR, options: { prefix: string; c
   }
 
   for (const block of ir.tokens.variants) {
-    const variantSelector = `${styledBase}[data-${kebab(block.axis)}="${block.value}"]`;
+    const variantSelector = `${styledBase}[data-${kebabName(block.axis)}="${block.value}"]`;
     if (block.declarations.length > 0) {
       blocks.push(`${variantSelector} {\n${declarations(block.declarations, options.prefix)}\n}`);
     }
@@ -145,8 +143,8 @@ export function renderExtensionCss(
   baseIr: ComponentIR,
   options: { prefix: string; classPrefix: string },
 ): string {
-  const baseClass = `.${options.classPrefix}-${kebab(baseIr.name)}`;
-  const extensionClass = `.${options.classPrefix}-x-${kebab(extension.name)}`;
+  const baseClass = `.${options.classPrefix}-${kebabName(baseIr.name)}`;
+  const extensionClass = `.${options.classPrefix}-x-${kebabName(extension.name)}`;
   const host = baseIr.template === 'dialog' ? `${baseClass}-popup` : baseClass;
   const styled = `${host}${extensionClass}${extensionClass}`;
 
@@ -156,6 +154,6 @@ export function renderExtensionCss(
     for (const suffix of STATE_SELECTORS[state] ?? []) selectors.push(`${styled}${suffix}`);
   }
 
-  const rules = Object.entries(extension.tokens).map(([property, ref]) => ({ property: kebab(property), ref }));
+  const rules = Object.entries(extension.tokens).map(([property, ref]) => ({ property: kebabName(property), ref }));
   return `${selectors.join(',\n')} {\n${declarations(rules, options.prefix)}\n}`;
 }

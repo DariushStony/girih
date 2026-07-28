@@ -81,11 +81,11 @@ describe('generateReact', () => {
   it('emits the package skeleton and is byte-deterministic', () => {
     const a = generateReact([buttonIR()], { packageName: '@acme/design-system', prefix: 'ds' });
     const b = generateReact([buttonIR()], { packageName: '@acme/design-system', prefix: 'ds' });
-    expect(a.files.map((f) => f.path)).toEqual(['src/Button.tsx', 'styles/components.css', 'src/index.ts', 'package.json', 'README.md']);
+    expect(a.files.map((f) => f.path)).toEqual(['src/button.tsx', 'styles/components.css', 'src/index.ts', 'package.json', 'README.md']);
     expect(a.files.map((f) => f.hash)).toEqual(b.files.map((f) => f.hash));
 
     const index = a.files.find((f) => f.path === 'src/index.ts')!.contents;
-    expect(index).toContain("export { Button } from './Button';");
+    expect(index).toContain("export { Button } from './button';");
     expect(index).toContain("export { BrandProvider, useBrand, cx } from '@faravahar/girih-react-runtime';");
 
     const pkg = JSON.parse(a.files.find((f) => f.path === 'package.json')!.contents);

@@ -114,8 +114,8 @@ describe('extensions', () => {
       { extensions: [{ file: 'extensions/payment-button.ext.ts', extension }] },
     );
 
-    const tsx = result.files.find((f) => f.path === 'src/PaymentButton.tsx')!.contents;
-    expect(tsx).toContain("import { Button } from './Button'");
+    const tsx = result.files.find((f) => f.path === 'src/payment-button.tsx')!.contents;
+    expect(tsx).toContain("import { Button } from './button'");
     expect(tsx).toContain("cx('ds-x-payment-button', className)");
     expect(tsx).toContain('forwardRef<HTMLButtonElement, ButtonProps>');
 
@@ -125,7 +125,7 @@ describe('extensions', () => {
     expect(extensionAt).toBeGreaterThan(variantAt); // source order = extension wins ties
 
     const index = result.files.find((f) => f.path === 'src/index.ts')!.contents;
-    expect(index).toContain("export { PaymentButton } from './PaymentButton';");
+    expect(index).toContain("export { PaymentButton } from './payment-button';");
   });
 
   it('stitches ejected sources verbatim while CSS stays generated', () => {
@@ -134,7 +134,7 @@ describe('extensions', () => {
       { packageName: '@t/ds', prefix: 'ds' },
       { ejected: { Button: '// user-owned fork\nexport const Button = null as never;\n' } },
     );
-    expect(result.files.find((f) => f.path === 'src/Button.tsx')!.contents).toContain('user-owned fork');
+    expect(result.files.find((f) => f.path === 'src/button.tsx')!.contents).toContain('user-owned fork');
     expect(result.files.find((f) => f.path === 'styles/components.css')!.contents).toContain('.ds-button[data-variant="primary"]');
   });
 });

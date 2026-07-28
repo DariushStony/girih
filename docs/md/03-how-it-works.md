@@ -230,7 +230,7 @@ did girih? Here is the complete answer.
 >
 > `.ds/ir/` and `.ds/manifest.json` are generated _and_ committed,
 > which looks like a contradiction. It is not. The IR is the reviewable form of your contract — a
-> diff of `.ds/ir/Button.json` in a pull request shows exactly what changed about the
+> diff of `.ds/ir/button.json` in a pull request shows exactly what changed about the
 > Button's public surface, which the `.spec.ts` diff shows less directly. And the
 > manifest has to be committed or drift detection cannot survive a fresh clone.
 >

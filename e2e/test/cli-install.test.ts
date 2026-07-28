@@ -154,7 +154,7 @@ describe('cli install: pack every package → install → run the binary', { tim
 
     const generate = girih('generate', 'react');
     expect(generate.status, `generate\n${generate.stderr}`).toBe(0);
-    expect(existsSync(join(consumer, 'packages/design-system/src/Button.tsx'))).toBe(true);
+    expect(existsSync(join(consumer, 'packages/design-system/src/button.tsx'))).toBe(true);
 
     // The whole chain's end: tsc compiles the emitted TSX against the installed
     // runtime and react. This is what the GIRIH6002 preflight guards.

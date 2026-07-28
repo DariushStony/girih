@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { emittedFile, loadConfig } from '@faravahar/girih-core';
+import { emittedFile, kebabName, loadConfig } from '@faravahar/girih-core';
 import type { EmittedFile, ResolvedConfig } from '@faravahar/girih-core';
 import { buildTokenGraphs } from '@faravahar/girih-tokens';
 import type { TokenBuildResult } from '@faravahar/girih-tokens';
@@ -76,11 +76,13 @@ export async function loadEjectedSources(
         severity: 'warning',
         message: `ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated.`,
         file: 'ds.lock',
-        help: `Restore components/${name.charAt(0).toLowerCase()}${name.slice(1)}.spec.ts, or remove the entry and components/ejected/${name}.tsx.`,
+        // Both paths are kebab-case. Lowercasing only the first letter named
+        // `paymentButton.spec.ts` for a PaymentButton, which never existed.
+        help: `Restore components/${kebabName(name)}.spec.ts, or remove the entry and components/ejected/${kebabName(name)}.tsx.`,
       });
       continue;
     }
-    const path = `components/ejected/${name}.tsx`;
+    const path = `components/ejected/${kebabName(name)}.tsx`;
     const contents = await readFile(join(config.root, path), 'utf8').catch(() => null);
     if (contents === null) {
       build.diagnostics.push({
@@ -142,7 +144,7 @@ export async function composeReact(config: ResolvedConfig, build: TokenBuildResu
   return {
     files: [...cssFiles.map((f) => ({ ...f, path: join('styles', f.path) })), ...reactResult.files],
     // Canonical IR — the language-neutral contract form future targets (Figma) consume.
-    irFiles: irs.map((ir) => emittedFile(`${ir.name}.json`, JSON.stringify(ir, null, 2) + '\n')),
+    irFiles: irs.map((ir) => emittedFile(`${kebabName(ir.name)}.json`, JSON.stringify(ir, null, 2) + '\n')),
     irs,
     extensions,
     ejected,

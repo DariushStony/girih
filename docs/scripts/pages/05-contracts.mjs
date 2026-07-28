@@ -153,7 +153,7 @@ ${code(
   "extensibility": { "allowExtends": true, "overridableTokens": ["background", "color", "borderColor"] },
   "sourceFile": "components/button.spec.ts"
 }`,
-  { path: '.ds/ir/Button.json (excerpt of the real file)', kind: 'generated', lang: 'json' },
+  { path: '.ds/ir/button.json (excerpt of the real file)', kind: 'generated', lang: 'json' },
 )}
 
 <p>The IR exists for three reasons, and they are all about decoupling:</p>
@@ -192,8 +192,8 @@ ${gotcha(
   simplification:
 </p>
 
-${code(data.generated['src/Button.tsx'] ?? '', {
-  path: 'packages/design-system/src/Button.tsx',
+${code(data.generated['src/button.tsx'] ?? '', {
+  path: 'packages/design-system/src/button.tsx',
   kind: 'generated',
   lang: 'tsx',
 })}
@@ -328,8 +328,8 @@ ${code(data.sources['extensions/payment-button.ext.ts'] ?? '', {
 
 <p>That compiles to a component that is a thin wrapper over the base, plus a scoped CSS rule:</p>
 
-${code(data.generated['src/PaymentButton.tsx'] ?? '', {
-  path: 'packages/design-system/src/PaymentButton.tsx',
+${code(data.generated['src/payment-button.tsx'] ?? '', {
+  path: 'packages/design-system/src/payment-button.tsx',
   kind: 'generated',
   lang: 'tsx',
 })}
@@ -392,10 +392,10 @@ ${rule(
 ${code(
   `$ pnpm exec girih eject Dialog
 
-create  components/ejected/Dialog.tsx
+create  components/ejected/dialog.tsx
 update  ds.lock (base: dialog@v1, 4f2a9c1e8b03)
 
-'Dialog' is now yours: edit components/ejected/Dialog.tsx freely — commit it and ds.lock.
+'Dialog' is now yours: edit components/ejected/dialog.tsx freely — commit it and ds.lock.
 Its spec is still validated and its CSS still generated — only markup/behavior is forked.
 Run \`girih generate react\` to stitch it into the package.`,
   { kind: 'shell', lang: 'none' },
@@ -405,7 +405,7 @@ Run \`girih generate react\` to stitch it into the package.`,
 
 <ol>
   <li>
-    The current template output is written to <code>components/ejected/Dialog.tsx</code> — your file
+    The current template output is written to <code>components/ejected/dialog.tsx</code> — your file
     now, committed to git.
   </li>
   <li>

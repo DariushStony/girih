@@ -7,8 +7,8 @@
  *   coloured run — `1 component contract`, whose count is bold — passes locally and
  *   fails in CI, with a diff showing two identical-looking strings.
  *
- *   Path separators. The CLI prints `join()`ed paths, so `src/Button.tsx` arrives as
- *   `src\Button.tsx` on Windows.
+ *   Path separators. The CLI prints `join()`ed paths, so `src/button.tsx` arrives as
+ *   `src\button.tsx` on Windows.
  *
  * Both are correct output. Tests assert on the text, so they normalise first.
  */

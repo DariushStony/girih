@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import pc from 'picocolors';
-import { emittedFile, writeEmittedFiles } from '@faravahar/girih-core';
+import { emittedFile, kebabName, writeEmittedFiles } from '@faravahar/girih-core';
 import { TEMPLATE_REGISTRY, renderComponentSource } from '@faravahar/girih-generator-react';
 import { readLock, writeLock } from '../lock.js';
 import { readManifest } from '../manifest.js';
@@ -55,7 +55,7 @@ export function registerEject(program: Command): void {
       // Snapshot the exact template output as the fork base. The recorded hash +
       // template version are what would make a future `girih forks` 3-way merge.
       const source = renderComponentSource(ir, { classPrefix: config.tokens.prefix, runtimePackage: RUNTIME_PACKAGE });
-      const baseFile = emittedFile(`components/ejected/${componentName}.tsx`, source);
+      const baseFile = emittedFile(`components/ejected/${kebabName(componentName)}.tsx`, source);
 
       // If the generated file on disk carries hand edits (drift), the fork must
       // start from THOSE — ejecting is the drift gate's own remedy, and following

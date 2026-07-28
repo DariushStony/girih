@@ -313,7 +313,7 @@ ${gotcha(
   `<p>
     <code>.ds/ir/</code> and <code>.ds/manifest.json</code> are generated <em>and</em> committed,
     which looks like a contradiction. It is not. The IR is the reviewable form of your contract — a
-    diff of <code>.ds/ir/Button.json</code> in a pull request shows exactly what changed about the
+    diff of <code>.ds/ir/button.json</code> in a pull request shows exactly what changed about the
     Button's public surface, which the <code>.spec.ts</code> diff shows less directly. And the
     manifest has to be committed or drift detection cannot survive a fresh clone.
   </p>

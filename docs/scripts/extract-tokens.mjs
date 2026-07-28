@@ -118,12 +118,12 @@ const sources = {
 const generated = {
   'styles/tokens.css': readIfPresent('packages/design-system/styles/tokens.css'),
   'styles/components.css': readIfPresent('packages/design-system/styles/components.css'),
-  'src/Button.tsx': readIfPresent('packages/design-system/src/Button.tsx'),
-  'src/Badge.tsx': readIfPresent('packages/design-system/src/Badge.tsx'),
-  'src/PaymentButton.tsx': readIfPresent('packages/design-system/src/PaymentButton.tsx'),
+  'src/button.tsx': readIfPresent('packages/design-system/src/button.tsx'),
+  'src/badge.tsx': readIfPresent('packages/design-system/src/badge.tsx'),
+  'src/payment-button.tsx': readIfPresent('packages/design-system/src/payment-button.tsx'),
   'src/index.ts': readIfPresent('packages/design-system/src/index.ts'),
   'package.json': readIfPresent('packages/design-system/package.json'),
-  '.ds/ir/Button.json': readIfPresent('.ds/ir/Button.json'),
+  '.ds/ir/button.json': readIfPresent('.ds/ir/button.json'),
   '.ds/manifest.json': readIfPresent('.ds/manifest.json'),
 };
 

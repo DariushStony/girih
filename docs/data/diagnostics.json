@@ -281,10 +281,10 @@
       "helpDynamic": true,
       "package": "girih",
       "file": "packages/girih/src/workspace.ts",
-      "line": 87,
+      "line": 89,
       "sites": 1,
       "allSites": [
-        "packages/girih/src/workspace.ts:87"
+        "packages/girih/src/workspace.ts:89"
       ]
     },
     {
@@ -311,10 +311,10 @@
       "helpDynamic": false,
       "package": "girih",
       "file": "packages/girih/src/workspace.ts",
-      "line": 104,
+      "line": 106,
       "sites": 1,
       "allSites": [
-        "packages/girih/src/workspace.ts:104"
+        "packages/girih/src/workspace.ts:106"
       ]
     },
     {
@@ -322,8 +322,8 @@
       "severity": "warning",
       "message": "ds.lock records '${name}' as ejected, but no spec with that name exists — the fork is not generated.",
       "messageDynamic": true,
-      "help": "Restore components/${name.charAt(0).toLowerCase()}${name.slice(1)}.spec.ts, or remove the entry and components/ejected/${name}.tsx.",
-      "helpDynamic": true,
+      "help": null,
+      "helpDynamic": false,
       "package": "girih",
       "file": "packages/girih/src/workspace.ts",
       "line": 75,
@@ -1159,10 +1159,10 @@
       "helpDynamic": false,
       "package": "girih-generator-react",
       "file": "packages/girih-generator-react/src/generate.ts",
-      "line": 103,
+      "line": 101,
       "sites": 1,
       "allSites": [
-        "packages/girih-generator-react/src/generate.ts:103"
+        "packages/girih-generator-react/src/generate.ts:101"
       ]
     },
     {

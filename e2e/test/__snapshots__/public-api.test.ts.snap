@@ -33,6 +33,7 @@ exports[`published API surface > @faravahar/girih-core exports a stable set of n
   "defineConfig",
   "emittedFile",
   "formatDiagnostic",
+  "kebabName",
   "loadConfig",
   "verifyEmittedFiles",
   "writeEmittedFiles",
