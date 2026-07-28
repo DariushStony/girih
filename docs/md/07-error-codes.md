@@ -12,7 +12,7 @@
 
 ---
 
-All 72 diagnostics girih can emit — 59 errors and
+All 74 diagnostics girih can emit — 61 errors and
 13 warnings — extracted straight from
 `packages/*/src` by a script. The messages below are the real strings, not paraphrases.
 
@@ -61,8 +61,8 @@ source before you have read a word of the message.
 
 | Range | Owner | Covers | Codes |
 | --- | --- | --- | --- |
-| [`GIRIH1xxx`](#family-1) | `core + cli` | Workspace, config, manifest, ds.lock | 14 |
-| [`GIRIH2xxx`](#family-2) | `tokens` | Parse, overlay, alias resolution, tier validation | 20 |
+| [`GIRIH1xxx`](#family-1) | `core + cli` | Workspace, config, manifest, ds.lock | 15 |
+| [`GIRIH2xxx`](#family-2) | `tokens` | Parse, overlay, alias resolution, tier validation | 21 |
 | [`GIRIH3xxx`](#family-3) | `generator-css` | CSS emission | 3 |
 | [`GIRIH4xxx`](#family-4) | `spec` | Component contracts and extensions | 32 |
 | [`GIRIH5xxx`](#family-5) | `generator-react` | React emission | 1 |
@@ -80,7 +80,7 @@ source before you have read a word of the message.
 
 ### `GIRIH1xxx` — Workspace and bookkeeping
 
-Owned by `core + cli` · 14 codes
+Owned by `core + cli` · 15 codes
 
 Something about the shape of your workspace, rather than the design system itself: the config
 file is missing or malformed, a brand points at a file that is not there, the manifest or
@@ -90,7 +90,7 @@ hit on day one and then rarely again — with one exception,
 
 GIRIH1001
 error
-packages/girih-core/src/config.ts:90
+packages/girih-core/src/config.ts:91
 
 No ds.config.ts found in ${root}
 
@@ -98,7 +98,7 @@ Run `girih init` to scaffold a workspace, or cd into an existing one.
 
 GIRIH1002
 error
-packages/girih-core/src/config.ts:118
+packages/girih-core/src/config.ts:119
 
 Failed to load ${configPath}: ${message.split('\n')[0]}
 
@@ -106,7 +106,7 @@ The error comes from ds.config.ts itself. It is evaluated as real TypeScript, so
 
 GIRIH1003
 error
-packages/girih-core/src/config.ts:199
+packages/girih-core/src/config.ts:200
 
 Config is missing 'name' (the published package name, e.g. '@acme/design-system').
 
@@ -114,7 +114,7 @@ Add `name: '@scope/design-system'`. It is the name the generated package is publ
 
 GIRIH1004
 error
-packages/girih-core/src/config.ts:173
+packages/girih-core/src/config.ts:174
 
 Brand '${brand.name}' points at a missing token file: ${brand.tokensFile}
 
@@ -122,7 +122,7 @@ Create the overlay file (an empty {} is valid) or fix brands.definitions.${brand
 
 GIRIH1005
 error
-packages/girih-core/src/config.ts:209
+packages/girih-core/src/config.ts:210
 
 Config must define at least one brand under brands.definitions.
 
@@ -130,7 +130,7 @@ Add one: `brands: { default: 'base', definitions: { base: { tokens: 'brands/base
 
 GIRIH1006
 error
-packages/girih-core/src/config.ts:217
+packages/girih-core/src/config.ts:218
 
 brands.default ('${raw.brands?.default}') is not a key of brands.definitions.
 
@@ -138,7 +138,7 @@ Known brands: ${Object.keys(definitions).join(', ')}
 
 GIRIH1007
 error
-packages/girih-core/src/config.ts:189
+packages/girih-core/src/config.ts:190
 
 ds.config.ts must default-export a config object (use defineConfig).
 
@@ -146,7 +146,7 @@ Write `export default defineConfig({ … })`. A named export is not read, and ne
 
 GIRIH1008
 error
-packages/girih/src/commands/check.ts:23
+packages/girih/src/commands/check.ts:24
 
 Unknown brand '${options.brand}'.
 
@@ -154,7 +154,7 @@ Known brands: ${[...build.graphs.keys()].join(', ')}.
 
 GIRIH1010
 warning
-packages/girih/src/commands/check.ts:81
+packages/girih/src/commands/check.ts:82
 
 Generated file ${path} was edited by hand since the last \`girih generate\`.
 
@@ -162,7 +162,7 @@ Undo the edit or eject the component (M5); the next generate will refuse to over
 
 GIRIH1011
 warning
-packages/girih/src/commands/check.ts:73
+packages/girih/src/commands/check.ts:74
 
 .ds/manifest.json is corrupt or from an incompatible girih version — drift detection is disabled.
 
@@ -200,9 +200,17 @@ ds.lock records '${name}' as ejected, but no spec with that name exists — the 
 
 Restore design/components/${kebabName(name)}/${kebabName(name)}.contract.ts, or remove the ds.lock entry.
 
+GIRIH1016
+error
+packages/girih-core/src/files.ts:28
+
+Failed to write '${file.path}': ${(error as Error).message}
+
+Check that the output directory is writable and that there is free disk space.
+
 ### `GIRIH2xxx` — Tokens
 
-Owned by `tokens` · 20 codes
+Owned by `tokens` · 21 codes
 
 Your design language does not hold together. A reference points at nothing, two tokens
 reference each other in a loop, a reference points upward through the tiers, a brand tried to add
@@ -235,7 +243,7 @@ Write it as { "$value": ${JSON.stringify(child)} }.
 
 GIRIH2004
 warning
-packages/girih-tokens/src/engine.ts:95
+packages/girih-tokens/src/engine.ts:108
 
 Cannot infer the tier of '${file}' from its name — assuming 'semantic'.
 
@@ -251,7 +259,7 @@ Check the path and that the file is readable. A token file glob that matches a d
 
 GIRIH2006
 error
-packages/girih-tokens/src/engine.ts:80
+packages/girih-tokens/src/engine.ts:93
 
 No token files matched ${config.tokens.source.join(', ')} under ${config.root}.
 
@@ -296,6 +304,14 @@ packages/girih-tokens/src/merge.ts:44 (+1 more)
 Token '${token.path}' is nested under '${shadowedAncestor}', which is itself a token (defined in ${tokens.get(shadowedAncestor)!.file}).
 
 A path must be either a token or a group, never both — rename one of them.
+
+GIRIH2012
+error
+packages/girih-tokens/src/engine.ts:76
+
+Cannot parse token file as JSON: ${(error as Error).message}
+
+Check for a trailing comma, an unquoted key, or other invalid JSON — DTCG token files are plain JSON, no comments allowed.
 
 GIRIH2020
 error
@@ -380,7 +396,7 @@ be a silent last-one-wins if girih did not stop for it.
 
 GIRIH3001
 error
-packages/girih-generator-css/src/generate.ts:125
+packages/girih-generator-css/src/generate.ts:128
 
 CSS generation failed for brand '${brand}': ${(error as Error).message}
 
@@ -388,7 +404,7 @@ Usually a token value style-dictionary cannot serialise. GIRIH3002 names the spe
 
 GIRIH3002
 error
-packages/girih-generator-css/src/generate.ts:224
+packages/girih-generator-css/src/generate.ts:235 (+1 more)
 
 '${variable}' (brand '${brand}') has a composite value no CSS transform could flatten.
 
@@ -396,7 +412,7 @@ Give the token a supported $type (shadow, typography, border, transition, cubicB
 
 GIRIH3003
 error
-packages/girih-generator-css/src/generate.ts:180
+packages/girih-generator-css/src/generate.ts:191
 
 Tokens ${paths.map((p) => `'${p}'`).join(' and ')} both map to the CSS variable '${varName}'.
 
@@ -413,7 +429,7 @@ references that do not resolve for every brand, and extensions reaching past
 
 GIRIH4001
 error
-packages/girih-spec/src/validate.ts:145
+packages/girih-spec/src/validate.ts:126
 
 Component name '${ir.name}' must be PascalCase (it becomes an exported React identifier).
 
@@ -421,25 +437,25 @@ The name becomes the exported React identifier, so it has to start with a capita
 
 GIRIH4002
 error
-packages/girih-spec/src/extensions.ts:168 (+1 more)
+packages/girih-spec/src/token-ref.ts:43
 
-Extension '${extension.name}' references '{${path}}', which ${
-missing.length === graphs.size ? 'no brand resolves' : `brand(s) ${missing.join(', ')} do not resolve`
+${ctx.subject} references '{${path}}' at ${ctx.where}, which ${
+missingBrands.length === graphs.size ? 'no brand resolves' : `brand(s) ${missingBrands.join(', ')} do not resolve`
 }.
 
 Every brand must resolve the same token set, so the token has to exist in the base tokens — a brand overlay may override paths but never introduce them.
 
 GIRIH4003
 warning
-packages/girih-spec/src/extensions.ts:186 (+1 more)
+packages/girih-spec/src/token-ref.ts:59
 
-Extension '${extension.name}' references global token '{${path}}' — extensions should consume semantic or component tokens.
+${ctx.subject} references global token '{${path}}' at ${ctx.where} — consume semantic or component tokens instead.
 
-Add a semantic token that aliases this global one and reference that instead. An extension bound straight to a global value cannot be re-themed per brand.
+Add a semantic token that aliases this global one and reference that instead. A value bound straight to a global cannot be re-themed per brand.
 
 GIRIH4005
 error
-packages/girih-spec/src/validate.ts:154
+packages/girih-spec/src/validate.ts:135
 
 Component '${ir.name}' is defined more than once (${seen.get(ir.name)} and ${file}).
 
@@ -447,7 +463,7 @@ Two spec files declare the same name, and the name decides the emitted component
 
 GIRIH4006
 error
-packages/girih-spec/src/validate.ts:258
+packages/girih-spec/src/validate.ts:273
 
 Variant axis '${axis.axis}' of '${ir.name}' has no values.
 
@@ -455,7 +471,7 @@ Give the axis at least one value, or remove it — an axis with no values emits 
 
 GIRIH4007
 error
-packages/girih-spec/src/validate.ts:281
+packages/girih-spec/src/validate.ts:296
 
 Variant axis '${axis.axis}' of '${ir.name}' defaults to '${axis.default}', which is not one of [${axis.values.join(', ')}].
 
@@ -463,7 +479,7 @@ Set default to one of the listed values, or add the missing value to values.
 
 GIRIH4008
 error
-packages/girih-spec/src/validate.ts:295
+packages/girih-spec/src/validate.ts:316
 
 '${ir.name}' declares state '${state}', which the '${ir.template}' template does not implement.
 
@@ -471,7 +487,7 @@ States of '${ir.template}': ${implementableStates.join(', ') || '(none)'}. State
 
 GIRIH4009
 error
-packages/girih-spec/src/validate.ts:334
+packages/girih-spec/src/validate.ts:370
 
 '${ir.name}' styles variant axis '${block.axis}', which is not declared under variants.
 
@@ -479,7 +495,7 @@ Declare the axis under variants first, or remove the style block — this CSS wo
 
 GIRIH4010
 error
-packages/girih-spec/src/validate.ts:345
+packages/girih-spec/src/validate.ts:381
 
 '${ir.name}' styles '${block.axis}.${block.value}', but '${block.value}' is not a declared value of that axis.
 
@@ -487,7 +503,7 @@ Add it to that axis's values, or correct the spelling.
 
 GIRIH4011
 error
-packages/girih-spec/src/validate.ts:320 (+1 more)
+packages/girih-spec/src/validate.ts:351 (+1 more)
 
 '${ir.name}' styles state '${state.state}' under tokens.states, but does not declare that state.
 
@@ -495,15 +511,15 @@ Declare it under states first. Declaring a state is what makes the template wire
 
 GIRIH4012
 error
-packages/girih-spec/src/extensions.ts:155 (+1 more)
+packages/girih-spec/src/token-ref.ts:28
 
-Extension '${extension.name}' has a malformed token reference '${ref}' at ${property} — expected '{token.path}'.
+${ctx.subject} has a malformed token reference '${ref}' at ${ctx.where} — expected '{token.path}'.
 
 A reference is one token path in braces: `{color.action}`. No nesting, no fallback value, no spaces.
 
 GIRIH4013
 error
-packages/girih-spec/src/validate.ts:209 (+3 more)
+packages/girih-spec/src/validate.ts:218 (+3 more)
 
 '${ir.name}' ${what} '${name}' is not a valid camelCase identifier — it becomes a React prop.
 
@@ -511,7 +527,7 @@ It is destructured by name in the generated component, so it must be a plain cam
 
 GIRIH4014
 error
-packages/girih-spec/src/ir.ts:28
+packages/girih-spec/src/ir.ts:31
 
 '${spec.name}' has a non-string declaration for '${property}' at ${where} — every styled value must be a '{token.path}' reference.
 
@@ -519,7 +535,7 @@ Did you mean to nest '${property}' under a 'states' key?
 
 GIRIH4015
 warning
-packages/girih-spec/src/validate.ts:372
+packages/girih-spec/src/validate.ts:412
 
 '${ir.name}' styles unknown CSS property '${property}' at ${where} — it will be emitted verbatim.
 
@@ -527,7 +543,7 @@ Check the spelling. If it really is a custom or very new property, this warning 
 
 GIRIH4016
 error
-packages/girih-spec/src/validate.ts:307
+packages/girih-spec/src/validate.ts:333
 
 '${ir.name}' maps aria attributes to state '${aria.state}', which it does not declare under states.
 
@@ -535,7 +551,7 @@ Add the state to states, or drop the aria mapping. girih only wires aria for sta
 
 GIRIH4018
 warning
-packages/girih-spec/src/validate.ts:177
+packages/girih-spec/src/validate.ts:176
 
 '${ir.name}' renders '', which is not a known host element.
 
@@ -575,7 +591,7 @@ advice
 
 GIRIH4030
 error
-packages/girih-spec/src/extensions.ts:46
+packages/girih-spec/src/extensions.ts:43
 
 ${file} does not default-export a variant extension.
 
@@ -583,7 +599,7 @@ Export the result of defineVariant({ name, extends, tokens }) from '@faravahar/g
 
 GIRIH4031
 error
-packages/girih-spec/src/extensions.ts:57
+packages/girih-spec/src/extensions.ts:54
 
 Failed to load extension: ${(error as Error).message}
 
@@ -591,7 +607,7 @@ The extension is evaluated as real TypeScript, so a syntax error, an unresolved 
 
 GIRIH4032
 error
-packages/girih-spec/src/extensions.ts:86
+packages/girih-spec/src/extensions.ts:83
 
 Extension name '${extension.name}' must be PascalCase (it becomes an exported React identifier).
 
@@ -599,7 +615,7 @@ The name becomes the exported React identifier, so it has to start with a capita
 
 GIRIH4033
 error
-packages/girih-spec/src/extensions.ts:96
+packages/girih-spec/src/extensions.ts:93
 
 Extension '${extension.name}' collides with an existing component or extension.
 
@@ -607,7 +623,7 @@ Every component and extension shares one export namespace, because they all beco
 
 GIRIH4034
 error
-packages/girih-spec/src/extensions.ts:109
+packages/girih-spec/src/extensions.ts:106
 
 Extension '${extension.name}' extends '${extension.extends}', which is not in the component catalog.
 
@@ -615,7 +631,7 @@ Known components: ${[...byName.keys()].join(', ') || '(none)'}.
 
 GIRIH4035
 error
-packages/girih-spec/src/extensions.ts:119
+packages/girih-spec/src/extensions.ts:116
 
 '${extension.extends}' does not allow extensions (extensibility.allowExtends is false).
 
@@ -623,7 +639,7 @@ Set extensibility.allowExtends: true on the base contract, if extending it is ge
 
 GIRIH4036
 error
-packages/girih-spec/src/extensions.ts:143
+packages/girih-spec/src/extensions.ts:140
 
 Extension '${extension.name}' overrides '${property}', which '${extension.extends}' does not list under extensibility.overridableTokens.
 
@@ -631,7 +647,7 @@ Overridable: ${base.extensibility.overridableTokens.join(', ') || '(none)'}.
 
 GIRIH4037
 error
-packages/girih-spec/src/extensions.ts:129
+packages/girih-spec/src/extensions.ts:126
 
 '${extension.extends}' is a compound (dialog) component — extensions can only build on single-element components.
 
@@ -639,15 +655,15 @@ A compound component emits several parts, so there is no single element for a wr
 
 GIRIH4038
 warning
-packages/girih-spec/src/extensions.ts:195
+packages/girih-spec/src/token-ref.ts:71
 
-Extension '${extension.name}' reaches into '{${path}}', another component's token namespace.
+${ctx.subject} reaches into '{${path}}', another component's token namespace, at ${ctx.where}.
 
-Use semantic tokens or '${componentNamespace(extension.extends)}.*' tokens so the extension survives refactors of unrelated components.
+Use semantic tokens or '${ctx.ownNamespace}.*' tokens so this survives refactors of unrelated components.
 
 GIRIH4040
 error
-packages/girih-spec/src/validate.ts:166
+packages/girih-spec/src/validate.ts:159
 
 '${ir.name}' uses template '${ir.template}', which this girih version does not ship.
 
@@ -655,7 +671,7 @@ Available templates: ${Object.keys(templates).join(', ')}.
 
 GIRIH4041
 error
-packages/girih-spec/src/validate.ts:189
+packages/girih-spec/src/validate.ts:192
 
 '${ir.name}' styles part '${part.part}', which the '${ir.template}' template does not have.
 
@@ -665,7 +681,7 @@ declaredParts.size > 0
 
 GIRIH4042
 error
-packages/girih-spec/src/validate.ts:244
+packages/girih-spec/src/validate.ts:259
 
 '${ir.name}' declares variant axis '${axis.axis}', but the '${ir.template}' template only wires up: ${template.variantAxes.join(', ')}.
 
@@ -681,7 +697,7 @@ error, because the component still works; it is just less accessible than the co
 
 GIRIH5001
 warning
-packages/girih-generator-react/src/generate.ts:101
+packages/girih-generator-react/src/generate.ts:92
 
 '${ir.name}' maps aria attributes to state '${aria.state}', which the '${ir.template}' template only expresses in CSS — the attributes are not wired.
 
@@ -714,7 +730,7 @@ No diagnostics match that filter.
 
 ## An honest note on coverage
 
-Every one of the 72 diagnostics carries a `help` line. For a long
+Every one of the 74 diagnostics carries a `help` line. For a long
 time roughly half did not — the convention was stated but nothing enforced it, so each new
 diagnostic was free to ship without one. `e2e/test/diagnostics-help.test.ts` now fails
 if any code lacks help, which is what turned the convention into a guarantee.

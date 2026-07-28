@@ -128,7 +128,7 @@ invented for illustration.
 | 04  | [**Tokens and brands**](docs/md/04-tokens.md)  | Three tiers, alias chains, the override-only rule, the dependents closure. **The chapter that matters.** |
 | 05  | [**Contracts**](docs/md/05-contracts.md)       | `defineSpec` → IR → typed React. Extensions, ejection, contract-derived semver.                          |
 | 06  | [**The code**](docs/md/06-the-code.md)         | All nine packages (eight published), the dependency direction, and where to look when something breaks.  |
-| 07  | [**Error codes**](docs/md/07-error-codes.md)   | All 72 `GIRIH` diagnostics, extracted from source, with what each is telling you.                        |
+| 07  | [**Error codes**](docs/md/07-error-codes.md)   | All 74 `GIRIH` diagnostics, extracted from source, with what each is telling you.                        |
 | 08  | [**Check yourself**](docs/md/08-quiz.md)       | Ten questions that are hard to answer without the model.                                                 |
 
 New to design tokens? Chapter 01 opens with a collapsible primer that assumes nothing.

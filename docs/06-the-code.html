@@ -1566,9 +1566,10 @@ select.sel, input.txt {
     <thead><tr><th>File</th><th>Exports</th><th>Why it is here and not elsewhere</th></tr></thead>
     <tbody>
       <tr><td><code>config.ts</code></td><td><code>loadConfig</code>, <code>defineConfig</code>, <code>ResolvedConfig</code>, <code>CONFIG_FILENAMES</code></td><td>Everything needs the workspace shape; jiti loads the TS config at runtime</td></tr>
-      <tr><td><code>diagnostics.ts</code></td><td><code>Diagnostic</code>, <code>DiagnosticBag</code>, <code>formatDiagnostic</code></td><td>One reporting vocabulary, so the CLI can render any package's problems identically</td></tr>
-      <tr><td><code>files.ts</code></td><td><code>emittedFile</code>, <code>writeEmittedFiles</code>, <code>verifyEmittedFiles</code></td><td>One hashing and writing path — drift detection and publish diffing both depend on the hash being computed the same way everywhere</td></tr>
-      <tr><td><code>naming.ts</code></td><td><code>cssVarName</code></td><td>Emitted <code>tokens.css</code>, <code>tokens.d.ts</code> and <code>components.css</code> must agree on variable names or the output silently breaks</td></tr>
+      <tr><td><code>diagnostics.ts</code></td><td><code>Diagnostic</code>, <code>Severity</code>, <code>hasErrors</code></td><td>One reporting vocabulary, so the CLI can render any package's problems identically</td></tr>
+      <tr><td><code>files.ts</code></td><td><code>emittedFile</code>, <code>writeEmittedFiles</code>, <code>verifyEmittedFiles</code></td><td>One hashing and writing path — drift detection and the contract diff both depend on the hash being computed the same way everywhere</td></tr>
+      <tr><td><code>naming.ts</code></td><td><code>cssVarName</code>, <code>cssLayer</code>, <code>kebabName</code>, <code>componentClassName</code>, <code>extensionClassName</code></td><td>Emitted <code>tokens.css</code>, <code>tokens.d.ts</code> and <code>components.css</code> must agree on variable and class names or the output silently breaks</td></tr>
+      <tr><td><code>package-manager.ts</code></td><td><code>detectPackageManager</code>, <code>addDevCommand</code>, <code>addGlobalCommand</code></td><td>Every command that prints an install hint has to name the manager you actually use, and the detection order is subtle enough to belong in one place</td></tr>
     </tbody>
   </table>
 </div>

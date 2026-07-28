@@ -181,7 +181,7 @@ In a hurry? **02 then 04** is the shortest path to being useful.
 - [**Tokens and brands**](04-tokens.md) — Three tiers, alias chains, and the rule that makes one stylesheet serve everyone.
 - [**Contracts**](05-contracts.md) — How data becomes a typed, accessible component you can read and review.
 - [**The code**](06-the-code.md) — All nine packages: what each owns and where to look when something breaks.
-- [**Error codes**](07-error-codes.md) — All 72 GIRIH diagnostics, extracted from source, explained.
+- [**Error codes**](07-error-codes.md) — All 74 GIRIH diagnostics, extracted from source, explained.
 - [**Check yourself**](08-quiz.md) — Ten questions that are hard to fake your way through.
 
 | Tier | Holds | Examples |

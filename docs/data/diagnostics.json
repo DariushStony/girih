@@ -1,9 +1,9 @@
 {
   "generatedBy": "docs/scripts/extract-diagnostics.mjs",
   "note": "Do not edit by hand. Re-run the script after changing any diagnostic in packages/*/src.",
-  "total": 72,
+  "total": 74,
   "bySeverity": {
-    "error": 59,
+    "error": 61,
     "warning": 13
   },
   "families": {
@@ -25,7 +25,8 @@
         "GIRIH1012",
         "GIRIH1013",
         "GIRIH1014",
-        "GIRIH1015"
+        "GIRIH1015",
+        "GIRIH1016"
       ]
     },
     "2": {
@@ -44,6 +45,7 @@
         "GIRIH2009",
         "GIRIH2010",
         "GIRIH2011",
+        "GIRIH2012",
         "GIRIH2020",
         "GIRIH2021",
         "GIRIH2030",
@@ -132,10 +134,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 90,
+      "line": 91,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:90"
+        "packages/girih-core/src/config.ts:91"
       ]
     },
     {
@@ -147,10 +149,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 118,
+      "line": 119,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:118"
+        "packages/girih-core/src/config.ts:119"
       ]
     },
     {
@@ -162,10 +164,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 199,
+      "line": 200,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:199"
+        "packages/girih-core/src/config.ts:200"
       ]
     },
     {
@@ -177,10 +179,10 @@
       "helpDynamic": true,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 173,
+      "line": 174,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:173"
+        "packages/girih-core/src/config.ts:174"
       ]
     },
     {
@@ -192,10 +194,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 209,
+      "line": 210,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:209"
+        "packages/girih-core/src/config.ts:210"
       ]
     },
     {
@@ -207,10 +209,10 @@
       "helpDynamic": true,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 217,
+      "line": 218,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:217"
+        "packages/girih-core/src/config.ts:218"
       ]
     },
     {
@@ -222,10 +224,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 189,
+      "line": 190,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:189"
+        "packages/girih-core/src/config.ts:190"
       ]
     },
     {
@@ -237,10 +239,10 @@
       "helpDynamic": true,
       "package": "girih",
       "file": "packages/girih/src/commands/check.ts",
-      "line": 23,
+      "line": 24,
       "sites": 1,
       "allSites": [
-        "packages/girih/src/commands/check.ts:23"
+        "packages/girih/src/commands/check.ts:24"
       ]
     },
     {
@@ -252,10 +254,10 @@
       "helpDynamic": false,
       "package": "girih",
       "file": "packages/girih/src/commands/check.ts",
-      "line": 81,
+      "line": 82,
       "sites": 1,
       "allSites": [
-        "packages/girih/src/commands/check.ts:81"
+        "packages/girih/src/commands/check.ts:82"
       ]
     },
     {
@@ -267,10 +269,10 @@
       "helpDynamic": false,
       "package": "girih",
       "file": "packages/girih/src/commands/check.ts",
-      "line": 73,
+      "line": 74,
       "sites": 1,
       "allSites": [
-        "packages/girih/src/commands/check.ts:73"
+        "packages/girih/src/commands/check.ts:74"
       ]
     },
     {
@@ -334,6 +336,21 @@
       ]
     },
     {
+      "code": "GIRIH1016",
+      "severity": "error",
+      "message": "Failed to write '${file.path}': ${(error as Error).message}",
+      "messageDynamic": true,
+      "help": "Check that the output directory is writable and that there is free disk space.",
+      "helpDynamic": false,
+      "package": "girih-core",
+      "file": "packages/girih-core/src/files.ts",
+      "line": 28,
+      "sites": 1,
+      "allSites": [
+        "packages/girih-core/src/files.ts:28"
+      ]
+    },
+    {
       "code": "GIRIH2001",
       "severity": "error",
       "message": "Token file must be a JSON object at the top level.",
@@ -387,10 +404,10 @@
       "helpDynamic": false,
       "package": "girih-tokens",
       "file": "packages/girih-tokens/src/engine.ts",
-      "line": 95,
+      "line": 108,
       "sites": 1,
       "allSites": [
-        "packages/girih-tokens/src/engine.ts:95"
+        "packages/girih-tokens/src/engine.ts:108"
       ]
     },
     {
@@ -417,10 +434,10 @@
       "helpDynamic": false,
       "package": "girih-tokens",
       "file": "packages/girih-tokens/src/engine.ts",
-      "line": 80,
+      "line": 93,
       "sites": 1,
       "allSites": [
-        "packages/girih-tokens/src/engine.ts:80"
+        "packages/girih-tokens/src/engine.ts:93"
       ]
     },
     {
@@ -497,6 +514,21 @@
       "allSites": [
         "packages/girih-tokens/src/merge.ts:44",
         "packages/girih-tokens/src/merge.ts:55"
+      ]
+    },
+    {
+      "code": "GIRIH2012",
+      "severity": "error",
+      "message": "Cannot parse token file as JSON: ${(error as Error).message}",
+      "messageDynamic": true,
+      "help": "Check for a trailing comma, an unquoted key, or other invalid JSON — DTCG token files are plain JSON, no comments allowed.",
+      "helpDynamic": false,
+      "package": "girih-tokens",
+      "file": "packages/girih-tokens/src/engine.ts",
+      "line": 76,
+      "sites": 1,
+      "allSites": [
+        "packages/girih-tokens/src/engine.ts:76"
       ]
     },
     {
@@ -643,10 +675,10 @@
       "helpDynamic": false,
       "package": "girih-generator-css",
       "file": "packages/girih-generator-css/src/generate.ts",
-      "line": 125,
+      "line": 128,
       "sites": 1,
       "allSites": [
-        "packages/girih-generator-css/src/generate.ts:125"
+        "packages/girih-generator-css/src/generate.ts:128"
       ]
     },
     {
@@ -658,10 +690,11 @@
       "helpDynamic": false,
       "package": "girih-generator-css",
       "file": "packages/girih-generator-css/src/generate.ts",
-      "line": 224,
-      "sites": 1,
+      "line": 235,
+      "sites": 2,
       "allSites": [
-        "packages/girih-generator-css/src/generate.ts:224"
+        "packages/girih-generator-css/src/generate.ts:235",
+        "packages/girih-generator-css/src/generate.ts:256"
       ]
     },
     {
@@ -673,10 +706,10 @@
       "helpDynamic": false,
       "package": "girih-generator-css",
       "file": "packages/girih-generator-css/src/generate.ts",
-      "line": 180,
+      "line": 191,
       "sites": 1,
       "allSites": [
-        "packages/girih-generator-css/src/generate.ts:180"
+        "packages/girih-generator-css/src/generate.ts:191"
       ]
     },
     {
@@ -688,42 +721,40 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/validate.ts",
-      "line": 145,
+      "line": 126,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/validate.ts:145"
+        "packages/girih-spec/src/validate.ts:126"
       ]
     },
     {
       "code": "GIRIH4002",
       "severity": "error",
-      "message": "Extension '${extension.name}' references '{${path}}', which ${\n            missing.length === graphs.size ? 'no brand resolves' : `brand(s) ${missing.join(', ')} do not resolve`\n          }.",
+      "message": "${ctx.subject} references '{${path}}' at ${ctx.where}, which ${\n          missingBrands.length === graphs.size ? 'no brand resolves' : `brand(s) ${missingBrands.join(', ')} do not resolve`\n        }.",
       "messageDynamic": true,
       "help": "Every brand must resolve the same token set, so the token has to exist in the base tokens — a brand overlay may override paths but never introduce them.",
       "helpDynamic": false,
       "package": "girih-spec",
-      "file": "packages/girih-spec/src/extensions.ts",
-      "line": 168,
-      "sites": 2,
+      "file": "packages/girih-spec/src/token-ref.ts",
+      "line": 43,
+      "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/extensions.ts:168",
-        "packages/girih-spec/src/validate.ts:397"
+        "packages/girih-spec/src/token-ref.ts:43"
       ]
     },
     {
       "code": "GIRIH4003",
       "severity": "warning",
-      "message": "Extension '${extension.name}' references global token '{${path}}' — extensions should consume semantic or component tokens.",
+      "message": "${ctx.subject} references global token '{${path}}' at ${ctx.where} — consume semantic or component tokens instead.",
       "messageDynamic": true,
-      "help": "Add a semantic token that aliases this global one and reference that instead. An extension bound straight to a global value cannot be re-themed per brand.",
+      "help": "Add a semantic token that aliases this global one and reference that instead. A value bound straight to a global cannot be re-themed per brand.",
       "helpDynamic": false,
       "package": "girih-spec",
-      "file": "packages/girih-spec/src/extensions.ts",
-      "line": 186,
-      "sites": 2,
+      "file": "packages/girih-spec/src/token-ref.ts",
+      "line": 59,
+      "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/extensions.ts:186",
-        "packages/girih-spec/src/validate.ts:411"
+        "packages/girih-spec/src/token-ref.ts:59"
       ]
     },
     {
@@ -735,10 +766,10 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/validate.ts",
-      "line": 154,
+      "line": 135,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/validate.ts:154"
+        "packages/girih-spec/src/validate.ts:135"
       ]
     },
     {
@@ -750,10 +781,10 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/validate.ts",
-      "line": 258,
+      "line": 273,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/validate.ts:258"
+        "packages/girih-spec/src/validate.ts:273"
       ]
     },
     {
@@ -765,10 +796,10 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/validate.ts",
-      "line": 281,
+      "line": 296,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/validate.ts:281"
+        "packages/girih-spec/src/validate.ts:296"
       ]
     },
     {
@@ -780,10 +811,10 @@
       "helpDynamic": true,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/validate.ts",
-      "line": 295,
+      "line": 316,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/validate.ts:295"
+        "packages/girih-spec/src/validate.ts:316"
       ]
     },
     {
@@ -795,10 +826,10 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/validate.ts",
-      "line": 334,
+      "line": 370,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/validate.ts:334"
+        "packages/girih-spec/src/validate.ts:370"
       ]
     },
     {
@@ -810,10 +841,10 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/validate.ts",
-      "line": 345,
+      "line": 381,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/validate.ts:345"
+        "packages/girih-spec/src/validate.ts:381"
       ]
     },
     {
@@ -825,27 +856,26 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/validate.ts",
-      "line": 320,
+      "line": 351,
       "sites": 2,
       "allSites": [
-        "packages/girih-spec/src/validate.ts:320",
-        "packages/girih-spec/src/validate.ts:356"
+        "packages/girih-spec/src/validate.ts:351",
+        "packages/girih-spec/src/validate.ts:392"
       ]
     },
     {
       "code": "GIRIH4012",
       "severity": "error",
-      "message": "Extension '${extension.name}' has a malformed token reference '${ref}' at ${property} — expected '{token.path}'.",
+      "message": "${ctx.subject} has a malformed token reference '${ref}' at ${ctx.where} — expected '{token.path}'.",
       "messageDynamic": true,
       "help": "A reference is one token path in braces: `{color.action}`. No nesting, no fallback value, no spaces.",
       "helpDynamic": false,
       "package": "girih-spec",
-      "file": "packages/girih-spec/src/extensions.ts",
-      "line": 155,
-      "sites": 2,
+      "file": "packages/girih-spec/src/token-ref.ts",
+      "line": 28,
+      "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/extensions.ts:155",
-        "packages/girih-spec/src/validate.ts:384"
+        "packages/girih-spec/src/token-ref.ts:28"
       ]
     },
     {
@@ -857,13 +887,13 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/validate.ts",
-      "line": 209,
+      "line": 218,
       "sites": 4,
       "allSites": [
-        "packages/girih-spec/src/validate.ts:209",
         "packages/girih-spec/src/validate.ts:218",
         "packages/girih-spec/src/validate.ts:227",
-        "packages/girih-spec/src/validate.ts:270"
+        "packages/girih-spec/src/validate.ts:236",
+        "packages/girih-spec/src/validate.ts:285"
       ]
     },
     {
@@ -875,10 +905,10 @@
       "helpDynamic": true,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/ir.ts",
-      "line": 28,
+      "line": 31,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/ir.ts:28"
+        "packages/girih-spec/src/ir.ts:31"
       ]
     },
     {
@@ -890,10 +920,10 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/validate.ts",
-      "line": 372,
+      "line": 412,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/validate.ts:372"
+        "packages/girih-spec/src/validate.ts:412"
       ]
     },
     {
@@ -905,10 +935,10 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/validate.ts",
-      "line": 307,
+      "line": 333,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/validate.ts:307"
+        "packages/girih-spec/src/validate.ts:333"
       ]
     },
     {
@@ -920,10 +950,10 @@
       "helpDynamic": true,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/validate.ts",
-      "line": 177,
+      "line": 176,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/validate.ts:177"
+        "packages/girih-spec/src/validate.ts:176"
       ]
     },
     {
@@ -995,10 +1025,10 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/extensions.ts",
-      "line": 46,
+      "line": 43,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/extensions.ts:46"
+        "packages/girih-spec/src/extensions.ts:43"
       ]
     },
     {
@@ -1010,10 +1040,10 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/extensions.ts",
-      "line": 57,
+      "line": 54,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/extensions.ts:57"
+        "packages/girih-spec/src/extensions.ts:54"
       ]
     },
     {
@@ -1025,10 +1055,10 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/extensions.ts",
-      "line": 86,
+      "line": 83,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/extensions.ts:86"
+        "packages/girih-spec/src/extensions.ts:83"
       ]
     },
     {
@@ -1040,10 +1070,10 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/extensions.ts",
-      "line": 96,
+      "line": 93,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/extensions.ts:96"
+        "packages/girih-spec/src/extensions.ts:93"
       ]
     },
     {
@@ -1055,10 +1085,10 @@
       "helpDynamic": true,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/extensions.ts",
-      "line": 109,
+      "line": 106,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/extensions.ts:109"
+        "packages/girih-spec/src/extensions.ts:106"
       ]
     },
     {
@@ -1070,10 +1100,10 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/extensions.ts",
-      "line": 119,
+      "line": 116,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/extensions.ts:119"
+        "packages/girih-spec/src/extensions.ts:116"
       ]
     },
     {
@@ -1085,10 +1115,10 @@
       "helpDynamic": true,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/extensions.ts",
-      "line": 143,
+      "line": 140,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/extensions.ts:143"
+        "packages/girih-spec/src/extensions.ts:140"
       ]
     },
     {
@@ -1100,25 +1130,25 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/extensions.ts",
-      "line": 129,
+      "line": 126,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/extensions.ts:129"
+        "packages/girih-spec/src/extensions.ts:126"
       ]
     },
     {
       "code": "GIRIH4038",
       "severity": "warning",
-      "message": "Extension '${extension.name}' reaches into '{${path}}', another component's token namespace.",
+      "message": "${ctx.subject} reaches into '{${path}}', another component's token namespace, at ${ctx.where}.",
       "messageDynamic": true,
-      "help": "Use semantic tokens or '${componentNamespace(extension.extends)}.*' tokens so the extension survives refactors of unrelated components.",
+      "help": "Use semantic tokens or '${ctx.ownNamespace}.*' tokens so this survives refactors of unrelated components.",
       "helpDynamic": true,
       "package": "girih-spec",
-      "file": "packages/girih-spec/src/extensions.ts",
-      "line": 195,
+      "file": "packages/girih-spec/src/token-ref.ts",
+      "line": 71,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/extensions.ts:195"
+        "packages/girih-spec/src/token-ref.ts:71"
       ]
     },
     {
@@ -1130,10 +1160,10 @@
       "helpDynamic": true,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/validate.ts",
-      "line": 166,
+      "line": 159,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/validate.ts:166"
+        "packages/girih-spec/src/validate.ts:159"
       ]
     },
     {
@@ -1141,14 +1171,14 @@
       "severity": "error",
       "message": "'${ir.name}' styles part '${part.part}', which the '${ir.template}' template does not have.",
       "messageDynamic": true,
-      "help": "declaredParts.size > 0\n              ? `Parts of '${ir.template}': ${[...declaredParts].join(', ')}.`\n              : `The '${ir.template}' template has no parts — use tokens.base.`",
+      "help": "declaredParts.size > 0\n            ? `Parts of '${ir.template}': ${[...declaredParts].join(', ')}.`\n            : `The '${ir.template}' template has no parts — use tokens.base.`",
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/validate.ts",
-      "line": 189,
+      "line": 192,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/validate.ts:189"
+        "packages/girih-spec/src/validate.ts:192"
       ]
     },
     {
@@ -1160,10 +1190,10 @@
       "helpDynamic": false,
       "package": "girih-spec",
       "file": "packages/girih-spec/src/validate.ts",
-      "line": 244,
+      "line": 259,
       "sites": 1,
       "allSites": [
-        "packages/girih-spec/src/validate.ts:244"
+        "packages/girih-spec/src/validate.ts:259"
       ]
     },
     {
@@ -1175,10 +1205,10 @@
       "helpDynamic": false,
       "package": "girih-generator-react",
       "file": "packages/girih-generator-react/src/generate.ts",
-      "line": 101,
+      "line": 92,
       "sites": 1,
       "allSites": [
-        "packages/girih-generator-react/src/generate.ts:101"
+        "packages/girih-generator-react/src/generate.ts:92"
       ]
     },
     {

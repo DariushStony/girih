@@ -3,7 +3,7 @@
 - **graphify** (`.claude/skills/graphify/SKILL.md`) — any input to knowledge graph. Trigger: `/graphify`
   When the user types `/graphify`, invoke the Skill tool with `skill: "graphify"` before doing anything else.
 
-This project has a knowledge graph at `graphify-out/` with god nodes, community structure, and cross-file relationships (1,994 nodes · 2,698 edges · 157 communities, built from 245 files).
+This project has a knowledge graph at `graphify-out/` with god nodes, community structure, and cross-file relationships (2,372 nodes · 3,584 edges · 213 communities, built from 257 files).
 
 Rules:
 
@@ -52,7 +52,7 @@ core, tokens  ←  spec  ←  generator-react
 core, tokens, spec, generator-css, generator-react  ←  cli
 ```
 
-- `@faravahar/girih-core` — shared kernel: workspace config loading, `Diagnostic`/`DiagnosticBag`, the `EmittedFile` model (`emittedFile`, `writeEmittedFiles`, `verifyEmittedFiles`), `cssVarName`. Depends on nothing in the workspace.
+- `@faravahar/girih-core` — shared kernel: workspace config loading, `Diagnostic`/`hasErrors`, the `EmittedFile` model (`emittedFile`, `writeEmittedFiles`, `verifyEmittedFiles`), naming (`cssVarName`, `kebabName`, `componentClassName`), package-manager detection. Depends on nothing in the workspace.
 - `@faravahar/girih-tokens` — the whole token pipeline: DTCG parse → brand merge → alias resolve → tier validation. May only depend on `core`.
 - `@faravahar/girih-generator-css` — token graphs → multi-brand CSS custom properties + `TokenPath` types. May depend on `core` + `tokens`.
 - `@faravahar/girih-spec` — `defineSpec` / `defineVariant` contracts, `ComponentIR`, contract validation against brand token graphs. May depend on `core` + `tokens`.

@@ -149,8 +149,8 @@ whack-a-mole. The codes are partitioned by owning package:
 
 | Range | Owner | Covers | Count |
 | --- | --- | --- | --- |
-| `GIRIH1xxx` | `core + cli` | Workspace, config, manifest, ds.lock | 14 |
-| `GIRIH2xxx` | `tokens` | Parse, overlay, alias resolution, tier validation | 20 |
+| `GIRIH1xxx` | `core + cli` | Workspace, config, manifest, ds.lock | 15 |
+| `GIRIH2xxx` | `tokens` | Parse, overlay, alias resolution, tier validation | 21 |
 | `GIRIH3xxx` | `generator-css` | CSS emission | 3 |
 | `GIRIH4xxx` | `spec` | Component contracts and extensions | 32 |
 | `GIRIH5xxx` | `generator-react` | React emission | 1 |

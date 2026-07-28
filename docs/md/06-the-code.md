@@ -59,9 +59,10 @@ each other.
 | File | Exports | Why it is here and not elsewhere |
 | --- | --- | --- |
 | `config.ts` | `loadConfig`, `defineConfig`, `ResolvedConfig`, `CONFIG_FILENAMES` | Everything needs the workspace shape; jiti loads the TS config at runtime |
-| `diagnostics.ts` | `Diagnostic`, `DiagnosticBag`, `formatDiagnostic` | One reporting vocabulary, so the CLI can render any package's problems identically |
-| `files.ts` | `emittedFile`, `writeEmittedFiles`, `verifyEmittedFiles` | One hashing and writing path — drift detection and publish diffing both depend on the hash being computed the same way everywhere |
-| `naming.ts` | `cssVarName` | Emitted `tokens.css`, `tokens.d.ts` and `components.css` must agree on variable names or the output silently breaks |
+| `diagnostics.ts` | `Diagnostic`, `Severity`, `hasErrors` | One reporting vocabulary, so the CLI can render any package's problems identically |
+| `files.ts` | `emittedFile`, `writeEmittedFiles`, `verifyEmittedFiles` | One hashing and writing path — drift detection and the contract diff both depend on the hash being computed the same way everywhere |
+| `naming.ts` | `cssVarName`, `cssLayer`, `kebabName`, `componentClassName`, `extensionClassName` | Emitted `tokens.css`, `tokens.d.ts` and `components.css` must agree on variable and class names or the output silently breaks |
+| `package-manager.ts` | `detectPackageManager`, `addDevCommand`, `addGlobalCommand` | Every command that prints an install hint has to name the manager you actually use, and the detection order is subtle enough to belong in one place |
 
 **packages/girih-core/src/files.ts  [You write this]**
 

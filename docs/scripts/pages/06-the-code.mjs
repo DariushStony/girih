@@ -94,18 +94,23 @@ ${table(
     ],
     [
       '<code>diagnostics.ts</code>',
-      '<code>Diagnostic</code>, <code>DiagnosticBag</code>, <code>formatDiagnostic</code>',
+      '<code>Diagnostic</code>, <code>Severity</code>, <code>hasErrors</code>',
       "One reporting vocabulary, so the CLI can render any package's problems identically",
     ],
     [
       '<code>files.ts</code>',
       '<code>emittedFile</code>, <code>writeEmittedFiles</code>, <code>verifyEmittedFiles</code>',
-      'One hashing and writing path — drift detection and publish diffing both depend on the hash being computed the same way everywhere',
+      'One hashing and writing path — drift detection and the contract diff both depend on the hash being computed the same way everywhere',
     ],
     [
       '<code>naming.ts</code>',
-      '<code>cssVarName</code>',
-      'Emitted <code>tokens.css</code>, <code>tokens.d.ts</code> and <code>components.css</code> must agree on variable names or the output silently breaks',
+      '<code>cssVarName</code>, <code>cssLayer</code>, <code>kebabName</code>, <code>componentClassName</code>, <code>extensionClassName</code>',
+      'Emitted <code>tokens.css</code>, <code>tokens.d.ts</code> and <code>components.css</code> must agree on variable and class names or the output silently breaks',
+    ],
+    [
+      '<code>package-manager.ts</code>',
+      '<code>detectPackageManager</code>, <code>addDevCommand</code>, <code>addGlobalCommand</code>',
+      'Every command that prints an install hint has to name the manager you actually use, and the detection order is subtle enough to belong in one place',
     ],
   ],
 )}

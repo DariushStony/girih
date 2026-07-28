@@ -127,13 +127,13 @@ export interface ComposedReact {
 /**
  * The single source of truth for what `girih generate react` writes: CSS under
  * styles/, the React package, and canonical IR. Shared by generate, build, and
- * publish so they can never disagree about the output.
+ * bake so they can never disagree about the output.
  */
 export async function composeReact(config: ResolvedConfig, build: TokenBuildResult, cssFiles: EmittedFile[]): Promise<ComposedReact> {
   const { irs, extensions } = await loadComponentIRs(config, build);
   const ejected = await loadEjectedSources(config, build, irs);
   // The package.json version mirrors the last published version (from ds.lock),
-  // never a stale hand-set value — so generate/build/publish agree byte-for-byte.
+  // never a stale hand-set value — so generate/build/bake agree byte-for-byte.
   const { lock } = await readLock(config.root);
   const publishedVersion = lock?.published?.version ?? '0.0.0-dev';
   const reactResult = generateReact(
