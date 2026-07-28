@@ -9,7 +9,10 @@
   "theme_color": "#131820",
   "lang": "en",
   "dir": "ltr",
-  "categories": ["developer", "productivity"],
+  "categories": [
+    "developer",
+    "productivity"
+  ],
   "icons": [
     {
       "src": "./favicon.svg",

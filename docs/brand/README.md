@@ -10,14 +10,14 @@ geometry and re-run:
 node docs/scripts/build-icons.mjs
 ```
 
-| File                                                                          | Use                                                                                                                          |
-| ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| [`logomark.svg`](logomark.svg)                                                | The outline mark. Transparent, strokes use `currentColor`, so it inherits the surrounding text colour. Reach for this first. |
-| [`logomark.png`](logomark.png)                                                | 256px raster of the same, in ink. For places that will not render SVG.                                                       |
-| [`tile.svg`](tile.svg)                                                        | The solid star on its glazed tile — the icon artwork, as an asset.                                                           |
-| [`lockup-light.svg`](lockup-light.svg) · [`lockup-dark.svg`](lockup-dark.svg) | Mark + `girih` + `گره`. These name Vazirmatn rather than embedding it, so install the font or use the PNG.                   |
-| [`lockup-light.png`](lockup-light.png) · [`lockup-dark.png`](lockup-dark.png) | The lockups rendered with the real typefaces.                                                                                |
-| [`github-social-preview.png`](github-social-preview.png)                      | 1280×640, for Settings → General → Social preview.                                                                           |
+| File | Use |
+| --- | --- |
+| [`logomark.svg`](logomark.svg) | The outline mark. Transparent, strokes use `currentColor`, so it inherits the surrounding text colour. Reach for this first. |
+| [`logomark.png`](logomark.png) | 256px raster of the same, in ink. For places that will not render SVG. |
+| [`tile.svg`](tile.svg) | The solid star on its glazed tile — the icon artwork, as an asset. |
+| [`lockup-light.svg`](lockup-light.svg) · [`lockup-dark.svg`](lockup-dark.svg) | Mark + `girih` + `گره`. These name Vazirmatn rather than embedding it, so install the font or use the PNG. |
+| [`lockup-light.png`](lockup-light.png) · [`lockup-dark.png`](lockup-dark.png) | The lockups rendered with the real typefaces. |
+| [`github-social-preview.png`](github-social-preview.png) | 1280×640, for Settings → General → Social preview. |
 
 The Open Graph card lives at [`../og-card.png`](../og-card.png) because it is referenced by the
 pages themselves.
@@ -33,13 +33,13 @@ Use the tile wherever the mark must survive being small — favicons, app icons,
 
 ## Colour
 
-| Token               | Hex       | Where it comes from                    |
-| ------------------- | --------- | -------------------------------------- |
-| lājvard (cobalt)    | `#2E5BC9` | the dome                               |
-| fīrūzeh (turquoise) | `#00A0A0` | the tiled field                        |
-| zafarān (saffron)   | `#B77B10` | highlight, and warnings                |
-| manganese           | `#131820` | the dark outline between glazed fields |
-| plaster             | `#F5F2E9` | ivory ground                           |
+| Token | Hex | Where it comes from |
+| --- | --- | --- |
+| lājvard (cobalt) | `#2E5BC9` | the dome |
+| fīrūzeh (turquoise) | `#00A0A0` | the tiled field |
+| zafarān (saffron) | `#B77B10` | highlight, and warnings |
+| manganese | `#131820` | the dark outline between glazed fields |
+| plaster | `#F5F2E9` | ivory ground |
 
 The star runs cobalt → turquoise on the tile. Everywhere else, flat cobalt.
 
