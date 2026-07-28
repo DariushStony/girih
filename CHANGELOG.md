@@ -8,6 +8,17 @@ All eight published packages move in lockstep. Internal dependencies publish as 
 pins, so a change in `girih-core` cannot reach consumers without republishing everything
 above it — the version is a property of the release, not of one package.
 
+## 0.4.0 — 2026-07-28
+
+### Breaking changes
+
+- replace girih publish with girih bake (0403000)
+
+### Bug fixes
+
+- close staff-level review findings across every package (be99e86)
+- **girih:** realpath resolvePackageDir so doctor reaches pnpm's isolated store (b21e7b1)
+
 ## 0.3.0 — 2026-07-28
 
 ### Breaking changes

@@ -2,7 +2,7 @@
   "version": 1,
   "files": {
     "packages/design-system/README.md": "158b79fb08e8bbec2a89a6e1ee680d92807828c45bf03153a95c76e118427ae7",
-    "packages/design-system/package.json": "03caa3314e34650b748072c1c61fc5a8d6ef2d18c41273f4a98f1536fa7f563c",
+    "packages/design-system/package.json": "d0f8bbd6280ab2c854f9693b9ed0d40c93da5afbd61fc9e362f124c95f10486b",
     "packages/design-system/src/badge.tsx": "df53cc32455a6c1ab6ceb7bfc673e49f1a908b2992bbfec30d1db89717656605",
     "packages/design-system/src/button.tsx": "bbee0922a25f33cf916d0b0100d2b4994fb90c8947623d5cf0725bf179a91135",
     "packages/design-system/src/card.tsx": "b32ab93f86d0f3b959453597c073b4ba687ebdabb50c871dcbbf39b623a4dd80",
