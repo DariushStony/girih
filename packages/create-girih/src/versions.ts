@@ -14,10 +14,10 @@
  * makes `npx create-girih` fail at its own install step — after it has already
  * written package.json, and a re-run refuses the non-empty directory.
  */
-export const CLI_VERSION_RANGE = '^0.2.0';
+export const CLI_VERSION_RANGE = '^0.3.0';
 
 /** Must match generator-react's RUNTIME_VERSION_RANGE: generated components import it. */
-export const RUNTIME_VERSION_RANGE = '^0.2.0';
+export const RUNTIME_VERSION_RANGE = '^0.3.0';
 
 /** React is a peer of the generated package; @types/react is what `girih build` compiles against. */
 export const REACT_VERSION_RANGE = '^19.0.0';

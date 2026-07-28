@@ -8,6 +8,19 @@ All eight published packages move in lockstep. Internal dependencies publish as 
 pins, so a change in `girih-core` cannot reach consumers without republishing everything
 above it — the version is a property of the release, not of one package.
 
+## 0.3.0 — 2026-07-28
+
+### Breaking changes
+
+- one design/ input folder, with everything per component together (60d9e1e)
+- create-girih scaffolds a whole workspace and installs nothing (97a8504)
+- name contracts *.contract.ts, not *.spec.ts (bf2f0d7)
+
+### Bug fixes
+
+- **create-girih:** map the girih/scaffold subpath to source for typecheck (4fb5ed5)
+- **girih-spec:** stop the loadSpecs test depending on a prior build (51f38f0)
+
 ## 0.2.0 — 2026-07-28
 
 ### Breaking changes

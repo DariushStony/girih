@@ -1,6 +1,6 @@
 {
   "name": "@faravahar/girih-generator-react",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "girih React generator: ComponentIR + templates → React package source",
   "keywords": [
     "girih",
