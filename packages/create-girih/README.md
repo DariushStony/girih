@@ -9,9 +9,12 @@ npm create girih my-ds
 yarn create girih my-ds
 ```
 
-It creates the directory, writes `package.json`, installs the toolchain, then delegates
-to `girih init` — so the workspace template lives in the CLI and the two can never
-drift apart.
+It creates the directory, writes `package.json`, scaffolds the full workspace, then
+installs it with whichever package manager invoked it (`pnpm create girih` installs with
+pnpm, and so on). Scaffolding happens before the install, so a failed or skipped install
+still leaves a complete, readable project — `--no-install` opts out of installing
+entirely. The templates come from the same module `girih init` uses, so a workspace
+created either way is byte-identical.
 
 ## Options
 

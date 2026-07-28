@@ -4,7 +4,7 @@ import { mkdir, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { plainOutput } from './helpers.js';
+import { SUITE_TIMEOUT, plainOutput } from './helpers.js';
 
 const repoRoot = fileURLToPath(new URL('../..', import.meta.url));
 const cliPath = join(repoRoot, 'packages/girih/dist/cli.js');
@@ -24,13 +24,6 @@ function girih(cwd: string, ...args: string[]): { status: number | null; output:
   });
   return { status: result.status, output: plainOutput(`${result.stdout}\n${result.stderr}`) };
 }
-
-// Every test here spawns the CLI as a real process, often several times. A CI runner
-// is far slower at that than a dev machine — the eject test measured 2.5s locally and
-// 5.13s on Windows, just over vitest's 5s default — so the suite gets a timeout that
-// reflects what it actually does. Unit tests keep the strict default: a hang there is a
-// bug, not a slow machine. Per-test timeouts below still override this.
-const SUITE_TIMEOUT = 30_000;
 
 describe('e2e: create, doctor, forks', { timeout: SUITE_TIMEOUT }, () => {
   beforeAll(async () => {

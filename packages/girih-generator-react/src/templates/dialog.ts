@@ -1,4 +1,4 @@
-import { kebabName } from '@faravahar/girih-core';
+import { componentClassName, kebabName } from '@faravahar/girih-core';
 import type { ComponentIR } from '@faravahar/girih-spec';
 import type { TemplateOptions } from './element.js';
 
@@ -9,7 +9,7 @@ import type { TemplateOptions } from './element.js';
  */
 export function renderDialogComponent(ir: ComponentIR, options: TemplateOptions): string {
   const { name } = ir;
-  const base = `${options.classPrefix}-${kebabName(name)}`;
+  const base = componentClassName(options.classPrefix, name);
   const doc = ir.description ? `/** ${ir.description} */\n` : '';
   const sizeAxis = ir.variants.find((axis) => axis.axis === 'size');
   const sizeType = sizeAxis ? `export type ${name}Size = ${sizeAxis.values.map((v) => `'${v}'`).join(' | ')};\n\n` : '';

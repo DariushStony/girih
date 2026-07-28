@@ -118,6 +118,9 @@ export function applyBrandOverlay(base: RawTokenSet, overlay: TokenFileInput): O
       ...baseToken,
       value: token.value,
       file: overlay.file,
+      // A brand may document its own reason for an override; unset falls back to the
+      // base token's description rather than erasing it.
+      ...(token.description !== undefined ? { description: token.description } : {}),
     });
     overriddenPaths.push(token.path);
   }

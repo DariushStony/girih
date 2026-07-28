@@ -6,5 +6,5 @@
     // Extends rather than replaces the base list — `types` does not merge.
     "types": ["node", "react"]
   },
-  "include": ["src"]
+  "include": ["src", "test"]
 }

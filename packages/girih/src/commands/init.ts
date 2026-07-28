@@ -3,7 +3,7 @@ import { basename, dirname, join } from 'node:path';
 import pc from 'picocolors';
 import { CONFIG_FILENAMES, addDevCommand, detectPackageManager } from '@faravahar/girih-core';
 import { scaffoldWorkspace } from '../scaffold.js';
-import { BRAND_NAME, PACKAGE_NAME, PACKAGE_SELF } from '../self.js';
+import { PACKAGE_SELF, validateBrandName, validatePackageName } from '../self.js';
 import { hasResolvableCli } from '../workspace.js';
 import type { Command } from 'commander';
 
@@ -28,18 +28,9 @@ export function registerInit(program: Command): void {
         }
       }
 
-      if (!BRAND_NAME.test(options.brand)) {
-        console.error(pc.red(`Brand name '${options.brand}' must be lowercase kebab-case (it becomes a [data-brand] selector).`));
-        process.exitCode = 1;
-        return;
-      }
+      if (!validateBrandName(options.brand)) return;
       const name = options.name ?? `@${basename(cwd)}/design-system`;
-      if (!PACKAGE_NAME.test(name)) {
-        console.error(pc.red(`'${name}' is not a valid npm package name.`));
-        if (!options.name) console.error(pc.dim(`(derived from the directory name — pass --name @scope/design-system explicitly)`));
-        process.exitCode = 1;
-        return;
-      }
+      if (!validatePackageName(name, !options.name)) return;
 
       const { written } = await scaffoldWorkspace(cwd, { name, brand: options.brand });
       for (const path of written) console.log(`${pc.green('create')}  ${path}`);

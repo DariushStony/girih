@@ -1,4 +1,4 @@
-import { kebabName } from '@faravahar/girih-core';
+import { componentClassName, kebabName } from '@faravahar/girih-core';
 import type { ComponentIR } from '@faravahar/girih-spec';
 
 const REF_ELEMENT_TYPES: Record<string, string> = {
@@ -11,11 +11,77 @@ const REF_ELEMENT_TYPES: Record<string, string> = {
   textarea: 'HTMLTextAreaElement',
 };
 
+/** The DOM ref type a host element forwards — shared with renderExtensionComponent so a base component and its extension wrapper never disagree on the same element. */
+export function refElementType(element: string): string {
+  return REF_ELEMENT_TYPES[element] ?? 'HTMLElement';
+}
+
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 export interface TemplateOptions {
   /** CSS class prefix, e.g. 'ds' → .ds-button */
   classPrefix: string;
   runtimePackage: string;
+}
+
+/**
+ * Hand-maintained structural defaults per template — the part of the
+ * implementation that is not a design decision. Everything design-flavored
+ * still flows through token var() references.
+ */
+const INTERACTIVE_ELEMENTS = new Set(['a', 'button', 'input', 'select', 'textarea']);
+const TEXT_ENTRY_ELEMENTS = new Set(['input', 'textarea']);
+const INLINE_ELEMENTS = new Set(['span']);
+
+/** Structural CSS the element template owns: box behavior, focus ring, disabled/loading. */
+export function elementStructuralCss(ir: ComponentIR, base: string): string[] {
+  if (!INTERACTIVE_ELEMENTS.has(ir.element)) {
+    // Non-interactive inline hosts (Badge) still need box behavior for padding to work.
+    return INLINE_ELEMENTS.has(ir.element)
+      ? [
+          `${base} {
+  display: inline-flex;
+  align-items: center;
+}`,
+        ]
+      : [];
+  }
+  const textEntry = TEXT_ENTRY_ELEMENTS.has(ir.element);
+  const blocks = [
+    textEntry
+      ? `${base} {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid transparent;
+  font: inherit;
+  cursor: text;
+}`
+      : `${base} {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}`,
+  ];
+  if (ir.states.includes('focus-visible')) {
+    // A design-neutral, token-independent focus ring: declaring the state must
+    // mean something even before the spec styles it.
+    blocks.push(`${base}:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}`);
+  }
+  if (ir.states.includes('disabled') || ir.states.includes('loading')) {
+    blocks.push(`${base}:disabled,
+${base}[aria-disabled="true"],
+${base}[data-loading="true"] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}`);
+  }
+  return blocks;
 }
 
 /**
@@ -25,8 +91,8 @@ export interface TemplateOptions {
  */
 export function renderElementComponent(ir: ComponentIR, options: TemplateOptions): string {
   const { name, element } = ir;
-  const refType = REF_ELEMENT_TYPES[element] ?? 'HTMLElement';
-  const className = `${options.classPrefix}-${kebabName(name)}`;
+  const refType = refElementType(element);
+  const className = componentClassName(options.classPrefix, name);
   const hasLoading = ir.states.includes('loading');
   const hasDisabled = ir.states.includes('disabled');
   const hasInvalid = ir.states.includes('invalid');

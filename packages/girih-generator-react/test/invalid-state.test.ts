@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { defineSpec, specToIR } from '@faravahar/girih-spec';
-import { renderCheckboxComponent, renderComponentCss, renderElementComponent, TEMPLATE_REGISTRY } from '@faravahar/girih-generator-react';
+import { TEMPLATE_REGISTRY } from '@faravahar/girih-generator-react';
+import { renderComponentCss } from '../src/css.js';
+import { renderCheckboxComponent } from '../src/templates/checkbox.js';
+import { renderElementComponent } from '../src/templates/element.js';
 
 const ir = (states: string[], template?: 'element' | 'checkbox') =>
   specToIR(

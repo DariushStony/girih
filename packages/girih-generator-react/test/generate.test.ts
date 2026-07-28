@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { defineSpec, specToIR } from '@faravahar/girih-spec';
-import { generateReact, renderComponentCss, renderElementComponent } from '@faravahar/girih-generator-react';
+import { generateReact } from '@faravahar/girih-generator-react';
+import { renderComponentCss } from '../src/css.js';
+import { renderElementComponent } from '../src/templates/element.js';
 
 const buttonIR = () =>
   specToIR(

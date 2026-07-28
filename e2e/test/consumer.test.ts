@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { build as esbuild } from 'esbuild';
+import { STRICT_TSCONFIG, SUITE_TIMEOUT } from './helpers.js';
 
 const repoRoot = fileURLToPath(new URL('../..', import.meta.url));
 const cliPath = join(repoRoot, 'packages/girih/dist/cli.js');
@@ -30,13 +31,6 @@ function pack(packageDir: string): string {
 // The definitive distribution proof: pack the compiled package + runtime as real
 // tarballs, install them into a from-scratch consumer with only public deps, and
 // server-render every component. Networked + slow, so it lives apart from the fast e2e.
-// Every test here spawns the CLI as a real process, often several times. A CI runner
-// is far slower at that than a dev machine — the eject test measured 2.5s locally and
-// 5.13s on Windows, just over vitest's 5s default — so the suite gets a timeout that
-// reflects what it actually does. Unit tests keep the strict default: a hang there is a
-// bug, not a slow machine. Per-test timeouts below still override this.
-const SUITE_TIMEOUT = 30_000;
-
 describe('consumer install: pack → install → SSR render', { timeout: SUITE_TIMEOUT }, () => {
   let installed = false;
 
@@ -85,26 +79,7 @@ describe('consumer install: pack → install → SSR render', { timeout: SUITE_T
 
   it('the full acme catalog (checkbox, dialog, extension) passes strict tsc --noEmit', async () => {
     const tsconfigPath = join(dsPackage, 'tsconfig.json');
-    await writeFile(
-      tsconfigPath,
-      JSON.stringify(
-        {
-          compilerOptions: {
-            strict: true,
-            noEmit: true,
-            jsx: 'react-jsx',
-            target: 'ES2022',
-            module: 'ESNext',
-            moduleResolution: 'bundler',
-            lib: ['ES2022', 'DOM'],
-            skipLibCheck: true,
-          },
-          include: ['src'],
-        },
-        null,
-        2,
-      ),
-    );
+    await writeFile(tsconfigPath, JSON.stringify(STRICT_TSCONFIG, null, 2));
     const tscBin = join(repoRoot, 'node_modules/typescript/bin/tsc');
     const result = run('node', [tscBin, '-p', tsconfigPath], dsPackage);
     await rm(tsconfigPath, { force: true });

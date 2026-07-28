@@ -41,6 +41,9 @@ Example: npx create-girih my-ds --name @acme/design-system`;
 const BRAND_NAME = /^[a-z][a-z0-9-]*$/;
 const PACKAGE_NAME = /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/;
 
+/** The suggested package name for a scaffolded directory — computed once so the interactive prompt's default and the non-interactive fallback can never disagree. */
+const defaultPackageName = (dir: string) => `@${basename(resolve(process.cwd(), dir))}/design-system`;
+
 interface Args {
   dir?: string;
   name?: string;
@@ -108,32 +111,41 @@ if (!parsed.dir && !isInteractive()) {
  * a prompt — otherwise scripting it would mean answering questions.
  */
 if (isInteractive()) {
-  if (!parsed.dir) {
-    console.log('\nCreating a girih design system.\n');
-    parsed.dir = await ask('Directory', {
-      default: 'my-ds',
-      validate: (value) =>
-        existsSync(join(resolve(process.cwd(), value), 'package.json')) ? 'that directory already has a package.json' : null,
+  try {
+    if (!parsed.dir) {
+      console.log('\nCreating a girih design system.\n');
+      parsed.dir = await ask('Directory', {
+        default: 'my-ds',
+        validate: (value) =>
+          existsSync(join(resolve(process.cwd(), value), 'package.json')) ? 'that directory already has a package.json' : null,
+      });
+    }
+    if (!parsed.name) {
+      parsed.name = await ask('Published package name', {
+        default: defaultPackageName(parsed.dir),
+        validate: (value) => (PACKAGE_NAME.test(value) ? null : 'not a valid npm package name'),
+      });
+    }
+    // 'main' is the parser default, so an explicit --brand main is indistinguishable from
+    // none — asking anyway costs one keypress and makes the default visible.
+    parsed.brand = await ask('Default brand', {
+      default: parsed.brand,
+      validate: (value) => (BRAND_NAME.test(value) ? null : 'must be lowercase kebab-case (it becomes a [data-brand] selector)'),
     });
+  } catch (error) {
+    // ask() throws only when stdin closes with no default to fall back on — every
+    // prompt above supplies one, so this is defense against a future prompt that
+    // doesn't, kept consistent with every other exit path's plain-message convention
+    // rather than a raw stack trace.
+    console.error((error as Error).message);
+    process.exit(1);
   }
-  if (!parsed.name) {
-    parsed.name = await ask('Published package name', {
-      default: `@${basename(resolve(process.cwd(), parsed.dir))}/design-system`,
-      validate: (value) => (PACKAGE_NAME.test(value) ? null : 'not a valid npm package name'),
-    });
-  }
-  // 'main' is the parser default, so an explicit --brand main is indistinguishable from
-  // none — asking anyway costs one keypress and makes the default visible.
-  parsed.brand = await ask('Default brand', {
-    default: parsed.brand,
-    validate: (value) => (BRAND_NAME.test(value) ? null : 'must be lowercase kebab-case (it becomes a [data-brand] selector)'),
-  });
   console.log('');
 }
 
 const dir = resolve(process.cwd(), parsed.dir!);
 const workspaceName = basename(dir);
-const resolvedPackageName = parsed.name ?? `@${workspaceName}/design-system`;
+const resolvedPackageName = parsed.name ?? defaultPackageName(parsed.dir!);
 
 if (!BRAND_NAME.test(parsed.brand)) {
   console.error(`create-girih: brand '${parsed.brand}' must be lowercase kebab-case`);

@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs';
 import { isAbsolute, join, resolve } from 'node:path';
 import { createJiti } from 'jiti';
+import { hasErrors } from './diagnostics.js';
 import type { Diagnostic } from './diagnostics.js';
 import { addDevCommand, detectPackageManager } from './package-manager.js';
 
@@ -132,7 +133,7 @@ export async function loadConfig(cwd: string): Promise<LoadConfigResult> {
   }
 
   diagnostics.push(...validateRawConfig(raw));
-  if (diagnostics.some((d) => d.severity === 'error')) {
+  if (hasErrors(diagnostics)) {
     return { config: null, diagnostics };
   }
 
@@ -179,7 +180,7 @@ export async function loadConfig(cwd: string): Promise<LoadConfigResult> {
     }
   }
 
-  return { config: diagnostics.some((d) => d.severity === 'error') ? null : config, diagnostics };
+  return { config: hasErrors(diagnostics) ? null : config, diagnostics };
 }
 
 function validateRawConfig(raw: GirihConfig): Diagnostic[] {

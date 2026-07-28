@@ -3,7 +3,7 @@ import { dirname, join, relative } from 'node:path';
 import { glob } from 'tinyglobby';
 import ts from 'typescript';
 import { resolvesFrom } from './resolve.js';
-import { addDevCommand, detectPackageManager, emittedFile, writeEmittedFiles } from '@faravahar/girih-core';
+import { addDevCommand, detectPackageManager, emittedFile, hasErrors, writeEmittedFiles } from '@faravahar/girih-core';
 import type { Diagnostic, EmittedFile } from '@faravahar/girih-core';
 
 export interface BuildResult {
@@ -114,8 +114,8 @@ export async function buildPackage(packageDir: string): Promise<BuildResult> {
   const dtsFiles = emitDeclarations(srcDir, distDir, sourcePaths, diagnostics);
 
   const files = [...jsFiles, ...dtsFiles];
-  if (!diagnostics.some((d) => d.severity === 'error')) {
-    await writeEmittedFiles(packageDir, files);
+  if (!hasErrors(diagnostics)) {
+    diagnostics.push(...(await writeEmittedFiles(packageDir, files)));
   }
   return { files, diagnostics };
 }

@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import pc from 'picocolors';
-import { verifyEmittedFiles, writeEmittedFiles } from '@faravahar/girih-core';
+import { hasErrors, verifyEmittedFiles, writeEmittedFiles } from '@faravahar/girih-core';
 import { generateCss } from '@faravahar/girih-generator-css';
 import { detectDrift, planManifestUpdate, readManifest, writeManifest } from '../manifest.js';
 import { displayPath, printDiagnostics, printSummaryLine } from '../output.js';
@@ -27,7 +27,7 @@ export function registerGenerate(program: Command): void {
       if (!workspace) return;
       const { config, build } = workspace;
 
-      if (build.diagnostics.some((d) => d.severity === 'error')) {
+      if (hasErrors(build.diagnostics)) {
         printDiagnostics(build.diagnostics);
         printSummaryLine(build.diagnostics);
         console.error(pc.red('\nRefusing to generate from a broken token set.'));
@@ -47,7 +47,7 @@ export function registerGenerate(program: Command): void {
       let irFiles: EmittedFile[] = [];
       if (target === 'react') {
         const composed = await composeReact(config, build, cssResult.files);
-        if (build.diagnostics.some((d) => d.severity === 'error')) {
+        if (hasErrors(build.diagnostics)) {
           printDiagnostics(build.diagnostics);
           printSummaryLine(build.diagnostics);
           console.error(pc.red('\nRefusing to generate — fix the errors above.'));
@@ -62,7 +62,7 @@ export function registerGenerate(program: Command): void {
         files = cssResult.files;
       }
 
-      if (build.diagnostics.some((d) => d.severity === 'error')) {
+      if (hasErrors(build.diagnostics)) {
         printDiagnostics(build.diagnostics);
         printSummaryLine(build.diagnostics);
         console.error(pc.red('\nRefusing to write broken output.'));
@@ -101,7 +101,12 @@ export function registerGenerate(program: Command): void {
         }
 
         const { next, orphans } = planManifestUpdate(manifest, target, outputBase, files);
-        await writeEmittedFiles(outDir, files);
+        const writeDiagnostics = await writeEmittedFiles(outDir, files);
+        if (writeDiagnostics.length > 0) {
+          printDiagnostics(writeDiagnostics);
+          process.exitCode = 1;
+          return;
+        }
         for (const orphan of orphans) {
           await rm(join(config.root, orphan), { force: true });
           console.log(`${pc.yellow('remove')}  ${orphan} ${pc.dim('(no longer generated)')}`);
@@ -109,7 +114,12 @@ export function registerGenerate(program: Command): void {
         if (irFiles.length > 0) {
           // The IR directory is fully derived — clear it so renamed components leave no stale JSON.
           await rm(join(config.root, '.ds/ir'), { recursive: true, force: true });
-          await writeEmittedFiles(join(config.root, '.ds/ir'), irFiles);
+          const irWriteDiagnostics = await writeEmittedFiles(join(config.root, '.ds/ir'), irFiles);
+          if (irWriteDiagnostics.length > 0) {
+            printDiagnostics(irWriteDiagnostics);
+            process.exitCode = 1;
+            return;
+          }
         }
         await writeManifest(config.root, next);
         for (const file of files) {
@@ -124,6 +134,6 @@ export function registerGenerate(program: Command): void {
       }
 
       printDiagnostics(build.diagnostics.filter((d) => d.severity !== 'info'));
-      if (build.diagnostics.some((d) => d.severity === 'error')) process.exitCode = 1;
+      if (hasErrors(build.diagnostics)) process.exitCode = 1;
     });
 }

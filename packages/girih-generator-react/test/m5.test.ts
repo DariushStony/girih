@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { defineSpec, defineVariant, specToIR } from '@faravahar/girih-spec';
-import { generateReact, renderCheckboxComponent, renderComponentCss, renderDialogComponent } from '@faravahar/girih-generator-react';
+import { generateReact } from '@faravahar/girih-generator-react';
+import { renderComponentCss } from '../src/css.js';
+import { renderCheckboxComponent } from '../src/templates/checkbox.js';
+import { renderDialogComponent } from '../src/templates/dialog.js';
 
 const OPTS = { classPrefix: 'ds', runtimePackage: '@faravahar/girih-react-runtime' };
 

@@ -1,4 +1,5 @@
 import pc from 'picocolors';
+import { hasErrors } from '@faravahar/girih-core';
 import { detectDrift, readManifest } from '../manifest.js';
 import { printDiagnostics, printSummaryLine, table } from '../output.js';
 import { formatValue, loadComponentIRs, loadEjectedSources, loadWorkspace } from '../workspace.js';
@@ -87,6 +88,6 @@ export function registerCheck(program: Command): void {
 
       printDiagnostics(build.diagnostics);
       printSummaryLine(build.diagnostics);
-      if (build.diagnostics.some((d) => d.severity === 'error')) process.exitCode = 1;
+      if (hasErrors(build.diagnostics)) process.exitCode = 1;
     });
 }

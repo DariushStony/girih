@@ -1,6 +1,9 @@
 import type { Diagnostic } from '@faravahar/girih-core';
 import type { ComponentIR, ComponentSpecInput, ComponentState, StyleRuleIR, VariantBlockIR } from './types.js';
 
+/** A name becomes an exported React identifier — component names and extension names alike must satisfy this. */
+export const PASCAL_CASE = /^[A-Z][A-Za-z0-9]*$/;
+
 /** camelCase → kebab-case; a leading capital marks a vendor prefix (WebkitMask → -webkit-mask). */
 export function kebabCase(camel: string): string {
   const kebab = camel.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();

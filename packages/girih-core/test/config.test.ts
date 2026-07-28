@@ -2,8 +2,8 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { afterAll, describe, expect, it } from 'vitest';
-import { emittedFile, loadConfig, verifyEmittedFiles, writeEmittedFiles } from '@faravahar/girih-core';
+import { describe, expect, it } from 'vitest';
+import { loadConfig } from '@faravahar/girih-core';
 
 const fixture = (name: string) => fileURLToPath(new URL(`./fixtures/${name}`, import.meta.url));
 
@@ -58,26 +58,5 @@ describe('loadConfig', () => {
     expect(found!.help).toBeTypeOf('string');
     expect(found!.help).not.toHaveLength(0);
     await rm(dir, { recursive: true });
-  });
-});
-
-describe('write/verifyEmittedFiles', () => {
-  const dirs: string[] = [];
-  afterAll(() => Promise.all(dirs.map((d) => rm(d, { recursive: true }))));
-
-  it('round-trips cleanly and detects staleness (the --check gate)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'girih-emit-'));
-    dirs.push(dir);
-    const files = [emittedFile('styles/tokens.css', ':root {}\n'), emittedFile('styles/tokens.d.ts', 'export {};\n')];
-
-    // Never written → everything stale.
-    expect(await verifyEmittedFiles(dir, files)).toEqual(['styles/tokens.css', 'styles/tokens.d.ts']);
-
-    await writeEmittedFiles(dir, files);
-    expect(await verifyEmittedFiles(dir, files)).toEqual([]);
-
-    // Out-of-band edit → stale again.
-    await writeFile(join(dir, 'styles/tokens.css'), ':root { --tampered: 1; }\n');
-    expect(await verifyEmittedFiles(dir, files)).toEqual(['styles/tokens.css']);
   });
 });

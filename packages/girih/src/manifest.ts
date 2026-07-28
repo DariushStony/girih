@@ -1,6 +1,6 @@
-import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
+import { emittedFile } from '@faravahar/girih-core';
 import type { EmittedFile } from '@faravahar/girih-core';
 
 const MANIFEST_PATH = '.ds/manifest.json';
@@ -97,7 +97,7 @@ export async function detectDrift(root: string, manifest: Manifest | null): Prom
   for (const [path, expectedHash] of Object.entries(manifest.files)) {
     const onDisk = await readFile(join(root, path), 'utf8').catch(() => null);
     if (onDisk === null) continue;
-    const actual = createHash('sha256').update(onDisk).digest('hex');
+    const actual = emittedFile(path, onDisk).hash;
     if (actual !== expectedHash) drifted.push(path);
   }
   return drifted;

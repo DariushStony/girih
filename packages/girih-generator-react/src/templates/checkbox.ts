@@ -1,4 +1,4 @@
-import { kebabName } from '@faravahar/girih-core';
+import { componentClassName, kebabName } from '@faravahar/girih-core';
 import type { ComponentIR } from '@faravahar/girih-spec';
 import type { TemplateOptions } from './element.js';
 
@@ -9,7 +9,7 @@ import type { TemplateOptions } from './element.js';
  */
 export function renderCheckboxComponent(ir: ComponentIR, options: TemplateOptions): string {
   const { name } = ir;
-  const className = `${options.classPrefix}-${kebabName(name)}`;
+  const className = componentClassName(options.classPrefix, name);
   const doc = ir.description ? `/** ${ir.description} */\n` : '';
 
   const variantProps = ir.variants

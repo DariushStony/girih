@@ -5,7 +5,7 @@ and structure-only CSS.
 
 > **Part of [girih](https://github.com/DariushStony/girih).** girih is design-system _infrastructure_: it compiles a
 > declared design language — DTCG tokens, brand overlays, component contracts — into a
-> governed, versioned npm package. This is one package of eight; most people want
+> governed, versioned npm package. This is one package of nine; most people want
 > [`@faravahar/girih`](https://www.npmjs.com/package/@faravahar/girih) (the CLI) or
 > [`create-girih`](https://www.npmjs.com/package/create-girih) instead.
 

@@ -24,5 +24,4 @@ export const acmeConfig: ResolvedConfig = {
     react: { output: 'packages/design-system' },
     css: { output: 'packages/design-system/styles', selector: 'data-attribute' },
   },
-  publish: { access: 'restricted' },
 };

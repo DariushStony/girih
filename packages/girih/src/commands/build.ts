@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import pc from 'picocolors';
-import { verifyEmittedFiles } from '@faravahar/girih-core';
+import { hasErrors, verifyEmittedFiles } from '@faravahar/girih-core';
 import { generateCss } from '@faravahar/girih-generator-css';
 import { buildPackage } from '../build.js';
 import { printDiagnostics } from '../output.js';
@@ -22,7 +22,7 @@ export function registerBuild(program: Command): void {
       });
       build.diagnostics.push(...cssResult.diagnostics);
       const composed = await composeReact(config, build, cssResult.files);
-      if (build.diagnostics.some((d) => d.severity === 'error')) {
+      if (hasErrors(build.diagnostics)) {
         printDiagnostics(build.diagnostics);
         process.exitCode = 1;
         return;
@@ -40,7 +40,7 @@ export function registerBuild(program: Command): void {
 
       const result = await buildPackage(outDir);
       build.diagnostics.push(...result.diagnostics);
-      if (result.diagnostics.some((d) => d.severity === 'error')) {
+      if (hasErrors(result.diagnostics)) {
         printDiagnostics(build.diagnostics);
         console.error(pc.red('\nBuild failed.'));
         process.exitCode = 1;

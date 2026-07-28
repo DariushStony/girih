@@ -13,38 +13,7 @@ export interface Diagnostic {
   help?: string;
 }
 
-export class DiagnosticBag {
-  private items: Diagnostic[] = [];
-
-  add(diagnostic: Diagnostic): void {
-    this.items.push(diagnostic);
-  }
-
-  addAll(diagnostics: Iterable<Diagnostic>): void {
-    for (const d of diagnostics) this.items.push(d);
-  }
-
-  get all(): readonly Diagnostic[] {
-    return this.items;
-  }
-
-  get errors(): Diagnostic[] {
-    return this.items.filter((d) => d.severity === 'error');
-  }
-
-  get warnings(): Diagnostic[] {
-    return this.items.filter((d) => d.severity === 'warning');
-  }
-
-  hasErrors(): boolean {
-    return this.items.some((d) => d.severity === 'error');
-  }
-}
-
-export function formatDiagnostic(d: Diagnostic): string {
-  const location = [d.file, d.path].filter(Boolean).join(' › ');
-  const head = `${d.severity} ${d.code}: ${d.message}`;
-  const parts = [location ? `${head} (${location})` : head];
-  if (d.help) parts.push(`  help: ${d.help}`);
-  return parts.join('\n');
+/** Whether any diagnostic in the list is fatal — the one check every command runs before proceeding. */
+export function hasErrors(diagnostics: readonly Diagnostic[]): boolean {
+  return diagnostics.some((d) => d.severity === 'error');
 }

@@ -28,7 +28,6 @@ const config = (root: string, source = ['design/**/*.tokens.json']): ResolvedCon
     react: { output: 'packages/design-system' },
     css: { output: 'packages/design-system/styles', selector: 'data-attribute' },
   },
-  publish: { access: 'restricted' },
 });
 
 const GLOBAL = JSON.stringify({ color: { $type: 'color', blue: { $value: '#00f' } } });

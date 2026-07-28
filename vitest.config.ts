@@ -15,6 +15,6 @@ export default defineConfig({
     },
   },
   test: {
-    include: ['packages/*/test/**/*.test.ts', 'e2e/test/**/*.test.ts'],
+    include: ['packages/*/test/**/*.test.ts', 'packages/*/test/**/*.test.tsx', 'e2e/test/**/*.test.ts'],
   },
 });

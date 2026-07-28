@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import pc from 'picocolors';
-import { verifyEmittedFiles } from '@faravahar/girih-core';
+import { hasErrors, verifyEmittedFiles } from '@faravahar/girih-core';
 import { generateCss } from '@faravahar/girih-generator-css';
 import { TEMPLATE_REGISTRY } from '@faravahar/girih-generator-react';
 import { buildPackage } from '../build.js';
@@ -28,7 +28,7 @@ export function registerBake(program: Command): void {
       });
       build.diagnostics.push(...cssResult.diagnostics);
       const composed = await composeReact(config, build, cssResult.files);
-      if (build.diagnostics.some((d) => d.severity === 'error')) {
+      if (hasErrors(build.diagnostics)) {
         printDiagnostics(build.diagnostics);
         process.exitCode = 1;
         return;
@@ -75,7 +75,7 @@ export function registerBake(program: Command): void {
 
       const built = await buildPackage(outDir);
       build.diagnostics.push(...built.diagnostics);
-      if (built.diagnostics.some((d) => d.severity === 'error')) {
+      if (hasErrors(built.diagnostics)) {
         printDiagnostics(build.diagnostics);
         console.error(pc.red('\nBuild failed — not baking.'));
         process.exitCode = 1;

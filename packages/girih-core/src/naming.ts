@@ -23,6 +23,16 @@ export function kebabName(name: string): string {
   return name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
+/** A component's emitted CSS class name — shared by its template, its structural CSS, and any extension wrapper so they can never format it differently. */
+export function componentClassName(classPrefix: string, name: string): string {
+  return `${classPrefix}-${kebabName(name)}`;
+}
+
+/** An extension wrapper's emitted CSS class name — same rule, with an `-x-` segment so it never collides with its base component's class. */
+export function extensionClassName(classPrefix: string, name: string): string {
+  return `${classPrefix}-x-${kebabName(name)}`;
+}
+
 /**
  * The cascade layers girih emits into, in order. Consumer CSS is unlayered and so
  * always wins, whatever its specificity — which is the point: overriding a generated

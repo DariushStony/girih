@@ -1,7 +1,6 @@
-import { cssVarName, kebabName } from '@faravahar/girih-core';
+import { componentClassName, cssVarName, extensionClassName, kebabName } from '@faravahar/girih-core';
 import type { ComponentIR, ComponentState, StyleRuleIR, VariantExtensionInput } from '@faravahar/girih-spec';
-import { checkboxStructuralCss } from './templates/checkbox.js';
-import { dialogStructuralCss } from './templates/dialog.js';
+import { TEMPLATE_REGISTRY } from './templates/registry.js';
 
 /** How each declarable state attaches to the base selector. */
 const STATE_SELECTORS: Record<ComponentState, string[]> = {
@@ -22,76 +21,15 @@ function declarations(rules: StyleRuleIR[], prefix: string): string {
 }
 
 /**
- * Hand-maintained structural defaults per template — the part of the
- * implementation that is not a design decision. Everything design-flavored
- * still flows through token var() references.
- */
-const INTERACTIVE_ELEMENTS = new Set(['a', 'button', 'input', 'select', 'textarea']);
-const TEXT_ENTRY_ELEMENTS = new Set(['input', 'textarea']);
-const INLINE_ELEMENTS = new Set(['span']);
-
-function elementStructuralCss(ir: ComponentIR, base: string): string[] {
-  if (!INTERACTIVE_ELEMENTS.has(ir.element)) {
-    // Non-interactive inline hosts (Badge) still need box behavior for padding to work.
-    return INLINE_ELEMENTS.has(ir.element)
-      ? [
-          `${base} {
-  display: inline-flex;
-  align-items: center;
-}`,
-        ]
-      : [];
-  }
-  const textEntry = TEXT_ENTRY_ELEMENTS.has(ir.element);
-  const blocks = [
-    textEntry
-      ? `${base} {
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid transparent;
-  font: inherit;
-  cursor: text;
-}`
-      : `${base} {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid transparent;
-  font: inherit;
-  cursor: pointer;
-  text-decoration: none;
-}`,
-  ];
-  if (ir.states.includes('focus-visible')) {
-    // A design-neutral, token-independent focus ring: declaring the state must
-    // mean something even before the spec styles it.
-    blocks.push(`${base}:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 2px;
-}`);
-  }
-  if (ir.states.includes('disabled') || ir.states.includes('loading')) {
-    blocks.push(`${base}:disabled,
-${base}[aria-disabled="true"],
-${base}[data-loading="true"] {
-  cursor: not-allowed;
-  opacity: 0.55;
-}`);
-  }
-  return blocks;
-}
-
-/**
  * Component styles are structure plus token plumbing: every design value is a
  * var() reference into the token layer, so brand switching never touches this file.
  */
 export function renderComponentCss(ir: ComponentIR, options: { prefix: string; classPrefix: string }): string {
-  const base = `.${options.classPrefix}-${kebabName(ir.name)}`;
+  const base = `.${componentClassName(options.classPrefix, ir.name)}`;
   const blocks: string[] = [];
 
-  if (ir.template === 'checkbox') blocks.push(...checkboxStructuralCss(base));
-  else if (ir.template === 'dialog') blocks.push(...dialogStructuralCss(base.slice(1), options.prefix));
-  else blocks.push(...elementStructuralCss(ir, base));
+  const structuralCss = TEMPLATE_REGISTRY[ir.template]?.structuralCss;
+  if (structuralCss) blocks.push(...structuralCss(ir, base, options.prefix));
 
   // Dialog styling attaches to parts; its base/variant blocks target the popup.
   const styledBase = ir.template === 'dialog' ? `${base}-popup` : base;
@@ -143,8 +81,8 @@ export function renderExtensionCss(
   baseIr: ComponentIR,
   options: { prefix: string; classPrefix: string },
 ): string {
-  const baseClass = `.${options.classPrefix}-${kebabName(baseIr.name)}`;
-  const extensionClass = `.${options.classPrefix}-x-${kebabName(extension.name)}`;
+  const baseClass = `.${componentClassName(options.classPrefix, baseIr.name)}`;
+  const extensionClass = `.${extensionClassName(options.classPrefix, extension.name)}`;
   const host = baseIr.template === 'dialog' ? `${baseClass}-popup` : baseClass;
   const styled = `${host}${extensionClass}${extensionClass}`;
 

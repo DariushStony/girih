@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import pc from 'picocolors';
-import { emittedFile, kebabName, writeEmittedFiles } from '@faravahar/girih-core';
+import { emittedFile, hasErrors, kebabName, writeEmittedFiles } from '@faravahar/girih-core';
 import { TEMPLATE_REGISTRY, renderComponentSource } from '@faravahar/girih-generator-react';
 import { readLock, writeLock } from '../lock.js';
 import { readManifest } from '../manifest.js';
@@ -19,7 +19,7 @@ export function registerEject(program: Command): void {
       if (!workspace) return;
       const { config, build } = workspace;
       const { irs, extensions } = await loadComponentIRs(config, build);
-      if (build.diagnostics.some((d) => d.severity === 'error')) {
+      if (hasErrors(build.diagnostics)) {
         printDiagnostics(build.diagnostics);
         process.exitCode = 1;
         return;
@@ -69,7 +69,12 @@ export function registerEject(program: Command): void {
 
       const ejectedPath = baseFile.path;
       const file = drifted ? emittedFile(ejectedPath, onDisk!) : baseFile;
-      await writeEmittedFiles(config.root, [file]);
+      const writeDiagnostics = await writeEmittedFiles(config.root, [file]);
+      if (writeDiagnostics.length > 0) {
+        printDiagnostics(writeDiagnostics);
+        process.exitCode = 1;
+        return;
+      }
       if (drifted) {
         console.log(pc.yellow(`note: ${generatedPath} had hand edits — they were carried into the fork.`));
       }

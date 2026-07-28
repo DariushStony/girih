@@ -6,7 +6,7 @@ import { spawnSync } from 'node:child_process';
 import pc from 'picocolors';
 import { displayPath } from '../output.js';
 import { scaffoldWorkspace, workspacePackageJson } from '../scaffold.js';
-import { BRAND_NAME, PACKAGE_NAME, PACKAGE_SELF, RUNTIME_PACKAGE, SELF_VERSION } from '../self.js';
+import { PACKAGE_SELF, RUNTIME_PACKAGE, SELF_VERSION, validateBrandName, validatePackageName } from '../self.js';
 import type { Command } from 'commander';
 
 export function registerCreate(program: Command): void {
@@ -25,18 +25,9 @@ export function registerCreate(program: Command): void {
         process.exitCode = 1;
         return;
       }
-      if (!BRAND_NAME.test(options.brand)) {
-        console.error(pc.red(`Brand name '${options.brand}' must be lowercase kebab-case (it becomes a [data-brand] selector).`));
-        process.exitCode = 1;
-        return;
-      }
+      if (!validateBrandName(options.brand)) return;
       const name = options.name ?? `@${workspaceName}/design-system`;
-      if (!PACKAGE_NAME.test(name)) {
-        console.error(pc.red(`'${name}' is not a valid npm package name.`));
-        if (!options.name) console.error(pc.dim(`(derived from the directory name — pass --name @scope/design-system explicitly)`));
-        process.exitCode = 1;
-        return;
-      }
+      if (!validatePackageName(name, !options.name)) return;
 
       await mkdir(dir, { recursive: true });
       await writeFile(

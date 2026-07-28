@@ -1,10 +1,9 @@
 import StyleDictionary from 'style-dictionary';
 import type { DesignTokens } from 'style-dictionary/types';
 import type { Diagnostic, EmittedFile } from '@faravahar/girih-core';
-import { CSS_LAYERS, cssLayer, emittedFile } from '@faravahar/girih-core';
+import { CSS_LAYERS, cssLayer, cssVarName, emittedFile, hasErrors } from '@faravahar/girih-core';
 import { toNestedDtcg } from '@faravahar/girih-tokens';
 import type { ResolvedTokenGraph, TokenBuildResult } from '@faravahar/girih-tokens';
-import { cssVarName } from './naming.js';
 
 export interface GenerateCssOptions {
   prefix: string;
@@ -30,6 +29,9 @@ const CSS_TRANSFORMS = [
   'strokeStyle/css/shorthand',
 ];
 
+/** $types whose own $value may legitimately be an array — the matching transform above already knows how to serialise it. */
+const ARRAY_VALUED_TYPES = new Set(['fontFamily', 'cubicBezier', 'shadow']);
+
 function brandSelector(brand: string, kind: GenerateCssOptions['selector']): string {
   return kind === 'class' ? `.brand-${brand}` : `[data-brand="${brand}"]`;
 }
@@ -51,7 +53,7 @@ export async function generateCss(build: TokenBuildResult, options: GenerateCssO
   const blocks: string[] = [];
 
   diagnostics.push(...detectVarNameCollisions(build, options));
-  if (diagnostics.some((d) => d.severity === 'error')) {
+  if (hasErrors(diagnostics)) {
     return { files: [], diagnostics };
   }
 
@@ -76,6 +78,7 @@ export async function generateCss(build: TokenBuildResult, options: GenerateCssO
     const emitScopedBlock = blockPaths.size > 0;
 
     const graph = build.graphs.get(brand)!;
+    diagnostics.push(...detectUnflattenableArrays(graph, options.prefix, brand));
     const scopedSelector = brandSelector(brand, options.selector);
 
     // The default brand emits :root (all tokens) plus its scoped block; other
@@ -141,7 +144,11 @@ export async function generateCss(build: TokenBuildResult, options: GenerateCssO
 
 /** TokenPath string-literal union — this is what makes token references type-checked in specs. */
 export function generateTokenTypes(build: TokenBuildResult, options: GenerateCssOptions): EmittedFile {
-  const graph = build.graphs.get(options.defaultBrand) ?? [...build.graphs.values()][0];
+  // config validation (GIRIH1006) already guarantees defaultBrand names a real graph
+  // for every CLI caller — no fallback to a different brand's graph here, since that
+  // would silently mislabel one brand's tokens as another's instead of surfacing the
+  // misuse.
+  const graph = build.graphs.get(options.defaultBrand);
   const paths = graph ? [...graph.tokens.keys()].sort(byCodeUnit) : [];
   const union = (literals: string[]): string[] =>
     literals.length === 0 ? ['  never;'] : literals.map((l, i) => `  | '${l}'${i === literals.length - 1 ? ';' : ''}`);
@@ -165,7 +172,11 @@ export function generateTokenTypes(build: TokenBuildResult, options: GenerateCss
  */
 function detectVarNameCollisions(build: TokenBuildResult, options: GenerateCssOptions): Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
-  const graph = build.graphs.get(options.defaultBrand) ?? [...build.graphs.values()][0];
+  // config validation (GIRIH1006) already guarantees defaultBrand names a real graph
+  // for every CLI caller — no fallback to a different brand's graph here, since that
+  // would silently mislabel one brand's tokens as another's instead of surfacing the
+  // misuse.
+  const graph = build.graphs.get(options.defaultBrand);
   if (!graph) return diagnostics;
 
   const byVarName = new Map<string, string[]>();
@@ -214,16 +225,39 @@ function dependentsClosure(roots: string[], graph: ResolvedTokenGraph): Set<stri
   return closure;
 }
 
-/** A value the transform chain could not flatten stringifies as '[object Object]' — fail loudly. */
+/** An object $value the transform chain could not flatten stringifies as '[object Object]' — fail loudly. */
 function detectUnserializableValues(cssBlock: string, brand: string): Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
   for (const line of cssBlock.split('\n')) {
-    if (line.includes('[object Object]') || line.includes('[object Array]')) {
+    if (line.includes('[object Object]')) {
       const variable = line.trim().split(':')[0] ?? line.trim();
       diagnostics.push({
         code: 'GIRIH3002',
         severity: 'error',
         message: `'${variable}' (brand '${brand}') has a composite value no CSS transform could flatten.`,
+        help: 'Give the token a supported $type (shadow, typography, border, transition, cubicBezier, fontFamily) or split it into scalar tokens.',
+      });
+    }
+  }
+  return diagnostics;
+}
+
+/**
+ * An array $value only stringifies as '[object Object]' when its elements are objects —
+ * an array of scalars (e.g. a raw [1, 2, 3]) coerces to a bare comma-joined string that
+ * is indistinguishable from legitimate CSS once formatted, so this must run before
+ * formatting, against the resolved value itself, not as a text scan afterward.
+ */
+function detectUnflattenableArrays(graph: ResolvedTokenGraph, prefix: string, brand: string): Diagnostic[] {
+  const diagnostics: Diagnostic[] = [];
+  for (const token of graph.tokens.values()) {
+    if (Array.isArray(token.resolvedValue) && !ARRAY_VALUED_TYPES.has(token.type ?? '')) {
+      diagnostics.push({
+        code: 'GIRIH3002',
+        severity: 'error',
+        message: `'${cssVarName(prefix, token.path)}' (brand '${brand}') has a composite value no CSS transform could flatten.`,
+        file: token.file,
+        path: token.path,
         help: 'Give the token a supported $type (shadow, typography, border, transition, cubicBezier, fontFamily) or split it into scalar tokens.',
       });
     }

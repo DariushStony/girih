@@ -1,17 +1,14 @@
 import { createJiti } from 'jiti';
 import { join } from 'node:path';
 import { glob } from 'tinyglobby';
+import { kebabName } from '@faravahar/girih-core';
 import type { Diagnostic, ResolvedConfig } from '@faravahar/girih-core';
 import type { ResolvedTokenGraph } from '@faravahar/girih-tokens';
-import { kebabCase } from './ir.js';
+import { kebabCase, PASCAL_CASE } from './ir.js';
+import { resolveTokenRef } from './token-ref.js';
 import type { ComponentIR, VariantExtensionInput } from './types.js';
 
-/** PascalCase component name → its token namespace (Button → button). No vendor-prefix rule here. */
-const componentNamespace = (name: string) => name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
-
 const EXTENSION_BRAND = Symbol.for('girih.variant-extension');
-const PASCAL_CASE = /^[A-Z][A-Za-z0-9]*$/;
-const REF_SHAPE = /^\{([^{}]+)\}$/;
 
 /**
  * The controlled 10%: a workspace-owned restyling of a catalog component.
@@ -149,57 +146,17 @@ export function validateExtensions(
         });
         continue;
       }
-      const match = REF_SHAPE.exec(ref);
-      if (!match) {
-        diagnostics.push({
-          code: 'GIRIH4012',
-          severity: 'error',
-          message: `Extension '${extension.name}' has a malformed token reference '${ref}' at ${property} — expected '{token.path}'.`,
-          file,
-          path: property,
-          help: 'A reference is one token path in braces: `{color.action}`. No nesting, no fallback value, no spaces.',
-        });
-        continue;
-      }
-      const path = match[1]!;
-      const missing = [...graphs.keys()].filter((brand) => !graphs.get(brand)!.tokens.get(path));
-      if (missing.length > 0) {
-        diagnostics.push({
-          code: 'GIRIH4002',
-          severity: 'error',
-          message: `Extension '${extension.name}' references '{${path}}', which ${
-            missing.length === graphs.size ? 'no brand resolves' : `brand(s) ${missing.join(', ')} do not resolve`
-          }.`,
-          file,
-          path: property,
-          help: 'Every brand must resolve the same token set, so the token has to exist in the base tokens — a brand overlay may override paths but never introduce them.',
-        });
-        continue;
-      }
-
       // Same tier discipline as specs: extensions consume semantic tokens or
       // their base component's own tokens — never raw globals, never another
       // component's plumbing.
-      const token = [...graphs.values()][0]?.tokens.get(path);
-      if (token?.tier === 'global') {
-        diagnostics.push({
-          code: 'GIRIH4003',
-          severity: 'warning',
-          message: `Extension '${extension.name}' references global token '{${path}}' — extensions should consume semantic or component tokens.`,
+      diagnostics.push(
+        ...resolveTokenRef(ref, graphs, {
+          subject: `Extension '${extension.name}'`,
+          ownNamespace: kebabName(extension.extends),
           file,
-          path: property,
-          help: 'Add a semantic token that aliases this global one and reference that instead. An extension bound straight to a global value cannot be re-themed per brand.',
-        });
-      } else if (token?.tier === 'component' && path.split('.')[0] !== componentNamespace(extension.extends)) {
-        diagnostics.push({
-          code: 'GIRIH4038',
-          severity: 'warning',
-          message: `Extension '${extension.name}' reaches into '{${path}}', another component's token namespace.`,
-          file,
-          path: property,
-          help: `Use semantic tokens or '${componentNamespace(extension.extends)}.*' tokens so the extension survives refactors of unrelated components.`,
-        });
-      }
+          where: property,
+        }),
+      );
     }
   }
   return diagnostics;

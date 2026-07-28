@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import pc from 'picocolors';
 import { emittedFile, loadConfig, writeEmittedFiles } from '@faravahar/girih-core';
 import { printDiagnostics } from '../output.js';
-import { BRAND_NAME } from '../self.js';
+import { validateBrandName } from '../self.js';
 import type { Command } from 'commander';
 
 export function registerBrand(program: Command): void {
@@ -25,17 +25,18 @@ export function registerBrand(program: Command): void {
         process.exitCode = 1;
         return;
       }
-      if (!BRAND_NAME.test(name)) {
-        console.error(pc.red(`Brand name '${name}' must be lowercase kebab-case (it becomes a [data-brand] selector).`));
-        process.exitCode = 1;
-        return;
-      }
+      if (!validateBrandName(name)) return;
 
       const overlayPath = `design/brands/${name}.json`;
       if (existsSync(join(config.root, overlayPath))) {
         console.log(`${pc.yellow('keep')}    ${overlayPath} ${pc.dim('(already exists — not overwritten)')}`);
       } else {
-        await writeEmittedFiles(config.root, [emittedFile(overlayPath, '{}\n')]);
+        const writeDiagnostics = await writeEmittedFiles(config.root, [emittedFile(overlayPath, '{}\n')]);
+        if (writeDiagnostics.length > 0) {
+          printDiagnostics(writeDiagnostics);
+          process.exitCode = 1;
+          return;
+        }
         console.log(`${pc.green('create')}  ${overlayPath}`);
       }
 

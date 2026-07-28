@@ -4,7 +4,7 @@ import { appendFile, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { plainOutput } from './helpers.js';
+import { STRICT_TSCONFIG, SUITE_TIMEOUT, plainOutput } from './helpers.js';
 import { scaffoldWorkspace } from '../../packages/girih/src/scaffold.js';
 
 const repoRoot = fileURLToPath(new URL('../..', import.meta.url));
@@ -16,13 +16,6 @@ function girih(...args: string[]): { status: number | null; output: string } {
   const result = spawnSync('node', [cliPath, ...args], { cwd: workspace, encoding: 'utf8' });
   return { status: result.status, output: plainOutput(`${result.stdout}\n${result.stderr}`) };
 }
-
-// Every test here spawns the CLI as a real process, often several times. A CI runner
-// is far slower at that than a dev machine — the eject test measured 2.5s locally and
-// 5.13s on Windows, just over vitest's 5s default — so the suite gets a timeout that
-// reflects what it actually does. Unit tests keep the strict default: a hang there is a
-// bug, not a slow machine. Per-test timeouts below still override this.
-const SUITE_TIMEOUT = 30_000;
 
 describe('e2e: scaffold → check → generate → drift', { timeout: SUITE_TIMEOUT }, () => {
   beforeAll(async () => {
@@ -150,26 +143,7 @@ describe('e2e: scaffold → check → generate → drift', { timeout: SUITE_TIME
   });
 
   it('generated output passes tsc --noEmit — types are part of the contract', async () => {
-    await writeFile(
-      join(workspace, 'packages/design-system/tsconfig.json'),
-      JSON.stringify(
-        {
-          compilerOptions: {
-            strict: true,
-            noEmit: true,
-            jsx: 'react-jsx',
-            target: 'ES2022',
-            module: 'ESNext',
-            moduleResolution: 'bundler',
-            lib: ['ES2022', 'DOM'],
-            skipLibCheck: true,
-          },
-          include: ['src'],
-        },
-        null,
-        2,
-      ),
-    );
+    await writeFile(join(workspace, 'packages/design-system/tsconfig.json'), JSON.stringify(STRICT_TSCONFIG, null, 2));
     const tscBin = join(repoRoot, 'node_modules/typescript/bin/tsc');
     const result = spawnSync('node', [tscBin, '-p', join(workspace, 'packages/design-system/tsconfig.json')], {
       cwd: workspace,
