@@ -164,7 +164,7 @@ describe('cli install: pack every package → install → run the binary', { tim
     const build = girih('build');
     expect(build.stdout + build.stderr, 'build').not.toContain('GIRIH6002');
     expect(build.status, `build\n${build.stdout}\n${build.stderr}`).toBe(0);
-    expect(existsSync(join(consumer, 'packages/design-system/dist/Button.js'))).toBe(true);
-    expect(existsSync(join(consumer, 'packages/design-system/dist/Button.d.ts'))).toBe(true);
+    expect(existsSync(join(consumer, 'packages/design-system/dist/button.js'))).toBe(true);
+    expect(existsSync(join(consumer, 'packages/design-system/dist/button.d.ts'))).toBe(true);
   }, 300_000);
 });
