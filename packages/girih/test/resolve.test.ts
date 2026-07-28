@@ -1,4 +1,5 @@
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { realpathSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -27,7 +28,9 @@ describe('resolvesFrom', () => {
   });
 
   it('finds the nearest node_modules first', () => {
-    expect(resolvePackageDir(nested, 'near')).toBe(join(root, 'apps', 'web', 'node_modules', 'near'));
+    // realpath'd on both sides: the fixture root itself may sit behind a symlink
+    // (e.g. macOS's /tmp -> /private/tmp), same as a pnpm-installed package would.
+    expect(resolvePackageDir(nested, 'near')).toBe(realpathSync(join(root, 'apps', 'web', 'node_modules', 'near')));
   });
 
   it('returns false rather than throwing for something not installed', () => {
