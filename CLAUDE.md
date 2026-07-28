@@ -163,6 +163,8 @@ Comments in this codebase carry **rationale**, not description — they explain 
 
 Prefer the smallest verification scope possible:
 
+**A unit test that loads a workspace file needs `pnpm test:unit` on an _unbuilt_ tree before you trust it.** CI's `quality` job never builds, and `@faravahar/girih` is not source-aliased in vitest — so anything that ends up executing a `ds.config.ts` or a `*.contract.ts` (both `import` from it) passes locally on your built tree and fails there. Assert on what the code decides, not on a load succeeding, or move the case to `e2e/`.
+
 | Change                                        | Verification                                                                                                   |
 | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | One package's internals                       | `pnpm vitest run packages/<pkg>` then `pnpm typecheck`                                                         |
