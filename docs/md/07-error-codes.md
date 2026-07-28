@@ -126,7 +126,7 @@ packages/girih-core/src/config.ts:210
 
 Config must define at least one brand under brands.definitions.
 
-Add one: `brands: { default: 'base', definitions: { base: { tokens: 'brands/base/tokens.json' } } }`. An empty {} overlay is valid, so the default brand can override nothing.
+Add one: `brands: { default: 'base', definitions: { base: { tokens: 'design/brands/base.json' } } }`. An empty {} overlay is valid, so the default brand can override nothing.
 
 GIRIH1006
 error

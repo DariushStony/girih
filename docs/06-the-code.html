@@ -1769,7 +1769,9 @@ select.sel, input.txt {
   <table>
     <thead><tr><th>File</th><th>Owns</th></tr></thead>
     <tbody>
-      <tr><td><code>cli.ts</code></td><td>Every command, plus <code>composeReact()</code> — the single source of truth for what gets written</td></tr>
+      <tr><td><code>cli.ts</code></td><td>Nothing but registration — one <code>register*()</code> call per command, in help order</td></tr>
+      <tr><td><code>commands/*.ts</code></td><td>One module per command; <code>bake.ts</code> is the one with a one-way effect</td></tr>
+      <tr><td><code>workspace.ts</code></td><td><code>loadWorkspace()</code>, <code>composeReact()</code> — the single source of truth for what gets written</td></tr>
       <tr><td><code>build.ts</code></td><td><code>buildPackage()</code>, <code>addJsExtensions()</code>, <code>emitDeclarations()</code></td></tr>
       <tr><td><code>manifest.ts</code></td><td><code>detectDrift()</code>, <code>planManifestUpdate()</code>, read/write manifest</td></tr>
       <tr><td><code>lock.ts</code></td><td><code>readLock()</code>, <code>writeLock()</code> — ejections and the published baseline</td></tr>

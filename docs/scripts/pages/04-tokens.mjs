@@ -33,6 +33,23 @@ export default function page(data) {
   extracted by running girih's own engine over <code>examples/acme-ds</code>.
 </p>
 
+<p>Eleven sections, and it is worth reading in order. But if you came here with a problem:</p>
+
+${table(
+  ['Symptom or question', 'Go to'],
+  [
+    [
+      'A brand override is not showing up in one place',
+      '<a href="#closure">The dependents closure</a> — the least intuitive thing in girih, and the usual cause',
+    ],
+    ['Where does this value actually come from?', '<a href="#walker">Trace a chain</a> — step down the real resolved graph'],
+    ['Which tier should this token go in?', '<a href="#tiers">Why three tiers</a> — the question each tier answers'],
+    ['Can a brand add a token, not just change one?', '<a href="#brands">The override-only rule</a> — no, and why that is load-bearing'],
+    ['girih rejected my tokens and I want to know why', '<a href="#validation">What girih checks</a> — eight checks and their codes'],
+    ['How should I name and organise these?', '<a href="#authoring">Authoring rules</a> — six, in order of how often they matter'],
+  ],
+)}
+
 <h2 id="token">What a token is, exactly</h2>
 
 <p>
@@ -235,8 +252,8 @@ ${graph.html}
 <h2 id="brands">Brands: the override-only rule</h2>
 
 <p>
-  A brand is a folder with one file. The <code>marketplace</code> brand is the default and overrides
-  nothing at all, so its file is literally empty:
+  A brand is one file — <code>design/brands/&lt;brand&gt;.json</code>. The <code>marketplace</code>
+  brand is the default and overrides nothing at all, so its file is literally empty:
 </p>
 
 ${code(`{}`, { path: 'design/brands/marketplace.json', kind: 'authored', lang: 'json' })}

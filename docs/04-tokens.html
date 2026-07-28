@@ -1864,6 +1864,22 @@ select.sel, input.txt {
   extracted by running girih's own engine over <code>examples/acme-ds</code>.
 </p>
 
+<p>Eleven sections, and it is worth reading in order. But if you came here with a problem:</p>
+
+<div class="tablewrap">
+  <table>
+    <thead><tr><th>Symptom or question</th><th>Go to</th></tr></thead>
+    <tbody>
+      <tr><td>A brand override is not showing up in one place</td><td><a href="#closure">The dependents closure</a> — the least intuitive thing in girih, and the usual cause</td></tr>
+      <tr><td>Where does this value actually come from?</td><td><a href="#walker">Trace a chain</a> — step down the real resolved graph</td></tr>
+      <tr><td>Which tier should this token go in?</td><td><a href="#tiers">Why three tiers</a> — the question each tier answers</td></tr>
+      <tr><td>Can a brand add a token, not just change one?</td><td><a href="#brands">The override-only rule</a> — no, and why that is load-bearing</td></tr>
+      <tr><td>girih rejected my tokens and I want to know why</td><td><a href="#validation">What girih checks</a> — eight checks and their codes</td></tr>
+      <tr><td>How should I name and organise these?</td><td><a href="#authoring">Authoring rules</a> — six, in order of how often they matter</td></tr>
+    </tbody>
+  </table>
+</div>
+
 <h2 id="token">What a token is, exactly</h2>
 
 <p>
@@ -2361,8 +2377,8 @@ radius.pill  tier=global  type=dimension  value=&quot;999px&quot;</code></pre>
 <h2 id="brands">Brands: the override-only rule</h2>
 
 <p>
-  A brand is a folder with one file. The <code>marketplace</code> brand is the default and overrides
-  nothing at all, so its file is literally empty:
+  A brand is one file — <code>design/brands/&lt;brand&gt;.json</code>. The <code>marketplace</code>
+  brand is the default and overrides nothing at all, so its file is literally empty:
 </p>
 
 <figure class="code" data-lang="json">

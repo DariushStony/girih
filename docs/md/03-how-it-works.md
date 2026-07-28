@@ -16,6 +16,13 @@ When you run `girih generate react`, six things happen in a fixed order. None of
 is complicated on its own. The interesting part is the order, and the invariant each stage
 establishes for the next.
 
+| You are here because | Go to |
+| --- | --- |
+| girih refused to do something and you want to know which rule you hit | [The four gates](#gates) |
+| You need to know whether a file is yours and whether to commit it | [Provenance](#provenance) — the complete table |
+| A `GIRIH` code appeared and you want to understand the scheme | [How girih reports problems](#diagnostics) |
+| You want to watch one real token travel the whole pipeline | [Walk it stage by stage](#stepper) |
+
 ## The whole thing at once
 
 | # | Stage | What happens |
@@ -86,8 +93,8 @@ girih working and girih looking like it works.
 identical token pipeline; the React path adds contract loading on top.
 
 ```
-tokens/ + brands/  (you write)  →  buildTokenGraphs()  (@faravahar/girih-tokens)  →  generateCss()  (@faravahar/girih-generator-css)  →  tokens.css + tokens.d.ts  (emitted)
-components/*.contract.ts  (you write)  →  loadSpecs() → specToIR()  (@faravahar/girih-spec)  →  generateReact()  (@faravahar/girih-generator-react)  →  src/*.tsx + components.css  (emitted)
+design/tokens/ + design/brands/  (you write)  →  buildTokenGraphs()  (@faravahar/girih-tokens)  →  generateCss()  (@faravahar/girih-generator-css)  →  tokens.css + tokens.d.ts  (emitted)
+design/components/**/*.contract.ts  (you write)  →  loadSpecs() → specToIR()  (@faravahar/girih-spec)  →  generateReact()  (@faravahar/girih-generator-react)  →  src/*.tsx + components.css  (emitted)
 ```
 
 The contract path depends on the token path, not the other way round: `validateSpecs()`
@@ -96,10 +103,10 @@ needs the resolved token graphs to check that every `{token.ref}` in a contract 
 before contracts are even read. There is no point validating a contract against a graph you know
 is wrong.
 
-**packages/girih/src/cli.ts  [You write this]**
+**packages/girih/src/workspace.ts  [You write this]**
 
 ```ts
-// packages/girih/src/cli.ts — the one function generate, build and bake all route through
+// packages/girih/src/workspace.ts — the one function generate, build and bake all route through
 async function composeReact(config, build, cssFiles) {
   const { irs, extensions } = await loadComponentIRs(config, build);
   const ejected = await loadEjectedSources(config, build, irs);
@@ -215,11 +222,12 @@ did girih? Here is the complete answer.
 | Path | Author | In git? | Notes |
 | --- | --- | --- | --- |
 | `ds.config.ts` | You | Yes | `girih brand create` also edits it, carefully |
-| `tokens/**` | You | Yes | Three tiers, tier inferred from filename |
-| `brands/*/tokens.json` | You | Yes | Overrides only — new paths are an error |
-| `components/*.contract.ts` | You | Yes | The contracts |
-| `extensions/*.ext.ts` | You | Yes | Constrained by `overridableTokens` |
-| `components/ejected/*.tsx` | You (after eject) | Yes | A tracked fork; CSS still generated |
+| `design/tokens/*.tokens.json` | You | Yes | The global and semantic tiers; tier inferred from the filename |
+| `design/brands/.json` | You | Yes | One file per brand. Overrides only — new paths are an error |
+| `design/components//.contract.ts` | You | Yes | The contract |
+| `design/components//.tokens.json` | You | Yes | That component's own tokens, beside its contract — tier comes from the `/components/` segment |
+| `design/components//*.ext.ts` | You | Yes | Extensions, beside the component they extend. Constrained by `overridableTokens` |
+| `design/components//.ejected.tsx` | You (after eject) | Yes | A tracked fork; CSS still generated |
 | `.ds/ir/*.json` | girih | **Yes** | Canonical contract — review it in PRs |
 | `.ds/manifest.json` | girih | **Yes** | The drift baseline; committing it is the point |
 | `ds.lock` | girih | **Yes** | Ejections + last published version and signature |

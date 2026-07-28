@@ -49,7 +49,7 @@ export async function loadComponentIRs(
   return { irs, extensions };
 }
 
-/** Ejected sources from ds.lock, read from components/ejected/, cross-checked against the catalog. */
+/** Ejected sources from ds.lock, read from beside each contract, cross-checked against the catalog. */
 export async function loadEjectedSources(
   config: ResolvedConfig,
   build: TokenBuildResult,

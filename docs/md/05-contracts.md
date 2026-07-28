@@ -438,17 +438,17 @@ operation.
 ```
 $ pnpm exec girih eject Dialog
 
-create  components/ejected/dialog.tsx
+create  design/components/dialog/dialog.ejected.tsx
 update  ds.lock (base: dialog@v1, 4f2a9c1e8b03)
 
-'Dialog' is now yours: edit components/ejected/dialog.tsx freely — commit it and ds.lock.
+'Dialog' is now yours: edit design/components/dialog/dialog.ejected.tsx freely — commit it and ds.lock.
 Its spec is still validated and its CSS still generated — only markup/behavior is forked.
 Run `girih generate react` to stitch it into the package.
 ```
 
 Four things happen, and each one is doing specific work:
 
-1. The current template output is written to `components/ejected/dialog.tsx` — your file  now, committed to git.
+1. The current template output is written to  `design/components/dialog/dialog.ejected.tsx` — beside the contract it forks, your  file now, committed to git.
 2. `ds.lock` records the template name, the template _version_, and a hash of the  exact source the fork started from.
 3. Subsequent `generate` runs stitch your file into the package instead of the  template's output.
 4. The spec is still validated and the CSS is still generated from it. You forked the markup, not  the token governance.

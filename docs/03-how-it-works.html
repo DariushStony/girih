@@ -1392,6 +1392,18 @@ select.sel, input.txt {
   establishes for the next.
 </p>
 
+<div class="tablewrap">
+  <table>
+    <thead><tr><th>You are here because</th><th>Go to</th></tr></thead>
+    <tbody>
+      <tr><td>girih refused to do something and you want to know which rule you hit</td><td><a href="#gates">The four gates</a></td></tr>
+      <tr><td>You need to know whether a file is yours and whether to commit it</td><td><a href="#provenance">Provenance</a> — the complete table</td></tr>
+      <tr><td>A <code>GIRIH</code> code appeared and you want to understand the scheme</td><td><a href="#diagnostics">How girih reports problems</a></td></tr>
+      <tr><td>You want to watch one real token travel the whole pipeline</td><td><a href="#stepper">Walk it stage by stage</a></td></tr>
+    </tbody>
+  </table>
+</div>
+
 <h2 id="overview">The whole thing at once</h2>
 
 <div class="rail bleed reveal">
@@ -1559,8 +1571,8 @@ select.sel, input.txt {
 </p>
 
 <div class="pkgmap bleed reveal">
-  <div class="pkgrow"><span class="pkg" data-layer="kernel">tokens/ + brands/<span class="role">you write</span></span><span class="dep">→</span><span class="pkg" data-layer="pipeline">buildTokenGraphs()<span class="role">@faravahar/girih-tokens</span></span><span class="dep">→</span><span class="pkg" data-layer="generator">generateCss()<span class="role">@faravahar/girih-generator-css</span></span><span class="dep">→</span><span class="pkg" data-layer="surface">tokens.css + tokens.d.ts<span class="role">emitted</span></span></div>
-  <div class="pkgrow"><span class="pkg" data-layer="kernel">components/*.contract.ts<span class="role">you write</span></span><span class="dep">→</span><span class="pkg" data-layer="pipeline">loadSpecs() → specToIR()<span class="role">@faravahar/girih-spec</span></span><span class="dep">→</span><span class="pkg" data-layer="generator">generateReact()<span class="role">@faravahar/girih-generator-react</span></span><span class="dep">→</span><span class="pkg" data-layer="surface">src/*.tsx + components.css<span class="role">emitted</span></span></div>
+  <div class="pkgrow"><span class="pkg" data-layer="kernel">design/tokens/ + design/brands/<span class="role">you write</span></span><span class="dep">→</span><span class="pkg" data-layer="pipeline">buildTokenGraphs()<span class="role">@faravahar/girih-tokens</span></span><span class="dep">→</span><span class="pkg" data-layer="generator">generateCss()<span class="role">@faravahar/girih-generator-css</span></span><span class="dep">→</span><span class="pkg" data-layer="surface">tokens.css + tokens.d.ts<span class="role">emitted</span></span></div>
+  <div class="pkgrow"><span class="pkg" data-layer="kernel">design/components/**/*.contract.ts<span class="role">you write</span></span><span class="dep">→</span><span class="pkg" data-layer="pipeline">loadSpecs() → specToIR()<span class="role">@faravahar/girih-spec</span></span><span class="dep">→</span><span class="pkg" data-layer="generator">generateReact()<span class="role">@faravahar/girih-generator-react</span></span><span class="dep">→</span><span class="pkg" data-layer="surface">src/*.tsx + components.css<span class="role">emitted</span></span></div>
 </div>
 
 <p>
@@ -1573,10 +1585,10 @@ select.sel, input.txt {
 
 <figure class="code" data-lang="ts">
   <figcaption>
-      <span class="path">packages/girih/src/cli.ts</span>
+      <span class="path">packages/girih/src/workspace.ts</span>
       <span class="badge authored">You write this</span>
     </figcaption>
-  <pre><code><span class="tk-c">// packages/girih/src/cli.ts — the one function generate, build and bake all route through</span>
+  <pre><code><span class="tk-c">// packages/girih/src/workspace.ts — the one function generate, build and bake all route through</span>
 <span class="tk-k">async</span> <span class="tk-k">function</span> composeReact(config, build, cssFiles) {
   <span class="tk-k">const</span> { irs, extensions } = <span class="tk-k">await</span> loadComponentIRs(config, build);
   <span class="tk-k">const</span> ejected = <span class="tk-k">await</span> loadEjectedSources(config, build, irs);
@@ -1729,11 +1741,12 @@ select.sel, input.txt {
     <thead><tr><th>Path</th><th>Author</th><th>In git?</th><th>Notes</th></tr></thead>
     <tbody>
       <tr><td><code>ds.config.ts</code></td><td>You</td><td>Yes</td><td><code>girih brand create</code> also edits it, carefully</td></tr>
-      <tr><td><code>tokens/**</code></td><td>You</td><td>Yes</td><td>Three tiers, tier inferred from filename</td></tr>
-      <tr><td><code>brands/*/tokens.json</code></td><td>You</td><td>Yes</td><td>Overrides only — new paths are an error</td></tr>
-      <tr><td><code>components/*.contract.ts</code></td><td>You</td><td>Yes</td><td>The contracts</td></tr>
-      <tr><td><code>extensions/*.ext.ts</code></td><td>You</td><td>Yes</td><td>Constrained by <code>overridableTokens</code></td></tr>
-      <tr><td><code>components/ejected/*.tsx</code></td><td>You (after eject)</td><td>Yes</td><td>A tracked fork; CSS still generated</td></tr>
+      <tr><td><code>design/tokens/*.tokens.json</code></td><td>You</td><td>Yes</td><td>The global and semantic tiers; tier inferred from the filename</td></tr>
+      <tr><td><code>design/brands/&lt;brand&gt;.json</code></td><td>You</td><td>Yes</td><td>One file per brand. Overrides only — new paths are an error</td></tr>
+      <tr><td><code>design/components/&lt;name&gt;/&lt;name&gt;.contract.ts</code></td><td>You</td><td>Yes</td><td>The contract</td></tr>
+      <tr><td><code>design/components/&lt;name&gt;/&lt;name&gt;.tokens.json</code></td><td>You</td><td>Yes</td><td>That component's own tokens, beside its contract — tier comes from the <code>/components/</code> segment</td></tr>
+      <tr><td><code>design/components/&lt;name&gt;/*.ext.ts</code></td><td>You</td><td>Yes</td><td>Extensions, beside the component they extend. Constrained by <code>overridableTokens</code></td></tr>
+      <tr><td><code>design/components/&lt;name&gt;/&lt;name&gt;.ejected.tsx</code></td><td>You (after eject)</td><td>Yes</td><td>A tracked fork; CSS still generated</td></tr>
       <tr><td><code>.ds/ir/*.json</code></td><td>girih</td><td><b>Yes</b></td><td>Canonical contract — review it in PRs</td></tr>
       <tr><td><code>.ds/manifest.json</code></td><td>girih</td><td><b>Yes</b></td><td>The drift baseline; committing it is the point</td></tr>
       <tr><td><code>ds.lock</code></td><td>girih</td><td><b>Yes</b></td><td>Ejections + last published version and signature</td></tr>

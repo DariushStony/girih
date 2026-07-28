@@ -422,10 +422,10 @@ ${rule(
 ${code(
   `$ pnpm exec girih eject Dialog
 
-create  components/ejected/dialog.tsx
+create  design/components/dialog/dialog.ejected.tsx
 update  ds.lock (base: dialog@v1, 4f2a9c1e8b03)
 
-'Dialog' is now yours: edit components/ejected/dialog.tsx freely — commit it and ds.lock.
+'Dialog' is now yours: edit design/components/dialog/dialog.ejected.tsx freely — commit it and ds.lock.
 Its spec is still validated and its CSS still generated — only markup/behavior is forked.
 Run \`girih generate react\` to stitch it into the package.`,
   { kind: 'shell', lang: 'none' },
@@ -435,8 +435,9 @@ Run \`girih generate react\` to stitch it into the package.`,
 
 <ol>
   <li>
-    The current template output is written to <code>components/ejected/dialog.tsx</code> — your file
-    now, committed to git.
+    The current template output is written to
+    <code>design/components/dialog/dialog.ejected.tsx</code> — beside the contract it forks, your
+    file now, committed to git.
   </li>
   <li>
     <code>ds.lock</code> records the template name, the template <em>version</em>, and a hash of the

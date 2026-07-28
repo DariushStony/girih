@@ -342,7 +342,7 @@ $ girih doctor
 | `GIRIH1002` — cannot load `ds.config.ts` | It imports `@faravahar/girih`, which is not installed _here_ | `npm install -D @faravahar/girih` — a global install is not enough for the config |
 | `GIRIH6002` — imports not installed | The generated components need react and the runtime; `girih init` installs nothing | `npm i -D @faravahar/girih-react-runtime react @types/react` |
 | `GIRIH1001` — no config found | You are not in a girih workspace | `cd` to the directory containing `ds.config.ts` |
-| `GIRIH2006` — no token files matched | Empty or misnamed `tokens/` | Create `design/tokens/global.tokens.json`; the tier comes from the filename |
+| `GIRIH2006` — no token files matched | Empty or misnamed `design/tokens/` | Create `design/tokens/global.tokens.json`; the tier comes from the filename |
 | `GIRIH1010` — file edited by hand | Someone edited generated output | Undo it, or `girih eject` the component to keep the edits |
 | Brand switch changes colour but not radius | A brand block is missing part of the dependents closure | Regenerate. If it persists it is a generator bug — see [chapter 06](06-the-code.md) |
 | `girih build` fails on a plain pnpm install | Stale girih: the CLI used to depend on esbuild, whose postinstall pnpm 10+ blocks | `girih update`. Current versions have no install scripts at all |

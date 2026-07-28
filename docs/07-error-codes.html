@@ -1528,14 +1528,14 @@ select.sel, input.txt {
         <p class="msg">Brand '<i class="ph">${brand.name}</i>' points at a missing token file: <i class="ph">${brand.tokensFile}</i></p>
         <p class="help">Create the overlay file (an empty {} is valid) or fix brands.definitions.<i class="ph">${brand.name}</i>.tokens.</p>
       </div>
-      <div class="codecard" data-sev="error" data-code="GIRIH1005" data-search="girih1005 config must define at least one brand under brands.definitions. add one: `brands: { default: 'base', definitions: { base: { tokens: 'brands/base/tokens.json' } } }`. an empty {} overlay is valid, so the default brand can override nothing. girih-core">
+      <div class="codecard" data-sev="error" data-code="GIRIH1005" data-search="girih1005 config must define at least one brand under brands.definitions. add one: `brands: { default: 'base', definitions: { base: { tokens: 'design/brands/base.json' } } }`. an empty {} overlay is valid, so the default brand can override nothing. girih-core">
         <div class="top">
           <span class="cid">GIRIH1005</span>
           <span class="sev">error</span>
           <span class="src">packages/girih-core/src/config.ts:210</span>
         </div>
         <p class="msg">Config must define at least one brand under brands.definitions.</p>
-        <p class="help">Add one: `brands: { default: 'base', definitions: { base: { tokens: 'brands/base/tokens.json' } } }`. An empty {} overlay is valid, so the default brand can override nothing.</p>
+        <p class="help">Add one: `brands: { default: 'base', definitions: { base: { tokens: 'design/brands/base.json' } } }`. An empty {} overlay is valid, so the default brand can override nothing.</p>
       </div>
       <div class="codecard" data-sev="error" data-code="GIRIH1006" data-search="girih1006 brands.default ('${raw.brands?.default}') is not a key of brands.definitions. known brands: ${object.keys(definitions).join(', ')} girih-core">
         <div class="top">

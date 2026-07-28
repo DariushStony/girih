@@ -21,6 +21,16 @@ export default function page(data) {
   establishes for the next.
 </p>
 
+${table(
+  ['You are here because', 'Go to'],
+  [
+    ['girih refused to do something and you want to know which rule you hit', '<a href="#gates">The four gates</a>'],
+    ['You need to know whether a file is yours and whether to commit it', '<a href="#provenance">Provenance</a> — the complete table'],
+    ['A <code>GIRIH</code> code appeared and you want to understand the scheme', '<a href="#diagnostics">How girih reports problems</a>'],
+    ['You want to watch one real token travel the whole pipeline', '<a href="#stepper">Walk it stage by stage</a>'],
+  ],
+)}
+
 <h2 id="overview">The whole thing at once</h2>
 
 ${rail([
@@ -108,7 +118,7 @@ ${rule(
 
 ${pkgMap([
   [
-    { name: 'tokens/ + brands/', role: 'you write', layer: 'kernel' },
+    { name: 'design/tokens/ + design/brands/', role: 'you write', layer: 'kernel' },
     '→',
     { name: 'buildTokenGraphs()', role: '@faravahar/girih-tokens', layer: 'pipeline' },
     '→',
@@ -117,7 +127,7 @@ ${pkgMap([
     { name: 'tokens.css + tokens.d.ts', role: 'emitted', layer: 'surface' },
   ],
   [
-    { name: 'components/*.contract.ts', role: 'you write', layer: 'kernel' },
+    { name: 'design/components/**/*.contract.ts', role: 'you write', layer: 'kernel' },
     '→',
     { name: 'loadSpecs() → specToIR()', role: '@faravahar/girih-spec', layer: 'pipeline' },
     '→',
@@ -136,7 +146,7 @@ ${pkgMap([
 </p>
 
 ${code(
-  `// packages/girih/src/cli.ts — the one function generate, build and bake all route through
+  `// packages/girih/src/workspace.ts — the one function generate, build and bake all route through
 async function composeReact(config, build, cssFiles) {
   const { irs, extensions } = await loadComponentIRs(config, build);
   const ejected = await loadEjectedSources(config, build, irs);
@@ -145,7 +155,7 @@ async function composeReact(config, build, cssFiles) {
   const reactResult = generateReact(irs, { packageName: config.name, ... }, { extensions, ejected });
   return { files: [...cssFiles, ...reactResult.files], irFiles: ..., irs, extensions, ejected };
 }`,
-  { path: 'packages/girih/src/cli.ts', kind: 'authored' },
+  { path: 'packages/girih/src/workspace.ts', kind: 'authored' },
 )}
 
 ${rule(
@@ -295,11 +305,27 @@ ${table(
   ['Path', 'Author', 'In git?', 'Notes'],
   [
     ['<code>ds.config.ts</code>', 'You', 'Yes', '<code>girih brand create</code> also edits it, carefully'],
-    ['<code>tokens/**</code>', 'You', 'Yes', 'Three tiers, tier inferred from filename'],
-    ['<code>brands/*/tokens.json</code>', 'You', 'Yes', 'Overrides only — new paths are an error'],
-    ['<code>components/*.contract.ts</code>', 'You', 'Yes', 'The contracts'],
-    ['<code>extensions/*.ext.ts</code>', 'You', 'Yes', 'Constrained by <code>overridableTokens</code>'],
-    ['<code>components/ejected/*.tsx</code>', 'You (after eject)', 'Yes', 'A tracked fork; CSS still generated'],
+    ['<code>design/tokens/*.tokens.json</code>', 'You', 'Yes', 'The global and semantic tiers; tier inferred from the filename'],
+    ['<code>design/brands/&lt;brand&gt;.json</code>', 'You', 'Yes', 'One file per brand. Overrides only — new paths are an error'],
+    ['<code>design/components/&lt;name&gt;/&lt;name&gt;.contract.ts</code>', 'You', 'Yes', 'The contract'],
+    [
+      '<code>design/components/&lt;name&gt;/&lt;name&gt;.tokens.json</code>',
+      'You',
+      'Yes',
+      "That component's own tokens, beside its contract — tier comes from the <code>/components/</code> segment",
+    ],
+    [
+      '<code>design/components/&lt;name&gt;/*.ext.ts</code>',
+      'You',
+      'Yes',
+      'Extensions, beside the component they extend. Constrained by <code>overridableTokens</code>',
+    ],
+    [
+      '<code>design/components/&lt;name&gt;/&lt;name&gt;.ejected.tsx</code>',
+      'You (after eject)',
+      'Yes',
+      'A tracked fork; CSS still generated',
+    ],
     ['<code>.ds/ir/*.json</code>', 'girih', '<b>Yes</b>', 'Canonical contract — review it in PRs'],
     ['<code>.ds/manifest.json</code>', 'girih', '<b>Yes</b>', 'The drift baseline; committing it is the point'],
     ['<code>ds.lock</code>', 'girih', '<b>Yes</b>', 'Ejections + last published version and signature'],

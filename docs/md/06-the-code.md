@@ -200,7 +200,9 @@ whose template has since moved.
 
 | File | Owns |
 | --- | --- |
-| `cli.ts` | Every command, plus `composeReact()` — the single source of truth for what gets written |
+| `cli.ts` | Nothing but registration — one `register*()` call per command, in help order |
+| `commands/*.ts` | One module per command; `bake.ts` is the one with a one-way effect |
+| `workspace.ts` | `loadWorkspace()`, `composeReact()` — the single source of truth for what gets written |
 | `build.ts` | `buildPackage()`, `addJsExtensions()`, `emitDeclarations()` |
 | `manifest.ts` | `detectDrift()`, `planManifestUpdate()`, read/write manifest |
 | `lock.ts` | `readLock()`, `writeLock()` — ejections and the published baseline |

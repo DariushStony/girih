@@ -283,6 +283,38 @@ for (const file of mdFiles) {
   }
 }
 
+/* --------------------------------------------------- attributed files still exist */
+
+/**
+ * A code block captioned with a `packages/...` path must be captioned with a path that
+ * exists. Chapter 03 showed `composeReact()` attributed to `packages/girih/src/cli.ts` long
+ * after it moved to `workspace.ts` — the snippet was accurate, the file it named was not,
+ * and a reader following the caption finds command registration instead.
+ *
+ * Only paths whose first segment is a real workspace package are checked. A consumer's
+ * generated package is also called `packages/design-system/...`, and it is gitignored here,
+ * so those captions describe a workspace that legitimately does not exist in this repo.
+ * Deriving the package list from disk rather than listing it keeps that distinction true as
+ * packages come and go.
+ */
+{
+  const workspacePackages = new Set(readdirSync(join(repoRoot, 'packages')));
+  for (const dir of [join(docsDir, 'scripts/pages'), join(docsDir, 'scripts/lib')]) {
+    if (!existsSync(dir)) continue;
+    for (const name of readdirSync(dir).filter((f) => f.endsWith('.mjs'))) {
+      const rel = relative(repoRoot, join(dir, name));
+      readFileSync(join(dir, name), 'utf8')
+        .split('\n')
+        .forEach((line, index) => {
+          for (const m of line.matchAll(/['"`](packages\/([\w.-]+)\/[\w./-]+\.\w+)\b/g)) {
+            if (!workspacePackages.has(m[2])) continue;
+            check(existsSync(join(repoRoot, m[1])), `${rel}:${index + 1}`, `attributes a snippet to '${m[1]}', which does not exist`);
+          }
+        });
+    }
+  }
+}
+
 /* ------------------------------------------------------------- source integrity */
 
 /**

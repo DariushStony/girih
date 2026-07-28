@@ -16,6 +16,17 @@ This is the chapter that matters. If you understand the three tiers, alias chain
 override-only rule, everything else in girih is a detail. All the values on this page are real —
 extracted by running girih's own engine over `examples/acme-ds`.
 
+Eleven sections, and it is worth reading in order. But if you came here with a problem:
+
+| Symptom or question | Go to |
+| --- | --- |
+| A brand override is not showing up in one place | [The dependents closure](#closure) — the least intuitive thing in girih, and the usual cause |
+| Where does this value actually come from? | [Trace a chain](#walker) — step down the real resolved graph |
+| Which tier should this token go in? | [Why three tiers](#tiers) — the question each tier answers |
+| Can a brand add a token, not just change one? | [The override-only rule](#brands) — no, and why that is load-bearing |
+| girih rejected my tokens and I want to know why | [What girih checks](#validation) — eight checks and their codes |
+| How should I name and organise these? | [Authoring rules](#authoring) — six, in order of how often they matter |
+
 ## What a token is, exactly
 
 A token is a named design decision written in DTCG JSON. Two keys carry the weight:
@@ -169,8 +180,8 @@ most. Hover it and count the lit edges.
 
 ## Brands: the override-only rule
 
-A brand is a folder with one file. The `marketplace` brand is the default and overrides
-nothing at all, so its file is literally empty:
+A brand is one file — `design/brands/.json`. The `marketplace`
+brand is the default and overrides nothing at all, so its file is literally empty:
 
 **design/brands/marketplace.json  [You write this]**
 

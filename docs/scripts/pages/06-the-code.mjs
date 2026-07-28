@@ -317,7 +317,12 @@ ${table(
 ${table(
   ['File', 'Owns'],
   [
-    ['<code>cli.ts</code>', 'Every command, plus <code>composeReact()</code> — the single source of truth for what gets written'],
+    ['<code>cli.ts</code>', 'Nothing but registration — one <code>register*()</code> call per command, in help order'],
+    ['<code>commands/*.ts</code>', 'One module per command; <code>bake.ts</code> is the one with a one-way effect'],
+    [
+      '<code>workspace.ts</code>',
+      '<code>loadWorkspace()</code>, <code>composeReact()</code> — the single source of truth for what gets written',
+    ],
     ['<code>build.ts</code>', '<code>buildPackage()</code>, <code>addJsExtensions()</code>, <code>emitDeclarations()</code>'],
     ['<code>manifest.ts</code>', '<code>detectDrift()</code>, <code>planManifestUpdate()</code>, read/write manifest'],
     ['<code>lock.ts</code>', '<code>readLock()</code>, <code>writeLock()</code> — ejections and the published baseline'],
