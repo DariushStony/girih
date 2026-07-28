@@ -10,17 +10,9 @@ above it — the version is a property of the release, not of one package.
 
 ## 0.1.1 — 2026-07-27
 
-### Breaking changes
-
-- release automatically on push, no pull request (7ab3a7a)
-
 ### Features
 
 - **girih-core:** give the config diagnostics a help line (61cd9e7)
-
-### Bug fixes
-
-- **ci:** refuse to guess a release version, and split the bump logic out (7d64d50)
 
 ## 0.1.0 — 2026-07-27
 

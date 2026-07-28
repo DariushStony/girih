@@ -165,6 +165,26 @@ describe('renderNotes', () => {
     expect(notes).not.toContain('not a conventional subject');
   });
 
+  // The regression that shipped in 0.1.1: the notes grouped on type while the version came
+  // from the gates, so commits the gates had excluded still appeared — and a `ci!:` landed
+  // under "Breaking changes", telling consumers a patch release broke something.
+  it('excludes a commit the gates kept out of the bump', () => {
+    const gated = renderNotes(
+      '0.1.1',
+      [
+        { hash: 'a'.repeat(10), subject: 'ci!: release automatically on push', body: '' },
+        { hash: 'b'.repeat(10), subject: 'fix(ci): refuse to guess a version', body: '' },
+        { hash: 'c'.repeat(10), subject: 'feat(girih-core): add a help line', body: '' },
+      ],
+      '2026-07-28',
+    );
+    expect(gated).not.toContain('### Breaking changes');
+    expect(gated).not.toContain('release automatically on push');
+    expect(gated).not.toContain('refuse to guess a version');
+    // The one commit that did move the version is still there.
+    expect(gated).toContain('add a help line');
+  });
+
   it('says so plainly when nothing user-facing changed', () => {
     // A lockstep release with no releasable commits still needs an honest entry rather
     // than an empty section implying a fix.

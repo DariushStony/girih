@@ -126,9 +126,17 @@ const TYPE_HEADINGS = [
   ['build', 'Build and dependencies'],
 ];
 
-/** Release notes grouped by kind, with the scope and short hash on each line. */
+/**
+ * Release notes grouped by kind, with the scope and short hash on each line.
+ *
+ * Only commits that moved the version appear. Grouping on type alone made 0.1.1 list
+ * `ci!: release automatically on push` under "Breaking changes" and `fix(ci): refuse to
+ * guess a release version` under "Bug fixes" — telling consumers a release broke something
+ * when the two gates had already excluded both from the bump. The notes and the version
+ * have to derive from the same decision or the changelog contradicts the number above it.
+ */
 export function renderNotes(version, commits, date) {
-  const parsed = commits.map((c) => ({ ...c, parsed: parseCommit(c.subject, c.body) })).filter((c) => c.parsed);
+  const parsed = commits.map((c) => ({ ...c, parsed: parseCommit(c.subject, c.body) })).filter((c) => c.parsed && c.parsed.bump !== 'none');
   const lines = [`## ${version} — ${date}`, ''];
   let wroteAnything = false;
 
