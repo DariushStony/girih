@@ -61,12 +61,12 @@ deleting one is deleting a folder.
 
 ### The four commands
 
-| Command             | What it does                                                       |
-| ------------------- | ------------------------------------------------------------------ |
-| `npm run check`     | Validates tokens and contracts, prints the resolved token table    |
-| `npm run generate`  | Writes the design system package from your `design/` folder        |
-| `npm run build`     | Compiles that package to publishable JS + `.d.ts`                  |
-| `npx girih publish` | Versions it from a contract diff and publishes. Dry run by default |
+| Command            | What it does                                                             |
+| ------------------ | ------------------------------------------------------------------------ |
+| `npm run check`    | Validates tokens and contracts, prints the resolved token table          |
+| `npm run generate` | Writes the design system package from your `design/` folder              |
+| `npm run build`    | Compiles that package to publishable JS + `.d.ts`                        |
+| `npx girih bake`   | Versions it from a contract diff and stages it in `.ds/baked` to publish |
 
 `npx girih --help` lists the rest — `doctor`, `brand create`, `eject`, `forks`, `update`.
 

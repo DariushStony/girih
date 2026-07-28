@@ -145,8 +145,9 @@ of this before you push.
 `exactOptionalPropertyTypes` and `noUncheckedIndexedAccess` are on and will reject code that looks
 fine.
 
-Never run `girih publish --yes` — that publishes a _consumer's_ design system, not girih. girih's
-own release is a push to `main`; see below. There is no release PR.
+Never run `girih bake` in this repo — that versions a _consumer's_ design system, not girih, and
+it commits `ds.lock`'s baseline the moment it finds a change. girih's own release is a push to
+`main`; see below. There is no release PR.
 
 ### Tests must not depend on the network
 
@@ -187,7 +188,7 @@ so it cannot go stale.
 Nothing about a release is typed by hand. The version comes from the commits.
 
 That is deliberate: girih's seventh invariant says a version comes from the contract diff
-rather than judgement, and `girih publish` enforces it for a consumer's design system. This is
+rather than judgement, and `girih bake` enforces it for a consumer's design system. This is
 the same rule turned on girih itself.
 
 **How it works**

@@ -7,12 +7,6 @@ export interface ScaffoldOptions {
   name: string;
   /** Default brand name. */
   brand: string;
-  /**
-   * npm visibility written into ds.config.ts. Defaults to 'restricted' because an
-   * accidental public publish cannot be undone, and the first-publish gate refuses to
-   * guess either way.
-   */
-  access?: 'public' | 'restricted';
 }
 
 export interface ScaffoldResult {
@@ -68,7 +62,7 @@ export function workspacePackageJson(options: {
  * sitting, real enough that `girih generate react` produces a working Button.
  */
 export function workspaceTemplate(options: ScaffoldOptions): Record<string, string> {
-  const { name, brand, access = 'restricted' } = options;
+  const { name, brand } = options;
   return {
     'ds.config.ts': `import { defineConfig } from '@faravahar/girih';
 
@@ -80,7 +74,6 @@ export default defineConfig({
       '${brand}': { tokens: 'design/brands/${brand}.json' },
     },
   },
-  publish: { access: '${access}' },
 });
 `,
     'design/tokens/global.tokens.json': `${JSON.stringify(

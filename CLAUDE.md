@@ -69,7 +69,7 @@ core, tokens, spec, generator-css, generator-react  ←  cli
 3. **Tier references flow downward only:** component → semantic → global. Never sideways, never upward.
 4. **Every design value in emitted CSS is a `var()`.** Component CSS carries structure only. Aliases stay live `var()` references — never flattened to literals — so nested `[data-brand]` scopes rebrand at runtime with no rebuild.
 5. **Contracts are data, not code.** `defineSpec` is authored in TypeScript for editor ergonomics and validated as pure data. A spec must never execute logic, import runtime code, or branch on environment.
-6. **`generate`, `build`, and `publish` must never disagree** about what the package contains. They all route through `composeReact()` in [workspace.ts](packages/girih/src/workspace.ts) — extend that one function, not the three call sites.
+6. **`generate`, `build`, and `bake` must never disagree** about what the package contains. They all route through `composeReact()` in [workspace.ts](packages/girih/src/workspace.ts) — extend that one function, not the three call sites.
 7. **Semver comes from the contract diff, not judgement.** Token value change = patch, new variant = minor, anything removed = major. See [semver.ts](packages/girih/src/semver.ts).
 
 **Diagnostics.** Every user-facing problem is a `Diagnostic` with a stable `GIRIH<n>` code, a `severity`, and — for anything actionable — a one-line `help`. Codes are partitioned by owner; stay in your range and never reuse a retired number:
@@ -81,18 +81,18 @@ core, tokens, spec, generator-css, generator-react  ←  cli
 | `GIRIH3xxx` | `generator-css`   | CSS emission, var-name collisions, unserializable values |
 | `GIRIH4xxx` | `spec`            | contract shape, token refs, states, extensions           |
 | `GIRIH5xxx` | `generator-react` | React emission                                           |
-| `GIRIH6xxx` | `cli`             | build/publish                                            |
+| `GIRIH6xxx` | `cli`             | build/bake                                               |
 
 Never `throw` where a diagnostic will do. Errors that reach the user as a stack trace are bugs.
 
-**CLI surface** — one module per command in [commands/](packages/girih/src/commands/), wired in [cli.ts](packages/girih/src/cli.ts); shared loading and composition in [workspace.ts](packages/girih/src/workspace.ts): `create <directory>` (`--name`, `--brand`, `--no-install`), `init`, `brand create <name>`, `check`, `doctor` (`--offline`), `generate [css|react]` (`--check`, `--force`), `eject <component>`, `forks`, `build`, `publish` (`--yes`, `--tag`, `--access`), `update` (`--check`). Plus `-v/--version`.
+**CLI surface** — one module per command in [commands/](packages/girih/src/commands/), wired in [cli.ts](packages/girih/src/cli.ts); shared loading and composition in [workspace.ts](packages/girih/src/workspace.ts): `create <directory>` (`--name`, `--brand`, `--no-install`), `init`, `brand create <name>`, `check`, `doctor` (`--offline`), `generate [css|react]` (`--check`, `--force`), `eject <component>`, `forks`, `build`, `bake` (`--check`), `update` (`--check`). Plus `-v/--version`.
 
 Two distinctions worth keeping straight, because conflating them is easy:
 
 - **`check` vs `doctor`** — `check` validates the workspace's _content_ (tokens, contracts, drift). `doctor` validates the _environment_ (node, package manager, resolution, build prerequisites, version skew). `doctor` lives in [doctor.ts](packages/girih/src/doctor.ts) and must never duplicate a `check` validation.
 - **`update` vs `forks`** — `update` upgrades the `@faravahar/girih-*` packages installed in the workspace. `forks` reports ejected components that drifted from their template (this was called `update` before publishing; the 3-way merge is still unbuilt).
 
-`girih publish` publishes **the consumer's** generated design system, never girih itself. girih's own release is automated: every push to `main` runs `ci → docs → release`, and the last stage derives the version from the conventional commits since the last `v*` tag, publishes, then pushes the bump commit and tag. A commit releases only if both its type _and_ its scope can reach a consumer — `fix(ci):` cannot. `pnpm release:plan` shows what the next version would be. Never hand-edit a `version` field; the tooling owns them.
+`girih bake` versions **the consumer's** generated design system from its contract diff and stages it into `.ds/baked` — it never calls npm or any other registry tool itself; publishing that staged folder is entirely the consumer's own choice of tool and registry. This is deliberate: girih is never involved in publishing girih itself either. girih's own release is automated: every push to `main` runs `ci → docs → release`, and the last stage derives the version from the conventional commits since the last `v*` tag, publishes, then pushes the bump commit and tag. A commit releases only if both its type _and_ its scope can reach a consumer — `fix(ci):` cannot. `pnpm release:plan` shows what the next version would be. Never hand-edit a `version` field; the tooling owns them.
 
 Resolution helpers live in [resolve.ts](packages/girih/src/resolve.ts) — `resolvePackageDir`, `resolvesFrom`, `installedVersion`. Use them rather than adding a fourth `node_modules` walk. Registry access goes through [registry.ts](packages/girih/src/registry.ts), which caches for 24h and honours `GIRIH_NO_UPDATE_CHECK`.
 
@@ -174,9 +174,9 @@ Prefer the smallest verification scope possible:
 | Token engine or CSS generator                 | above + `pnpm example:check`                                                                                   |
 | Contract, spec validation, or React templates | above + `pnpm example:drift`                                                                                   |
 | CLI behavior                                  | `pnpm build` first (cli is not source-aliased in vitest), then exercise the command in `examples/acme-ds`      |
-| Packaging, `dist/` shape, or publish flow     | `pnpm test` including `e2e/test/consumer.test.ts` — it packs tarballs and SSRs every component, and it is slow |
+| Packaging, `dist/` shape, or bake flow        | `pnpm test` including `e2e/test/consumer.test.ts` — it packs tarballs and SSRs every component, and it is slow |
 
-Avoid `pnpm build` at the root unless you changed something that downstream packages consume at build time. Never run `girih publish --yes`.
+Avoid `pnpm build` at the root unless you changed something that downstream packages consume at build time. `girih bake` commits `ds.lock`'s version baseline (a committed file) as soon as it finds a pending contract change — use `girih bake --check` to preview the bump without running it.
 
 **The old `e2e/.tmp` teardown race is fixed** — [workspace.test.ts](e2e/test/workspace.test.ts) now removes only its own two directories, and every e2e file owns a separate scratch dir under `e2e/.tmp/`. If you add one, give it its own directory and delete only that; clearing all of `e2e/.tmp` deletes a live sibling's workspace, because vitest runs these files in parallel.
 
@@ -204,12 +204,12 @@ A fresh clone alone is not enough — it reproduces a clean checkout but keeps t
 - **Reuse over invent.** Before adding a helper, check `@faravahar/girih-core` — config, diagnostics, file emission, and CSS naming already live there and exist specifically to prevent divergence.
 - **Respect the dependency direction.** If a fix seems to need an upward import, the logic belongs in a lower package or in `core`. An upward import is never the answer.
 - **Diagnostics over exceptions.** New failure mode → new `GIRIH` code in your package's range, with `help`. Add a test asserting the code, not just the message text.
-- **Never hand-edit emitted files.** `examples/*/packages/`, `styles/`, `dist/`, `.ds/ir/` are outputs. `examples/acme-ds/.ds/manifest.json` and `.ds/ir/` **are** committed; `examples/*/packages/`, `.ds/cache/`, `.ds/publish/`, and demo bundles are gitignored.
+- **Never hand-edit emitted files.** `examples/*/packages/`, `styles/`, `dist/`, `.ds/ir/` are outputs. `examples/acme-ds/.ds/manifest.json` and `.ds/ir/` **are** committed; `examples/*/packages/`, `.ds/cache/`, `.ds/baked/`, and demo bundles are gitignored.
 - **Input lives under `design/`.** One folder in, one package out. `design/tokens/{global,semantic}.tokens.json` for the shared tiers, `design/brands/<brand>.json` for overlays (overrides only), and `design/components/<name>/` holding everything about one component — `<name>.contract.ts`, `<name>.tokens.json`, any `*.ext.ts`, and `<name>.ejected.tsx` if forked. The tier still comes from the path: `inferTier` reads any `/components/` segment, which is what lets a component's tokens sit beside its contract.
 - **Contracts:** `design/components/<name>/<name>.contract.ts` (default-exported `defineSpec`), extensions alongside as `*.ext.ts` (default-exported `defineVariant`). Filenames are kebab-case; the `name` field is PascalCase and drives the emitted component name.
 - **`.contract.ts`, never `.spec.ts` — this is load-bearing, not taste.** `**/*.spec.ts` is in the default test-match pattern of both vitest and jest, so contracts named that way are collected as test suites: a consumer running plain `vitest run` in their workspace got one failed "test file" per contract, and editors label them with a test icon. The function is still `defineSpec` and the config key is still `components.specs`; only the file convention changed, because only the file convention collided.
 - **Commits:** this repo uses milestone-style subjects (`M6: packaging and publish — compiled dist, contract-diff semver`). Match that style; there is no commitlint to save you. Commit or push only when asked.
-- **Never** commit `graphify-out/`, change the package manager, edit `tsconfig.base.json` compiler options, run `girih publish --yes`, or create new README/markdown files unless explicitly asked.
+- **Never** commit `graphify-out/`, change the package manager, edit `tsconfig.base.json` compiler options, run `girih bake` (it commits `ds.lock`'s version baseline — use `--check` instead), or create new README/markdown files unless explicitly asked.
 
 # Subagents
 

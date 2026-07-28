@@ -42,7 +42,7 @@ const FAMILY_ELI5 = {
       error, because the component still works; it is just less accessible than the contract claims.`,
   },
   6: {
-    title: 'Build and publish',
+    title: 'Build and bake',
     text: `One code, guarding the packaging step: there are no TypeScript sources to compile, which
       means <code>girih generate react</code> has not run yet.`,
   },

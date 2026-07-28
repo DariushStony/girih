@@ -12,7 +12,7 @@ dist/
 # generated output inside example workspaces (manifest + IR under .ds/ are committed)
 examples/*/packages/
 examples/*/.ds/cache/
-examples/*/.ds/publish/
+examples/*/.ds/baked/
 examples/*/demo/generated/
 
 # react demo bundles

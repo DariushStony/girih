@@ -91,18 +91,6 @@ describe('create-girih', { timeout: 30_000 }, () => {
     }
   });
 
-  // Private is the default because a public publish cannot be undone, and it matches npm's
-  // own default for a scoped package.
-  it.each([
-    [[], "access: 'restricted'"],
-    [['--private'], "access: 'restricted'"],
-    [['--public'], "access: 'public'"],
-  ])('records publish access for %s', (flags, expected) => {
-    const dir = `access-${flags.join('') || 'default'}`;
-    expect(create(dir, PNPM, '--name', '@acme/ds', ...flags).status).toBe(0);
-    expect(readFileSync(join(scratch, dir, 'ds.config.ts'), 'utf8')).toContain(expected);
-  });
-
   it('refuses to scaffold over an existing package.json', () => {
     expect(create('full', PNPM, '--name', '@acme/ds').status).toBe(1);
   });

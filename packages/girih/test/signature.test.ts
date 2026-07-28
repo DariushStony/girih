@@ -25,7 +25,6 @@ const acmeConfig = {
     react: { output: 'packages/design-system' },
     css: { output: 'packages/design-system/styles', selector: 'data-attribute' as const },
   },
-  publish: { access: 'restricted' as const },
 };
 
 const buttonSpec = () =>

@@ -46,8 +46,6 @@ export interface GirihConfig {
       selector?: 'data-attribute' | 'class';
     };
   };
-
-  publish?: { registry?: string; access?: 'public' | 'restricted' };
 }
 
 /** Typed identity helper for ds.config.ts authors. */
@@ -73,7 +71,6 @@ export interface ResolvedConfig {
     react: { output: string };
     css: { output: string; selector: 'data-attribute' | 'class' };
   };
-  publish: { registry?: string; access: 'public' | 'restricted' };
 }
 
 export const CONFIG_FILENAMES = ['ds.config.ts', 'ds.config.js', 'ds.config.mjs'];
@@ -167,10 +164,6 @@ export async function loadConfig(cwd: string): Promise<LoadConfigResult> {
         output: raw.targets?.css?.output ?? 'packages/design-system/styles',
         selector: raw.targets?.css?.selector ?? 'data-attribute',
       },
-    },
-    publish: {
-      access: raw.publish?.access ?? 'restricted',
-      ...(raw.publish?.registry !== undefined ? { registry: raw.publish.registry } : {}),
     },
   };
 

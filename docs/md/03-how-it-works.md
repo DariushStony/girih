@@ -99,7 +99,7 @@ is wrong.
 **packages/girih/src/cli.ts  [You write this]**
 
 ```ts
-// packages/girih/src/cli.ts — the one function generate, build and publish all route through
+// packages/girih/src/cli.ts — the one function generate, build and bake all route through
 async function composeReact(config, build, cssFiles) {
   const { irs, extensions } = await loadComponentIRs(config, build);
   const ejected = await loadEjectedSources(config, build, irs);
@@ -112,9 +112,9 @@ async function composeReact(config, build, cssFiles) {
 
 > **🔵 Rule — Why one function and not three**
 >
-> `generate`, `build` and `publish` must never disagree about what
-> the package contains. If `publish` computed the file set slightly differently from
-> `generate`, you could publish something nobody reviewed. Routing all three through
+> `generate`, `build` and `bake` must never disagree about what
+> the package contains. If `bake` computed the file set slightly differently from
+> `generate`, you could ship something nobody reviewed. Routing all three through
 > `composeReact()` makes that class of bug unrepresentable. When you extend the output,
 > extend this function — not the three call sites.
 
@@ -224,7 +224,8 @@ did girih? Here is the complete answer.
 | `.ds/manifest.json` | girih | **Yes** | The drift baseline; committing it is the point |
 | `ds.lock` | girih | **Yes** | Ejections + last published version and signature |
 | `packages/design-system/**` | girih | No | Pure artifact; gitignored in this repo |
-| `.ds/cache/`, `.ds/publish/` | girih | No | Scratch space |
+| `.ds/cache/` | girih | No | Scratch space |
+| `.ds/baked/` | girih | No | Staged, publish-ready package — yours to publish however you like |
 
 > **🟡 Watch out — The counter-intuitive one**
 >

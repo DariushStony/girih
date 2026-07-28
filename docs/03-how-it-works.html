@@ -1576,7 +1576,7 @@ select.sel, input.txt {
       <span class="path">packages/girih/src/cli.ts</span>
       <span class="badge authored">You write this</span>
     </figcaption>
-  <pre><code><span class="tk-c">// packages/girih/src/cli.ts — the one function generate, build and publish all route through</span>
+  <pre><code><span class="tk-c">// packages/girih/src/cli.ts — the one function generate, build and bake all route through</span>
 <span class="tk-k">async</span> <span class="tk-k">function</span> composeReact(config, build, cssFiles) {
   <span class="tk-k">const</span> { irs, extensions } = <span class="tk-k">await</span> loadComponentIRs(config, build);
   <span class="tk-k">const</span> ejected = <span class="tk-k">await</span> loadEjectedSources(config, build, irs);
@@ -1590,9 +1590,9 @@ select.sel, input.txt {
 <div class="callout rule">
   <div class="title">Why one function and not three</div>
   <p>
-    <code>generate</code>, <code>build</code> and <code>publish</code> must never disagree about what
-    the package contains. If <code>publish</code> computed the file set slightly differently from
-    <code>generate</code>, you could publish something nobody reviewed. Routing all three through
+    <code>generate</code>, <code>build</code> and <code>bake</code> must never disagree about what
+    the package contains. If <code>bake</code> computed the file set slightly differently from
+    <code>generate</code>, you could ship something nobody reviewed. Routing all three through
     <code>composeReact()</code> makes that class of bug unrepresentable. When you extend the output,
     extend this function — not the three call sites.
   </p>
@@ -1738,7 +1738,8 @@ select.sel, input.txt {
       <tr><td><code>.ds/manifest.json</code></td><td>girih</td><td><b>Yes</b></td><td>The drift baseline; committing it is the point</td></tr>
       <tr><td><code>ds.lock</code></td><td>girih</td><td><b>Yes</b></td><td>Ejections + last published version and signature</td></tr>
       <tr><td><code>packages/design-system/**</code></td><td>girih</td><td>No</td><td>Pure artifact; gitignored in this repo</td></tr>
-      <tr><td><code>.ds/cache/</code>, <code>.ds/publish/</code></td><td>girih</td><td>No</td><td>Scratch space</td></tr>
+      <tr><td><code>.ds/cache/</code></td><td>girih</td><td>No</td><td>Scratch space</td></tr>
+      <tr><td><code>.ds/baked/</code></td><td>girih</td><td>No</td><td>Staged, publish-ready package — yours to publish however you like</td></tr>
     </tbody>
   </table>
 </div>

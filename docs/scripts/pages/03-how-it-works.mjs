@@ -136,7 +136,7 @@ ${pkgMap([
 </p>
 
 ${code(
-  `// packages/girih/src/cli.ts — the one function generate, build and publish all route through
+  `// packages/girih/src/cli.ts — the one function generate, build and bake all route through
 async function composeReact(config, build, cssFiles) {
   const { irs, extensions } = await loadComponentIRs(config, build);
   const ejected = await loadEjectedSources(config, build, irs);
@@ -151,9 +151,9 @@ async function composeReact(config, build, cssFiles) {
 ${rule(
   'Why one function and not three',
   `<p>
-    <code>generate</code>, <code>build</code> and <code>publish</code> must never disagree about what
-    the package contains. If <code>publish</code> computed the file set slightly differently from
-    <code>generate</code>, you could publish something nobody reviewed. Routing all three through
+    <code>generate</code>, <code>build</code> and <code>bake</code> must never disagree about what
+    the package contains. If <code>bake</code> computed the file set slightly differently from
+    <code>generate</code>, you could ship something nobody reviewed. Routing all three through
     <code>composeReact()</code> makes that class of bug unrepresentable. When you extend the output,
     extend this function — not the three call sites.
   </p>`,
@@ -304,7 +304,8 @@ ${table(
     ['<code>.ds/manifest.json</code>', 'girih', '<b>Yes</b>', 'The drift baseline; committing it is the point'],
     ['<code>ds.lock</code>', 'girih', '<b>Yes</b>', 'Ejections + last published version and signature'],
     ['<code>packages/design-system/**</code>', 'girih', 'No', 'Pure artifact; gitignored in this repo'],
-    ['<code>.ds/cache/</code>, <code>.ds/publish/</code>', 'girih', 'No', 'Scratch space'],
+    ['<code>.ds/cache/</code>', 'girih', 'No', 'Scratch space'],
+    ['<code>.ds/baked/</code>', 'girih', 'No', 'Staged, publish-ready package — yours to publish however you like'],
   ],
 )}
 

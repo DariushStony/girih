@@ -1579,7 +1579,7 @@ select.sel, input.txt {
     <div class="q" data-qi="6">
       <div class="stem">
         <div class="qn">Question 7 of 10</div>
-        <p>You remove one value from a variant axis — <code>size: ['sm', 'md', 'lg']</code> becomes <code>['sm', 'md']</code> — and run <code>girih publish</code>. What version bump is proposed?</p>
+        <p>You remove one value from a variant axis — <code>size: ['sm', 'md', 'lg']</code> becomes <code>['sm', 'md']</code> — and run <code>girih bake</code>. What version bump is proposed?</p>
         
       </div>
       <ul class="opts">
@@ -1657,13 +1657,13 @@ select.sel, input.txt {
     <div class="q" data-qi="9">
       <div class="stem">
         <div class="qn">Question 10 of 10</div>
-        <p>Why do <code>generate</code>, <code>build</code> and <code>publish</code> all route through a single <code>composeReact()</code> function instead of each computing its own file list?</p>
+        <p>Why do <code>generate</code>, <code>build</code> and <code>bake</code> all route through a single <code>composeReact()</code> function instead of each computing its own file list?</p>
         
       </div>
       <ul class="opts">
         <li><button type="button" data-q="9" data-o="0">
           <span class="k">A</span>
-          <span>So they can never disagree about what the package contains — otherwise <code>publish</code> could ship a file set nobody reviewed.</span>
+          <span>So they can never disagree about what the package contains — otherwise <code>bake</code> could ship a file set nobody reviewed.</span>
         </button></li>
         <li><button type="button" data-q="9" data-o="1">
           <span class="k">B</span>
@@ -1712,7 +1712,7 @@ select.sel, input.txt {
 
 <p>
   If all ten landed, the fastest way to prove it is to add a token, add a variant to a contract, and
-  watch what <code>girih check</code> and <code>girih publish</code> say about your change. The
+  watch what <code>girih check</code> and <code>girih bake --check</code> say about your change. The
   feedback loop is the real documentation.
 </p>
 </div>

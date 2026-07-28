@@ -469,14 +469,19 @@ ${table(
 </ul>
 
 ${code(
-  `$ pnpm exec girih publish
+  `$ pnpm exec girih bake --check
 
 @acme/design-system  0.2.1 → 0.3.0  [minor]
   Button: variant 'tertiary' added
   Badge: token 'badge.primary.background' value changed
   …
 
-Dry run — nothing published, workspace unchanged. Re-run with --yes to publish 0.3.0.`,
+Run \`girih bake\` to stage 0.3.0 into .ds/baked and commit it as the new baseline.
+
+$ pnpm exec girih bake
+
+baked @acme/design-system@0.3.0 → .ds/baked
+Publish it however you like, e.g. \`npm publish .ds/baked\`.`,
   {
     kind: 'shell',
     lang: 'none',
@@ -484,16 +489,21 @@ Dry run — nothing published, workspace unchanged. Re-run with --yes to publish
 )}
 
 ${danger(
-  'Dry run by default, and one npm trap girih handles for you',
+  'girih bake commits a version the moment it finds one — --check is the safe preview',
   `<p>
-    <code>girih publish</code> stages the package, prints the diff, runs
-    <code>npm publish --dry-run</code>, and cleans up. Only <code>--yes</code> publishes.
+    <code>girih bake --check</code> only computes and prints the bump; it stages nothing and
+    writes nothing. Bare <code>girih bake</code> builds the package, stages a bumped
+    <code>package.json</code> + <code>dist/</code> + <code>styles/</code> into
+    <code>.ds/baked</code>, and commits that version into <code>ds.lock</code> as the new
+    baseline — all in one step, with no further confirmation, since there is no npm call left
+    to gate on.
   </p>
   <p>
-    The trap: a scoped package's <em>first</em> publish is restricted by default on npm and fails
-    without <code>--access public</code> — and <code>--dry-run</code> never surfaces that, so you
-    find out on the real attempt. girih checks for the scoped-and-never-published case explicitly and
-    stops with an explanation before you get there.
+    Publishing <code>.ds/baked</code> itself is entirely yours: <code>npm publish .ds/baked</code>,
+    <code>pnpm publish</code>, or pointing your own registry config at that folder all work — girih
+    never touches a registry. The one thing worth knowing if you publish scoped packages: a scoped
+    package's <em>first</em> publish is restricted by default on npm and needs
+    <code>--access public</code>, whichever tool you publish with.
   </p>`,
 )}
 

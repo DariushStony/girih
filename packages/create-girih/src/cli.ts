@@ -5,7 +5,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { basename, join, resolve } from 'node:path';
 import process from 'node:process';
-import { ask, confirm, isInteractive } from './prompt.js';
+import { ask, isInteractive } from './prompt.js';
 import { scaffoldWorkspace } from '@faravahar/girih/scaffold';
 import { scaffoldDevDependencies } from './versions.js';
 
@@ -31,7 +31,6 @@ const USAGE = `Usage: create-girih [directory] [--name @scope/design-system] [--
   --name        published package name (default: @<directory>/design-system)
   --brand       default brand, lowercase kebab-case (default: main)
   --workspace   link the girih packages by workspace protocol (monorepo development)
-  --public      publish the design system publicly (default: private to your org)
   --no-install  scaffold only; print the commands to finish yourself
   -v, --version print the create-girih version
   -h, --help    show this message
@@ -48,8 +47,6 @@ interface Args {
   brand: string;
   workspace: boolean;
   install: boolean;
-  /** undefined until chosen, so a prompt can tell "not asked" from "asked and declined". */
-  access?: 'public' | 'restricted';
 }
 
 function parseArgs(argv: string[]): Args | { error: string } {
@@ -81,12 +78,6 @@ function parseArgs(argv: string[]): Args | { error: string } {
         break;
       case '--no-install':
         args.install = false;
-        break;
-      case '--public':
-        args.access = 'public';
-        break;
-      case '--private':
-        args.access = 'restricted';
         break;
       default:
         // Any leading dash, not just '--': otherwise '-x' is taken as the directory name.
@@ -137,11 +128,6 @@ if (isInteractive()) {
     default: parsed.brand,
     validate: (value) => (BRAND_NAME.test(value) ? null : 'must be lowercase kebab-case (it becomes a [data-brand] selector)'),
   });
-  // Defaults to no. A public publish cannot be taken back, and npm's own default for a
-  // scoped package is restricted — so the safe answer is also the unsurprising one.
-  if (parsed.access === undefined) {
-    parsed.access = (await confirm('Publish this design system publicly?', false)) ? 'public' : 'restricted';
-  }
   console.log('');
 }
 
@@ -211,7 +197,6 @@ function detectPackageManager(): string {
 const { written } = await scaffoldWorkspace(dir, {
   name: resolvedPackageName,
   brand: parsed.brand,
-  access: parsed.access ?? 'restricted',
 });
 for (const path of written) console.log(`create  ${workspaceName}/${path}`);
 

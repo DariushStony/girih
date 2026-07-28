@@ -87,7 +87,7 @@ npx girih check    # resolves node_modules/.bin`,
   <p>
     The scaffolded <code>package.json</code> defines <code>check</code>, <code>generate</code>,
     <code>generate:check</code> and <code>build</code>. Everything else — <code>doctor</code>,
-    <code>brand create</code>, <code>eject</code>, <code>publish</code> — goes through
+    <code>brand create</code>, <code>eject</code>, <code>bake</code> — goes through
     <code>npx girih</code>.
   </p>`,
 )}
@@ -323,7 +323,8 @@ ${table(
     ['<code>girih eject &lt;Component&gt;</code>', 'Convert one generated component into a tracked fork', 'Yes'],
     ['<code>girih forks</code>', 'Report ejected forks that drifted from current templates', 'No'],
     ['<code>girih build</code>', 'Compile the generated package to publishable <code>dist/</code>', 'Yes'],
-    ['<code>girih publish</code>', 'Derive the semver bump from the contract diff and publish', 'Dry run by default'],
+    ['<code>girih bake</code>', 'Derive the semver bump from the contract diff and stage it in <code>.ds/baked</code>', 'Yes'],
+    ['<code>girih bake --check</code>', 'Preview the pending version bump without staging or committing it', '<b>No</b>'],
     ['<code>girih update</code>', 'Upgrade the <code>@faravahar/girih-*</code> packages in this workspace', 'Yes'],
     ['<code>girih --version</code>', 'Print the installed version', 'No'],
   ],
@@ -346,11 +347,15 @@ ${rule(
 )}
 
 ${gotcha(
-  'girih publish does not publish girih',
+  'girih bake does not publish anything',
   `<p>
-    It publishes <em>your</em> generated design system — it stages
-    <code>packages/design-system</code>, computes the version from the contract diff, and hands that
-    to npm. girih's own packages are released from its repository by its maintainers.
+    It versions <em>your</em> generated design system — it computes the next version from the
+    contract diff, builds it, and stages the result (a bumped <code>package.json</code> plus
+    <code>dist/</code>, <code>styles/</code> and <code>README.md</code>) into <code>.ds/baked</code>.
+    It never calls npm or any registry. Publishing that folder — <code>npm publish .ds/baked</code>,
+    <code>pnpm publish</code>, or pointing your own registry config at it — is entirely yours to do,
+    whenever and however you choose. girih's own packages are released from its repository by its
+    maintainers, the same way.
   </p>
   <p>
     <code>girih update</code> is the mirror of that: it upgrades the girih tooling installed in your
@@ -367,9 +372,10 @@ ${gotcha(
     hand edits into a tracked fork rather than discarding them.
   </p>
   <p>
-    <code>girih publish --yes</code> is the only irreversible command here. Without
-    <code>--yes</code> it stages the package, prints the version diff, runs
-    <code>npm publish --dry-run</code>, and cleans up. Read that output before adding the flag.
+    Bare <code>girih bake</code> is the one command here with a one-way effect: as soon as it finds
+    a pending contract change, it commits that version into <code>ds.lock</code> as the new
+    baseline — there's no further confirmation step, because there's no npm call left to gate on.
+    Use <code>girih bake --check</code> first to preview the bump with zero side effects.
   </p>`,
 )}
 

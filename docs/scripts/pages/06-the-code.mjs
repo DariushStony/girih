@@ -129,7 +129,7 @@ export async function verifyEmittedFiles(root: string, files: EmittedFile[]): Pr
 
 <p>
   Twelve lines carrying four features: drift detection, the <code>--check</code> CI gate, orphan
-  cleanup, and publish-time staleness refusal. Worth reading before you write anything that emits a
+  cleanup, and bake-time staleness refusal. Worth reading before you write anything that emits a
   file.
 </p>
 

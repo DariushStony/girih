@@ -12,7 +12,7 @@ girih's whole value proposition is that regeneration is safe. That holds only if
 
 1. **No generated file carries hand edits.** `.ds/manifest.json` records a sha256 per emitted file. A mismatch means a human edited an artifact, and the next `girih generate` would destroy their work — which is why it refuses to run (`GIRIH1010`).
 2. **No emitted file on disk is stale.** `verifyEmittedFiles` compares disk against what the generator would produce right now. Stale output means a committed artifact no longer matches its source of truth.
-3. **`generate`, `build`, and `publish` agree.** All three route through `composeReact()` in `packages/girih/src/cli.ts`. If they disagree, a publish can ship something no one reviewed.
+3. **`generate`, `build`, and `bake` agree.** All three route through `composeReact()` in `packages/girih/src/cli.ts`. If they disagree, a bake can ship something no one reviewed.
 
 ## Run order
 
@@ -40,7 +40,7 @@ Notes that matter:
 Get this right before reporting anything as "uncommitted output":
 
 - **Committed:** `examples/acme-ds/.ds/manifest.json`, `examples/acme-ds/.ds/ir/*.json`, `ds.lock`
-- **Gitignored:** `examples/*/packages/`, `examples/*/.ds/cache/`, `examples/*/.ds/publish/`, `examples/*/demo/generated/`, `examples/*/demo/react/bundle.js*`, all `dist/`, `.turbo/`, `graphify-out/`
+- **Gitignored:** `examples/*/packages/`, `examples/*/.ds/cache/`, `examples/*/.ds/baked/`, `examples/*/demo/generated/`, `examples/*/demo/react/bundle.js*`, all `dist/`, `.turbo/`, `graphify-out/`
 
 So a dirty `examples/acme-ds/packages/design-system/` is expected and harmless. A dirty `.ds/ir/` after a contract change is expected and **must be committed**. A dirty `.ds/manifest.json` you did not intend is a signal something regenerated.
 

@@ -82,7 +82,7 @@ export async function verifyEmittedFiles(root: string, files: EmittedFile[]): Pr
 ```
 
 Twelve lines carrying four features: drift detection, the `--check` CI gate, orphan
-cleanup, and publish-time staleness refusal. Worth reading before you write anything that emits a
+cleanup, and bake-time staleness refusal. Worth reading before you write anything that emits a
 file.
 
 ## @faravahar/girih-tokens — the pipeline

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
+import { registerBake } from './commands/bake.js';
 import { registerBrand } from './commands/brand.js';
 import { registerBuild } from './commands/build.js';
 import { registerCheck } from './commands/check.js';
@@ -9,7 +10,6 @@ import { registerEject } from './commands/eject.js';
 import { registerForks } from './commands/forks.js';
 import { registerGenerate } from './commands/generate.js';
 import { registerInit } from './commands/init.js';
-import { registerPublish } from './commands/publish.js';
 import { registerUpdate } from './commands/update.js';
 import { SELF_VERSION } from './self.js';
 
@@ -30,7 +30,7 @@ registerGenerate(program);
 registerEject(program);
 registerForks(program);
 registerBuild(program);
-registerPublish(program);
+registerBake(program);
 registerUpdate(program);
 
 await program.parseAsync(process.argv);

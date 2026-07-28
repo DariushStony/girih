@@ -1496,7 +1496,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1001</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:93</span>
+          <span class="src">packages/girih-core/src/config.ts:90</span>
         </div>
         <p class="msg">No ds.config.ts found in <i class="ph">${root}</i></p>
         <p class="help">Run `girih init` to scaffold a workspace, or cd into an existing one.</p>
@@ -1505,7 +1505,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1002</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:121</span>
+          <span class="src">packages/girih-core/src/config.ts:118</span>
         </div>
         <p class="msg">Failed to load <i class="ph">${configPath}</i>: <i class="ph">${message.split('\n')[0]}</i></p>
         <p class="help">The error comes from ds.config.ts itself. It is evaluated as real TypeScript, so a syntax error, an unresolved import, or a throw at module scope all land here.</p>
@@ -1514,7 +1514,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1003</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:206</span>
+          <span class="src">packages/girih-core/src/config.ts:199</span>
         </div>
         <p class="msg">Config is missing 'name' (the published package name, e.g. '@acme/design-system').</p>
         <p class="help">Add `name: '@scope/design-system'`. It is the name the generated package is published under, so it has to be one you own.</p>
@@ -1523,7 +1523,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1004</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:180</span>
+          <span class="src">packages/girih-core/src/config.ts:173</span>
         </div>
         <p class="msg">Brand '<i class="ph">${brand.name}</i>' points at a missing token file: <i class="ph">${brand.tokensFile}</i></p>
         <p class="help">Create the overlay file (an empty {} is valid) or fix brands.definitions.<i class="ph">${brand.name}</i>.tokens.</p>
@@ -1532,7 +1532,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1005</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:216</span>
+          <span class="src">packages/girih-core/src/config.ts:209</span>
         </div>
         <p class="msg">Config must define at least one brand under brands.definitions.</p>
         <p class="help">Add one: `brands: { default: 'base', definitions: { base: { tokens: 'brands/base/tokens.json' } } }`. An empty {} overlay is valid, so the default brand can override nothing.</p>
@@ -1541,7 +1541,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1006</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:224</span>
+          <span class="src">packages/girih-core/src/config.ts:217</span>
         </div>
         <p class="msg">brands.default ('<i class="ph">${raw.brands?.default}</i>') is not a key of brands.definitions.</p>
         <p class="help">Known brands: <i class="ph">${Object.keys(definitions).join(', ')}</i></p>
@@ -1550,7 +1550,7 @@ select.sel, input.txt {
         <div class="top">
           <span class="cid">GIRIH1007</span>
           <span class="sev">error</span>
-          <span class="src">packages/girih-core/src/config.ts:196</span>
+          <span class="src">packages/girih-core/src/config.ts:189</span>
         </div>
         <p class="msg">ds.config.ts must default-export a config object (use defineConfig).</p>
         <p class="help">Write `export default defineConfig({ … })`. A named export is not read, and neither is a default that is not an object.</p>
@@ -2185,7 +2185,7 @@ select.sel, input.txt {
 </section>
 
 <section data-family="6">
-  <h3 id="family-6"><code>GIRIH6xxx</code> — Build and publish</h3>
+  <h3 id="family-6"><code>GIRIH6xxx</code> — Build and bake</h3>
   <p style="font-family:var(--util);font-size:var(--t-sm);color:var(--text-muted)">
     Owned by <code>cli</code> · 2 codes
   </p>

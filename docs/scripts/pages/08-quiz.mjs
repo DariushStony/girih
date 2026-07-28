@@ -143,7 +143,7 @@ const QUESTIONS = [
     answer: 0,
   },
   {
-    stem: `You remove one value from a variant axis — <code>size: ['sm', 'md', 'lg']</code> becomes <code>['sm', 'md']</code> — and run <code>girih publish</code>. What version bump is proposed?`,
+    stem: `You remove one value from a variant axis — <code>size: ['sm', 'md', 'lg']</code> becomes <code>['sm', 'md']</code> — and run <code>girih bake</code>. What version bump is proposed?`,
     options: [
       {
         text: 'Major. Anything removed is breaking, because some consumer\'s <code>size="lg"</code> call site is now invalid.',
@@ -209,10 +209,10 @@ const QUESTIONS = [
     answer: 0,
   },
   {
-    stem: `Why do <code>generate</code>, <code>build</code> and <code>publish</code> all route through a single <code>composeReact()</code> function instead of each computing its own file list?`,
+    stem: `Why do <code>generate</code>, <code>build</code> and <code>bake</code> all route through a single <code>composeReact()</code> function instead of each computing its own file list?`,
     options: [
       {
-        text: 'So they can never disagree about what the package contains — otherwise <code>publish</code> could ship a file set nobody reviewed.',
+        text: 'So they can never disagree about what the package contains — otherwise <code>bake</code> could ship a file set nobody reviewed.',
         why: 'Correct. It makes a whole class of bug unrepresentable rather than merely unlikely, which is why you extend that function rather than the three call sites.',
       },
       {
@@ -327,7 +327,7 @@ ${cards([
 
 <p>
   If all ten landed, the fastest way to prove it is to add a token, add a variant to a contract, and
-  watch what <code>girih check</code> and <code>girih publish</code> say about your change. The
+  watch what <code>girih check</code> and <code>girih bake --check</code> say about your change. The
   feedback loop is the real documentation.
 </p>
 </div>`;
@@ -356,7 +356,7 @@ ${questionsAsMarkdown()}
 - [**Error codes**](07-error-codes.md) — the reference you will actually keep open while working.
 
 If all ten landed, the fastest way to prove it is to add a token, add a variant to a contract, and
-watch what \`girih check\` and \`girih publish\` say about your change. The feedback loop is the real
+watch what \`girih check\` and \`girih bake --check\` say about your change. The feedback loop is the real
 documentation.`;
 
   return { sections, body, widgets: [widget], mdBody };

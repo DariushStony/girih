@@ -90,7 +90,7 @@ hit on day one and then rarely again — with one exception,
 
 GIRIH1001
 error
-packages/girih-core/src/config.ts:93
+packages/girih-core/src/config.ts:90
 
 No ds.config.ts found in ${root}
 
@@ -98,7 +98,7 @@ Run `girih init` to scaffold a workspace, or cd into an existing one.
 
 GIRIH1002
 error
-packages/girih-core/src/config.ts:121
+packages/girih-core/src/config.ts:118
 
 Failed to load ${configPath}: ${message.split('\n')[0]}
 
@@ -106,7 +106,7 @@ The error comes from ds.config.ts itself. It is evaluated as real TypeScript, so
 
 GIRIH1003
 error
-packages/girih-core/src/config.ts:206
+packages/girih-core/src/config.ts:199
 
 Config is missing 'name' (the published package name, e.g. '@acme/design-system').
 
@@ -114,7 +114,7 @@ Add `name: '@scope/design-system'`. It is the name the generated package is publ
 
 GIRIH1004
 error
-packages/girih-core/src/config.ts:180
+packages/girih-core/src/config.ts:173
 
 Brand '${brand.name}' points at a missing token file: ${brand.tokensFile}
 
@@ -122,7 +122,7 @@ Create the overlay file (an empty {} is valid) or fix brands.definitions.${brand
 
 GIRIH1005
 error
-packages/girih-core/src/config.ts:216
+packages/girih-core/src/config.ts:209
 
 Config must define at least one brand under brands.definitions.
 
@@ -130,7 +130,7 @@ Add one: `brands: { default: 'base', definitions: { base: { tokens: 'brands/base
 
 GIRIH1006
 error
-packages/girih-core/src/config.ts:224
+packages/girih-core/src/config.ts:217
 
 brands.default ('${raw.brands?.default}') is not a key of brands.definitions.
 
@@ -138,7 +138,7 @@ Known brands: ${Object.keys(definitions).join(', ')}
 
 GIRIH1007
 error
-packages/girih-core/src/config.ts:196
+packages/girih-core/src/config.ts:189
 
 ds.config.ts must default-export a config object (use defineConfig).
 
@@ -687,7 +687,7 @@ packages/girih-generator-react/src/generate.ts:101
 
 Move the aria mapping to a component whose template wires attributes, or drop it — leaving it in place would imply accessibility support that is not emitted.
 
-### `GIRIH6xxx` — Build and publish
+### `GIRIH6xxx` — Build and bake
 
 Owned by `cli` · 2 codes
 

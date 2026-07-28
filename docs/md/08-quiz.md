@@ -192,7 +192,7 @@ D. It succeeds but marks the file stale in the manifest for later review.
 
 ### Question 7
 
-You remove one value from a variant axis — `size: ['sm', 'md', 'lg']` becomes `['sm', 'md']` — and run `girih publish`. What version bump is proposed?
+You remove one value from a variant axis — `size: ['sm', 'md', 'lg']` becomes `['sm', 'md']` — and run `girih bake`. What version bump is proposed?
 
 A. Major. Anything removed is breaking, because some consumer's `size="lg"` call site is now invalid.
 B. Minor, since the component still exists and most usages still compile.
@@ -270,9 +270,9 @@ D. Warns, and keeps whichever came last in file order.
 
 ### Question 10
 
-Why do `generate`, `build` and `publish` all route through a single `composeReact()` function instead of each computing its own file list?
+Why do `generate`, `build` and `bake` all route through a single `composeReact()` function instead of each computing its own file list?
 
-A. So they can never disagree about what the package contains — otherwise `publish` could ship a file set nobody reviewed.
+A. So they can never disagree about what the package contains — otherwise `bake` could ship a file set nobody reviewed.
 B. To avoid running the token pipeline three times, for performance.
 C. Because the emitted file list is needed to compute the publish signature.
 D. To keep the CLI file under a line-count limit.
@@ -302,7 +302,7 @@ D. To keep the CLI file under a line-count limit.
 - [**Error codes**](07-error-codes.md) — the reference you will actually keep open while working.
 
 If all ten landed, the fastest way to prove it is to add a token, add a variant to a contract, and
-watch what `girih check` and `girih publish` say about your change. The feedback loop is the real
+watch what `girih check` and `girih bake --check` say about your change. The feedback loop is the real
 documentation.
 
 ---

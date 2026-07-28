@@ -71,7 +71,7 @@ open demo/index.html   # every variant, size and brand
 >
 > The scaffolded `package.json` defines `check`, `generate`,
 > `generate:check` and `build`. Everything else — `doctor`,
-> `brand create`, `eject`, `publish` — goes through
+> `brand create`, `eject`, `bake` — goes through
 > `npx girih`.
 
 If you would rather install the CLI once and reuse it, `girih create` does the same job
@@ -274,7 +274,8 @@ generated `package.json` marks CSS as having side effects
 | `girih eject ` | Convert one generated component into a tracked fork | Yes |
 | `girih forks` | Report ejected forks that drifted from current templates | No |
 | `girih build` | Compile the generated package to publishable `dist/` | Yes |
-| `girih publish` | Derive the semver bump from the contract diff and publish | Dry run by default |
+| `girih bake` | Derive the semver bump from the contract diff and stage it in `.ds/baked` | Yes |
+| `girih bake --check` | Preview the pending version bump without staging or committing it | **No** |
 | `girih update` | Upgrade the `@faravahar/girih-*` packages in this workspace | Yes |
 | `girih --version` | Print the installed version | No |
 
@@ -290,11 +291,15 @@ generated `package.json` marks CSS as having side effects
 > fails before girih has said anything useful, and `check` when girih is running but
 > disagrees with you.
 
-> **🟡 Watch out — girih publish does not publish girih**
+> **🟡 Watch out — girih bake does not publish anything**
 >
-> It publishes _your_ generated design system — it stages
-> `packages/design-system`, computes the version from the contract diff, and hands that
-> to npm. girih's own packages are released from its repository by its maintainers.
+> It versions _your_ generated design system — it computes the next version from the
+> contract diff, builds it, and stages the result (a bumped `package.json` plus
+> `dist/`, `styles/` and `README.md`) into `.ds/baked`.
+> It never calls npm or any registry. Publishing that folder — `npm publish .ds/baked`,
+> `pnpm publish`, or pointing your own registry config at it — is entirely yours to do,
+> whenever and however you choose. girih's own packages are released from its repository by its
+> maintainers, the same way.
 >
 > `girih update` is the mirror of that: it upgrades the girih tooling installed in your
 > workspace. It has nothing to do with `girih forks`, which reports ejected components
@@ -306,9 +311,10 @@ generated `package.json` marks CSS as having side effects
 > the drift gate exists to protect, so reach for `girih eject` first — it carries the
 > hand edits into a tracked fork rather than discarding them.
 >
-> `girih publish --yes` is the only irreversible command here. Without
-> `--yes` it stages the package, prints the version diff, runs
-> `npm publish --dry-run`, and cleans up. Read that output before adding the flag.
+> Bare `girih bake` is the one command here with a one-way effect: as soon as it finds
+> a pending contract change, it commits that version into `ds.lock` as the new
+> baseline — there's no further confirmation step, because there's no npm call left to gate on.
+> Use `girih bake --check` first to preview the bump with zero side effects.
 
 ## When it does not work
 

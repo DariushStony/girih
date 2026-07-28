@@ -132,10 +132,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 93,
+      "line": 90,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:93"
+        "packages/girih-core/src/config.ts:90"
       ]
     },
     {
@@ -147,10 +147,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 121,
+      "line": 118,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:121"
+        "packages/girih-core/src/config.ts:118"
       ]
     },
     {
@@ -162,10 +162,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 206,
+      "line": 199,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:206"
+        "packages/girih-core/src/config.ts:199"
       ]
     },
     {
@@ -177,10 +177,10 @@
       "helpDynamic": true,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 180,
+      "line": 173,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:180"
+        "packages/girih-core/src/config.ts:173"
       ]
     },
     {
@@ -192,10 +192,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 216,
+      "line": 209,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:216"
+        "packages/girih-core/src/config.ts:209"
       ]
     },
     {
@@ -207,10 +207,10 @@
       "helpDynamic": true,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 224,
+      "line": 217,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:224"
+        "packages/girih-core/src/config.ts:217"
       ]
     },
     {
@@ -222,10 +222,10 @@
       "helpDynamic": false,
       "package": "girih-core",
       "file": "packages/girih-core/src/config.ts",
-      "line": 196,
+      "line": 189,
       "sites": 1,
       "allSites": [
-        "packages/girih-core/src/config.ts:196"
+        "packages/girih-core/src/config.ts:189"
       ]
     },
     {

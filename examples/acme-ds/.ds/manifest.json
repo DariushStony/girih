@@ -1,7 +1,7 @@
 {
   "version": 1,
   "files": {
-    "packages/design-system/README.md": "06c5a349630eae6c99a1b984e329b55ef5e044c7189d94cecaf56136980cf9fa",
+    "packages/design-system/README.md": "158b79fb08e8bbec2a89a6e1ee680d92807828c45bf03153a95c76e118427ae7",
     "packages/design-system/package.json": "03caa3314e34650b748072c1c61fc5a8d6ef2d18c41273f4a98f1536fa7f563c",
     "packages/design-system/src/badge.tsx": "df53cc32455a6c1ab6ceb7bfc673e49f1a908b2992bbfec30d1db89717656605",
     "packages/design-system/src/button.tsx": "bbee0922a25f33cf916d0b0100d2b4994fb90c8947623d5cf0725bf179a91135",

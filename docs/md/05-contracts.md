@@ -470,25 +470,35 @@ consequences worth internalising:
 **[Terminal]**
 
 ```
-$ pnpm exec girih publish
+$ pnpm exec girih bake --check
 
 @acme/design-system  0.2.1 → 0.3.0  [minor]
   Button: variant 'tertiary' added
   Badge: token 'badge.primary.background' value changed
   …
 
-Dry run — nothing published, workspace unchanged. Re-run with --yes to publish 0.3.0.
+Run `girih bake` to stage 0.3.0 into .ds/baked and commit it as the new baseline.
+
+$ pnpm exec girih bake
+
+baked @acme/design-system@0.3.0 → .ds/baked
+Publish it however you like, e.g. `npm publish .ds/baked`.
 ```
 
-> **🔴 Important — Dry run by default, and one npm trap girih handles for you**
+> **🔴 Important — girih bake commits a version the moment it finds one — --check is the safe preview**
 >
-> `girih publish` stages the package, prints the diff, runs
-> `npm publish --dry-run`, and cleans up. Only `--yes` publishes.
+> `girih bake --check` only computes and prints the bump; it stages nothing and
+> writes nothing. Bare `girih bake` builds the package, stages a bumped
+> `package.json` + `dist/` + `styles/` into
+> `.ds/baked`, and commits that version into `ds.lock` as the new
+> baseline — all in one step, with no further confirmation, since there is no npm call left
+> to gate on.
 >
-> The trap: a scoped package's _first_ publish is restricted by default on npm and fails
-> without `--access public` — and `--dry-run` never surfaces that, so you
-> find out on the real attempt. girih checks for the scoped-and-never-published case explicitly and
-> stops with an explanation before you get there.
+> Publishing `.ds/baked` itself is entirely yours: `npm publish .ds/baked`,
+> `pnpm publish`, or pointing your own registry config at that folder all work — girih
+> never touches a registry. The one thing worth knowing if you publish scoped packages: a scoped
+> package's _first_ publish is restricted by default on npm and needs
+> `--access public`, whichever tool you publish with.
 
 That is the model, end to end. [Chapter 06](06-the-code.md) maps it onto the actual
 packages, so you know where to look when something misbehaves.

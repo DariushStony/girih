@@ -4,7 +4,7 @@
  * release needs. Writes files; commits nothing.
  *
  * girih's own rule is that a version comes from evidence rather than judgement — it is
- * the seventh invariant, applied to a consumer's design system by `girih publish`. This
+ * the seventh invariant, applied to a consumer's design system by `girih bake`. This
  * is the same idea turned on girih itself: the bump is derived from the commits, not
  * typed by hand.
  *

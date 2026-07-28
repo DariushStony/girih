@@ -27,14 +27,16 @@ girih init                 # add girih to a project that already has a package.j
 | `girih eject <component>`     | Convert one generated component into a tracked fork                                              |
 | `girih forks`                 | Report ejected forks that drifted from the current templates                                     |
 | `girih build`                 | Compile the generated package to publishable `dist/`                                             |
-| `girih publish`               | Version **your** design system from its contract diff and publish it                             |
+| `girih bake`                  | Version **your** design system from its contract diff and stage it in `.ds/baked` to publish     |
 | `girih update`                | Upgrade the `@faravahar/girih-*` packages in this workspace                                      |
 
 `girih check` validates what your workspace _contains_; `girih doctor` validates the
 environment it runs _in_. Between them they answer "it worked on my machine".
 
-`girih publish` publishes the design system _you_ generated — not girih itself. It is a
-dry run unless you pass `--yes`.
+`girih bake` versions the design system _you_ generated — not girih itself — and stages it
+into `.ds/baked`. It never calls npm or any registry; publishing that folder with whatever
+tool and registry you use is entirely up to you. Use `girih bake --check` to preview the
+version bump with no side effects.
 
 ## What it guarantees
 
