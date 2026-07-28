@@ -47,6 +47,10 @@ jobs:
       # CSS is gitignored and the token extractor reads it), extract, then build pages.
       - run: pnpm docs:generate
 
+      # Structural checks on the built pages — dead links, anchors pointing at nothing,
+      # unbalanced tags. Ran nowhere until now, so a broken cross-page anchor could ship.
+      - run: pnpm docs:verify
+
       - name: fail if the committed docs differ from a fresh build
         run: |
           if ! git diff --quiet -- docs/; then

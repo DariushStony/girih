@@ -256,8 +256,8 @@ export function pipelineStepper({ id = 'stepper' } = {}) {
       title: 'Read',
       owner: 'buildTokenGraphs',
       detail: 'glob + sort + JSON.parse, tier inferred from the filename',
-      note: 'Files are globbed then sorted so the build is deterministic. <code>inferTier()</code> reads the tier off the path: anything under <code>tokens/components/</code> is component tier, <code>global*.tokens.json</code> is global, <code>semantic*</code> is semantic. A file it cannot classify gets a <code>GIRIH2004</code> warning and is treated as semantic.',
-      data: `tokens/global.tokens.json  →  tier: global
+      note: 'Files are globbed then sorted so the build is deterministic. <code>inferTier()</code> reads the tier off the path: any <code>/components/</code> segment means component tier — which is what lets <code>design/components/button/button.tokens.json</code> sit beside its contract — <code>global*.tokens.json</code> is global, <code>semantic*</code> is semantic. A file it cannot classify gets a <code>GIRIH2004</code> warning and is treated as semantic.',
+      data: `design/tokens/global.tokens.json  →  tier: global
 {
   "radius": {
     "$type": "dimension",
@@ -280,7 +280,7 @@ button.radius    tier=component  value="{radius.control}"`,
       owner: 'applyBrandOverlay',
       detail: 'brand overrides applied — existing paths only',
       note: 'The brand overlay may only replace values at paths that already exist. Introducing a new path here is an error, not a merge — that is the <b>override-only rule</b>, and it is what keeps every brand structurally identical. The overlay also records which paths it touched; that list drives the scoped CSS block later.',
-      data: `brands/seller/tokens.json  →  overlay
+      data: `design/brands/seller.json  →  overlay
 radius.md   "8px"  ⟶  "2px"        ← overridden
 
 overriddenPaths = ["color.primary", "color.primary-hover", "radius.md"]`,

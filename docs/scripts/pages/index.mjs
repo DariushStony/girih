@@ -7,6 +7,7 @@ export default function page(data) {
     { id: 'what', title: 'What girih is' },
     { id: 'shape', title: 'The shape of a workspace' },
     { id: 'oneparagraph', title: 'How it works, in one paragraph' },
+    { id: 'try', title: 'Try it in four commands' },
     { id: 'who', title: 'Is this for you?' },
     { id: 'promises', title: 'The four promises' },
     { id: 'map', title: 'Where to go next' },
@@ -20,6 +21,40 @@ export default function page(data) {
   versioned npm package that your applications install. When the description changes, you
   recompile. You never hand-edit the result.
 </p>
+
+<h2 id="try">Try it in four commands</h2>
+
+<p>
+  The fastest way to understand girih is to watch it compile something. This scaffolds a complete
+  workspace and installs it with whichever package manager you used, so the scripts work
+  immediately:
+</p>
+
+${code(
+  `npx create-girih my-ds     # or: pnpm create girih my-ds
+cd my-ds
+
+npm run generate           # compile the design system package
+open demo/index.html       # every variant, size and brand`,
+  { kind: 'shell', lang: 'none' },
+)}
+
+<p>
+  Flip the brand toggle in that demo. The <strong>corner radius</strong> changes along with the
+  colour, because <code>radius.md</code> is a <em>global</em> token two alias hops from a button's
+  corner — and it re-resolves in the browser with no rebuild. Everything else in these chapters
+  explains how that is possible and why it is worth the machinery.
+</p>
+
+${gotcha(
+  'Use `npm run`, not a bare `girih`',
+  `<p>
+    girih installs as a dev dependency, so it lives in <code>node_modules/.bin</code> and is not on
+    your <code>PATH</code>. <code>npm run check</code> and <code>npx girih check</code> both work;
+    a bare <code>girih check</code> reports "command not found". Needs Node 22.22.1 or newer —
+    <code>npx girih doctor</code> checks that and the rest of your environment in one pass.
+  </p>`,
+)}
 
 <h2 id="what">What girih is</h2>
 
@@ -55,18 +90,21 @@ ${eli5(`
 
 ${code(
   `my-design-system/
-├── ds.config.ts             ← which brands exist, what the package is called
-├── tokens/                  ← the design language: colour, space, type, radius
-│   ├── global.tokens.json         raw values         (${t.tiers.global} tokens in the example)
-│   ├── semantic.tokens.json       named meanings     (${t.tiers.semantic} tokens)
-│   └── components/*.json          per-component      (${t.tiers.component} tokens)
-├── brands/                  ← one folder per brand, values only
-│   ├── marketplace/tokens.json
-│   └── seller/tokens.json
-├── components/              ← one contract per component
-│   └── button.contract.ts
+├── ds.config.ts                  ← which brands exist, what the package is called
+├── design/                       ← EVERYTHING YOU WRITE
+│   ├── tokens/
+│   │   ├── global.tokens.json          raw values      (${t.tiers.global} tokens in the example)
+│   │   └── semantic.tokens.json        named meanings  (${t.tiers.semantic} tokens)
+│   ├── brands/
+│   │   ├── marketplace.json            values only
+│   │   └── seller.json
+│   └── components/
+│       └── button/                     one folder per component
+│           ├── button.contract.ts        what a Button is
+│           ├── button.tokens.json        what it uses   (${t.tiers.component} component tokens total)
+│           └── payment-button.ext.ts     a variant of it
 │
-└── packages/design-system/   ← GENERATED. Do not touch.
+└── packages/design-system/       ← GENERATED. Do not touch.
     ├── src/*.tsx                  typed React components
     ├── styles/tokens.css          every brand's values as CSS custom properties
     ├── styles/components.css      structure only — every value is a var()
@@ -199,8 +237,58 @@ ${table(
 <h2 id="map">Where to go next</h2>
 
 <p>
-  These pages are written to be read in order, but each one stands alone. If you are in a hurry,
-  read 02 then 04; that is the shortest path to being useful.
+  These pages are written to be read in order, but each one stands alone. Find your goal below;
+  the full list follows.
+</p>
+
+${table(
+  ['You want to…', 'Read', 'Why that one'],
+  [
+    [
+      'Get something running',
+      '<a href="02-installation.html">02 · Installation</a>',
+      'Empty folder to a rebrandable button, plus every failure mode with its fix',
+    ],
+    [
+      'Change a colour, spacing or font',
+      '<a href="04-tokens.html">04 · Tokens and brands</a>',
+      'The three tiers and which one your change belongs in',
+    ],
+    [
+      'Add or change a component',
+      '<a href="05-contracts.html">05 · Contracts</a>',
+      '<code>defineSpec</code>, variants, states, and what the generator does with them',
+    ],
+    [
+      'Add a second brand',
+      '<a href="04-tokens.html#brands">04 · Tokens and brands</a>',
+      'The override-only rule — the one that stops a brand becoming a fork',
+    ],
+    [
+      'Understand a <code>GIRIH</code> error',
+      '<a href="07-error-codes.html">07 · Error codes</a>',
+      'All 72, extracted from source, each with what it is actually telling you',
+    ],
+    [
+      'Publish it',
+      '<a href="05-contracts.html#semver">05 · Contracts</a>',
+      'How the version number is computed from a contract diff rather than chosen',
+    ],
+    [
+      'Fix or extend girih itself',
+      '<a href="06-the-code.html">06 · The code</a>',
+      'Which package owns what, and the dependency direction you must not break',
+    ],
+    [
+      'Know whether this is for you',
+      '<a href="01-the-idea.html">01 · The idea</a>',
+      'The problem it solves, and the cases where it is the wrong tool',
+    ],
+  ],
+)}
+
+<p>
+  In a hurry? <strong>02 then 04</strong> is the shortest path to being useful.
 </p>
 
 ${cards([

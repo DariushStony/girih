@@ -17,6 +17,34 @@ type, and the components that use them — and girih turns that description into
 versioned npm package that your applications install. When the description changes, you
 recompile. You never hand-edit the result.
 
+## Try it in four commands
+
+The fastest way to understand girih is to watch it compile something. This scaffolds a complete
+workspace and installs it with whichever package manager you used, so the scripts work
+immediately:
+
+**[Terminal]**
+
+```
+npx create-girih my-ds     # or: pnpm create girih my-ds
+cd my-ds
+
+npm run generate           # compile the design system package
+open demo/index.html       # every variant, size and brand
+```
+
+Flip the brand toggle in that demo. The **corner radius** changes along with the
+colour, because `radius.md` is a _global_ token two alias hops from a button's
+corner — and it re-resolves in the browser with no rebuild. Everything else in these chapters
+explains how that is possible and why it is worth the machinery.
+
+> **🟡 Watch out — Use `npm run`, not a bare `girih`**
+>
+> girih installs as a dev dependency, so it lives in `node_modules/.bin` and is not on
+> your `PATH`. `npm run check` and `npx girih check` both work;
+> a bare `girih check` reports "command not found". Needs Node 22.22.1 or newer —
+> `npx girih doctor` checks that and the rest of your environment in one pass.
+
 ## What girih is
 
 The word most people reach for is "component library". That is not what this is. A component
@@ -45,18 +73,21 @@ and committed to git. Everything on the right is produced by a command and is ne
 
 ```
 my-design-system/
-├── ds.config.ts             ← which brands exist, what the package is called
-├── tokens/                  ← the design language: colour, space, type, radius
-│   ├── global.tokens.json         raw values         (31 tokens in the example)
-│   ├── semantic.tokens.json       named meanings     (25 tokens)
-│   └── components/*.json          per-component      (54 tokens)
-├── brands/                  ← one folder per brand, values only
-│   ├── marketplace/tokens.json
-│   └── seller/tokens.json
-├── components/              ← one contract per component
-│   └── button.contract.ts
+├── ds.config.ts                  ← which brands exist, what the package is called
+├── design/                       ← EVERYTHING YOU WRITE
+│   ├── tokens/
+│   │   ├── global.tokens.json          raw values      (31 tokens in the example)
+│   │   └── semantic.tokens.json        named meanings  (25 tokens)
+│   ├── brands/
+│   │   ├── marketplace.json            values only
+│   │   └── seller.json
+│   └── components/
+│       └── button/                     one folder per component
+│           ├── button.contract.ts        what a Button is
+│           ├── button.tokens.json        what it uses   (54 component tokens total)
+│           └── payment-button.ext.ts     a variant of it
 │
-└── packages/design-system/   ← GENERATED. Do not touch.
+└── packages/design-system/       ← GENERATED. Do not touch.
     ├── src/*.tsx                  typed React components
     ├── styles/tokens.css          every brand's values as CSS custom properties
     ├── styles/components.css      structure only — every value is a var()
@@ -128,8 +159,21 @@ re-reading after chapter 04, when you will understand why each one is hard.
 
 ## Where to go next
 
-These pages are written to be read in order, but each one stands alone. If you are in a hurry,
-read 02 then 04; that is the shortest path to being useful.
+These pages are written to be read in order, but each one stands alone. Find your goal below;
+the full list follows.
+
+| You want to… | Read | Why that one |
+| --- | --- | --- |
+| Get something running | [02 · Installation](02-installation.md) | Empty folder to a rebrandable button, plus every failure mode with its fix |
+| Change a colour, spacing or font | [04 · Tokens and brands](04-tokens.md) | The three tiers and which one your change belongs in |
+| Add or change a component | [05 · Contracts](05-contracts.md) | `defineSpec`, variants, states, and what the generator does with them |
+| Add a second brand | [04 · Tokens and brands](04-tokens.md#brands) | The override-only rule — the one that stops a brand becoming a fork |
+| Understand a `GIRIH` error | [07 · Error codes](07-error-codes.md) | All 72, extracted from source, each with what it is actually telling you |
+| Publish it | [05 · Contracts](05-contracts.md#semver) | How the version number is computed from a contract diff rather than chosen |
+| Fix or extend girih itself | [06 · The code](06-the-code.md) | Which package owns what, and the dependency direction you must not break |
+| Know whether this is for you | [01 · The idea](01-the-idea.md) | The problem it solves, and the cases where it is the wrong tool |
+
+In a hurry? **02 then 04** is the shortest path to being useful.
 
 - [**The idea**](01-the-idea.md) — Why design systems drift, and what a 12th-century tiling pattern has to do with it.
 - [**Installation**](02-installation.md) — From empty folder to a rebrandable button in about five minutes.

@@ -17,6 +17,8 @@ const docsDir = join(repoRoot, 'docs');
 const mdDir = join(docsDir, 'md');
 
 const problems = [];
+/** page → its element ids, filled during the HTML pass and used for cross-page anchors. */
+const idsByPage = new Map();
 const notes = [];
 let checks = 0;
 
@@ -89,6 +91,7 @@ for (const file of htmlFiles) {
 
   // Every in-page anchor must have a target.
   const ids = new Set(allIds);
+  idsByPage.set(file, ids);
   for (const m of html.matchAll(/href="#([^"]+)"/g)) {
     checks++;
     if (!ids.has(m[1])) fail(file, `anchor #${m[1]} has no matching id`);
@@ -118,6 +121,21 @@ for (const file of htmlFiles) {
 }
 
 /* -------------------------------------------------------------- Markdown checks */
+
+// Cross-page anchors. The in-page check above only sees `href="#id"`; a link to
+// `04-tokens.html#overlay` was silently broken because nothing compared it against that
+// page's ids. Only checked for pages this build produced — external links are not ours.
+for (const [file, ids] of idsByPage) {
+  void ids;
+  const html = readFileSync(join(docsDir, file), 'utf8');
+  for (const m of html.matchAll(/href="([0-9a-z-]+\.html)#([^"]+)"/g)) {
+    checks++;
+    const [, target, anchor] = m;
+    const targetIds = idsByPage.get(target);
+    if (!targetIds) continue; // not a page we generated
+    if (!targetIds.has(anchor)) fail(file, `anchor ${target}#${anchor} has no matching id in ${target}`);
+  }
+}
 
 for (const file of mdFiles) {
   const md = readFileSync(join(mdDir, file), 'utf8');

@@ -5,7 +5,7 @@ import { dirname, join } from 'node:path';
 import { CONFIG_FILENAMES, addDevCommand, addGlobalCommand, detectPackageManager, loadConfig } from '@faravahar/girih-core';
 import { missingBuildDependencies } from './build.js';
 import { fetchLatestVersions, updateChecksDisabled } from './registry.js';
-import { installedVersion, resolvesFrom } from './resolve.js';
+import { installedVersion, resolvePackageDir, resolvesFrom } from './resolve.js';
 import { isBelow, parseVersion } from './version.js';
 
 export type CheckStatus = 'ok' | 'warn' | 'fail';
@@ -156,8 +156,15 @@ function checkVersionSkew(cwd: string): Check[] {
   );
   if (pinned.length === 0) return [];
 
+  // These are dependencies of @faravahar/girih itself, not of the workspace — under a
+  // strict (non-hoisted) node_modules (pnpm's default) they resolve only from inside
+  // girih's own install location, never from an upward walk starting at the workspace
+  // root. checkCliResolution already reports it when girih itself isn't resolvable.
+  const girihDir = resolvePackageDir(cwd, self.name);
+  if (!girihDir) return [];
+
   const skewed = pinned.flatMap(([name, expected]) => {
-    const actual = installedVersion(cwd, name);
+    const actual = installedVersion(girihDir, name);
     if (actual === null) return [`${name} not installed (expected ${expected})`];
     return actual === expected ? [] : [`${name} ${actual}, expected ${expected}`];
   });

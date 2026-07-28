@@ -24,7 +24,7 @@
     "docs:build": "node docs/scripts/build-docs.mjs",
     "docs:check": "pnpm docs:generate && node scripts/check-docs-current.mjs",
     "docs:verify": "node docs/scripts/verify-docs.mjs",
-    "verify": "pnpm build && pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm example:check && pnpm example:drift && pnpm docs:check",
+    "verify": "pnpm build && pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm example:check && pnpm example:drift && pnpm docs:check && pnpm docs:verify",
     "pack:verify": "node scripts/verify-tarballs.mjs",
     "release:plan": "node scripts/release-prepare.mjs --dry-run",
     "release:prepare": "node scripts/release-prepare.mjs",
