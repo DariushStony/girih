@@ -1,6 +1,6 @@
 {
   "name": "@faravahar/girih-tokens",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "girih token engine: DTCG parsing, brand overlays, alias resolution, tier validation",
   "keywords": [
     "girih",

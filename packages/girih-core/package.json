@@ -1,6 +1,6 @@
 {
   "name": "@faravahar/girih-core",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "girih shared kernel: workspace config, diagnostics, emitted-file model",
   "keywords": [
     "girih",

@@ -15,7 +15,7 @@ const BASE_UI_VERSION = '1.0.0-rc.0';
  * ours — and `^0.x` admits only that one minor. test/runtime-range.test.ts pins it
  * to the runtime's real version so a lockstep bump cannot leave it behind.
  */
-export const RUNTIME_VERSION_RANGE = '^0.1.1';
+export const RUNTIME_VERSION_RANGE = '^0.2.0';
 
 export interface GenerateReactOptions {
   /** Published package name, e.g. '@acme/design-system'. */

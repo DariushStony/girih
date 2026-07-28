@@ -8,6 +8,20 @@ All eight published packages move in lockstep. Internal dependencies publish as 
 pins, so a change in `girih-core` cannot reach consumers without republishing everything
 above it — the version is a property of the release, not of one package.
 
+## 0.2.0 — 2026-07-28
+
+### Breaking changes
+
+- **girih-generator-react:** emit kebab-case file names (0843ba2)
+
+### Features
+
+- give every GIRIH diagnostic a help line (53cda45)
+
+### Bug fixes
+
+- **girih:** let a scoped first publish choose restricted access (ef52e42)
+
 ## 0.1.1 — 2026-07-27
 
 ### Features
