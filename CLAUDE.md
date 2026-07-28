@@ -179,6 +179,20 @@ Avoid `pnpm build` at the root unless you changed something that downstream pack
 
 **macOS hides case-only renames.** `core.ignorecase` is on, so renaming `Badge.json` to `badge.json` stages nothing when the contents match: `git status` is clean, the working tree is right, and the committed tree keeps the old name. Linux CI is case-sensitive and gets the stale one. Use `git mv` through a temporary name, and note that a local test reading the new name still passes here because the case-insensitive lookup finds the old file. [tracked-paths.test.ts](e2e/test/tracked-paths.test.ts) fails on the mismatch so it is caught before a push.
 
+**It also hides stale PascalCase paths in assertions.** `existsSync('dist/Button.js')` returns true here when the file is `dist/button.js`, so a rename can leave a test asserting the old name and every local check still passes. When renaming emitted files, grep for the **file names** — not for the directories you think contain them. Scoping the search to `src/`, `.ds/ir/` and `components/ejected/` is what let two `dist/Button.js` assertions through and turned the pipeline red.
+
+**To get Linux's filesystem semantics locally**, run the suite on a case-sensitive volume rather than guessing:
+
+```bash
+hdiutil create -size 3g -fs "Case-sensitive APFS" -volname girihcs -quiet /tmp/girihcs.dmg
+hdiutil attach /tmp/girihcs.dmg -quiet
+git clone --no-local . /Volumes/girihcs/cs && cd /Volumes/girihcs/cs
+pnpm install --frozen-lockfile && pnpm build && CI=true pnpm test:e2e
+# when done: hdiutil detach /Volumes/girihcs
+```
+
+A fresh clone alone is not enough — it reproduces a clean checkout but keeps the case-insensitive lookups, so a case bug still passes.
+
 # Agent Instructions
 
 - **Explore first.** Read the package's `src/index.ts` (its public surface) and its `test/` directory before editing. The tests document the intended contract more precisely than the types do.
